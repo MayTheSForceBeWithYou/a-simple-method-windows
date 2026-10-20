@@ -1,11 +1,8 @@
-; Exercise 17: precedence
-;
-; Encode * binds tighter: 2+3*4 = 14; exit 14.
-;
-; Build: nasm -f elf64 17-precedence.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 17-precedence
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 17-precedence>
+main PROC
+.ERR <TODO>
+main ENDP
+END

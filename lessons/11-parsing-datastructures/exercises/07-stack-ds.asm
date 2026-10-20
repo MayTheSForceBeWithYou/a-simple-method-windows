@@ -1,11 +1,8 @@
-; Exercise 07: stack ds
-;
-; Push 1,2 pop to rdi; exit 2.
-;
-; Build: nasm -f elf64 07-stack-ds.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 07-stack-ds
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 07-stack-ds>
+main PROC
+.ERR <TODO>
+main ENDP
+END

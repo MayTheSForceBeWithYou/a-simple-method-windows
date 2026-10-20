@@ -1,11 +1,8 @@
-; Exercise 16: expr stack
-;
-; Shunting: push 2,3, add -> 5; exit 5.
-;
-; Build: nasm -f elf64 16-expr-stack.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 16-expr-stack
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 16-expr-stack>
+main PROC
+.ERR <TODO>
+main ENDP
+END
