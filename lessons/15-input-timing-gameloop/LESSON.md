@@ -1,6 +1,6 @@
 # 15 — Input, Timing, Game Loop
 
-Lesson 14 gave you pixels. This lesson gives you **time** and **input**: reading keypresses without blocking, measuring elapsed time with `clock_gettime`, banking frame time into an accumulator, running fixed-timestep updates, and pacing the loop with `nanosleep` so the game runs at a steady frame rate. By the end you'll understand the classic fixed-timestep game loop: **input → update(fixed dt) → render → wait**, and you'll see why dividing microseconds by milliseconds crashes (`div` needs matching units and a zero `rdx`).
+Lesson 14 gave you pixels. This lesson gives you **time** and **input**: reading keypresses without blocking, measuring elapsed time with `QueryPerformanceCounter` and `QueryPerformanceFrequency`, banking frame time into an accumulator, running fixed-timestep updates, and pacing the loop with `Sleep` so the game runs at a steady frame rate. By the end you'll understand the classic fixed-timestep game loop: **input → update(fixed dt) → render → wait**, and you'll see why dividing microseconds by milliseconds crashes (`div` needs matching units and a zero `rdx`).
 
 ## What this lesson asks of you
 
@@ -364,7 +364,7 @@ div rbx                 ; 16 ms / 16 ms step = 1
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Input:**

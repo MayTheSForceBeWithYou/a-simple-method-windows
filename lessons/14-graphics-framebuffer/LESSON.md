@@ -1,6 +1,6 @@
 # 14 — Graphics: Framebuffer & PPM Output
 
-Lesson 13 gave you fixed-point arithmetic for smooth motion. This lesson gives you **pixels**: a flat byte buffer (framebuffer), offset math to address any pixel, color packing, pitch (row stride with alignment), and P6 PPM file output so you can see your work. No device mapping, no X11, no libc—just syscalls 2 (`open`), 1 (`write`), and 3 (`close`) writing RGB bytes to a file your image viewer can open. By the end you'll see that graphics is not magic—it's pointer arithmetic, row-major layout, and knowing when to write three bytes instead of four.
+Lesson 13 gave you fixed-point arithmetic for smooth motion. This lesson gives you **pixels**: a flat byte buffer (framebuffer), offset math to address any pixel, color packing, pitch (row stride with alignment), and P6 PPM file output so you can see your work. No device mapping, no GUI libraries, no C runtime—just Win32 API calls `CreateFileA`, `WriteFile`, and `CloseHandle` writing RGB bytes to a file your image viewer can open. By the end you'll see that graphics is not magic—it's pointer arithmetic, row-major layout, and knowing when to write three bytes instead of four.
 
 ## What this lesson asks of you
 
@@ -342,7 +342,7 @@ Several drills are stubs or simplified placeholders:
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Addressing:**

@@ -51,7 +51,7 @@ park: main.o map.o econ.o save.o
 	ld -o park main.o map.o econ.o save.o
 
 %.o: %.asm
-	nasm -f elf64 $< -o $@
+	ml64 /c $< /Fo:$@
 ```
 
 `$@` is the target, `$<` is the first prerequisite. Run `make` and `ld` must succeed with no undefined symbols.
@@ -538,7 +538,7 @@ Open `output.ppm` in an image viewer. The park is visible. Criterion 6 is met.
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Map:**

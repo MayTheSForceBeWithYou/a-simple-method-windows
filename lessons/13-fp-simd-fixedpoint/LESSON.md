@@ -291,7 +291,7 @@ Similarly, after `idiv` in `11-fixed-div.asm`, use `sar` if the quotient can be 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Q-format basics:**
