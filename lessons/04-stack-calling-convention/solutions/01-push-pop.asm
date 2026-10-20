@@ -1,17 +1,18 @@
-; Exercise 01: push pop
-;
-; push 3; push 4; pop rax; pop rdi; add rdi,rax; exit 7.
-;
-; Build: nasm -f elf64 01-push-pop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    push 3
-    push 4
-    pop rax
-    pop rdi
-    add rdi, rax
-    mov rax, 60
-    syscall
+; Exercise 01: push pop (Win32 port) - SOLUTION
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 42
+    push rax
+    mov rax, 99
+    push rax
+    pop rbx                    ; RBX = 99
+    pop rcx                    ; RCX = 42
+    call ExitProcess
+    
+main ENDP
+END
