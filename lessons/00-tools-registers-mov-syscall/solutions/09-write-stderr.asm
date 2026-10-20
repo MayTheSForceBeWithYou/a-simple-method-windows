@@ -1,22 +1,49 @@
-; Exercise 09: write stderr
+; Exercise 09: write stderr (Win32 port) - SOLUTION
 ;
-; Write "error\n" to stderr (fd 2), exit 1.
+; Write "Error\n" to stderr (not stdout).
 ;
-; Build: nasm -f elf64 09-write-stderr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo09-write-stderr.obj 09-write-stderr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-write-stderr.exe 09-write-stderr.obj kernel32.lib
+; Run: 09-write-stderr.exe 2>&1
 ;
-; --- your code below ---
-section .data
-    msg db "error", 10
-    msg_len equ $ - msg
+; Expected output: (to stderr) Error\n
+; Expected exit code: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 2
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    mov rdi, 1
-    syscall
+.DATA
+msg DB "Error", 13, 10
+msg_len EQU $ - msg
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; Get stderr handle
+    mov ecx, -12               ; STD_ERROR_HANDLE (not -11)
+    call GetStdHandle
+    mov rbx, rax
+    
+    ; Write to stderr
+    mov rcx, rbx
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, bytes_written
+    mov qword ptr [rsp+32], 0
+    call WriteFile
+    
+    ; Exit
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END

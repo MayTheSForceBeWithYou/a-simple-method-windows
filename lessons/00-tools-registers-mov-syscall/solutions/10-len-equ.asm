@@ -1,22 +1,47 @@
-; Exercise 10: len equ
+; Exercise 10: len equ (Win32 port) - SOLUTION
 ;
-; Define string "equ works\n" with db; length via equ $ - label. Write it; exit 0.
+; Declare a message and compute its length with EQU $ - label.
+; Write the message using the computed length.
 ;
-; Build: nasm -f elf64 10-len-equ.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c /Fo10-len-equ.obj 10-len-equ.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-len-equ.exe 10-len-equ.obj kernel32.lib
+; Run: 10-len-equ.exe
 ;
-; --- your code below ---
-section .data
-    msg db "equ works", 10
-    msg_len equ $ - msg
+; Expected output: Test message\n
+; Expected exit code: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+.DATA
+msg DB "Test message", 13, 10
+msg_len EQU $ - msg
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    mov ecx, -11
+    call GetStdHandle
+    mov rbx, rax
+    
+    mov rcx, rbx
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, bytes_written
+    mov qword ptr [rsp+32], 0
+    call WriteFile
+    
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END

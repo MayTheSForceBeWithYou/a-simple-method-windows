@@ -1,13 +1,22 @@
-; Exercise 02: exit seven
+; Exercise 02: exit seven (Win32 port) - SOLUTION
 ;
 ; Exit with status 7.
 ;
-; Build: nasm -f elf64 02-exit-seven.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo02-exit-seven.obj 02-exit-seven.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-exit-seven.exe 02-exit-seven.obj kernel32.lib
+; Run: 02-exit-seven.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 60
-    mov rdi, 7
-    syscall
+; Expected: exit code 7
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32                ; Shadow space required by ABI
+    
+    mov ecx, 7                 ; Exit status in RCX (first argument)
+    call ExitProcess
+    
+main ENDP
+
+END
