@@ -1,39 +1,42 @@
 ; Exercise 10: strncmp
-;
-; strncmp first 2 of "axy","abz" equal -> 0.
-;
-; Build: nasm -f elf64 10-strncmp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    a db "axy",0
-    b db "abz",0
-section .text
-    global _start
-_start:
-    lea rdi, [a]
-    lea rsi, [b]
-    mov rdx, 2
-    call strncmp
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strncmp:
-    xor rcx, rcx
-.l:
-    cmp rcx, rdx
-    jge .eq
-    mov al, [rdi+rcx]
-    mov bl, [rsi+rcx]
-    cmp al, bl
-    jne .diff
+; strncmp first 2 of "axy","abz" -> 0 (equal for n=2).
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.data
+a BYTE "axy", 0
+b BYTE "abz", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, a
+    lea rdx, b
+    mov r8, 2
+    call strncmp_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strncmp_fn PROC
+    xor r9, r9
+loop_strncmp:
+    cmp r9, r8
+    jge eq_strncmp
+    mov al, BYTE PTR [rcx+r9]
+    mov r10b, BYTE PTR [rdx+r9]
+    cmp al, r10b
+    jne diff_strncmp
     test al, al
-    jz .eq
-    inc rcx
-    jmp .l
-.eq:
+    jz eq_strncmp
+    inc r9
+    jmp loop_strncmp
+eq_strncmp:
     xor rax, rax
     ret
-.diff:
+diff_strncmp:
     mov rax, 1
     ret
+strncmp_fn ENDP
+END

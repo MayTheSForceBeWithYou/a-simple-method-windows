@@ -1,31 +1,33 @@
 ; Exercise 07: rep movsb
-;
-; Copy 5 bytes with rep movsb; checksum exit 15 for bytes 1..5.
-;
-; Build: nasm -f elf64 07-rep-movsb.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db 1,2,3,4,5
-section .bss
-    dst resb 5
-section .text
-    global _start
-_start:
-    lea rsi, [src]
-    lea rdi, [dst]
+; Copy 5 bytes [1..5]; sum=15.
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE 1,2,3,4,5
+
+.data?
+dst BYTE 5 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    lea rsi, src
+    lea rdi, dst
     mov rcx, 5
     rep movsb
-    xor rdi, rdi
-    movzx rax, byte [dst]
-    add rdi, rax
-    movzx rax, byte [dst+1]
-    add rdi, rax
-    movzx rax, byte [dst+2]
-    add rdi, rax
-    movzx rax, byte [dst+3]
-    add rdi, rax
-    movzx rax, byte [dst+4]
-    add rdi, rax
-    mov rax, 60
-    syscall
+    xor rcx, rcx
+    movzx rax, BYTE PTR dst[0]
+    add rcx, rax
+    movzx rax, BYTE PTR dst[1]
+    add rcx, rax
+    movzx rax, BYTE PTR dst[2]
+    add rcx, rax
+    movzx rax, BYTE PTR dst[3]
+    add rcx, rax
+    movzx rax, BYTE PTR dst[4]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

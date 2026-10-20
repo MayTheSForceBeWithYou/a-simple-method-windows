@@ -1,20 +1,20 @@
 ; Exercise 06: aos sum
-;
-; AoS records {dq x,y} two ents. Sum all coords exit.
-;
-; Build: nasm -f elf64 06-aos-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    ; (1,2), (3,4)
-    rec dq 1,2, 3,4
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    add rdi, [rec]
-    add rdi, [rec+8]
-    add rdi, [rec+16]
-    add rdi, [rec+24]
-    mov rax, 60
-    syscall
+; AoS records {x,y}. Two ents (1,2), (3,4). Sum all=10.
+; Expected exit: 10
+
+EXTERN ExitProcess:PROC
+
+.data
+rec QWORD 1,2, 3,4
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    add rcx, rec[0]
+    add rcx, rec[8]
+    add rcx, rec[16]
+    add rcx, rec[24]
+    call ExitProcess
+main ENDP
+END

@@ -1,27 +1,30 @@
 ; Exercise 01: strlen
-;
-; Implement strlen; 'hello' -> 5.
-;
-; Build: nasm -f elf64 01-strlen.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "hello",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strlen:
-    mov rax, rdi
-.l:
-    cmp byte [rax], 0
-    je .d
+; strlen('hello')=5.
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "hello", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, s
+    call strlen_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strlen_fn PROC
+    mov rax, rcx
+loop_len:
+    cmp BYTE PTR [rax], 0
+    je done_len
     inc rax
-    jmp .l
-.d:
-    sub rax, rdi
+    jmp loop_len
+done_len:
+    sub rax, rcx
     ret
+strlen_fn ENDP
+END
