@@ -2,31 +2,44 @@
 ;
 ; "ABCD" cur=1 delete -> "ACD"; len=3 exit 3.
 ;
-; Build: nasm -f elf64 11-delete-forward.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-delete-forward.asm && link /OUT:11-delete-forward.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-delete-forward.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db "ABCD",0
-section .bss
-    len resq 1
-    cur resq 1
-section .text
-    global _start
-_start:
-    mov qword [len],4
-    mov qword [cur],1
-    mov rcx,[cur]
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE "ABCD", 0
+
+.data?
+len QWORD ?
+cur QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 4
+    mov QWORD PTR [cur], 1
+    
+    mov rcx, [cur]
+    lea rdx, buf
+    
 .l:
-    mov rax,rcx
+    mov rax, rcx
     inc rax
-    cmp rax,[len]
+    cmp rax, [len]
     jge .fin
-    mov al,[buf+rcx+1]
-    mov [buf+rcx],al
+    
+    movzx r8, BYTE PTR [rdx+rcx+1]
+    mov BYTE PTR [rdx+rcx], r8b
+    
     inc rcx
     jmp .l
+    
 .fin:
-    dec qword [len]
-    mov rdi,[len]
-    mov rax,60
-    syscall
+    dec QWORD PTR [len]
+    mov rcx, [len]
+    call ExitProcess
+main ENDP
+END

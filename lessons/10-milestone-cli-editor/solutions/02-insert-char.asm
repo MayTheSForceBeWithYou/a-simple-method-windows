@@ -2,19 +2,27 @@
 ;
 ; Insert 'A' at end; len=1; exit 1.
 ;
-; Build: nasm -f elf64 02-insert-char.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-insert-char.asm && link /OUT:02-insert-char.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-insert-char.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    buf resb 64
-    len resq 1
-section .text
-    global _start
-_start:
-    mov qword [len], 0
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE 64 DUP(?)
+len QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 0
     mov rcx, [len]
-    mov byte [buf+rcx], 'A'
-    inc qword [len]
-    mov rdi, [len]
-    mov rax, 60
-    syscall
+    lea rdx, buf
+    mov BYTE PTR [rdx+rcx], 'A'
+    inc QWORD PTR [len]
+    
+    mov rcx, [len]
+    call ExitProcess
+main ENDP
+END

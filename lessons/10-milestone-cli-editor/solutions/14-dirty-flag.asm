@@ -2,17 +2,26 @@
 ;
 ; Edit sets dirty=1; save clears; exit dirty 0.
 ;
-; Build: nasm -f elf64 14-dirty-flag.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-dirty-flag.asm && link /OUT:14-dirty-flag.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-dirty-flag.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    dirty resb 1
-section .text
-    global _start
-_start:
-    mov byte [dirty],1
-    ; save
-    mov byte [dirty],0
-    movzx rdi, byte [dirty]
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.data?
+dirty BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; Edit sets dirty
+    mov BYTE PTR [dirty], 1
+    
+    ; Save clears dirty
+    mov BYTE PTR [dirty], 0
+    
+    movzx rcx, BYTE PTR [dirty]
+    call ExitProcess
+main ENDP
+END

@@ -1,17 +1,23 @@
 ; Exercise 01: buffer init
 ;
-; resb 64 buffer; store length 0 in len dq; exit len.
+; Allocate 64 byte buffer; store length 0 in len; exit len.
 ;
-; Build: nasm -f elf64 01-buffer-init.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-buffer-init.asm && link /OUT:01-buffer-init.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-buffer-init.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    buf resb 64
-    len resq 1
-section .text
-    global _start
-_start:
-    mov qword [len], 0
-    mov rdi, [len]
-    mov rax, 60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE 64 DUP(?)
+len QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 0
+    mov rcx, [len]
+    call ExitProcess
+main ENDP
+END

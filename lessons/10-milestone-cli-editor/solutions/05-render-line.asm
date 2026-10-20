@@ -2,19 +2,39 @@
 ;
 ; Print buffer 'ed\n'; exit 0.
 ;
-; Build: nasm -f elf64 05-render-line.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 05-render-line.asm && link /OUT:05-render-line.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-render-line.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db "ed",10
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,buf
-    mov rdx,3
-    syscall
-    mov rax,60
-    xor rdi,rdi
-    syscall
+; Expected exit: 0
+; Expected stdout: "ed\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE "ed", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write buffer
+    mov rcx, rax
+    lea rdx, buf
+    mov r8d, 3
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

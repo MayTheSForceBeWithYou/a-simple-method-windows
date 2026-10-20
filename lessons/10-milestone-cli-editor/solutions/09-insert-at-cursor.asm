@@ -2,22 +2,32 @@
 ;
 ; Buffer empty; cursor 0; insert "X"; len=1 cursor=1; exit cursor.
 ;
-; Build: nasm -f elf64 09-insert-at-cursor.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-insert-at-cursor.asm && link /OUT:09-insert-at-cursor.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-insert-at-cursor.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    buf resb 64
-    len resq 1
-    cur resq 1
-section .text
-    global _start
-_start:
-    mov qword [len],0
-    mov qword [cur],0
-    mov rcx,[cur]
-    mov byte [buf+rcx],'X'
-    inc qword [len]
-    inc qword [cur]
-    mov rdi,[cur]
-    mov rax,60
-    syscall
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE 64 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 0
+    mov QWORD PTR [cur], 0
+    
+    mov rcx, [cur]
+    lea rdx, buf
+    mov BYTE PTR [rdx+rcx], 'X'
+    
+    inc QWORD PTR [len]
+    inc QWORD PTR [cur]
+    
+    mov rcx, [cur]
+    call ExitProcess
+main ENDP
+END

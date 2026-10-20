@@ -2,19 +2,39 @@
 ;
 ; Render first line only of "L1\nL2\n"; write "L1\n"; exit 0.
 ;
-; Build: nasm -f elf64 13-render-viewport.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 13-render-viewport.asm && link /OUT:13-render-viewport.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-render-viewport.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db "L1",10,"L2",10
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,buf
-    mov rdx,3
-    syscall
-    xor rdi,rdi
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: "L1\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE "L1", 10, "L2", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write first line only
+    mov rcx, rax
+    lea rdx, buf
+    mov r8d, 3
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

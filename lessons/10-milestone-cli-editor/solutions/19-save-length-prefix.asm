@@ -2,13 +2,18 @@
 ;
 ; Serialize u64 len=4 then payload; total bytes 12; exit 12.
 ;
-; Build: nasm -f elf64 19-save-length-prefix.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-save-length-prefix.asm && link /OUT:19-save-length-prefix.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-save-length-prefix.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,8
-    add rdi,4
-    mov rax,60
-    syscall
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rcx, 8
+    add rcx, 4
+    call ExitProcess
+main ENDP
+END
