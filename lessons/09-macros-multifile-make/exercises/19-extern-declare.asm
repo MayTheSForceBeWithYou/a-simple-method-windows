@@ -1,16 +1,14 @@
-; Exercise 19: extern declare
-;
-; %pragma or just comment extern foo; local call exit 9.
-;
-; Build: nasm -f elf64 19-extern-declare.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call foo
-    mov rdi,rax
-    mov rax,60
-    syscall
-foo:
-    ; TODO: implement foo
+; 19-extern-declare.asm
+; Single file, define helper returning 9, exit 9.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Define helper returning 9
+.ERR <TODO: helper PROC; mov rax, 9; ret; helper ENDP>
+
+main PROC
+    ; TODO: call helper; mov ecx, eax; call ExitProcess
+    .ERR <TODO: Call helper, exit 9>
+main ENDP
+END

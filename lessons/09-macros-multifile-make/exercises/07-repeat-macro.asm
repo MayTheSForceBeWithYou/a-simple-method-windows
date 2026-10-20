@@ -1,11 +1,15 @@
-; Exercise 07: repeat macro
-;
-; %rep 3 increment; exit 3.
-;
-; Build: nasm -f elf64 07-repeat-macro.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 07-repeat-macro.asm
+; Use REPT to generate three INC instructions, exit 3.
+; Task: xor eax; REPT 3; inc eax; ENDM; exit eax.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    xor eax, eax
+    ; TODO: REPT 3; inc eax; ENDM
+    .ERR <TODO: Use REPT to generate three inc eax>
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

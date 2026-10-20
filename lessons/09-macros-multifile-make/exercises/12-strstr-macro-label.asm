@@ -1,11 +1,17 @@
-; Exercise 12: macro local labels
-;
-; %macro TWICE 0 inc rdi / inc rdi %endmacro; exit 2.
-;
-; Build: nasm -f elf64 12-strstr-macro-label.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 12-strstr-macro-label.asm
+; TWICE macro with two INC, no label collision, exit 2.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: TWICE MACRO; inc rax; inc rax; ENDM (no labels needed)
+.ERR <TODO: Define TWICE macro>
+
+main PROC
+    xor eax, eax
+    ; TODO: TWICE
+    .ERR <TODO: Invoke TWICE>
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

@@ -1,11 +1,11 @@
-; Exercise 23: stretch make dependency
-;
-; STRETCH: encode dependency count 3 objects; exit 3.
-;
-; Build: nasm -f elf64 23-stretch-make-dependency.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 23-stretch-make-dependency.asm (stretch)
+; Exit 3 (object count as immediate, not Make graph).
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    ; TODO: mov ecx, 3; call ExitProcess
+    .ERR <TODO: Exit 3>
+main ENDP
+END

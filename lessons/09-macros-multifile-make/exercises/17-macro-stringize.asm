@@ -1,11 +1,21 @@
-; Exercise 17: macro stringize
-;
-; NASM %%str: %%define S 'Q'; db and write length 1+nl exit 0.
-;
-; Build: nasm -f elf64 17-macro-stringize.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 17-macro-stringize.asm
+; Stores string "Q\n", exit 0 (no stringification in MASM).
+
+.DATA
+msg DB "Q", 13, 10
+msgLen EQU $ - msg
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    ; TODO: GetStdHandle, WriteFile msg, exit 0
+    .ERR <TODO: Write "Q\n", exit 0>
+main ENDP
+END

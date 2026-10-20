@@ -1,11 +1,25 @@
-; Exercise 03: macro write
-;
-; Macro sys_write1 msg,len; print 'M\n'.
-;
-; Build: nasm -f elf64 03-macro-write.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 03-macro-write.asm
+; Macro writes "M\n", exit 0.
+; Task: Define macro that gets stdout and writes message.
+
+.DATA
+msg DB "M", 13, 10
+msgLen EQU $ - msg
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+; TODO: Define WriteMsgMacro
+.ERR <TODO: Macro to GetStdHandle, WriteFile>
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    ; TODO: Invoke macro, exit 0
+    .ERR <TODO: Call macro, exit 0>
+main ENDP
+END

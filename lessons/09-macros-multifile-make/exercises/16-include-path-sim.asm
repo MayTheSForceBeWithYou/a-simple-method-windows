@@ -1,11 +1,14 @@
-; Exercise 16: include path sim
-;
-; %define VERSION 3; exit VERSION.
-;
-; Build: nasm -f elf64 16-include-path-sim.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 16-include-path-sim.asm
+; Define VERSION = 3, exit 3.
+
+; TODO: VERSION EQU 3
+.ERR <TODO: Define VERSION>
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    ; TODO: mov ecx, VERSION; call ExitProcess
+    .ERR <TODO: Use VERSION>
+main ENDP
+END

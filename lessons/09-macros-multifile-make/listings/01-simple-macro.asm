@@ -1,29 +1,24 @@
-; Listing 01: Simple MASM macro
+; 01-simple-macro.asm
 ;
-; Purpose: Demonstrate MASM macro definition and invocation.
-; Expected exit code: 15
-; Expected output: (none)
+; Purpose: Demonstrate simple MASM macro definition and use
+; Expected exit code: 7
+; Expected stdout: (none)
 ;
-; Build: ml64 /c /Fo01-simple-macro.obj 01-simple-macro.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-simple-macro.exe 01-simple-macro.obj kernel32.lib
-
-; MASM macro: add_to_rax value
-; Expands to: add rax, value
-add_to_rax MACRO value
-    add rax, value
-ENDM
+; MASM macros use MACRO ... ENDM syntax.
+; Parameters are named, not numbered like NASM's %1, %2.
 
 .CODE
 
 EXTRN ExitProcess:PROC
 
+; Define a macro to exit with a given status
+ExitWith MACRO status
+    mov     ecx, status
+    call    ExitProcess
+ENDM
+
 main PROC
-    sub rsp, 32
-    
-    mov rax, 5
-    add_to_rax 10              ; Macro expands to: add rax, 10
-    
-    mov rcx, rax               ; RAX = 15
-    call ExitProcess
+    ExitWith 7              ; Expands to: mov ecx, 7; call ExitProcess
 main ENDP
 
 END

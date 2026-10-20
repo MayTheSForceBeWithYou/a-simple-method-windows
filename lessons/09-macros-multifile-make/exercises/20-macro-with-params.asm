@@ -1,11 +1,16 @@
-; Exercise 20: macro with params
-;
-; %macro ADD3 3; mov rax,%1; add %2; add %3; ADD3 10,20,12 exit 42.
-;
-; Build: nasm -f elf64 20-macro-with-params.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 20-macro-with-params.asm
+; ADD3 macro: ADD3 10, 20, 12; exit 42.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: ADD3 MACRO reg, v1, v2, v3; mov reg, v1; add reg, v2; add reg, v3; ENDM
+.ERR <TODO: Define ADD3 macro>
+
+main PROC
+    ; TODO: ADD3 rax, 10, 20, 12
+    .ERR <TODO: Invoke ADD3>
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

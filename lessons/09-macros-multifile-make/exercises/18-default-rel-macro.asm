@@ -1,11 +1,21 @@
-; Exercise 18: default rel macro
-;
-; default rel; lea rsi,[msg]; write hi; exit 0.
-;
-; Build: nasm -f elf64 18-default-rel-macro.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 18-default-rel-macro.asm
+; Print "hi\n", exit 0 (MASM uses RIP-relative by default in 64-bit).
+
+.DATA
+msg DB "hi", 13, 10
+msgLen EQU $ - msg
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    ; TODO: GetStdHandle, WriteFile, exit 0
+    .ERR <TODO: Write "hi\n", exit 0>
+main ENDP
+END

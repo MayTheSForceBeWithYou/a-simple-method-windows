@@ -1,11 +1,15 @@
-; Exercise 02: macro exit
-;
-; %macro exit_with 1 ... %endmacro; exit 7.
-;
-; Build: nasm -f elf64 02-macro-exit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 02-macro-exit.asm
+; Create ExitWith macro, exit 7.
+; Task: Define ExitWith MACRO status ... ENDM, invoke ExitWith 7.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Define ExitWith macro
+.ERR <TODO: ExitWith MACRO status; mov ecx, status; call ExitProcess; ENDM>
+
+main PROC
+    ; TODO: Invoke ExitWith 7
+    .ERR <TODO: ExitWith 7>
+main ENDP
+END
