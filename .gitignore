@@ -8,4 +8,14 @@ a.out
 build/
 /tmp/
 *.swp
+
+# Windows build artifacts
+*.obj
+*.exe
+*.ilk
+*.pdb
+*.res
+
+# macOS metadata
+.DS_Store
 *~
