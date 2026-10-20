@@ -1,23 +1,26 @@
-; Exercise 24: stretch variadic sum
-;
-; STRETCH: sum_n(n, ...) where n in rdi, then n qwords on stack. sum_n(4, 3,4,5,6)=18.
-;
-; Build: nasm -f elf64 24-stretch-variadic-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    push 6
-    push 5
-    push 4
-    push 3
-    mov rdi, 4
-    call sum_n
-    add rsp, 32
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Exercise 24: stretch variadic sum (Win32 port)
+; STRETCH: sum_n(n, ...) where RCX=n, then n qwords on stack. sum_n(4, 3,4,5,6)=18.
+; Build: ml64 /c /Fo24-stretch-variadic-sum.obj 24-stretch-variadic-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:24-stretch-variadic-sum.exe 24-stretch-variadic-sum.obj kernel32.lib
+; Expected: exit code 18
 
-sum_n:
-    ; TODO: implement sum_n
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement variadic sum_n(RCX=count, stack args)
+.ERR <TODO: Implement variadic sum_n>
+
+main PROC FRAME
+    sub rsp, 72                ; Shadow + args + alignment
+    .allocstack 72
+    .endprolog
+    
+    mov QWORD PTR [rsp+32], 3
+    mov QWORD PTR [rsp+40], 4
+    mov QWORD PTR [rsp+48], 5
+    mov QWORD PTR [rsp+56], 6
+    mov rcx, 4
+    call sum_n
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

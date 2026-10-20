@@ -1,18 +1,19 @@
-; Exercise 12: recursion fib
-;
+; Exercise 12: recursion fib (Win32 port)
 ; Naive fib(7)=13. Exit 13. (OK if slow.)
-;
-; Build: nasm -f elf64 12-recursion-fib.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 7
-    call fib
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Build: ml64 /c /Fo12-recursion-fib.obj 12-recursion-fib.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:12-recursion-fib.exe 12-recursion-fib.obj kernel32.lib
+; Expected: exit code 13
 
-fib:
-    ; TODO: implement fib
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement recursive fibonacci with PROC FRAME
+.ERR <TODO: Implement recursive fibonacci>
+
+main PROC
+    sub rsp, 32
+    mov rcx, 7
+    call fibonacci
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

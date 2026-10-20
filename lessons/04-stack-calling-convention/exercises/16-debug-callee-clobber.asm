@@ -1,19 +1,24 @@
-; Exercise 16: debug callee clobber
-;
-; BUG: callee clobbers rbx without save. Fix; exit 11.
-;
-; Build: nasm -f elf64 16-debug-callee-clobber.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rbx, 11
-    call evil
-    mov rdi, rbx
-    mov rax, 60
-    syscall
+; Exercise 16: debug callee clobber (Win32 port)
+; BUG: callee clobbers RBX without saving. Fix by adding PUSH/POP. Exit 11.
+; Build: ml64 /c /Fo16-debug-callee-clobber.obj 16-debug-callee-clobber.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-debug-callee-clobber.exe 16-debug-callee-clobber.obj kernel32.lib
+; Expected: exit code 11
 
-evil:
-    mov rbx, 0
+.CODE
+EXTRN ExitProcess:PROC
+
+helper PROC
+    ; BUG: Uses RBX without saving (nonvolatile!)
+    mov rbx, 99
+    mov rax, 1
     ret
+    .ERR <BUG: Add PUSH RBX at start and POP RBX before RET>
+helper ENDP
+
+main PROC
+    sub rsp, 32
+    mov rbx, 11
+    call helper
+    mov rcx, rbx               ; Should still be 11
+    call ExitProcess
+main ENDP
+END

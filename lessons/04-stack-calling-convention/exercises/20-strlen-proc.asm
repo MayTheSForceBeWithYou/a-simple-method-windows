@@ -1,21 +1,22 @@
-; Exercise 20: strlen proc
-;
-; strlen(rdi)->rax. 'assembly' len 8; exit 8.
-;
-; Build: nasm -f elf64 20-strlen-proc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "assembly", 0
+; Exercise 20: strlen proc (Win32 port)
+; strlen(RCX)->RAX. 'assembly' len 8; exit 8.
+; Build: ml64 /c /Fo20-strlen-proc.obj 20-strlen-proc.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:20-strlen-proc.exe 20-strlen-proc.obj kernel32.lib
+; Expected: exit code 8
 
-section .text
-    global _start
-_start:
-    lea rdi, [s]
+.DATA
+str DB "assembly", 0
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement strlen(RCX) -> RAX
+.ERR <TODO: Implement strlen procedure>
+
+main PROC
+    sub rsp, 32
+    lea rcx, str
     call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-
-strlen:
-    ; TODO: implement strlen
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END
