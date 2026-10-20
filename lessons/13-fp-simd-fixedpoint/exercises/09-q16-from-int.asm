@@ -1,11 +1,8 @@
-; Exercise 09: q16 from int
-;
-; Convert 5 to Q16.16; >>16 back exit 5.
-;
-; Build: nasm -f elf64 09-q16-from-int.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 09-q16-from-int
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 09-q16-from-int>
+main PROC
+.ERR <TODO>
+main ENDP
+END

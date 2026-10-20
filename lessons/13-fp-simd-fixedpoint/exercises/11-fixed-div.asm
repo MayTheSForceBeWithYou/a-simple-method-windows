@@ -1,11 +1,8 @@
-; Exercise 11: fixed div
-;
-; Q16: (6<<16)/(2<<16) via (a<<16)/b style: ((6<<16)<<16)/(2<<16) careful. Simpler int: 6/2=3 exit 3.
-;
-; Build: nasm -f elf64 11-fixed-div.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 11-fixed-div
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 11-fixed-div>
+main PROC
+.ERR <TODO>
+main ENDP
+END

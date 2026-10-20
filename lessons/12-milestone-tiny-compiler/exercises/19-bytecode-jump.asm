@@ -1,11 +1,8 @@
-; Exercise 19: bytecode jump
-;
-; Bytecode: JMP +2 over LOAD 99, LOAD 5, HALT; exit 5.
-;
-; Build: nasm -f elf64 19-bytecode-jump.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 19-bytecode-jump
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 19-bytecode-jump>
+main PROC
+.ERR <TODO>
+main ENDP
+END

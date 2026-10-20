@@ -1,11 +1,8 @@
-; Exercise 13: pack rgba8888
-;
-; R=255 G=0 B=0 A=255; low byte R=255 exit 255.
-;
-; Build: nasm -f elf64 13-pack-rgba8888.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 13-pack-rgba8888
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 13-pack-rgba8888>
+main PROC
+.ERR <TODO>
+main ENDP
+END

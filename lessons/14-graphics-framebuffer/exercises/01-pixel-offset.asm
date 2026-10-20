@@ -1,11 +1,8 @@
-; Exercise 01: pixel offset
-;
-; offset=y*stride+x*4; y=2,x=3,stride=40; exit offset&255.
-;
-; Build: nasm -f elf64 01-pixel-offset.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 01-pixel-offset
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 01-pixel-offset>
+main PROC
+.ERR <TODO>
+main ENDP
+END

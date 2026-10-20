@@ -1,11 +1,8 @@
-; Exercise 09: key down up
-;
-; Track key state: down sets, up clears; exit 0.
-;
-; Build: nasm -f elf64 09-key-down-up.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 09-key-down-up
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 09-key-down-up>
+main PROC
+.ERR <TODO>
+main ENDP
+END

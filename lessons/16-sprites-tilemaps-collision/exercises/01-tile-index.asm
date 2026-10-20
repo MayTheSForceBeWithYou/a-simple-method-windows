@@ -1,11 +1,8 @@
-; Exercise 01: tile index
-;
-; idx=y*map_w+x; y=2 x=3 w=10; exit 23.
-;
-; Build: nasm -f elf64 01-tile-index.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 01-tile-index
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 01-tile-index>
+main PROC
+.ERR <TODO>
+main ENDP
+END

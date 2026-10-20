@@ -1,11 +1,8 @@
-; Exercise 22: stretch bresenham count
-;
-; STRETCH: line from 0,0 to 3,0 plots 4 pixels; exit 4.
-;
-; Build: nasm -f elf64 22-stretch-bresenham-count.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 22-stretch-bresenham-count
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 22-stretch-bresenham-count>
+main PROC
+.ERR <TODO>
+main ENDP
+END

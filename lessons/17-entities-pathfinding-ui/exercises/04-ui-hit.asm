@@ -1,11 +1,8 @@
-; Exercise 04: ui hit
-;
-; Point in panel -> 1.
-;
-; Build: nasm -f elf64 04-ui-hit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 04-ui-hit
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 04-ui-hit>
+main PROC
+.ERR <TODO>
+main ENDP
+END

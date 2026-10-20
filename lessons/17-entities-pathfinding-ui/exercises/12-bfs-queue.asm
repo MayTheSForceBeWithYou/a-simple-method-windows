@@ -1,11 +1,8 @@
-; Exercise 12: bfs queue
-;
-; BFS visit count 5; exit 5.
-;
-; Build: nasm -f elf64 12-bfs-queue.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 12-bfs-queue
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 12-bfs-queue>
+main PROC
+.ERR <TODO>
+main ENDP
+END

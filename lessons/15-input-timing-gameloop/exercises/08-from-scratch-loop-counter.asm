@@ -1,11 +1,8 @@
-; Exercise 08: from scratch loop counter
-;
-; FROM SCRATCH: 10 frame iterations; exit 10.
-;
-; Build: nasm -f elf64 08-from-scratch-loop-counter.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-loop-counter
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 08-from-scratch-loop-counter>
+main PROC
+.ERR <TODO>
+main ENDP
+END
