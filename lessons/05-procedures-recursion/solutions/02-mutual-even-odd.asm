@@ -1,31 +1,35 @@
 ; Exercise 02: mutual even odd
-;
 ; is_even/is_odd mutual recursion. is_even(4)->1; exit 1.
-;
-; Build: nasm -f elf64 02-mutual-even-odd.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 4
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 4
     call is_even
-    mov rdi, rax
-    mov rax, 60
-    syscall
-is_even:
-    cmp rdi, 0
-    je .yes
-    dec rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+is_even PROC
+    cmp rcx, 0
+    je yes_even
+    dec rcx
     jmp is_odd
-.yes:
+yes_even:
     mov rax, 1
     ret
-is_odd:
-    cmp rdi, 0
-    je .no
-    dec rdi
+is_even ENDP
+
+is_odd PROC
+    cmp rcx, 0
+    je no_odd
+    dec rcx
     jmp is_even
-.no:
+no_odd:
     xor rax, rax
     ret
+is_odd ENDP
+END

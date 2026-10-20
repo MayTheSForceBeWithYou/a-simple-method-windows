@@ -1,28 +1,31 @@
 ; Exercise 20: fold list
-;
-; Null-terminated qword list (0 sentinel): 3,4,5,0. fold add via proc; exit 12.
-;
-; Build: nasm -f elf64 20-fold-list.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    lst dq 3,4,5,0
-section .text
-    global _start
-_start:
-    lea rdi, [lst]
+; Null-terminated list [3,4,5,0]. fold_add = 12.
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.data
+lst QWORD 3,4,5,0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, lst
     call fold_add
-    mov rdi, rax
-    mov rax, 60
-    syscall
-fold_add:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+fold_add PROC
     xor rax, rax
-.l:
-    mov rdx, [rdi]
+loop_fold:
+    mov rdx, QWORD PTR [rcx]
     test rdx, rdx
-    jz .d
+    jz done_fold
     add rax, rdx
-    add rdi, 8
-    jmp .l
-.d:
+    add rcx, 8
+    jmp loop_fold
+done_fold:
     ret
+fold_add ENDP
+END

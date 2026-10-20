@@ -1,28 +1,32 @@
 ; Exercise 08: from scratch rec pow
-;
-; FROM SCRATCH: pow(base,exp) recursive multiply. pow(2,5)=32; exit 32.
-;
-; Build: nasm -f elf64 08-from-scratch-rec-pow.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 2
-    mov rsi, 5
-    call pow
-    mov rdi, rax
-    mov rax, 60
-    syscall
-pow:
-    cmp rsi, 0
-    je .one
-    push rdi
-    dec rsi
-    call pow
-    pop rdi
-    imul rax, rdi
+; pow(base,exp) recursive. pow(2,5)=32.
+; Expected exit: 32
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    mov rdx, 5
+    call pow_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+pow_fn PROC
+    cmp rdx, 0
+    je one_pow
+    push rcx
+    sub rsp, 32
+    dec rdx
+    call pow_fn
+    add rsp, 32
+    pop rcx
+    imul rax, rcx
     ret
-.one:
+one_pow:
     mov rax, 1
     ret
+pow_fn ENDP
+END

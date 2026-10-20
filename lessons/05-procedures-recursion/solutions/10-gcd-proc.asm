@@ -1,29 +1,36 @@
 ; Exercise 10: gcd proc
-;
-; gcd(rdi,rsi) Euclid recursive. gcd(48,18)=6; exit 6.
-;
-; Build: nasm -f elf64 10-gcd-proc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 48
-    mov rsi, 18
+; gcd(48,18)=6 Euclid recursive.
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 48
+    mov rdx, 18
     call gcd
-    mov rdi, rax
-    mov rax, 60
-    syscall
-gcd:
-    cmp rsi, 0
-    je .base
-    mov rax, rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+gcd PROC
+    cmp rdx, 0
+    je base_gcd
+    push rcx
+    push rdx
+    sub rsp, 32
+    mov rax, rcx
     xor rdx, rdx
-    div rsi
-    mov rdi, rsi
-    mov rsi, rdx
+    mov r8, QWORD PTR [rsp+32]
+    div r8
+    mov rcx, QWORD PTR [rsp+32]
     call gcd
+    add rsp, 32
+    add rsp, 16
     ret
-.base:
-    mov rax, rdi
+base_gcd:
+    mov rax, rcx
     ret
+gcd ENDP
+END

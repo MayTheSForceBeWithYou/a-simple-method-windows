@@ -1,31 +1,35 @@
 ; Exercise 14: mutual parity count
-;
-; Count down from 7 using mutual even/odd that returns steps; or: is_even chain returns 1 for 6. Exit 1.
-;
-; Build: nasm -f elf64 14-mutual-parity-count.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 6
+; is_even(6)=1. MS x64 ABI.
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 6
     call is_even
-    mov rdi, rax
-    mov rax, 60
-    syscall
-is_even:
-    test rdi, rdi
-    jz .y
-    dec rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+is_even PROC
+    test rcx, rcx
+    jz yes_even
+    dec rcx
     jmp is_odd
-.y:
+yes_even:
     mov rax, 1
     ret
-is_odd:
-    test rdi, rdi
-    jz .n
-    dec rdi
+is_even ENDP
+
+is_odd PROC
+    test rcx, rcx
+    jz no_odd
+    dec rcx
     jmp is_even
-.n:
+no_odd:
     xor rax, rax
     ret
+is_odd ENDP
+END

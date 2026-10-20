@@ -1,27 +1,33 @@
 ; Exercise 21: rec binary digits
-;
-; Count bits set via recursion clearing lowbit. popcount(0b1101)=3; exit 3.
-;
-; Build: nasm -f elf64 21-rec-binary-digits.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 0b1101
+; popcount(0b1101)=3 via recursion. Exit 3.
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 0b1101
     call poprec
-    mov rdi, rax
-    mov rax, 60
-    syscall
-poprec:
-    test rdi, rdi
-    jz .z
-    mov rax, rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+poprec PROC
+    test rcx, rcx
+    jz zero_pop
+    push rcx
+    sub rsp, 32
+    mov rax, rcx
     dec rax
-    and rdi, rax
+    and rcx, rax
     call poprec
+    add rsp, 32
+    pop rcx
     inc rax
     ret
-.z:
+zero_pop:
     xor rax, rax
     ret
+poprec ENDP
+END

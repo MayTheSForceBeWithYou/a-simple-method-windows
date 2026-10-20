@@ -1,25 +1,31 @@
 ; Exercise 18: trampoline depth
-;
-; bump_depth(n) adds n via recursion; n=8 exit 8.
-;
-; Build: nasm -f elf64 18-trampoline-depth.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 8
+; bump(8) recursive count. Exit 8.
+; Expected exit: 8
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 8
     call bump
-    mov rdi, rax
-    mov rax, 60
-    syscall
-bump:
-    test rdi, rdi
-    jz .z
-    dec rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+bump PROC
+    test rcx, rcx
+    jz zero_bump
+    push rcx
+    sub rsp, 32
+    dec rcx
     call bump
+    add rsp, 32
+    pop rcx
     inc rax
     ret
-.z:
+zero_bump:
     xor rax, rax
     ret
+bump ENDP
+END

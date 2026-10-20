@@ -1,30 +1,32 @@
 ; Exercise 01: locals three
-;
-; Function with 3 qword locals summing rdi+1..+3 style; call with 10 return 10+11+12=33; exit 33.
-;
-; Build: nasm -f elf64 01-locals-three.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 10
+; Function with 3 qword locals. sum_locals(10)=10+11+12=33.
+; Expected exit: 33
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 10
     call sum_locals
-    mov rdi, rax
-    mov rax, 60
-    syscall
-sum_locals:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+sum_locals PROC
     push rbp
     mov rbp, rsp
-    sub rsp, 32
-    mov [rbp-8], rdi
-    mov rax, rdi
+    sub rsp, 48
+    mov QWORD PTR [rbp-8], rcx
+    mov rax, rcx
     inc rax
-    mov [rbp-16], rax
+    mov QWORD PTR [rbp-16], rax
     inc rax
-    mov [rbp-24], rax
-    mov rax, [rbp-8]
-    add rax, [rbp-16]
-    add rax, [rbp-24]
+    mov QWORD PTR [rbp-24], rax
+    mov rax, QWORD PTR [rbp-8]
+    add rax, QWORD PTR [rbp-16]
+    add rax, QWORD PTR [rbp-24]
     leave
     ret
+sum_locals ENDP
+END
