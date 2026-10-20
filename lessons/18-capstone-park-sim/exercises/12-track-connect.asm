@@ -1,7 +1,7 @@
-; 12-track-connect
+; 12-track-connect: track connect
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 12-track-connect>
+.ERR <TODO: Implement track connect>
 main PROC
 .ERR <TODO>
 main ENDP

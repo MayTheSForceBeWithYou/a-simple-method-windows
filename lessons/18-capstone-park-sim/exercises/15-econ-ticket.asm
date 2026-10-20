@@ -1,7 +1,7 @@
-; 15-econ-ticket
+; 15-econ-ticket: econ ticket
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 15-econ-ticket>
+.ERR <TODO: Implement econ ticket>
 main PROC
 .ERR <TODO>
 main ENDP

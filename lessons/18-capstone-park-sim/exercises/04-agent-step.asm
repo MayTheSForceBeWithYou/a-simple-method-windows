@@ -1,7 +1,7 @@
-; 04-agent-step
+; 04-agent-step: agent step
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 04-agent-step>
+.ERR <TODO: Implement agent step>
 main PROC
 .ERR <TODO>
 main ENDP

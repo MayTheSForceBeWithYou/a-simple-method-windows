@@ -1,7 +1,7 @@
-; 16-econ-upkeep
+; 16-econ-upkeep: econ upkeep
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 16-econ-upkeep>
+.ERR <TODO: Implement econ upkeep>
 main PROC
 .ERR <TODO>
 main ENDP

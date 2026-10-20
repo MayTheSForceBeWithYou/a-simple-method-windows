@@ -1,7 +1,7 @@
-; 06-ride-open
+; 06-ride-open: ride open
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 06-ride-open>
+.ERR <TODO: Implement ride open>
 main PROC
 .ERR <TODO>
 main ENDP

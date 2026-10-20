@@ -1,7 +1,7 @@
-; 21-scenario-goal
+; 21-scenario-goal: scenario goal
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 21-scenario-goal>
+.ERR <TODO: Implement scenario goal>
 main PROC
 .ERR <TODO>
 main ENDP

@@ -1,7 +1,7 @@
-; 20-weather-tick
+; 20-weather-tick: weather tick
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 20-weather-tick>
+.ERR <TODO: Implement weather tick>
 main PROC
 .ERR <TODO>
 main ENDP

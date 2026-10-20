@@ -1,7 +1,7 @@
-; 11-track-piece-rotate
+; 11-track-piece-rotate: track piece rotate
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 11-track-piece-rotate>
+.ERR <TODO: Implement track piece rotate>
 main PROC
 .ERR <TODO>
 main ENDP

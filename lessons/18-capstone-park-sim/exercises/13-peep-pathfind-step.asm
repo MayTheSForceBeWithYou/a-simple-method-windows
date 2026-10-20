@@ -1,7 +1,7 @@
-; 13-peep-pathfind-step
+; 13-peep-pathfind-step: peep pathfind step
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 13-peep-pathfind-step>
+.ERR <TODO: Implement peep pathfind step>
 main PROC
 .ERR <TODO>
 main ENDP

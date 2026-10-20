@@ -1,7 +1,7 @@
-; 02-place-track
+; 02-place-track: place track
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 02-place-track>
+.ERR <TODO: Implement place track>
 main PROC
 .ERR <TODO>
 main ENDP

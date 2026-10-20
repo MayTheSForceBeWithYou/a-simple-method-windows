@@ -1,7 +1,7 @@
-; 08-from-scratch-tick
+; 08-from-scratch-tick: from scratch tick
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 08-from-scratch-tick>
+.ERR <TODO: Implement from scratch tick>
 main PROC
 .ERR <TODO>
 main ENDP

@@ -1,7 +1,7 @@
-; 17-save-header
+; 17-save-header: save header
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 17-save-header>
+.ERR <TODO: Implement save header>
 main PROC
 .ERR <TODO>
 main ENDP

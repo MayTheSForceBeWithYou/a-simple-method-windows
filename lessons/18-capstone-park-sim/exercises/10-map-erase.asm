@@ -1,7 +1,7 @@
-; 10-map-erase
+; 10-map-erase: map erase
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 10-map-erase>
+.ERR <TODO: Implement map erase>
 main PROC
 .ERR <TODO>
 main ENDP
