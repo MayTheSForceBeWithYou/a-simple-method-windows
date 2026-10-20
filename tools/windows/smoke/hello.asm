@@ -24,23 +24,23 @@ msg_len EQU $ - msg
 
 .data?
 written DWORD ?
+hStdOut QWORD ?
 
 .code
 main PROC
-    sub rsp, 56
+    sub rsp, 40
     
     mov rcx, -11
     call GetStdHandle
-    mov rbx, rax
+    mov hStdOut, rax
     
-    mov rcx, rbx
+    mov rcx, hStdOut
     lea rdx, msg
     mov r8d, msg_len
     lea r9, written
     mov QWORD PTR [rsp+32], 0
     call WriteFile
     
-    add rsp, 56
     mov rcx, 42
     call ExitProcess
 main ENDP
