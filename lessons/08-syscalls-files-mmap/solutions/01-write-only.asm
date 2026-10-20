@@ -2,20 +2,40 @@
 ;
 ; Review write; print 'io\n'; exit 0.
 ;
-; Build: nasm -f elf64 01-write-only.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 01-write-only.asm && link /OUT:01-write-only.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-write-only.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    m db "io",10
-    n equ $-m
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,m
-    mov rdx,n
-    syscall
-    mov rax,60
-    xor rdi,rdi
-    syscall
+; Expected exit: 0
+; Expected stdout: "io\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "io", 10
+msg_len EQU $ - msg
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write message
+    mov rcx, rax
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

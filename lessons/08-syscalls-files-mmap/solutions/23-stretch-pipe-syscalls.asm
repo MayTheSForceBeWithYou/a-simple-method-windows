@@ -1,18 +1,42 @@
 ; Exercise 23: stretch pipe note
 ;
-; STRETCH: SYS_pipe=22 into fds array; if success exit 0. (May work)
+; STRETCH: CreatePipe into handles; if success exit 0. (Should work)
 ;
-; Build: nasm -f elf64 23-stretch-pipe-syscalls.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-pipe-syscalls.asm && link /OUT:23-stretch-pipe-syscalls.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-pipe-syscalls.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    fds resd 2
-section .text
-    global _start
-_start:
-    mov rax,22
-    lea rdi,[fds]
-    syscall
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN CreatePipe:PROC
+EXTERN ExitProcess:PROC
+
+.data?
+hReadPipe QWORD ?
+hWritePipe QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
+    lea rcx, hReadPipe
+    lea rdx, hWritePipe
+    mov r8, 0               ; lpPipeAttributes = NULL
+    mov r9d, 0              ; nSize = 0 (default)
+    call CreatePipe
+    
+    ; Returns nonzero on success
+    test rax, rax
+    jz .fail
+    
+    ; Success - exit 0
+    mov rcx, 0
+    jmp .o
+    
+.fail:
+    ; Failure - exit 1
+    mov rcx, 1
+    
+.o:
+    call ExitProcess
+main ENDP
+END

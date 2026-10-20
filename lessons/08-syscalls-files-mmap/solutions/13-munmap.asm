@@ -1,31 +1,47 @@
 ; Exercise 13: munmap
 ;
-; mmap then munmap (11); exit 0 if munmap rax==0.
+; VirtualAlloc then VirtualFree; exit 0 if VirtualFree succeeds.
 ;
-; Build: nasm -f elf64 13-munmap.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-munmap.asm && link /OUT:13-munmap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-munmap.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,9
-    xor rdi,rdi
-    mov rsi,4096
-    mov rdx,3
-    mov r10,0x22
-    mov r8,-1
-    xor r9,r9
-    syscall
-    cmp rax,0
-    jl .f
-    mov rdi,rax
-    mov rax,11
-    mov rsi,4096
-    syscall
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN VirtualAlloc:PROC
+EXTERN VirtualFree:PROC
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    mov rcx, 0          ; lpAddress = NULL
+    mov rdx, 4096       ; dwSize
+    mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9d, 4          ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    ; Check for NULL (failure)
+    test rax, rax
+    jz .f
+    
+    ; VirtualFree(address, 0, MEM_RELEASE)
+    mov rcx, rax        ; lpAddress
+    mov rdx, 0          ; dwSize = 0 for MEM_RELEASE
+    mov r8d, 8000h      ; dwFreeType = MEM_RELEASE
+    call VirtualFree
+    
+    ; VirtualFree returns nonzero on success, 0 on failure
+    test rax, rax
+    jz .f
+    
+    ; Success - exit 0
+    mov rcx, 0
+    call ExitProcess
+    
 .f:
-    mov rdi,1
-    mov rax,60
-    syscall
+    ; Failure - exit 1
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

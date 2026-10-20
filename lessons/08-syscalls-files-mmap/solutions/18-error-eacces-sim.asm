@@ -1,28 +1,48 @@
 ; Exercise 18: error eacces sim
 ;
-; open "/" with O_WRONLY may fail; if fail exit 1 else close exit 0. Expect 1 often.
+; Try to open "C:\" with write access; if fail exit 1 else close exit 0. Expect 1 often.
 ;
-; Build: nasm -f elf64 18-error-eacces-sim.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-error-eacces-sim.asm && link /OUT:18-error-eacces-sim.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-error-eacces-sim.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    path db "/",0
-section .text
-    global _start
-_start:
-    mov rax,2
-    lea rdi,[path]
-    mov rsi,1
-    syscall
-    cmp rax,0
-    jl .bad
-    mov rdi,rax
-    mov rax,3
-    syscall
-    xor rdi,rdi
+; Expected exit: 1
+
+EXTERN CreateFileA:PROC
+EXTERN CloseHandle:PROC
+EXTERN ExitProcess:PROC
+
+.data
+path BYTE "C:\", 0
+
+.code
+main PROC
+    sub rsp, 72
+    
+    ; CreateFileA - try to open root with write access
+    lea rcx, path               ; lpFileName
+    mov rdx, 40000000h          ; dwDesiredAccess = GENERIC_WRITE
+    mov r8d, 0                  ; dwShareMode = 0
+    mov r9, 0                   ; lpSecurityAttributes = NULL
+    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
+    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
+    call CreateFileA
+    
+    ; Check for failure
+    cmp rax, -1
+    je .bad
+    
+    ; Success - close and exit 0
+    mov rcx, rax
+    call CloseHandle
+    
+    mov rcx, 0
     jmp .o
+    
 .bad:
-    mov rdi,1
+    ; Failure - exit 1
+    mov rcx, 1
+    
 .o:
-    mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END

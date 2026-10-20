@@ -1,29 +1,40 @@
 ; Exercise 12: mmap write read
 ;
-; mmap 4096; write 99 at +100; read back; exit 99. SYS_mmap=9 PROT_RW=3 MAP_PRIVATE|ANON=0x22
+; VirtualAlloc 4096; write 99 at +100; read back; exit 99.
 ;
-; Build: nasm -f elf64 12-mmap-write-read.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-mmap-write-read.asm && link /OUT:12-mmap-write-read.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-mmap-write-read.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,9
-    xor rdi,rdi
-    mov rsi,4096
-    mov rdx,3
-    mov r10,0x22
-    mov r8,-1
-    xor r9,r9
-    syscall
-    cmp rax,0
-    jl .f
-    mov rbx,rax
-    mov byte [rbx+100],99
-    movzx rdi, byte [rbx+100]
-    mov rax,60
-    syscall
+; Expected exit: 99
+
+EXTERN VirtualAlloc:PROC
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    mov rcx, 0          ; lpAddress = NULL
+    mov rdx, 4096       ; dwSize
+    mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9d, 4          ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    ; Check for NULL (failure)
+    test rax, rax
+    jz .f
+    
+    ; Write 99 at offset +100
+    mov rbx, rax
+    mov BYTE PTR [rbx+100], 99
+    
+    ; Read back and exit with value
+    movzx rcx, BYTE PTR [rbx+100]
+    call ExitProcess
+    
 .f:
-    mov rdi,2
-    mov rax,60
-    syscall
+    ; Exit 2 on allocation failure
+    mov rcx, 2
+    call ExitProcess
+main ENDP
+END

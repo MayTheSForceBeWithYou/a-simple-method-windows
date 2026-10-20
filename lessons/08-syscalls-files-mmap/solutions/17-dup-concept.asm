@@ -1,20 +1,40 @@
 ; Exercise 17: dup concept
 ;
-; Without dup: write to fd1; exit 0. Documents fd reuse.
+; Without DuplicateHandle: write to stdout; exit 0. Documents handle reuse.
 ;
-; Build: nasm -f elf64 17-dup-concept.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 17-dup-concept.asm && link /OUT:17-dup-concept.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-dup-concept.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    m db "d",10
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,m
-    mov rdx,2
-    syscall
-    xor rdi,rdi
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: "d\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "d", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write message
+    mov rcx, rax
+    lea rdx, msg
+    mov r8d, 2
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

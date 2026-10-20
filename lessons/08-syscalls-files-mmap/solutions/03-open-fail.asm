@@ -1,25 +1,44 @@
 ; Exercise 03: open fail
 ;
-; open nonexistent path; if rax<0 exit 1 else 0. Expect 1.
+; open nonexistent path; if CreateFileA returns INVALID_HANDLE_VALUE exit 1 else 0. Expect 1.
 ;
-; Build: nasm -f elf64 03-open-fail.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-open-fail.asm && link /OUT:03-open-fail.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-open-fail.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    path db "/no/such/asm_course_file",0
-section .text
-    global _start
-_start:
-    mov rax, 2
-    lea rdi, [path]
-    xor rsi, rsi
-    syscall
-    cmp rax, 0
-    jl .bad
-    xor rdi, rdi
+; Expected exit: 1
+
+EXTERN CreateFileA:PROC
+EXTERN ExitProcess:PROC
+
+.data
+path BYTE "/no/such/asm_course_file", 0
+
+.code
+main PROC
+    sub rsp, 72
+    
+    ; CreateFileA
+    lea rcx, path               ; lpFileName
+    mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
+    mov r8d, 0                  ; dwShareMode = 0
+    mov r9, 0                   ; lpSecurityAttributes = NULL
+    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
+    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
+    call CreateFileA
+    
+    ; Check if INVALID_HANDLE_VALUE (-1)
+    cmp rax, -1
+    je .bad
+    
+    ; Success - exit 0
+    mov rcx, 0
     jmp .out
+    
 .bad:
-    mov rdi, 1
+    ; Failure - exit 1
+    mov rcx, 1
+    
 .out:
-    mov rax, 60
-    syscall
+    call ExitProcess
+main ENDP
+END
