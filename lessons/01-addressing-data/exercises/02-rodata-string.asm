@@ -1,11 +1,35 @@
-; Exercise 02: rodata string
+; Exercise 02: rodata string (Win32 port)
 ;
-; Put "rodata\n" in .rodata, write it, exit 0.
+; Put "rodata\r\n" in .CONST (read-only), write it, exit 0.
 ;
-; Build: nasm -f elf64 02-rodata-string.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c /Fo02-rodata-string.obj 02-rodata-string.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-rodata-string.exe 02-rodata-string.obj kernel32.lib
+; Run: 02-rodata-string.exe
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected output: rodata\n
+; Expected exit code: 0
+
+; TODO: Declare .CONST section with msg and msg_len
+.ERR <TODO: Declare .CONST section>
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: Get stdout, write message, exit 0
+    .ERR <TODO: Implement GetStdHandle, WriteFile, ExitProcess>
+    
+main ENDP
+
+END

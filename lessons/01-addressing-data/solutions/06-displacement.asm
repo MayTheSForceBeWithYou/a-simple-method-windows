@@ -1,16 +1,27 @@
-; Exercise 06: displacement
+; Exercise 06: displacement (Win32 port) - SOLUTION
 ;
-; struct-like: base label vals with dq 1,2,3. Load third qword via [vals+16] into rdi, exit.
+; Array of 3 DQs: [5, 15, 25]. Load base into RBX, access element at offset 8 with [RBX+8].
 ;
-; Build: nasm -f elf64 06-displacement.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo06-displacement.obj 06-displacement.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-displacement.exe 06-displacement.obj kernel32.lib
+; Run: 06-displacement.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .data
-    vals dq 1, 2, 3
+; Expected: exit code 15
 
-section .text
-    global _start
-_start:
-    mov rdi, [vals+16]
-    mov rax, 60
-    syscall
+.DATA
+arr DQ 5, 15, 25
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    lea rbx, arr               ; Base address
+    mov rax, [rbx+8]           ; Second element (offset 8)
+    mov rcx, rax
+    call ExitProcess
+    
+main ENDP
+
+END

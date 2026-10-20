@@ -1,23 +1,26 @@
-; Exercise 05: byte store
+; Exercise 05: byte store (Win32 port) - SOLUTION
 ;
-; buf: 2 bytes. Store "O" and "K", write both + you may add newline as third byte or write 2 then "\n". Exit 0.
+; Declare buffer in .DATA?. Store byte 88 to it, load back, exit.
 ;
-; Build: nasm -f elf64 05-byte-store.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c /Fo05-byte-store.obj 05-byte-store.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-byte-store.exe 05-byte-store.obj kernel32.lib
+; Run: 05-byte-store.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .data
-    buf db 0, 0, 10
+; Expected: exit code 88
 
-section .text
-    global _start
-_start:
-    mov byte [buf], 'O'
-    mov byte [buf+1], 'K'
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, buf
-    mov rdx, 3
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+.DATA?
+buffer DB ?
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov BYTE PTR buffer, 88    ; Store byte
+    movzx rcx, BYTE PTR buffer ; Zero-extend load into RCX
+    call ExitProcess
+    
+main ENDP
+
+END

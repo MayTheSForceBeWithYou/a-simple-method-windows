@@ -1,17 +1,27 @@
-; Exercise 01: data dq
+; Exercise 01: data dq (Win32 port) - SOLUTION
 ;
-; Define count dq 41 in .data. Load into rdi, add 1, exit (42).
+; Define count DQ 41 in .DATA. Load into RAX, add 1, exit with result (42).
 ;
-; Build: nasm -f elf64 01-data-dq.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo01-data-dq.obj 01-data-dq.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-data-dq.exe 01-data-dq.obj kernel32.lib
+; Run: 01-data-dq.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .data
-    count dq 41
+; Expected: exit code 42
 
-section .text
-    global _start
-_start:
-    mov rdi, [count]
-    add rdi, 1
-    mov rax, 60
-    syscall
+.DATA
+count DQ 41
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, count             ; Load count (41)
+    add rax, 1                 ; Increment to 42
+    mov rcx, rax               ; Move to argument register
+    call ExitProcess
+    
+main ENDP
+
+END

@@ -1,17 +1,28 @@
-; Exercise 07: scaled index
+; Exercise 07: scaled index (Win32 port) - SOLUTION
 ;
-; arr dq 5,10,15,20. Set rcx=2, load arr[rcx] with [arr+rcx*8] into rdi, exit (15).
+; Array DQ 11,22,33,44. Index 2. Use scaled indexing [base+index*8]. Exit with 33.
 ;
-; Build: nasm -f elf64 07-scaled-index.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo07-scaled-index.obj 07-scaled-index.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-scaled-index.exe 07-scaled-index.obj kernel32.lib
+; Run: 07-scaled-index.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .data
-    arr dq 5, 10, 15, 20
+; Expected: exit code 33
 
-section .text
-    global _start
-_start:
-    mov rcx, 2
-    mov rdi, [arr+rcx*8]
-    mov rax, 60
-    syscall
+.DATA
+arr DQ 11, 22, 33, 44
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    lea rbx, arr               ; Base address
+    mov rcx, 2                 ; Index
+    mov rax, [rbx+rcx*8]       ; Scaled indexing
+    mov rcx, rax
+    call ExitProcess
+    
+main ENDP
+
+END

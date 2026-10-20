@@ -1,17 +1,27 @@
-; Exercise 10: word dword
+; Exercise 10: word dword (Win32 port) - SOLUTION
 ;
-; dw 0x1122, dd 0x33445566. Load low byte of the word into dil via byte [label], exit.
+; Buffer in .DATA?. Store WORD 256, then load as byte (upper bits zero). Exit with it.
 ;
-; Build: nasm -f elf64 10-word-dword.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo10-word-dword.obj 10-word-dword.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-word-dword.exe 10-word-dword.obj kernel32.lib
+; Run: 10-word-dword.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .data
-    w dw 0x1122
-    d dd 0x33445566
+; Expected: exit code 0 (256 = 0x0100, low byte is 0)
 
-section .text
-    global _start
-_start:
-    movzx rdi, byte [w]
-    mov rax, 60
-    syscall
+.DATA?
+buffer DQ ?
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    lea rbx, buffer
+    mov WORD PTR [rbx], 256    ; 256 = 0x0100 (little-endian: 00 01)
+    movzx rcx, BYTE PTR [rbx]  ; Load low byte (0)
+    call ExitProcess
+    
+main ENDP
+
+END
