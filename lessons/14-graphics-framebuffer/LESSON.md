@@ -337,6 +337,14 @@ Several drills are stubs or simplified placeholders:
 - Pitch and stride: [Wikipedia: Stride of an array](https://en.wikipedia.org/wiki/Stride_of_an_array)
 - Alignment: [Intel SDM Vol. 1, Section 4.1.1](https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-1-manual.html)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/01-pixel-plot.asm -->
+<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/02-fill-rect.asm -->
+<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/03-blit-copy.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
