@@ -1,23 +1,45 @@
 ; Exercise 05: byte store
 ;
-; buf: 2 bytes. Store "O" and "K", write both + you may add newline as third byte or write 2 then "\n". Exit 0.
+; buf: 3 bytes. Store "O" and "K", write both + newline. Exit 0.
 ;
-; Build: nasm -f elf64 05-byte-store.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 05-byte-store.asm && link /OUT:05-byte-store.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-byte-store.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db 0, 0, 10
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov byte [buf], 'O'
-    mov byte [buf+1], 'K'
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, buf
-    mov rdx, 3
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE 0, 0, 13, 10
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Store characters
+    mov BYTE PTR [buf], 'O'
+    mov BYTE PTR [buf+1], 'K'
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write buffer
+    mov rcx, hStdOut
+    lea rdx, buf
+    mov r8d, 4
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

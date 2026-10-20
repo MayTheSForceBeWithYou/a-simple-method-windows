@@ -1,22 +1,42 @@
 ; Exercise 13: debug bad length
 ;
-; BUG HUNT: Writes "Hi\n" but rdx length too short. Fix via equ.
+; BUG HUNT: Writes "Hi\n" but length parameter too short. Fix via EQU.
 ;
-; Build: nasm -f elf64 13-debug-bad-length.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 13-debug-bad-length.asm && link /OUT:13-debug-bad-length.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-debug-bad-length.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "Hi", 10
-    msg_len equ $ - msg
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "Hi", 13, 10
+msg_len EQU $ - msg
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

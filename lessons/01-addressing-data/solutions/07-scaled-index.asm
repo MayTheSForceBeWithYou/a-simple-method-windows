@@ -1,17 +1,21 @@
 ; Exercise 07: scaled index
 ;
-; arr dq 5,10,15,20. Set rcx=2, load arr[rcx] with [arr+rcx*8] into rdi, exit (15).
+; arr QWORD 5,10,15,20. Set r8=2, load arr[r8] with [arr+r8*8] into rcx, exit (15).
 ;
-; Build: nasm -f elf64 07-scaled-index.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-scaled-index.asm && link /OUT:07-scaled-index.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-scaled-index.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr dq 5, 10, 15, 20
+; Expected exit: 15
 
-section .text
-    global _start
-_start:
-    mov rcx, 2
-    mov rdi, [arr+rcx*8]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+arr QWORD 5, 10, 15, 20
+
+.code
+main PROC
+    sub rsp, 32
+    mov r8, 2
+    mov rcx, QWORD PTR [arr+r8*8]
+    call ExitProcess
+main ENDP
+END

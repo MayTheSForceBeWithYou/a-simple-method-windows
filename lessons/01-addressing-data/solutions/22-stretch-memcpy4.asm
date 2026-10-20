@@ -1,34 +1,39 @@
 ; Exercise 22: stretch memcpy4
 ;
-; STRETCH: src db 1,2,3,4. dst resb 4. Copy 4 bytes via register loads/stores. Sum dst into rdi (10).
+; STRETCH: src BYTE 1,2,3,4. dst BYTE 4 DUP(?). Copy 4 bytes via register loads/stores. Sum dst into rcx (10).
 ;
-; Build: nasm -f elf64 22-stretch-memcpy4.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-stretch-memcpy4.asm && link /OUT:22-stretch-memcpy4.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-memcpy4.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    src db 1, 2, 3, 4
-section .bss
-    dst resb 4
+; Expected exit: 10
 
-section .text
-    global _start
-_start:
-    mov al, [src]
-    mov [dst], al
-    mov al, [src+1]
-    mov [dst+1], al
-    mov al, [src+2]
-    mov [dst+2], al
-    mov al, [src+3]
-    mov [dst+3], al
-    xor rdi, rdi
-    movzx rax, byte [dst]
-    add rdi, rax
-    movzx rax, byte [dst+1]
-    add rdi, rax
-    movzx rax, byte [dst+2]
-    add rdi, rax
-    movzx rax, byte [dst+3]
-    add rdi, rax
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE 1, 2, 3, 4
+
+.data?
+dst BYTE 4 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    mov al, BYTE PTR [src]
+    mov BYTE PTR [dst], al
+    mov al, BYTE PTR [src+1]
+    mov BYTE PTR [dst+1], al
+    mov al, BYTE PTR [src+2]
+    mov BYTE PTR [dst+2], al
+    mov al, BYTE PTR [src+3]
+    mov BYTE PTR [dst+3], al
+    xor rcx, rcx
+    movzx rax, BYTE PTR [dst]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+1]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+2]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+3]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

@@ -1,26 +1,49 @@
 ; Exercise 17: label arith
 ;
-; msg db 'A','B','C',10. Write only 'B' using msg+1 length 1, then write newline from msg+3. Exit 0.
+; msg BYTE 'A','B','C',CR,LF. Write only 'B' using msg+1 length 1, then write CR,LF from msg+3. Exit 0.
 ;
-; Build: nasm -f elf64 17-label-arith.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 17-label-arith.asm && link /OUT:17-label-arith.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-label-arith.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "ABC", 10
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [msg+1]
-    mov rdx, 1
-    syscall
-    mov rax, 1
-    mov rdi, 1
-    lea rsi, [msg+3]
-    mov rdx, 1
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "ABC", 13, 10
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write 'B'
+    mov rcx, hStdOut
+    lea rdx, [msg+1]
+    mov r8d, 1
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Write newline
+    mov rcx, hStdOut
+    lea rdx, [msg+3]
+    mov r8d, 2
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

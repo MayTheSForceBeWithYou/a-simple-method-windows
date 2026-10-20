@@ -1,18 +1,22 @@
 ; Exercise 15: exit sum
 ;
-; Set r8=10, r9=20, r10=12. Sum into rdi; exit (42).
+; Set r8=10, r9=20, r10=12. Sum into rcx; exit (42).
 ;
-; Build: nasm -f elf64 15-exit-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-exit-sum.asm && link /OUT:15-exit-sum.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-exit-sum.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov r8, 10
     mov r9, 20
     mov r10, 12
-    mov rdi, r8
-    add rdi, r9
-    add rdi, r10
-    mov rax, 60
-    syscall
+    mov rcx, r8
+    add rcx, r9
+    add rcx, r10
+    call ExitProcess
+main ENDP
+END

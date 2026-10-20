@@ -1,16 +1,20 @@
 ; Exercise 06: displacement
 ;
-; struct-like: base label vals with dq 1,2,3. Load third qword via [vals+16] into rdi, exit.
+; struct-like: base label vals with QWORD 1,2,3. Load third qword via [vals+16] into rcx, exit.
 ;
-; Build: nasm -f elf64 06-displacement.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-displacement.asm && link /OUT:06-displacement.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-displacement.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    vals dq 1, 2, 3
+; Expected exit: 3
 
-section .text
-    global _start
-_start:
-    mov rdi, [vals+16]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+vals QWORD 1, 2, 3
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, QWORD PTR [vals+16]
+    call ExitProcess
+main ENDP
+END

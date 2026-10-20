@@ -1,17 +1,21 @@
 ; Exercise 26: debug bss read
 ;
-; BUG: reads .bss before store (0). Store 12 first; exit 12.
+; BUG: reads .data? before store (0). Store 12 first; exit 12.
 ;
-; Build: nasm -f elf64 26-debug-bss-read.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 26-debug-bss-read.asm && link /OUT:26-debug-bss-read.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-debug-bss-read.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    v resq 1
+; Expected exit: 12
 
-section .text
-    global _start
-_start:
-    mov qword [v], 12
-    mov rdi, [v]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data?
+v QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [v], 12
+    mov rcx, [v]
+    call ExitProcess
+main ENDP
+END

@@ -2,23 +2,43 @@
 ;
 ; STRETCH: Print a 3-line ASCII banner, exit 0.
 ;
-; Build: nasm -f elf64 21-stretch-banner.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 21-stretch-banner.asm && link /OUT:21-stretch-banner.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-stretch-banner.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    banner db "============", 10
-           db "  ASM 00 OK ", 10
-           db "============", 10
-    banner_len equ $ - banner
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, banner
-    mov rdx, banner_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+banner BYTE "============", 13, 10
+       BYTE "  ASM 00 OK ", 13, 10
+       BYTE "============", 13, 10
+banner_len EQU $ - banner
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write banner
+    mov rcx, hStdOut
+    lea rdx, banner
+    mov r8d, banner_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

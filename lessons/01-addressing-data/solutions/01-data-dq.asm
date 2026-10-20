@@ -1,17 +1,21 @@
 ; Exercise 01: data dq
 ;
-; Define count dq 41 in .data. Load into rdi, add 1, exit (42).
+; Define count QWORD 41 in .data. Load into rcx, add 1, exit (42).
 ;
-; Build: nasm -f elf64 01-data-dq.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-data-dq.asm && link /OUT:01-data-dq.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-data-dq.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    count dq 41
+; Expected exit: 42
 
-section .text
-    global _start
-_start:
-    mov rdi, [count]
-    add rdi, 1
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+count QWORD 41
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [count]
+    add rcx, 1
+    call ExitProcess
+main ENDP
+END

@@ -1,14 +1,18 @@
 ; Exercise 03: exit from register
 ;
-; Put 42 in rbx, copy to rdi, exit with that status. Immediate only allowed when loading rbx.
+; Put 42 in rbx, copy to rcx, exit with that status. Immediate only allowed when loading rbx.
 ;
-; Build: nasm -f elf64 03-exit-from-register.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-exit-from-register.asm && link /OUT:03-exit-from-register.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-exit-from-register.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rbx, 42
-    mov rdi, rbx
-    mov rax, 60
-    syscall
+    mov rcx, rbx
+    call ExitProcess
+main ENDP
+END

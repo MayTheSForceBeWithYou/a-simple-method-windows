@@ -1,22 +1,42 @@
 ; Exercise 27: stretch sys write regs
 ;
-; Print "syscall\n" using only rax,rdi,rsi,rdx for the write setup. Exit 0.
+; Print "syscall\n" using write API. Exit 0.
 ;
-; Build: nasm -f elf64 27-stretch-sys-write-regs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 27-stretch-sys-write-regs.asm && link /OUT:27-stretch-sys-write-regs.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-stretch-sys-write-regs.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "syscall", 10
-    msg_len equ $ - msg
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "syscall", 13, 10
+msg_len EQU $ - msg
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

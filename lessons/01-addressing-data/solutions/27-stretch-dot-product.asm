@@ -1,25 +1,29 @@
 ; Exercise 27: stretch dot product
 ;
-; STRETCH: u dq 2,3,4  v dq 5,6,7. rdi=2*5+3*6+4*7 (56). imul allowed.
+; STRETCH: u QWORD 2,3,4  v QWORD 5,6,7. rcx=2*5+3*6+4*7 (56). imul allowed.
 ;
-; Build: nasm -f elf64 27-stretch-dot-product.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 27-stretch-dot-product.asm && link /OUT:27-stretch-dot-product.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-stretch-dot-product.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    u dq 2, 3, 4
-    v dq 5, 6, 7
+; Expected exit: 56
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+u QWORD 2, 3, 4
+v QWORD 5, 6, 7
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, [u]
     imul rax, [v]
-    mov rdi, rax
+    mov rcx, rax
     mov rax, [u+8]
     imul rax, [v+8]
-    add rdi, rax
+    add rcx, rax
     mov rax, [u+16]
     imul rax, [v+16]
-    add rdi, rax
-    mov rax, 60
-    syscall
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

@@ -2,22 +2,44 @@
 ;
 ; Set bl=0x5A ('Z'). Store into a 2-byte buffer (char + newline), write it, exit 0.
 ;
-; Build: nasm -f elf64 22-stretch-char-from-reg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 22-stretch-char-from-reg.asm && link /OUT:22-stretch-char-from-reg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-char-from-reg.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db 0, 10
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov bl, 0x5A
-    mov [buf], bl
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, buf
-    mov rdx, 2
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE 0, 13, 10
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Set character
+    mov bl, 05Ah
+    mov BYTE PTR [buf], bl
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write buffer
+    mov rcx, hStdOut
+    lea rdx, buf
+    mov r8d, 3
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

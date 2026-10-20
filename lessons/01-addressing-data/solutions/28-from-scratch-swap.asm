@@ -1,21 +1,25 @@
 ; Exercise 28: from scratch swap
 ;
-; FROM SCRATCH: a dq 1 / b dq 2. Swap via registers; exit with rdi=a (should be 2).
+; FROM SCRATCH: a QWORD 1 / b QWORD 2. Swap via registers; exit with rcx=a (should be 2).
 ;
-; Build: nasm -f elf64 28-from-scratch-swap.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 28-from-scratch-swap.asm && link /OUT:28-from-scratch-swap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 28-from-scratch-swap.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    a dq 1
-    b dq 2
+; Expected exit: 2
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+a QWORD 1
+b QWORD 2
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, [a]
     mov rdx, [b]
     mov [a], rdx
     mov [b], rax
-    mov rdi, [a]
-    mov rax, 60
-    syscall
+    mov rcx, [a]
+    call ExitProcess
+main ENDP
+END
