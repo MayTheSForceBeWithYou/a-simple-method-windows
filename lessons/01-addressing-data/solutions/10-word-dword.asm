@@ -1,17 +1,21 @@
 ; Exercise 10: word dword
 ;
-; dw 0x1122, dd 0x33445566. Load low byte of the word into dil via byte [label], exit.
+; WORD 0x1122, DWORD 0x33445566. Load low byte of the word into cl via BYTE PTR [label], exit.
 ;
-; Build: nasm -f elf64 10-word-dword.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 10-word-dword.asm && link /OUT:10-word-dword.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-word-dword.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    w dw 0x1122
-    d dd 0x33445566
+; Expected exit: 34
 
-section .text
-    global _start
-_start:
-    movzx rdi, byte [w]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+w WORD 01122h
+d DWORD 033445566h
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rcx, BYTE PTR [w]
+    call ExitProcess
+main ENDP
+END

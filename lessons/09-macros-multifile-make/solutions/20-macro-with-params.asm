@@ -1,19 +1,27 @@
 ; Exercise 20: macro with params
 ;
-; %macro ADD3 3; mov rax,%1; add %2; add %3; ADD3 10,20,12 exit 42.
+; MACRO ADD3 with 3 params; mov rax,a; add b; add c; ADD3 10,20,12 exit 42.
 ;
-; Build: nasm -f elf64 20-macro-with-params.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 20-macro-with-params.asm && link /OUT:20-macro-with-params.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-macro-with-params.obj kernel32.lib
 ;
-; --- your code below ---
-%macro ADD3 3
-    mov rax, %1
-    add rax, %2
-    add rax, %3
-%endmacro
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+; MASM macro with named parameters
+ADD3 MACRO a, b, c
+    mov rax, a
+    add rax, b
+    add rax, c
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
+    
     ADD3 10, 20, 12
-    mov rdi,rax
-    mov rax,60
-    syscall
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

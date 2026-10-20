@@ -2,23 +2,29 @@
 ;
 ; Vertical with stride 4; plot 3 pixels; sum=6 if value 2.
 ;
-; Build: nasm -f elf64 12-vline.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-vline.asm && link /OUT:12-vline.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-vline.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    fb resb 16
-section .text
-    global _start
-_start:
-    mov byte [fb],2
-    mov byte [fb+4],2
-    mov byte [fb+8],2
-    xor rdi,rdi
-    movzx rax,byte [fb]
-    add rdi,rax
-    movzx rax,byte [fb+4]
-    add rdi,rax
-    movzx rax,byte [fb+8]
-    add rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+fb BYTE 16 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [fb], 2
+    mov BYTE PTR [fb+4], 2
+    mov BYTE PTR [fb+8], 2
+    xor rcx, rcx
+    movzx rax, BYTE PTR [fb]
+    add rcx, rax
+    movzx rax, BYTE PTR [fb+4]
+    add rcx, rax
+    movzx rax, BYTE PTR [fb+8]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

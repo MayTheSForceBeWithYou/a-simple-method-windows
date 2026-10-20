@@ -2,18 +2,23 @@
 ;
 ; offset=y*stride+x*4; y=2,x=3,stride=40; exit offset&255.
 ;
-; Build: nasm -f elf64 01-pixel-offset.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-pixel-offset.asm && link /OUT:01-pixel-offset.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-pixel-offset.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 88
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 2
     imul rax, 40
     mov rbx, 3
     imul rbx, 4
     add rax, rbx
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+    and rax, 255
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

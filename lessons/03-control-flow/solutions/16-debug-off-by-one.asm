@@ -2,20 +2,24 @@
 ;
 ; BUG: loop runs 0..n inclusive summing 1..5 as 0..5. Fix to sum 1..5 = 15.
 ;
-; Build: nasm -f elf64 16-debug-off-by-one.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 16-debug-off-by-one.asm && link /OUT:16-debug-off-by-one.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-debug-off-by-one.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rcx, 1
-.loop:
-    cmp rcx, 5
-    jg .done
-    add rdi, rcx
-    inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    mov r8, 1
+loop_start:
+    cmp r8, 5
+    jg done
+    add rcx, r8
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

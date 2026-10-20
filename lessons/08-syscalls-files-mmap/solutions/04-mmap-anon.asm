@@ -1,29 +1,40 @@
 ; Exercise 04: mmap anon
 ;
-; mmap 4096 anon private RW; store 42; exit 42. SYS_mmap=9.
+; VirtualAlloc 4096 bytes RW; store 42; exit 42.
 ;
-; Build: nasm -f elf64 04-mmap-anon.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-mmap-anon.asm && link /OUT:04-mmap-anon.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-mmap-anon.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 9
-    xor rdi, rdi
-    mov rsi, 4096
-    mov rdx, 3
-    mov r10, 0x22
-    mov r8, -1
-    xor r9, r9
-    syscall
-    cmp rax, 0
-    jl .fail
+; Expected exit: 42
+
+EXTERN VirtualAlloc:PROC
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    mov rcx, 0          ; lpAddress = NULL
+    mov rdx, 4096       ; dwSize
+    mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9d, 4          ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    ; Check for NULL (failure)
+    test rax, rax
+    jz .fail
+    
+    ; Store 42 at allocated address
     mov rbx, rax
-    mov qword [rbx], 42
-    mov rdi, [rbx]
-    mov rax, 60
-    syscall
+    mov QWORD PTR [rbx], 42
+    
+    ; Exit with value from memory
+    mov rcx, [rbx]
+    call ExitProcess
+    
 .fail:
-    mov rax, 60
-    mov rdi, 2
-    syscall
+    ; Exit 2 on allocation failure
+    mov rcx, 2
+    call ExitProcess
+main ENDP
+END

@@ -1,19 +1,38 @@
 ; Exercise 16: clock gettime stub
 ;
-; SYS_clock_gettime=228 CLOCK_MONOTONIC=1 into timespec; exit 0 if syscall ok.
+; QueryPerformanceCounter into counter; exit 0 if successful.
 ;
-; Build: nasm -f elf64 16-clock-gettime-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 16-clock-gettime-stub.asm && link /OUT:16-clock-gettime-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-clock-gettime-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    ts resq 2
-section .text
-    global _start
-_start:
-    mov rax,228
-    mov rdi,1
-    lea rsi,[ts]
-    syscall
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN QueryPerformanceCounter:PROC
+EXTERN ExitProcess:PROC
+
+.data?
+counter QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; QueryPerformanceCounter(&counter)
+    lea rcx, counter
+    call QueryPerformanceCounter
+    
+    ; Returns nonzero on success, 0 on failure
+    test rax, rax
+    jz .fail
+    
+    ; Success - exit 0
+    mov rcx, 0
+    jmp .o
+    
+.fail:
+    ; Failure - exit 1
+    mov rcx, 1
+    
+.o:
+    call ExitProcess
+main ENDP
+END

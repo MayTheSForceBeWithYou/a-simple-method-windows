@@ -2,12 +2,20 @@
 ;
 ; Write magic+version size 8; exit 8.
 ;
-; Build: nasm -f elf64 17-save-header.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 17-save-header.asm && link /OUT:17-save-header.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-save-header.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,8
-    mov rax,60
-    syscall
+; Expected exit: 8
+; Expected stdout: (none)
+;
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
+    mov rcx, 8
+    call ExitProcess
+
+main ENDP
+END

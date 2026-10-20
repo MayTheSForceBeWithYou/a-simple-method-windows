@@ -1,13 +1,17 @@
 ; Exercise 11: debug wrong syscall
 ;
-; BUG HUNT: Intends to exit status 3 but uses wrong syscall number. Fix it.
+; BUG HUNT: Intends to exit status 3 but uses wrong function. Fix it.
 ;
-; Build: nasm -f elf64 11-debug-wrong-syscall.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-debug-wrong-syscall.asm && link /OUT:11-debug-wrong-syscall.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-debug-wrong-syscall.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 60
-    mov rdi, 3
-    syscall
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    call ExitProcess
+main ENDP
+END

@@ -2,13 +2,18 @@
 ;
 ; Overlap test true -> 1.
 ;
-; Build: nasm -f elf64 02-aabb-overlap.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-aabb-overlap.asm && link /OUT:02-aabb-overlap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-aabb-overlap.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     ; a[0,0,2,2] b[1,1,3,3]
-    mov rdi, 1
-    mov rax, 60
-    syscall
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

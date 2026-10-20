@@ -2,29 +2,33 @@
 ;
 ; Trial divide n=11 by 2..sqrt-ish (2..10). Exit 1 if prime else 0.
 ;
-; Build: nasm -f elf64 22-is-prime-lite.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-is-prime-lite.asm && link /OUT:22-is-prime-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-is-prime-lite.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov r8, 11
-    mov rcx, 2
-.loop:
-    cmp rcx, r8
-    jge .prime
+    mov r9, 2
+loop_start:
+    cmp r9, r8
+    jge prime
     mov rax, r8
     xor rdx, rdx
-    div rcx
+    div r9
     cmp rdx, 0
-    je .composite
-    inc rcx
-    jmp .loop
-.composite:
-    xor rdi, rdi
-    jmp .out
-.prime:
-    mov rdi, 1
-.out:
-    mov rax, 60
-    syscall
+    je composite
+    inc r9
+    jmp loop_start
+composite:
+    xor rcx, rcx
+    jmp out
+prime:
+    mov rcx, 1
+out:
+    call ExitProcess
+main ENDP
+END

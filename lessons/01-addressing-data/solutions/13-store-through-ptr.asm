@@ -1,18 +1,22 @@
 ; Exercise 13: store through ptr
 ;
-; lea rdx,[slot]; mov qword [rdx], 77; mov rdi,[slot]; exit.
+; lea rdx,[slot]; mov QWORD PTR [rdx], 77; mov rcx,[slot]; exit.
 ;
-; Build: nasm -f elf64 13-store-through-ptr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-store-through-ptr.asm && link /OUT:13-store-through-ptr.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-store-through-ptr.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    slot resq 1
+; Expected exit: 77
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data?
+slot QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
     lea rdx, [slot]
-    mov qword [rdx], 77
-    mov rdi, [slot]
-    mov rax, 60
-    syscall
+    mov QWORD PTR [rdx], 77
+    mov rcx, [slot]
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,16 @@
 ;
 ; Exit with status 7.
 ;
-; Build: nasm -f elf64 02-exit-seven.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-exit-seven.asm && link /OUT:02-exit-seven.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-exit-seven.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 60
-    mov rdi, 7
-    syscall
+; Expected exit: 7
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 7
+    call ExitProcess
+main ENDP
+END

@@ -1,24 +1,27 @@
 ; Exercise 17: closure sim
-;
-; Pass context pointer in r12 (callee-saved): ctx dq 10; add_ctx(rdi) returns rdi+[ctx]. Call with 5 -> 15.
-;
-; Build: nasm -f elf64 17-closure-sim.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    ctx dq 10
-section .text
-    global _start
-_start:
-    lea r12, [ctx]
-    mov rdi, 5
+; Context in r12 (nonvolatile). add_ctx(5)=5+10=15.
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.data
+ctx QWORD 10
+
+.code
+main PROC
+    sub rsp, 32
+    lea r12, ctx
+    mov rcx, 5
     call add_ctx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-add_ctx:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+add_ctx PROC
     push r12
-    mov rax, rdi
-    add rax, [r12]
+    mov rax, rcx
+    add rax, QWORD PTR [r12]
     pop r12
     ret
+add_ctx ENDP
+END

@@ -1,27 +1,31 @@
 ; Exercise 16: debug missing pop
-;
-; BUG HUNT: recursive fact-like leaves stack unbalanced. Fix; fact(3)=6 exit 6.
-;
-; Build: nasm -f elf64 16-debug-missing-pop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 3
+; BUG fixed: balanced stack. fact(3)=6.
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
     call fact
-    mov rdi, rax
-    mov rax, 60
-    syscall
-fact:
-    cmp rdi, 1
-    jle .b
-    push rdi
-    dec rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+fact PROC
+    cmp rcx, 1
+    jle base_fact
+    push rcx
+    sub rsp, 32
+    dec rcx
     call fact
-    pop rdi
-    imul rax, rdi
+    add rsp, 32
+    pop rcx
+    imul rax, rcx
     ret
-.b:
+base_fact:
     mov rax, 1
     ret
+fact ENDP
+END

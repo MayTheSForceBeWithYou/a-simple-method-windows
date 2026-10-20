@@ -2,14 +2,20 @@
 ;
 ; quit dq 1; exit quit.
 ;
-; Build: nasm -f elf64 06-quit-flag.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-quit-flag.asm && link /OUT:06-quit-flag.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-quit-flag.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    quit dq 1
-section .text
-    global _start
-_start:
-    mov rdi, [quit]
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+quit QWORD 1
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [quit]
+    call ExitProcess
+main ENDP
+END

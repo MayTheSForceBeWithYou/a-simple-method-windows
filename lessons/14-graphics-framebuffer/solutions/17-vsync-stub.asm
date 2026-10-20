@@ -2,15 +2,21 @@
 ;
 ; Frame ready flag clear; exit 0.
 ;
-; Build: nasm -f elf64 17-vsync-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 17-vsync-stub.asm && link /OUT:17-vsync-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-vsync-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    ready resb 1
-section .text
-    global _start
-_start:
-    mov byte [ready],0
-    movzx rdi,byte [ready]
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+ready BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [ready], 0
+    movzx rcx, BYTE PTR [ready]
+    call ExitProcess
+main ENDP
+END

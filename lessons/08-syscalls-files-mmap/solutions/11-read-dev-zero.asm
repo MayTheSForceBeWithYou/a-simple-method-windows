@@ -1,36 +1,53 @@
 ; Exercise 11: read dev zero
 ;
-; open /dev/zero; read 8 bytes; sum should be 0; exit 0.
+; Allocate zero-filled memory with VirtualAlloc; read 8 bytes; sum should be 0; exit 0.
 ;
-; Build: nasm -f elf64 11-read-dev-zero.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-read-dev-zero.asm && link /OUT:11-read-dev-zero.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-read-dev-zero.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    path db "/dev/zero",0
-section .bss
-    buf resb 8
-section .text
-    global _start
-_start:
-    mov rax,2
-    lea rdi,[path]
-    xor rsi,rsi
-    syscall
-    cmp rax,0
-    jl .e
-    mov r8,rax
-    mov rax,0
-    mov rdi,r8
-    lea rsi,[buf]
-    mov rdx,8
-    syscall
-    mov rax,3
-    mov rdi,r8
-    syscall
-    xor rdi,rdi
+; Expected exit: 0
+
+EXTERN VirtualAlloc:PROC
+EXTERN VirtualFree:PROC
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; VirtualAlloc(NULL, 8, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    mov rcx, 0          ; lpAddress = NULL
+    mov rdx, 8          ; dwSize
+    mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9d, 4          ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    ; Check for NULL (failure)
+    test rax, rax
+    jz .e
+    
+    ; Memory is automatically zero-filled
+    ; Sum 8 bytes (should all be 0)
+    mov r8, rax
+    xor rdi, rdi
+    xor rcx, rcx
+    mov cl, 8
+    
+.sum_loop:
+    movzx rdx, BYTE PTR [r8]
+    add rdi, rdx
+    inc r8
+    dec cl
+    jnz .sum_loop
+    
+    ; Exit with sum (should be 0)
+    mov rcx, rdi
     jmp .o
+    
 .e:
-    mov rdi,1
+    ; Exit 1 on error
+    mov rcx, 1
+    
 .o:
-    mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END

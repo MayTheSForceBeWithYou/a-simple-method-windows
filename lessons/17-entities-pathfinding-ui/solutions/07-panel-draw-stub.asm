@@ -2,12 +2,17 @@
 ;
 ; Draw count 3 widgets; exit 3.
 ;
-; Build: nasm -f elf64 07-panel-draw-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-panel-draw-stub.asm && link /OUT:07-panel-draw-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-panel-draw-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 3
-    mov rax, 60
-    syscall
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    call ExitProcess
+main ENDP
+END

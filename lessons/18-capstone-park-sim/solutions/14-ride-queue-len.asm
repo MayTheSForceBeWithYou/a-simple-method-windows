@@ -2,15 +2,18 @@
 ;
 ; Queue length 7; exit 7.
 ;
-; Build: nasm -f elf64 14-ride-queue-len.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-ride-queue-len.asm && link /OUT:14-ride-queue-len.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-ride-queue-len.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    qlen resq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     mov qword [qlen],7
-    mov rdi,[qlen]
-    mov rax,60
-    syscall
+    mov rcx, [qlen]
+    call ExitProcess
+
+main ENDP
+END

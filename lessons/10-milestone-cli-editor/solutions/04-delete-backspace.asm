@@ -2,19 +2,26 @@
 ;
 ; len=2; backspace; exit len 1.
 ;
-; Build: nasm -f elf64 04-delete-backspace.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-delete-backspace.asm && link /OUT:04-delete-backspace.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-delete-backspace.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    len resq 1
-section .text
-    global _start
-_start:
-    mov qword [len], 2
-    cmp qword [len], 0
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.data?
+len QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 2
+    cmp QWORD PTR [len], 0
     je .o
-    dec qword [len]
+    dec QWORD PTR [len]
+    
 .o:
-    mov rdi, [len]
-    mov rax, 60
-    syscall
+    mov rcx, [len]
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,20 @@
 ;
 ; Hit + mouse down -> pressed; exit 1.
 ;
-; Build: nasm -f elf64 15-ui-button-press.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-ui-button-press.asm && link /OUT:15-ui-button-press.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-ui-button-press.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,1
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+;
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
+    mov rcx, 1
+    call ExitProcess
+
+main ENDP
+END

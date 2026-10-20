@@ -2,13 +2,18 @@
 ;
 ; BUG: used *3 for RGBA8888. Fix *4; x=2 offset=8; exit 8.
 ;
-; Build: nasm -f elf64 19-debug-offset-bpp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-debug-offset-bpp.asm && link /OUT:19-debug-offset-bpp.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-offset-bpp.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,2
-    imul rdi,4
-    mov rax,60
-    syscall
+; Expected exit: 8
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    imul rcx, 4
+    call ExitProcess
+main ENDP
+END

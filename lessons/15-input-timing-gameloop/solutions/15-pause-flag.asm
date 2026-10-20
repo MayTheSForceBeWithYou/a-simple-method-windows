@@ -2,20 +2,26 @@
 ;
 ; Paused skips update; updates=0; exit 0.
 ;
-; Build: nasm -f elf64 15-pause-flag.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-pause-flag.asm && link /OUT:15-pause-flag.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-pause-flag.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    paused resb 1
-    updates resq 1
-section .text
-    global _start
-_start:
-    mov byte [paused],1
-    cmp byte [paused],0
-    jne .skip
-    inc qword [updates]
-.skip:
-    mov rdi,[updates]
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+paused BYTE ?
+updates QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [paused], 1
+    cmp BYTE PTR [paused], 0
+    jne skip_update
+    inc QWORD PTR [updates]
+skip_update:
+    mov rcx, [updates]
+    call ExitProcess
+main ENDP
+END

@@ -1,17 +1,20 @@
 ; Exercise 18: call codegen
 ;
 ; Compile call: function returns 11; exit 11.
-;
-; Build: nasm -f elf64 18-call-codegen.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 11
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     call f
-    mov rdi,rax
-    mov rax,60
-    syscall
-f:
-    mov rax,11
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+f PROC
+    mov rax, 11
     ret
+f ENDP
+END

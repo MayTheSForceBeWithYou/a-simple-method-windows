@@ -2,25 +2,40 @@
 ;
 ; STRETCH: push op code 1 then 2; pop once; exit top 1.
 ;
-; Build: nasm -f elf64 22-stretch-undo-stack.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-stretch-undo-stack.asm && link /OUT:22-stretch-undo-stack.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-undo-stack.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    ustk resq 8
-    usp resq 1
-section .text
-    global _start
-_start:
-    mov qword [usp],0
-    mov rcx,[usp]
-    mov qword [ustk+rcx*8],1
-    inc qword [usp]
-    mov rcx,[usp]
-    mov qword [ustk+rcx*8],2
-    inc qword [usp]
-    dec qword [usp]
-    mov rcx,[usp]
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.data?
+ustk QWORD 8 DUP(?)
+usp QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [usp], 0
+    
+    ; Push 1
+    mov rcx, [usp]
+    lea rdx, ustk
+    mov QWORD PTR [rdx+rcx*8], 1
+    inc QWORD PTR [usp]
+    
+    ; Push 2
+    mov rcx, [usp]
+    mov QWORD PTR [rdx+rcx*8], 2
+    inc QWORD PTR [usp]
+    
+    ; Pop
+    dec QWORD PTR [usp]
+    
+    ; Get top (which is now 1)
+    mov rcx, [usp]
     dec rcx
-    mov rdi,[ustk+rcx*8]
-    mov rax,60
-    syscall
+    mov rcx, [rdx+rcx*8]
+    call ExitProcess
+main ENDP
+END

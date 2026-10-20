@@ -1,32 +1,35 @@
 ; Exercise 08: from scratch strchr
-;
-; FROM SCRATCH: strchr for 'c' in 'abcd'; return index 2.
-;
-; Build: nasm -f elf64 08-from-scratch-strchr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "abcd",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    mov rsi, 'c'
+; strchr 'c' in 'abcd' -> index 2.
+; Expected exit: 2
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "abcd", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, s
+    mov rdx, 'c'
     call strchr_idx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strchr_idx:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strchr_idx PROC
     xor rax, rax
-.l:
-    movzx rcx, byte [rdi+rax]
-    cmp rcx, 0
-    je .miss
-    cmp rcx, rsi
-    je .hit
+loop_chr:
+    movzx r8, BYTE PTR [rcx+rax]
+    cmp r8, 0
+    je miss_chr
+    cmp r8, rdx
+    je hit_chr
     inc rax
-    jmp .l
-.miss:
+    jmp loop_chr
+miss_chr:
     mov rax, 255
-.hit:
+hit_chr:
     ret
+strchr_idx ENDP
+END

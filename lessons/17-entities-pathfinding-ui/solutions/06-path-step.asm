@@ -2,12 +2,17 @@
 ;
 ; Follow next cell delta x+1; exit 1.
 ;
-; Build: nasm -f elf64 06-path-step.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-path-step.asm && link /OUT:06-path-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-path-step.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 1
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

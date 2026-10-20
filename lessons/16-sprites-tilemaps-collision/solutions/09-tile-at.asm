@@ -2,17 +2,23 @@
 ;
 ; map 4-wide; get(1,1)= tile index 5 stored; exit 5.
 ;
-; Build: nasm -f elf64 09-tile-at.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-tile-at.asm && link /OUT:09-tile-at.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-tile-at.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    map db 0,1,2,3, 4,5,6,7
-section .text
-    global _start
-_start:
-    mov rax,1
-    imul rax,4
-    add rax,1
-    movzx rdi,byte [map+rax]
-    mov rax,60
-    syscall
+; Expected exit: 5
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+map BYTE 0,1,2,3, 4,5,6,7
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 1
+    imul rax, 4
+    add rax, 1
+    movzx rcx, BYTE PTR [map+rax]
+    call ExitProcess
+main ENDP
+END

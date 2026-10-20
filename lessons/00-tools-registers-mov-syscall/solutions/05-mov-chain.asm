@@ -2,18 +2,22 @@
 ;
 ; Set al=3, bl=5, cl=7. Sum into dil, movzx to rdi, exit (expect 15).
 ;
-; Build: nasm -f elf64 05-mov-chain.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-mov-chain.asm && link /OUT:05-mov-chain.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-mov-chain.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov al, 3
     mov bl, 5
     mov cl, 7
     mov dil, al
     add dil, bl
     add dil, cl
-    movzx rdi, dil
-    mov rax, 60
-    syscall
+    movzx rcx, dil
+    call ExitProcess
+main ENDP
+END

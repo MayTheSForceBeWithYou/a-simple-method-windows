@@ -1,43 +1,47 @@
 ; Exercise 04: tree sum flat
-;
-; Simulate binary heap array dq 1,2,3,4,5 (5 nodes). Recursively sum heap indices. Exit 15.
-;
-; Build: nasm -f elf64 04-tree-sum-flat.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    heap dq 1,2,3,4,5
-    n equ 5
-section .text
-    global _start
-_start:
-    xor rdi, rdi
+; Binary heap array [1,2,3,4,5]. Recursively sum. Exit 15.
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.data
+heap QWORD 1,2,3,4,5
+heap_n EQU 5
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
     call heap_sum
-    mov rdi, rax
-    mov rax, 60
-    syscall
-heap_sum:
-    cmp rdi, n
-    jge .z
-    push rdi
-    mov rax, [heap+rdi*8]
-    push rax
-    mov rax, rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+heap_sum PROC
+    cmp rcx, heap_n
+    jge zero_sum
+    push rbx
+    push rcx
+    sub rsp, 32
+    mov rax, heap[rcx*8]
+    mov rbx, rax
+    mov rax, rcx
     imul rax, 2
     inc rax
-    mov rdi, rax
+    mov rcx, rax
     call heap_sum
-    pop rdx
-    add rdx, rax
-    push rdx
-    mov rdi, [rsp+8]
-    imul rdi, 2
-    add rdi, 2
+    add rbx, rax
+    mov rcx, QWORD PTR [rsp+32]
+    imul rcx, 2
+    add rcx, 2
     call heap_sum
-    pop rdx
-    add rax, rdx
-    add rsp, 8
+    add rax, rbx
+    add rsp, 32
+    pop rcx
+    pop rbx
     ret
-.z:
+zero_sum:
     xor rax, rax
     ret
+heap_sum ENDP
+END

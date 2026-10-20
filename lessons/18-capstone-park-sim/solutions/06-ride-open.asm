@@ -2,15 +2,21 @@
 ;
 ; flag open=1; exit 1.
 ;
-; Build: nasm -f elf64 06-ride-open.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-ride-open.asm && link /OUT:06-ride-open.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-ride-open.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    open resb 1
-section .text
-    global _start
-_start:
-    mov byte [open], 1
-    movzx rdi, byte [open]
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+open BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [open], 1
+    movzx rcx, BYTE PTR [open]
+    call ExitProcess
+main ENDP
+END

@@ -1,15 +1,19 @@
 ; Exercise 08: lea scale
 ;
-; Without memory load: rbx=100, rcx=3. lea rdi,[rbx+rcx*4] (112), exit.
+; Without memory load: rbx=100, r8=3. lea rcx,[rbx+r8*4] (112), exit.
 ;
-; Build: nasm -f elf64 08-lea-scale.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 08-lea-scale.asm && link /OUT:08-lea-scale.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-lea-scale.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 112
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rbx, 100
-    mov rcx, 3
-    lea rdi, [rbx+rcx*4]
-    mov rax, 60
-    syscall
+    mov r8, 3
+    lea rcx, [rbx+r8*4]
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,17 @@
 ;
 ; Point in panel -> 1.
 ;
-; Build: nasm -f elf64 04-ui-hit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-ui-hit.asm && link /OUT:04-ui-hit.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-ui-hit.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 1
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

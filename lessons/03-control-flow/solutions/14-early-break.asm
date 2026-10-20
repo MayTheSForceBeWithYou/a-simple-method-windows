@@ -1,24 +1,28 @@
 ; Exercise 14: early break
 ;
-; Sum arr dq 5,5,5,5 until sum>=10; exit sum (10).
+; Sum arr QWORD 5,5,5,5 until sum>=10; exit sum (10).
 ;
-; Build: nasm -f elf64 14-early-break.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-early-break.asm && link /OUT:14-early-break.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-early-break.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr dq 5, 5, 5, 5
+; Expected exit: 10
 
-section .text
-    global _start
-_start:
-    xor rdi, rdi
+EXTERN ExitProcess:PROC
+
+.data
+arr QWORD 5, 5, 5, 5
+
+.code
+main PROC
+    sub rsp, 32
     xor rcx, rcx
-.loop:
-    cmp rdi, 10
-    jge .done
-    add rdi, [arr+rcx*8]
-    inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+    xor r8, r8
+loop_start:
+    cmp rcx, 10
+    jge done
+    add rcx, QWORD PTR [arr+r8*8]
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

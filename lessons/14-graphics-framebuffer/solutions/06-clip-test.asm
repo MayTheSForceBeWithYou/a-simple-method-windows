@@ -2,19 +2,24 @@
 ;
 ; x=5 w=4 -> outside exit 1.
 ;
-; Build: nasm -f elf64 06-clip-test.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-clip-test.asm && link /OUT:06-clip-test.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-clip-test.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 5
     cmp rax, 4
-    jl .in
-    mov rdi, 1
-    jmp .o
-.in:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    jl in_range
+    mov rcx, 1
+    jmp exit_proc
+in_range:
+    xor rcx, rcx
+exit_proc:
+    call ExitProcess
+main ENDP
+END

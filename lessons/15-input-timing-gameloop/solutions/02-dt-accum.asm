@@ -2,23 +2,28 @@
 ;
 ; accum+=dt; if >= step then tick++; exit ticks 2 for accum sim.
 ;
-; Build: nasm -f elf64 02-dt-accum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-dt-accum.asm && link /OUT:02-dt-accum.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-dt-accum.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
     mov rax, 0
     add rax, 8
     add rax, 8
     mov rbx, 8
-.l:
+loop_start:
     cmp rax, rbx
-    jl .d
+    jl loop_done
     sub rax, rbx
-    inc rdi
-    jmp .l
-.d:
-    mov rax, 60
-    syscall
+    inc rcx
+    jmp loop_start
+loop_done:
+    call ExitProcess
+main ENDP
+END

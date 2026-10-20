@@ -2,15 +2,21 @@
 ;
 ; Status encodes len=12; exit 12.
 ;
-; Build: nasm -f elf64 18-status-line-len.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-status-line-len.asm && link /OUT:18-status-line-len.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-status-line-len.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    len resq 1
-section .text
-    global _start
-_start:
-    mov qword [len],12
-    mov rdi,[len]
-    mov rax,60
-    syscall
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.data?
+len QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 12
+    mov rcx, [len]
+    call ExitProcess
+main ENDP
+END

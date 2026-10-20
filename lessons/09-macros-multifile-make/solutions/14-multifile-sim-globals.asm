@@ -1,21 +1,32 @@
 ; Exercise 14: multifile sim globals
 ;
-; Simulate module: global helper_add; call with 20,22 exit 42.
+; Simulate module: PUBLIC helper_add; call with 20,22 exit 42.
 ;
-; Build: nasm -f elf64 14-multifile-sim-globals.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-multifile-sim-globals.asm && link /OUT:14-multifile-sim-globals.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-multifile-sim-globals.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-    global helper_add
-_start:
-    mov rdi,20
-    mov rsi,22
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+; In MASM, PUBLIC makes symbols visible to other modules
+PUBLIC helper_add
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rcx, 20
+    mov rdx, 22
     call helper_add
-    mov rdi,rax
-    mov rax,60
-    syscall
-helper_add:
-    mov rax,rdi
-    add rax,rsi
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+helper_add PROC
+    ; MS x64 ABI: args in RCX, RDX
+    mov rax, rcx
+    add rax, rdx
     ret
+helper_add ENDP
+END

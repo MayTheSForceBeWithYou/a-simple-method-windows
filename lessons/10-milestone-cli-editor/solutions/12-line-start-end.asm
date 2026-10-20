@@ -2,23 +2,31 @@
 ;
 ; In "ab\ncd" find line start for cur=4 (index of c)->3; exit 3.
 ;
-; Build: nasm -f elf64 12-line-start-end.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-line-start-end.asm && link /OUT:12-line-start-end.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-line-start-end.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db "ab",10,"cd",0
-section .text
-    global _start
-_start:
-    mov rcx,4
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE "ab", 10, "cd", 0
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rcx, 4
+    lea rdx, buf
+    
 .l:
-    test rcx,rcx
+    test rcx, rcx
     jz .d
     dec rcx
-    cmp byte [buf+rcx],10
+    cmp BYTE PTR [rdx+rcx], 10
     jne .l
     inc rcx
+    
 .d:
-    mov rdi,rcx
-    mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END

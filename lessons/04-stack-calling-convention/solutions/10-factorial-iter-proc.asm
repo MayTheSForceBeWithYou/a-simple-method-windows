@@ -1,28 +1,33 @@
 ; Exercise 10: factorial iter proc
 ;
-; fact(n) iterative as procedure. fact(5)=120; exit 120&255=120.
+; fact(n) iterative as procedure. fact(5)=120; exit 120.
 ;
-; Build: nasm -f elf64 10-factorial-iter-proc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 10-factorial-iter-proc.asm && link /OUT:10-factorial-iter-proc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-factorial-iter-proc.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 5
-    call fact
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+; Expected exit: 120
 
-fact:
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 5
+    call fact
+    and rax, 255
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+fact PROC
     mov rax, 1
-    mov rcx, 1
-.loop:
-    cmp rcx, rdi
-    jg .done
-    imul rax, rcx
-    inc rcx
-    jmp .loop
-.done:
+    mov r8, 1
+loop_start:
+    cmp r8, rcx
+    jg done
+    imul rax, r8
+    inc r8
+    jmp loop_start
+done:
     ret
+fact ENDP
+END

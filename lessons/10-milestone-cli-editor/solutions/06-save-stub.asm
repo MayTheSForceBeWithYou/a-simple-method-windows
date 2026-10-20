@@ -2,12 +2,16 @@
 ;
 ; Pretend save ok; exit 0.
 ;
-; Build: nasm -f elf64 06-save-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-save-stub.asm && link /OUT:06-save-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-save-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rax, 60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

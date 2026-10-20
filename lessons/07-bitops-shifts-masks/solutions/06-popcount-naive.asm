@@ -1,23 +1,23 @@
 ; Exercise 06: popcount naive
-;
-; Popcount of 0b101101 = 4; exit 4.
-;
-; Build: nasm -f elf64 06-popcount-naive.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 0b101101
-    xor rdi, rdi
-.l:
+; Popcount of 0b101101 = 4.
+; Expected exit: 4
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 101101b
+    xor rcx, rcx
+loop_pop:
     test rax, rax
-    jz .d
+    jz done_pop
     mov rbx, rax
     and rbx, 1
-    add rdi, rbx
+    add rcx, rbx
     shr rax, 1
-    jmp .l
-.d:
-    mov rax, 60
-    syscall
+    jmp loop_pop
+done_pop:
+    call ExitProcess
+main ENDP
+END

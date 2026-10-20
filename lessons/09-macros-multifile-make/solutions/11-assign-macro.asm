@@ -1,18 +1,25 @@
 ; Exercise 11: assign macro
 ;
-; %assign i 0 / %rep / %assign i i+1; exit 4 after 4 incs.
+; Use = (MASM assignment) with REPT loop; exit 4 after 4 incs.
 ;
-; Build: nasm -f elf64 11-assign-macro.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-assign-macro.asm && link /OUT:11-assign-macro.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-assign-macro.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi,rdi
-%assign i 0
-%rep 4
-    inc rdi
-%assign i i+1
-%endrep
-    mov rax,60
-    syscall
+; Expected exit: 4
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    xor rcx, rcx
+    ; MASM uses = for reassignable values
+    i = 0
+    REPT 4
+        inc rcx
+        i = i + 1
+    ENDM
+    
+    call ExitProcess
+main ENDP
+END

@@ -2,19 +2,23 @@
 ;
 ; Add two 128-bit values lo/hi: a=(1,0) b=(0xFFFFFFFFFFFFFFFF,0). Use add/adc. Exit with CF after adc (1) via setc.
 ;
-; Build: nasm -f elf64 25-adc-chain.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 25-adc-chain.asm && link /OUT:25-adc-chain.exe /ENTRY:main /SUBSYSTEM:CONSOLE 25-adc-chain.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 1
     mov rdx, 0
-    mov rbx, 0xffffffffffffffff
-    mov rcx, 0
+    mov rbx, 0FFFFFFFFFFFFFFFFh
+    mov r8, 0
     add rax, rbx
-    adc rdx, rcx
+    adc rdx, r8
     setc al
-    movzx rdi, al
-    mov rax, 60
-    syscall
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

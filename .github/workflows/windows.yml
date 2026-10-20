@@ -84,3 +84,28 @@ jobs:
           Write-Host "Installation Path: $($vsInfo.installationPath)"
           Write-Host "Version: $($vsInfo.installationVersion)"
         }
+  
+  full-test:
+    name: Full Test Harness
+    runs-on: windows-latest
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Set up MSVC x64 environment
+      uses: ilammy/msvc-dev-cmd@v1
+      with:
+        arch: x64
+    
+    - name: Run full test harness
+      shell: pwsh
+      run: |
+        Write-Host "Running full test harness for all lessons..." -ForegroundColor Cyan
+        .\test.ps1 -Verbose
+        
+        if ($LASTEXITCODE -ne 0) {
+          throw "Test harness failed with exit code $LASTEXITCODE"
+        }
+        
+        Write-Host "`n=== All tests passed! ===" -ForegroundColor Green

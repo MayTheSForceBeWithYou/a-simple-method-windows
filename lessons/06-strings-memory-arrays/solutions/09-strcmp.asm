@@ -1,36 +1,39 @@
 ; Exercise 09: strcmp
-;
-; strcmp "abc","abd" -> nonzero (1). Exit 1.
-;
-; Build: nasm -f elf64 09-strcmp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    a db "abc",0
-    b db "abd",0
-section .text
-    global _start
-_start:
-    lea rdi, [a]
-    lea rsi, [b]
-    call strcmp
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strcmp:
-.l:
-    mov al, [rdi]
-    mov dl, [rsi]
-    cmp al, dl
-    jne .diff
+; strcmp "abc","abd" -> 1.
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.data
+a BYTE "abc", 0
+b BYTE "abd", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, a
+    lea rdx, b
+    call strcmp_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strcmp_fn PROC
+loop_strcmp:
+    mov al, BYTE PTR [rcx]
+    mov r8b, BYTE PTR [rdx]
+    cmp al, r8b
+    jne diff_strcmp
     test al, al
-    jz .eq
-    inc rdi
-    inc rsi
-    jmp .l
-.eq:
+    jz eq_strcmp
+    inc rcx
+    inc rdx
+    jmp loop_strcmp
+eq_strcmp:
     xor rax, rax
     ret
-.diff:
+diff_strcmp:
     mov rax, 1
     ret
+strcmp_fn ENDP
+END

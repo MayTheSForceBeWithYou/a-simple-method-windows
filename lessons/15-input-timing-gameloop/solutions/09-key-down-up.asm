@@ -2,16 +2,22 @@
 ;
 ; Track key state: down sets, up clears; exit 0.
 ;
-; Build: nasm -f elf64 09-key-down-up.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-key-down-up.asm && link /OUT:09-key-down-up.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-key-down-up.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    key_w resb 1
-section .text
-    global _start
-_start:
-    mov byte [key_w],1
-    mov byte [key_w],0
-    movzx rdi,byte [key_w]
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+key_w BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [key_w], 1
+    mov BYTE PTR [key_w], 0
+    movzx rcx, BYTE PTR [key_w]
+    call ExitProcess
+main ENDP
+END

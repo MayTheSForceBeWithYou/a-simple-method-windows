@@ -1,21 +1,25 @@
 ; Exercise 16: sum 1 to n unroll
 ;
-; Without jumps: sum 1+2+...+8 into rdi (36) using add chain; exit.
+; Without jumps: sum 1+2+...+8 into rcx (36) using add chain; exit.
 ;
-; Build: nasm -f elf64 16-sum-1-to-n-unroll.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 16-sum-1-to-n-unroll.asm && link /OUT:16-sum-1-to-n-unroll.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-sum-1-to-n-unroll.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    add rdi, 1
-    add rdi, 2
-    add rdi, 3
-    add rdi, 4
-    add rdi, 5
-    add rdi, 6
-    add rdi, 7
-    add rdi, 8
-    mov rax, 60
-    syscall
+; Expected exit: 36
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    add rcx, 1
+    add rcx, 2
+    add rcx, 3
+    add rcx, 4
+    add rcx, 5
+    add rcx, 6
+    add rcx, 7
+    add rcx, 8
+    call ExitProcess
+main ENDP
+END

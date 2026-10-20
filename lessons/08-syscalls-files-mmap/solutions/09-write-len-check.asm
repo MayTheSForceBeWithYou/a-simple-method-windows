@@ -1,26 +1,51 @@
 ; Exercise 09: write len check
 ;
-; write "Z\n"; if rax==2 exit 0 else 1.
+; write "Z\n"; if written==2 exit 0 else 1.
 ;
-; Build: nasm -f elf64 09-write-len-check.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-write-len-check.asm && link /OUT:09-write-len-check.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-write-len-check.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    m db "Z",10
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,m
-    mov rdx,2
-    syscall
-    cmp rax,2
+; Expected exit: 0
+; Expected stdout: "Z\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "Z", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write message
+    mov rcx, rax
+    lea rdx, msg
+    mov r8d, 2
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Check if 2 bytes were written
+    cmp written, 2
     jne .bad
-    xor rdi,rdi
+    
+    ; Success - exit 0
+    mov rcx, 0
     jmp .o
+    
 .bad:
-    mov rdi,1
+    ; Failure - exit 1
+    mov rcx, 1
+    
 .o:
-    mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END

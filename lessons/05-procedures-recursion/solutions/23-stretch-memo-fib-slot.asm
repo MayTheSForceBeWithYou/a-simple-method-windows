@@ -1,48 +1,54 @@
 ; Exercise 23: stretch memo fib slot
-;
-; STRETCH: memo[10] slots; fib with memo fill. fib(8)=21; exit 21.
-;
-; Build: nasm -f elf64 23-stretch-memo-fib-slot.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    memo resq 16
-section .text
-    global _start
-_start:
-    ; clear memo to -1
+; Memoized fib(8)=21. Exit 21.
+; Expected exit: 21
+
+EXTERN ExitProcess:PROC
+
+.data?
+memo QWORD 16 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
     mov rcx, 16
-    lea rdi, [memo]
-.cl:
-    mov qword [rdi], -1
-    add rdi, 8
-    loop .cl
-    mov rdi, 8
+    lea r8, memo
+clear_loop:
+    mov QWORD PTR [r8], -1
+    add r8, 8
+    loop clear_loop
+    mov rcx, 8
     call fibm
-    mov rdi, rax
-    mov rax, 60
-    syscall
-fibm:
-    cmp rdi, 1
-    jle .base
-    cmp qword [memo+rdi*8], -1
-    jne .hit
-    push rdi
-    dec rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+fibm PROC
+    cmp rcx, 1
+    jle base_fibm
+    cmp QWORD PTR memo[rcx*8], -1
+    jne hit_fibm
+    push rbx
+    push rcx
+    sub rsp, 32
+    dec rcx
     call fibm
-    pop rdi
-    push rax
-    push rdi
-    sub rdi, 2
+    add rsp, 32
+    mov rbx, rax
+    mov rcx, QWORD PTR [rsp+32]
+    sub rcx, 2
+    sub rsp, 32
     call fibm
-    pop rdi
-    pop rdx
-    add rax, rdx
-    mov [memo+rdi*8], rax
+    add rsp, 32
+    add rax, rbx
+    pop rcx
+    pop rbx
+    mov memo[rcx*8], rax
     ret
-.hit:
-    mov rax, [memo+rdi*8]
+hit_fibm:
+    mov rax, memo[rcx*8]
     ret
-.base:
-    mov rax, rdi
+base_fibm:
+    mov rax, rcx
     ret
+fibm ENDP
+END

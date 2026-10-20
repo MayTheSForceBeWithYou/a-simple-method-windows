@@ -1,32 +1,35 @@
 ; Exercise 11: strchr
-;
-; Find index of "l" in "hello" -> 2.
-;
-; Build: nasm -f elf64 11-strchr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "hello",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    mov rsi, 'l'
+; Find 'l' in 'hello' -> index 2.
+; Expected exit: 2
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "hello", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, s
+    mov rdx, 'l'
     call strchr_idx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strchr_idx:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strchr_idx PROC
     xor rax, rax
-.l:
-    movzx rcx, byte [rdi+rax]
-    test rcx, rcx
-    jz .miss
-    cmp rcx, rsi
-    je .hit
+loop_chr:
+    movzx r8, BYTE PTR [rcx+rax]
+    test r8, r8
+    jz miss_chr
+    cmp r8, rdx
+    je hit_chr
     inc rax
-    jmp .l
-.miss:
+    jmp loop_chr
+miss_chr:
     mov rax, 255
-.hit:
+hit_chr:
     ret
+strchr_idx ENDP
+END

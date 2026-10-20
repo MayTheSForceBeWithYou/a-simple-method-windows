@@ -2,16 +2,21 @@
 ;
 ; step=16ms units; 50ms -> 3 steps; exit 3.
 ;
-; Build: nasm -f elf64 03-fixed-step.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-fixed-step.asm && link /OUT:03-fixed-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-fixed-step.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 50
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

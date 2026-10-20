@@ -2,21 +2,26 @@
 ;
 ; If frame_time < min, pad; return pad amount 2.
 ;
-; Build: nasm -f elf64 05-frame-limit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-frame-limit.asm && link /OUT:05-frame-limit.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-frame-limit.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 6
     mov rbx, 8
     cmp rax, rbx
-    jge .nopad
-    mov rdi, rbx
-    sub rdi, rax
-    jmp .o
-.nopad:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    jge nopad
+    mov rcx, rbx
+    sub rcx, rax
+    jmp exit_proc
+nopad:
+    xor rcx, rcx
+exit_proc:
+    call ExitProcess
+main ENDP
+END

@@ -1,18 +1,22 @@
 ; Exercise 23: sib full
 ;
-; base=addr of table, index=2, scale=8, disp=0. table dq 0,0,42,0. Load into rdi.
+; base=addr of table, index=2, scale=8, disp=0. table QWORD 0,0,42,0. Load into rcx.
 ;
-; Build: nasm -f elf64 23-sib-full.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-sib-full.asm && link /OUT:23-sib-full.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-sib-full.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    table dq 0, 0, 42, 0
+; Expected exit: 42
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+table QWORD 0, 0, 42, 0
+
+.code
+main PROC
+    sub rsp, 32
     lea rbx, [table]
-    mov rcx, 2
-    mov rdi, [rbx+rcx*8]
-    mov rax, 60
-    syscall
+    mov r8, 2
+    mov rcx, QWORD PTR [rbx+r8*8]
+    call ExitProcess
+main ENDP
+END

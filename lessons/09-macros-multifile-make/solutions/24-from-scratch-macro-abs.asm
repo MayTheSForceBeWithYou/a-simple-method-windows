@@ -1,20 +1,29 @@
 ; Exercise 24: from scratch macro abs
 ;
-; FROM SCRATCH: %macro ABS 1 for register; ABS rax with -9 -> 9 exit 9.
+; FROM SCRATCH: MACRO ABS for register; ABS rcx with -9 -> 9 exit 9.
 ;
-; Build: nasm -f elf64 24-from-scratch-macro-abs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-from-scratch-macro-abs.asm && link /OUT:24-from-scratch-macro-abs.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-macro-abs.obj kernel32.lib
 ;
-; --- your code below ---
-%macro ABS 1
-    cmp %1, 0
-    jge %%ok
-    neg %1
-%%ok:
-%endmacro
-section .text
-    global _start
-_start:
-    mov rdi, -9
-    ABS rdi
-    mov rax,60
-    syscall
+; Expected exit: 9
+
+EXTERN ExitProcess:PROC
+
+; MASM macro for absolute value with LOCAL label
+ABS MACRO reg
+    LOCAL ok
+    cmp reg, 0
+    jge ok
+    neg reg
+ok:
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rcx, -9
+    ABS rcx
+    
+    call ExitProcess
+main ENDP
+END

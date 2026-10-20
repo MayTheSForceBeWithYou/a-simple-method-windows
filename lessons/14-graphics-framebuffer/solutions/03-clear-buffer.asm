@@ -2,18 +2,24 @@
 ;
 ; Clear 8 bytes to 0; exit first byte 0.
 ;
-; Build: nasm -f elf64 03-clear-buffer.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-clear-buffer.asm && link /OUT:03-clear-buffer.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-clear-buffer.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    fb resb 8
-section .text
-    global _start
-_start:
-    lea rdi, [fb]
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+fb BYTE 8 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    lea rdi, fb
     mov rcx, 8
     xor rax, rax
     rep stosb
-    movzx rdi, byte [fb]
-    mov rax, 60
-    syscall
+    movzx rcx, BYTE PTR [fb]
+    call ExitProcess
+main ENDP
+END

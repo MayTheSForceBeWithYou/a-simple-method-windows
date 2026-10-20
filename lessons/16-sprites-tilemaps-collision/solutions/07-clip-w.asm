@@ -2,12 +2,17 @@
 ;
 ; sprite w clipped; exit 2.
 ;
-; Build: nasm -f elf64 07-clip-w.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-clip-w.asm && link /OUT:07-clip-w.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-clip-w.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 2
-    mov rax, 60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    call ExitProcess
+main ENDP
+END

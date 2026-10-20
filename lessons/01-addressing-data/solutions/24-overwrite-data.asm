@@ -1,22 +1,44 @@
 ; Exercise 24: overwrite data
 ;
-; msg db 'x',10. Change first byte to 'Y' in place, write 2 bytes, exit 0.
+; msg BYTE 'x',CR,LF. Change first byte to 'Y' in place, write 3 bytes, exit 0.
 ;
-; Build: nasm -f elf64 24-overwrite-data.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 24-overwrite-data.asm && link /OUT:24-overwrite-data.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-overwrite-data.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "x", 10
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov byte [msg], 'Y'
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, 2
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "x", 13, 10
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Overwrite first byte
+    mov BYTE PTR [msg], 'Y'
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, 3
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

@@ -1,27 +1,31 @@
 ; Exercise 24: from scratch vector push
 ;
 ; FROM SCRATCH: dynamic array len/cap; push 3 values; exit len 3.
-;
-; Build: nasm -f elf64 24-from-scratch-vector-push.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    data resq 8
-    len resq 1
-    cap resq 1
-section .text
-    global _start
-_start:
-    mov qword [cap],8
-    mov qword [len],0
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.data?
+data QWORD 8 DUP(?)
+len QWORD ?
+cap QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [cap], 8
+    mov QWORD PTR [len], 0
     call push1
     call push1
     call push1
-    mov rdi,[len]
-    mov rax,60
-    syscall
-push1:
-    mov rcx,[len]
-    mov qword [data+rcx*8],1
-    inc qword [len]
+    mov rcx, QWORD PTR [len]
+    call ExitProcess
+main ENDP
+
+push1 PROC
+    mov rcx, QWORD PTR [len]
+    mov QWORD PTR [data+rcx*8], 1
+    inc QWORD PTR [len]
     ret
+push1 ENDP
+END

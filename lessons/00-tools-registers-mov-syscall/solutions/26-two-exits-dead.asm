@@ -2,24 +2,45 @@
 ;
 ; Write "alive\n", exit 0, then dead exit 99 after (unreachable).
 ;
-; Build: nasm -f elf64 26-two-exits-dead.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 26-two-exits-dead.asm && link /OUT:26-two-exits-dead.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-two-exits-dead.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "alive", 10
-    msg_len equ $ - msg
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
-    mov rax, 60
-    mov rdi, 99
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "alive", 13, 10
+msg_len EQU $ - msg
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+    
+    ; Dead code (unreachable)
+    mov rcx, 99
+    call ExitProcess
+main ENDP
+END

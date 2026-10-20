@@ -2,16 +2,23 @@
 ;
 ; STRETCH: raw_mode byte set/clear; exit 0 after restore.
 ;
-; Build: nasm -f elf64 23-stretch-raw-mode-flag.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-raw-mode-flag.asm && link /OUT:23-stretch-raw-mode-flag.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-raw-mode-flag.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    raw resb 1
-section .text
-    global _start
-_start:
-    mov byte [raw],1
-    mov byte [raw],0
-    movzx rdi, byte [raw]
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.data?
+raw BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov BYTE PTR [raw], 1
+    mov BYTE PTR [raw], 0
+    
+    movzx rcx, BYTE PTR [raw]
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,17 @@
 ;
 ; Batch 8 sprites; exit 8.
 ;
-; Build: nasm -f elf64 21-sprite-batch-count.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 21-sprite-batch-count.asm && link /OUT:21-sprite-batch-count.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-sprite-batch-count.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,8
-    mov rax,60
-    syscall
+; Expected exit: 8
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 8
+    call ExitProcess
+main ENDP
+END

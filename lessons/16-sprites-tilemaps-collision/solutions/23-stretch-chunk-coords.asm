@@ -2,14 +2,19 @@
 ;
 ; STRETCH: chunk = tile>>4; tile=40 -> 2; exit 2.
 ;
-; Build: nasm -f elf64 23-stretch-chunk-coords.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-chunk-coords.asm && link /OUT:23-stretch-chunk-coords.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-chunk-coords.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,40
-    shr rax,4
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 40
+    shr rax, 4
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

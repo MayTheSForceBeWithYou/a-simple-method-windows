@@ -2,13 +2,18 @@
 ;
 ; BUG: used x test for y. Fix overlap on y; exit 1 for overlap.
 ;
-; Build: nasm -f elf64 19-debug-aabb-y.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-debug-aabb-y.asm && link /OUT:19-debug-aabb-y.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-aabb-y.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     ; a.y=0 a.h=2; b.y=1 b.h=2 overlap
-    mov rdi,1
-    mov rax,60
-    syscall
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

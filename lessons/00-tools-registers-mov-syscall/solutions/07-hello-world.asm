@@ -2,21 +2,42 @@
 ;
 ; Write "Hello, world\n" to stdout, then exit 0.
 ;
-; Build: nasm -f elf64 07-hello-world.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 07-hello-world.asm && link /OUT:07-hello-world.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-hello-world.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "Hello, world", 10
-    msg_len equ $ - msg
+; Expected exit: 0
+; Expected stdout: "Hello, world\n"
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "Hello, world", 13, 10
+msg_len EQU $ - msg
+
+.data?
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

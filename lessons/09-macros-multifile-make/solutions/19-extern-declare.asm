@@ -1,18 +1,26 @@
 ; Exercise 19: extern declare
 ;
-; %pragma or just comment extern foo; local call exit 9.
+; EXTERN for multi-file; local call exit 9.
 ;
-; Build: nasm -f elf64 19-extern-declare.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-extern-declare.asm && link /OUT:19-extern-declare.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-extern-declare.obj kernel32.lib
 ;
-; --- your code below ---
-; In multi-file: extern foo / global foo
-section .text
-    global _start
-_start:
+; Expected exit: 9
+
+EXTERN ExitProcess:PROC
+
+; In multi-file: EXTERN foo:PROC / PUBLIC foo
+
+.code
+main PROC
+    sub rsp, 32
+    
     call foo
-    mov rdi,rax
-    mov rax,60
-    syscall
-foo:
-    mov rax,9
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+foo PROC
+    mov rax, 9
     ret
+foo ENDP
+END

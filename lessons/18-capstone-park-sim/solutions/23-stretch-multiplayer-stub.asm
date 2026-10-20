@@ -2,15 +2,18 @@
 ;
 ; STRETCH: net tick id 2; exit 2. (local stub)
 ;
-; Build: nasm -f elf64 23-stretch-multiplayer-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-multiplayer-stub.asm && link /OUT:23-stretch-multiplayer-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-multiplayer-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    tick_id resq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     mov qword [tick_id],2
-    mov rdi,[tick_id]
-    mov rax,60
-    syscall
+    mov rcx, [tick_id]
+    call ExitProcess
+
+main ENDP
+END

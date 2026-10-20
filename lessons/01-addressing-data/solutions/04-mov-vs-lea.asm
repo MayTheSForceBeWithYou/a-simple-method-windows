@@ -1,17 +1,21 @@
 ; Exercise 04: mov vs lea
 ;
-; Label x dq 99. lea rbx,[x] then mov rdi,[rbx]. Exit with 99. Comment which is address vs load.
+; Label x QWORD 99. lea rbx,[x] then mov rcx,[rbx]. Exit with 99. Comment which is address vs load.
 ;
-; Build: nasm -f elf64 04-mov-vs-lea.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-mov-vs-lea.asm && link /OUT:04-mov-vs-lea.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-mov-vs-lea.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    x dq 99
+; Expected exit: 99
 
-section .text
-    global _start
-_start:
-    lea rbx, [x]
-    mov rdi, [rbx]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+x QWORD 99
+
+.code
+main PROC
+    sub rsp, 32
+    lea rbx, [x]        ; rbx = address of x
+    mov rcx, [rbx]      ; rcx = contents at address in rbx (99)
+    call ExitProcess
+main ENDP
+END

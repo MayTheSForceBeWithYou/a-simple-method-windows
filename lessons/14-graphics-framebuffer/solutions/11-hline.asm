@@ -2,23 +2,29 @@
 ;
 ; Horizontal line y=0 x=0..2 set 1; sum first 3=3.
 ;
-; Build: nasm -f elf64 11-hline.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-hline.asm && link /OUT:11-hline.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-hline.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    fb resb 8
-section .text
-    global _start
-_start:
-    mov byte [fb],1
-    mov byte [fb+1],1
-    mov byte [fb+2],1
-    xor rdi,rdi
-    movzx rax,byte [fb]
-    add rdi,rax
-    movzx rax,byte [fb+1]
-    add rdi,rax
-    movzx rax,byte [fb+2]
-    add rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+fb BYTE 8 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [fb], 1
+    mov BYTE PTR [fb+1], 1
+    mov BYTE PTR [fb+2], 1
+    xor rcx, rcx
+    movzx rax, BYTE PTR [fb]
+    add rcx, rax
+    movzx rax, BYTE PTR [fb+1]
+    add rcx, rax
+    movzx rax, BYTE PTR [fb+2]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

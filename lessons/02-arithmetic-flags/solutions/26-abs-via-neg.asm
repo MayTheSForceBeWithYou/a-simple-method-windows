@@ -1,16 +1,19 @@
 ; Exercise 26: abs via neg
 ;
-; rax=-42. cqto-style abs: if SF then neg. Exit 42. (Use sets + jns or cdq/xor/sub idiom.)
+; rax=-42. Absolute value via neg. Exit 42.
 ;
-; Build: nasm -f elf64 26-abs-via-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 26-abs-via-neg.asm && link /OUT:26-abs-via-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-abs-via-neg.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, -42
-    mov rdi, rax
-    neg rdi
-    ; since input negative, neg gives abs; for general use cmov
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    neg rcx
+    call ExitProcess
+main ENDP
+END

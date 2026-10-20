@@ -2,19 +2,27 @@
 ;
 ; Move gap left: gap_s=3 gap_e=5 -> move left once gap_s=2 gap_e=4; exit gap_s.
 ;
-; Build: nasm -f elf64 16-gap-move-left.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 16-gap-move-left.asm && link /OUT:16-gap-move-left.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-gap-move-left.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    gap_s resq 1
-    gap_e resq 1
-section .text
-    global _start
-_start:
-    mov qword [gap_s],3
-    mov qword [gap_e],5
-    dec qword [gap_s]
-    dec qword [gap_e]
-    mov rdi,[gap_s]
-    mov rax,60
-    syscall
+; Expected exit: 2
+
+EXTERN ExitProcess:PROC
+
+.data?
+gap_s QWORD ?
+gap_e QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [gap_s], 3
+    mov QWORD PTR [gap_e], 5
+    
+    dec QWORD PTR [gap_s]
+    dec QWORD PTR [gap_e]
+    
+    mov rcx, [gap_s]
+    call ExitProcess
+main ENDP
+END

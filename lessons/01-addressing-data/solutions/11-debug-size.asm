@@ -1,17 +1,21 @@
 ; Exercise 11: debug size
 ;
-; BUG: mov [buf], 1 ambiguous/wrong. Store byte 1, load movzx rdi, exit.
+; BUG: mov [buf], 1 ambiguous/wrong. Store BYTE 1, load movzx rcx, exit.
 ;
-; Build: nasm -f elf64 11-debug-size.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-debug-size.asm && link /OUT:11-debug-size.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-debug-size.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    buf resb 1
+; Expected exit: 1
 
-section .text
-    global _start
-_start:
-    mov byte [buf], 1
-    movzx rdi, byte [buf]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [buf], 1
+    movzx rcx, BYTE PTR [buf]
+    call ExitProcess
+main ENDP
+END

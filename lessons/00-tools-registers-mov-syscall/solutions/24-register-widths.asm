@@ -1,15 +1,19 @@
 ; Exercise 24: register widths
 ;
-; rax=0x1111222233334444; mov ax,0xABCD; exit with movzx rdi,al (205).
+; rax=0x1111222233334444; mov ax,0xABCD; exit with movzx rcx,al (205).
 ;
-; Build: nasm -f elf64 24-register-widths.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-register-widths.asm && link /OUT:24-register-widths.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-register-widths.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 0x1111222233334444
-    mov ax, 0xABCD
-    movzx rdi, al
-    mov rax, 60
-    syscall
+; Expected exit: 205
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 01111222233334444h
+    mov ax, 0ABCDh
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

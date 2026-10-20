@@ -2,19 +2,24 @@
 ;
 ; If key 'W' set flag; exit 1.
 ;
-; Build: nasm -f elf64 01-keymap.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-keymap.asm && link /OUT:01-keymap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-keymap.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov al, 'W'
     cmp al, 'W'
-    jne .n
-    mov rdi, 1
-    jmp .o
-.n:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    jne not_match
+    mov rcx, 1
+    jmp exit_proc
+not_match:
+    xor rcx, rcx
+exit_proc:
+    call ExitProcess
+main ENDP
+END

@@ -2,17 +2,21 @@
 ;
 ; STRETCH: 5! = 120 using successive imul. Exit 120.
 ;
-; Build: nasm -f elf64 23-stretch-factorial5.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-factorial5.asm && link /OUT:23-stretch-factorial5.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-factorial5.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 120
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 1
     imul rax, 2
     imul rax, 3
     imul rax, 4
     imul rax, 5
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

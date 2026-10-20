@@ -2,15 +2,21 @@
 ;
 ; agent x++; exit x.
 ;
-; Build: nasm -f elf64 04-agent-step.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-agent-step.asm && link /OUT:04-agent-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-agent-step.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    ax_ resq 1
-section .text
-    global _start
-_start:
-    inc qword [ax_]
-    mov rdi, [ax_]
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+ax_ QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    inc QWORD PTR [ax_]
+    mov rcx, [ax_]
+    call ExitProcess
+main ENDP
+END

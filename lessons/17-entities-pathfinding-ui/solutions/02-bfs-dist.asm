@@ -2,12 +2,17 @@
 ;
 ; Grid BFS stub: dist to neighbor 1.
 ;
-; Build: nasm -f elf64 02-bfs-dist.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-bfs-dist.asm && link /OUT:02-bfs-dist.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-bfs-dist.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 1
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END

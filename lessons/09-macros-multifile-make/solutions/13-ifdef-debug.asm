@@ -1,18 +1,27 @@
 ; Exercise 13: ifdef debug
 ;
-; %define DEBUG; %ifdef DEBUG mov rdi,1 %else 0; exit 1.
+; Define DEBUG; IFDEF DEBUG mov rcx,1 ELSE 0; exit 1.
 ;
-; Build: nasm -f elf64 13-ifdef-debug.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-ifdef-debug.asm && link /OUT:13-ifdef-debug.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-ifdef-debug.obj kernel32.lib
 ;
-; --- your code below ---
-%define DEBUG
-section .text
-    global _start
-_start:
-%ifdef DEBUG
-    mov rdi,1
-%else
-    xor rdi,rdi
-%endif
-    mov rax,60
-    syscall
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+; Define DEBUG symbol
+DEBUG EQU 1
+
+.code
+main PROC
+    sub rsp, 32
+    
+    ; MASM conditional assembly
+    IFDEF DEBUG
+        mov rcx, 1
+    ELSE
+        mov rcx, 0
+    ENDIF
+    
+    call ExitProcess
+main ENDP
+END

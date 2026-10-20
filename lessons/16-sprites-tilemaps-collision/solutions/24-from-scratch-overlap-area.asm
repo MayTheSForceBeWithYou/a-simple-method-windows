@@ -2,13 +2,18 @@
 ;
 ; FROM SCRATCH: overlap width 2 height 3 area 6; exit 6.
 ;
-; Build: nasm -f elf64 24-from-scratch-overlap-area.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-from-scratch-overlap-area.asm && link /OUT:24-from-scratch-overlap-area.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-overlap-area.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,2
-    imul rdi,3
-    mov rax,60
-    syscall
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    imul rcx, 3
+    call ExitProcess
+main ENDP
+END

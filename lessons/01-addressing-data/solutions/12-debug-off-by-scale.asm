@@ -2,16 +2,20 @@
 ;
 ; BUG: array of qwords indexed with *1 instead of *8. Fix; load index 1 value 20, exit.
 ;
-; Build: nasm -f elf64 12-debug-off-by-scale.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-debug-off-by-scale.asm && link /OUT:12-debug-off-by-scale.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-debug-off-by-scale.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr dq 10, 20, 30
+; Expected exit: 20
 
-section .text
-    global _start
-_start:
-    mov rcx, 1
-    mov rdi, [arr+rcx*8]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+arr QWORD 10, 20, 30
+
+.code
+main PROC
+    sub rsp, 32
+    mov r8, 1
+    mov rcx, QWORD PTR [arr+r8*8]
+    call ExitProcess
+main ENDP
+END

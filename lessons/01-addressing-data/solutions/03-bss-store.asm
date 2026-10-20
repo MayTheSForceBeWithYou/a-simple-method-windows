@@ -1,17 +1,21 @@
 ; Exercise 03: bss store
 ;
-; resb 1 in .bss. Store 7 into it, load into rdi, exit.
+; BYTE ? in .data? (uninitialized). Store 7 into it, load into rcx, exit.
 ;
-; Build: nasm -f elf64 03-bss-store.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-bss-store.asm && link /OUT:03-bss-store.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-bss-store.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    slot resb 1
+; Expected exit: 7
 
-section .text
-    global _start
-_start:
-    mov byte [slot], 7
-    movzx rdi, byte [slot]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data?
+slot BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [slot], 7
+    movzx rcx, BYTE PTR [slot]
+    call ExitProcess
+main ENDP
+END

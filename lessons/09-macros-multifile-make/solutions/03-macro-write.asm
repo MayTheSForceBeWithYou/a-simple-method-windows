@@ -1,23 +1,49 @@
 ; Exercise 03: macro write
 ;
-; Macro sys_write1 msg,len; print 'M\n'.
+; Macro write_stdout msg,len; print 'M\n'.
 ;
-; Build: nasm -f elf64 03-macro-write.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 03-macro-write.asm && link /OUT:03-macro-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-macro-write.obj kernel32.lib
 ;
-; --- your code below ---
-%macro sys_write1 2
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, %1
-    mov rdx, %2
-    syscall
-%endmacro
-section .data
-    m db "M",10
-section .text
-    global _start
-_start:
-    sys_write1 m, 2
-    mov rax,60
-    xor rdi,rdi
-    syscall
+; Expected exit: 0
+; Expected stdout: "M\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+; MASM macro for writing to stdout
+write_stdout MACRO msg, len
+    LOCAL written, hStdOut
+    .data?
+    written DWORD ?
+    hStdOut QWORD ?
+    .code
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write message
+    mov rcx, hStdOut
+    lea rdx, msg
+    mov r8d, len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+ENDM
+
+.data
+m BYTE "M", 10
+
+.code
+main PROC
+    sub rsp, 56
+    
+    write_stdout m, 2
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

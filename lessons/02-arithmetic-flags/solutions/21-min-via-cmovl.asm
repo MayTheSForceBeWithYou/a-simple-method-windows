@@ -1,17 +1,21 @@
 ; Exercise 21: min via cmovl
 ;
-; Same with 17 and 23; min into rdi (17) using cmovl.
+; Same with 17 and 23; min into rcx (17) using cmovl.
 ;
-; Build: nasm -f elf64 21-min-via-cmovl.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 21-min-via-cmovl.asm && link /OUT:21-min-via-cmovl.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-min-via-cmovl.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 17
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 17
     mov rbx, 23
-    mov rdi, rax
-    cmp rbx, rdi
-    cmovl rdi, rbx
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    cmp rbx, rcx
+    cmovl rcx, rbx
+    call ExitProcess
+main ENDP
+END

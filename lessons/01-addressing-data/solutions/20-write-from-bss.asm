@@ -1,25 +1,46 @@
 ; Exercise 20: write from bss
 ;
-; Fill 4-byte bss with 'Z',0x0A,'Z',0x0A. Write 4 bytes. Exit 0.
+; Fill 4-byte bss with 'Z',CR,LF,'Z',LF. Write 5 bytes. Exit 0.
 ;
-; Build: nasm -f elf64 20-write-from-bss.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 20-write-from-bss.asm && link /OUT:20-write-from-bss.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-write-from-bss.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    buf resb 4
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov byte [buf], 'Z'
-    mov byte [buf+1], 10
-    mov byte [buf+2], 'Z'
-    mov byte [buf+3], 10
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, buf
-    mov rdx, 4
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE 5 DUP(?)
+written DWORD ?
+hStdOut QWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Fill buffer
+    mov BYTE PTR [buf], 'Z'
+    mov BYTE PTR [buf+1], 13
+    mov BYTE PTR [buf+2], 10
+    mov BYTE PTR [buf+3], 'Z'
+    mov BYTE PTR [buf+4], 10
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    mov hStdOut, rax
+    
+    ; Write buffer
+    mov rcx, hStdOut
+    lea rdx, buf
+    mov r8d, 5
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

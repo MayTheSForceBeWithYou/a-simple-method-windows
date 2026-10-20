@@ -2,20 +2,25 @@
 ;
 ; Sprite x=100 cam=50 view_w=40 -> culled; exit 1.
 ;
-; Build: nasm -f elf64 15-camera-cull.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-camera-cull.asm && link /OUT:15-camera-cull.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-camera-cull.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,100
-    sub rax,50
-    cmp rax,40
-    jl .vis
-    mov rdi,1
-    jmp .o
-.vis:
-    xor rdi,rdi
-.o:
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 100
+    sub rax, 50
+    cmp rax, 40
+    jl visible
+    mov rcx, 1
+    jmp exit_proc
+visible:
+    xor rcx, rcx
+exit_proc:
+    call ExitProcess
+main ENDP
+END

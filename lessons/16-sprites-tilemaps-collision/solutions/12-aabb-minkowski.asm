@@ -2,13 +2,18 @@
 ;
 ; Minkowski expand by 1; width 4->6; exit 6.
 ;
-; Build: nasm -f elf64 12-aabb-minkowski.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-aabb-minkowski.asm && link /OUT:12-aabb-minkowski.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-aabb-minkowski.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,4
-    add rdi,2
-    mov rax,60
-    syscall
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 4
+    add rcx, 2
+    call ExitProcess
+main ENDP
+END

@@ -1,28 +1,49 @@
 ; Exercise 08: from scratch close
 ;
-; FROM SCRATCH: open /dev/zero O_RDONLY=0; close fd; exit 0 on success.
+; FROM SCRATCH: open NUL (Windows null device) read-only; close handle; exit 0 on success.
 ;
-; Build: nasm -f elf64 08-from-scratch-close.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 08-from-scratch-close.asm && link /OUT:08-from-scratch-close.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-from-scratch-close.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    path db "/dev/zero",0
-section .text
-    global _start
-_start:
-    mov rax, 2
-    lea rdi, [path]
-    xor rsi, rsi
-    syscall
-    cmp rax, 0
-    jl .e
-    mov rdi, rax
-    mov rax, 3
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+; Expected exit: 0
+
+EXTERN CreateFileA:PROC
+EXTERN CloseHandle:PROC
+EXTERN ExitProcess:PROC
+
+.data
+path BYTE "NUL", 0
+
+.code
+main PROC
+    sub rsp, 72
+    
+    ; CreateFileA for NUL device
+    lea rcx, path               ; lpFileName
+    mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
+    mov r8d, 0                  ; dwShareMode = 0
+    mov r9, 0                   ; lpSecurityAttributes = NULL
+    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
+    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
+    call CreateFileA
+    
+    ; Check for failure
+    cmp rax, -1
+    je .e
+    
+    ; Close handle
+    mov rcx, rax
+    call CloseHandle
+    
+    ; Exit 0
+    mov rcx, 0
+    jmp .o
+    
 .e:
-    mov rax, 60
-    mov rdi, 1
-    syscall
+    ; Exit 1 on error
+    mov rcx, 1
+    
+.o:
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,20 @@
 ;
 ; BUG: parent[i] wrong. Fix reconstruct step count exit 2.
 ;
-; Build: nasm -f elf64 19-debug-parent-index.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-debug-parent-index.asm && link /OUT:19-debug-parent-index.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-parent-index.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,2
-    mov rax,60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
+;
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    call ExitProcess
+
+main ENDP
+END

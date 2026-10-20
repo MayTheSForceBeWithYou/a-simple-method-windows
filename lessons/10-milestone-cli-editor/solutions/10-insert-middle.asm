@@ -2,31 +2,46 @@
 ;
 ; buf "AC" len2 cur1; insert B -> "ABC"; exit middle byte 66.
 ;
-; Build: nasm -f elf64 10-insert-middle.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 10-insert-middle.asm && link /OUT:10-insert-middle.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-insert-middle.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    buf db "AC",0,0,0,0
-section .bss
-    len resq 1
-    cur resq 1
-section .text
-    global _start
-_start:
-    mov qword [len],2
-    mov qword [cur],1
-    ; shift right from end
-    mov rcx,[len]
+; Expected exit: 66
+
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE "AC", 0, 0, 0, 0
+
+.data?
+len QWORD ?
+cur QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov QWORD PTR [len], 2
+    mov QWORD PTR [cur], 1
+    
+    ; Shift right from end
+    mov rcx, [len]
+    
 .shift:
-    cmp rcx,[cur]
+    cmp rcx, [cur]
     jl .put
-    mov al,[buf+rcx-1]
-    mov [buf+rcx],al
+    
+    lea rdx, buf
+    movzx rax, BYTE PTR [rdx+rcx-1]
+    mov BYTE PTR [rdx+rcx], al
+    
     dec rcx
     jmp .shift
+    
 .put:
-    mov byte [buf+1],'B'
-    inc qword [len]
-    movzx rdi, byte [buf+1]
-    mov rax,60
-    syscall
+    lea rdx, buf
+    mov BYTE PTR [rdx+1], 'B'
+    inc QWORD PTR [len]
+    
+    movzx rcx, BYTE PTR [rdx+1]
+    call ExitProcess
+main ENDP
+END

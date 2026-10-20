@@ -1,27 +1,31 @@
 ; Exercise 26: stretch atoi
 ;
-; STRETCH: parse "42" decimal ascii into rdi (42) with a loop.
+; STRETCH: parse "42" decimal ascii into rcx (42) with a loop.
 ;
-; Build: nasm -f elf64 26-stretch-atoi.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 26-stretch-atoi.asm && link /OUT:26-stretch-atoi.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-stretch-atoi.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    s db "42", 0
+; Expected exit: 42
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "42", 0
+
+.code
+main PROC
+    sub rsp, 32
     lea rsi, [s]
-    xor rdi, rdi
-.loop:
-    movzx rax, byte [rsi]
+    xor rcx, rcx
+loop_start:
+    movzx rax, BYTE PTR [rsi]
     test rax, rax
-    jz .done
+    jz done
     sub rax, '0'
-    imul rdi, 10
-    add rdi, rax
+    imul rcx, 10
+    add rcx, rax
     inc rsi
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

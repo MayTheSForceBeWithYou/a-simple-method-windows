@@ -1,17 +1,21 @@
 ; Exercise 06: mul unsigned
 ;
-; rax=100000, rbx=3; mul rbx; exit with low 8 bits of rax via movzx... actually exit with rax truncated: use rdi=rax after mul if fits; expect 300000 mod 256? Better: exit status = (rax & 0xff) after confirming product — use mov rdi, rax then and rdi, 255. Product 300000. Status 300000&255=224.
+; rax=100000, rbx=3; mul rbx; exit with low 8 bits of rax. Product 300000, status 300000&255=224.
 ;
-; Build: nasm -f elf64 06-mul-unsigned.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-mul-unsigned.asm && link /OUT:06-mul-unsigned.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-mul-unsigned.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 224
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 100000
     mov rbx, 3
     mul rbx
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    and rcx, 255
+    call ExitProcess
+main ENDP
+END

@@ -2,12 +2,20 @@
 ;
 ; Path length 4; exit 4.
 ;
-; Build: nasm -f elf64 14-path-reconstruct.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-path-reconstruct.asm && link /OUT:14-path-reconstruct.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-path-reconstruct.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,4
-    mov rax,60
-    syscall
+; Expected exit: 4
+; Expected stdout: (none)
+;
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
+    mov rcx, 4
+    call ExitProcess
+
+main ENDP
+END

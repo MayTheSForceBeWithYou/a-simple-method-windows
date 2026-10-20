@@ -1,22 +1,23 @@
 ; Exercise 16: clamp q
 ;
 ; Clamp -3 to [0,100]; exit 0.
-;
-; Build: nasm -f elf64 16-clamp-q.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,-3
-    cmp rax,0
-    jge .hi
-    xor rax,rax
-.hi:
-    cmp rax,100
-    jle .ok
-    mov rax,100
-.ok:
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, -3
+    cmp rax, 0
+    jge clamp_hi
+    xor rax, rax
+clamp_hi:
+    cmp rax, 100
+    jle clamp_ok
+    mov rax, 100
+clamp_ok:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

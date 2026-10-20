@@ -2,28 +2,35 @@
 ;
 ; Copy 4 bytes src->dst; sum exit 10.
 ;
-; Build: nasm -f elf64 05-blit-copy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-blit-copy.asm && link /OUT:05-blit-copy.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-blit-copy.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    src db 1,2,3,4
-section .bss
-    dst resb 4
-section .text
-    global _start
-_start:
-    lea rsi, [src]
-    lea rdi, [dst]
+; Expected exit: 10
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE 1,2,3,4
+
+.data?
+dst BYTE 4 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    lea rsi, src
+    lea rdi, dst
     mov rcx, 4
     rep movsb
-    xor rdi, rdi
-    movzx rax, byte [dst]
-    add rdi, rax
-    movzx rax, byte [dst+1]
-    add rdi, rax
-    movzx rax, byte [dst+2]
-    add rdi, rax
-    movzx rax, byte [dst+3]
-    add rdi, rax
-    mov rax, 60
-    syscall
+    xor rcx, rcx
+    movzx rax, BYTE PTR [dst]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+1]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+2]
+    add rcx, rax
+    movzx rax, BYTE PTR [dst+3]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

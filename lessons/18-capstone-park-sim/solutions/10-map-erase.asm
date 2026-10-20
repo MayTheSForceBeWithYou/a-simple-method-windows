@@ -2,16 +2,20 @@
 ;
 ; Erase cell to EMPTY=0; exit 0.
 ;
-; Build: nasm -f elf64 10-map-erase.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 10-map-erase.asm && link /OUT:10-map-erase.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-map-erase.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    map resb 16
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     mov byte [map+5],1
     mov byte [map+5],0
     movzx rdi,byte [map+5]
     mov rax,60
     syscall
+
+main ENDP
+END

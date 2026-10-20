@@ -1,17 +1,21 @@
 ; Exercise 09: cmp sete
 ;
-; rax=5, rbx=5. cmp; sete al; movzx rdi,al; exit 1.
+; rax=5, rbx=5. cmp; sete al; movzx rcx,al; exit 1.
 ;
-; Build: nasm -f elf64 09-cmp-sete.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-cmp-sete.asm && link /OUT:09-cmp-sete.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-cmp-sete.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 5
     mov rbx, 5
     cmp rax, rbx
     sete al
-    movzx rdi, al
-    mov rax, 60
-    syscall
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

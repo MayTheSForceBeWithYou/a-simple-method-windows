@@ -2,18 +2,23 @@
 ;
 ; Clamp happiness add 20 from 90 -> 100; exit 100.
 ;
-; Build: nasm -f elf64 18-guest-happiness.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-guest-happiness.asm && link /OUT:18-guest-happiness.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-guest-happiness.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     mov rax,90
     add rax,20
     cmp rax,100
     jle .ok
     mov rax,100
 .ok:
-    mov rdi,rax
-    mov rax,60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+
+main ENDP
+END

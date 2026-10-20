@@ -1,28 +1,32 @@
 ; Exercise 09: pointer walk
 ;
-; bytes db 1,2,3,4. rsi=&bytes. Sum four byte loads with inc rsi into rdi, exit (10).
+; bytes BYTE 1,2,3,4. rsi=&bytes. Sum four byte loads with inc rsi into rcx, exit (10).
 ;
-; Build: nasm -f elf64 09-pointer-walk.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-pointer-walk.asm && link /OUT:09-pointer-walk.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-pointer-walk.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    bytes db 1, 2, 3, 4
+; Expected exit: 10
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+bytes BYTE 1, 2, 3, 4
+
+.code
+main PROC
+    sub rsp, 32
     lea rsi, [bytes]
-    xor rdi, rdi
-    movzx rax, byte [rsi]
-    add rdi, rax
+    xor rcx, rcx
+    movzx rax, BYTE PTR [rsi]
+    add rcx, rax
     inc rsi
-    movzx rax, byte [rsi]
-    add rdi, rax
+    movzx rax, BYTE PTR [rsi]
+    add rcx, rax
     inc rsi
-    movzx rax, byte [rsi]
-    add rdi, rax
+    movzx rax, BYTE PTR [rsi]
+    add rcx, rax
     inc rsi
-    movzx rax, byte [rsi]
-    add rdi, rax
-    mov rax, 60
-    syscall
+    movzx rax, BYTE PTR [rsi]
+    add rcx, rax
+    call ExitProcess
+main ENDP
+END

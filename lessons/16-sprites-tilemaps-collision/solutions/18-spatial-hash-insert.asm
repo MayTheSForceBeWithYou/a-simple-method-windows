@@ -2,15 +2,21 @@
 ;
 ; Insert entity into cell bucket count++; exit 1.
 ;
-; Build: nasm -f elf64 18-spatial-hash-insert.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-spatial-hash-insert.asm && link /OUT:18-spatial-hash-insert.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-spatial-hash-insert.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    count resq 1
-section .text
-    global _start
-_start:
-    inc qword [count]
-    mov rdi,[count]
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+count QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    inc QWORD PTR [count]
+    mov rcx, [count]
+    call ExitProcess
+main ENDP
+END

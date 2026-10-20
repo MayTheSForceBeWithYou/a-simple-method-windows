@@ -1,15 +1,19 @@
 ; Exercise 03: neg
 ;
-; mov rdi, 5; neg rdi; add rdi, 10; exit (5).
+; mov rcx, 5; neg rcx; add rcx, 10; exit (5).
 ;
-; Build: nasm -f elf64 03-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-neg.asm && link /OUT:03-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-neg.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 5
-    neg rdi
-    add rdi, 10
-    mov rax, 60
-    syscall
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 5
+    neg rcx
+    add rcx, 10
+    call ExitProcess
+main ENDP
+END

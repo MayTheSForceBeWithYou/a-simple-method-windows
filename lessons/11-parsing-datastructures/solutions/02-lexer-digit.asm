@@ -1,22 +1,23 @@
 ; Exercise 02: lexer digit
 ;
 ; If byte '7' is digit exit 1.
-;
-; Build: nasm -f elf64 02-lexer-digit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov al, '7'
     cmp al, '0'
-    jb .n
+    jb not_digit
     cmp al, '9'
-    ja .n
-    mov rdi, 1
-    jmp .o
-.n:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    ja not_digit
+    mov rcx, 1
+    jmp done
+not_digit:
+    xor rcx, rcx
+done:
+    call ExitProcess
+main ENDP
+END

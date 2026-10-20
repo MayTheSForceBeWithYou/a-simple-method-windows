@@ -2,27 +2,31 @@
 ;
 ; Count pairs (i,j) with 0<=i<3, 0<=j<4 (12). Exit 12.
 ;
-; Build: nasm -f elf64 24-nested-loops.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-nested-loops.asm && link /OUT:24-nested-loops.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-nested-loops.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
     xor r8, r8
-.outer:
+outer:
     cmp r8, 3
-    jge .done
+    jge done
     xor r9, r9
-.inner:
+inner:
     cmp r9, 4
-    jge .next
-    inc rdi
+    jge next
+    inc rcx
     inc r9
-    jmp .inner
-.next:
+    jmp inner
+next:
     inc r8
-    jmp .outer
-.done:
-    mov rax, 60
-    syscall
+    jmp outer
+done:
+    call ExitProcess
+main ENDP
+END

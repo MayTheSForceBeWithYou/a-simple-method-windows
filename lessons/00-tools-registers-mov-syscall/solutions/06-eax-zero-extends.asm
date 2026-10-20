@@ -1,15 +1,19 @@
 ; Exercise 06: eax zero extends
 ;
-; Set rax to all 0xFF bytes, then mov eax, 1. Exit with rdi=rax (should be 1).
+; Set rax to all 0xFF bytes, then mov eax, 1. Exit with rcx=rax (should be 1).
 ;
-; Build: nasm -f elf64 06-eax-zero-extends.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-eax-zero-extends.asm && link /OUT:06-eax-zero-extends.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-eax-zero-extends.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 0xffffffffffffffff
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 0FFFFFFFFFFFFFFFFh
     mov eax, 1
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

@@ -2,15 +2,19 @@
 ;
 ; rax=0; test rax,rax; sete al; exit 1.
 ;
-; Build: nasm -f elf64 11-test-zf.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-test-zf.asm && link /OUT:11-test-zf.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-test-zf.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     xor rax, rax
     test rax, rax
     sete al
-    movzx rdi, al
-    mov rax, 60
-    syscall
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

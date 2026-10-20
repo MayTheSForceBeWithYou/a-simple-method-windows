@@ -1,15 +1,19 @@
 ; Exercise 04: imul two
 ;
-; imul-style: rax=6, imul rax,7; mov rdi,rax; exit 42.
+; imul-style: rax=6, imul rax,7; mov rcx,rax; exit 42.
 ;
-; Build: nasm -f elf64 04-imul-two.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-imul-two.asm && link /OUT:04-imul-two.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-imul-two.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 6
     imul rax, 7
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

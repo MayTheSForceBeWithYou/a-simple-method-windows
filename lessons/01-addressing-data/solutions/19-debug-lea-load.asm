@@ -1,16 +1,20 @@
 ; Exercise 19: debug lea load
 ;
-; BUG: used lea to 'load' value. Fix to mov from memory; x dq 55; exit 55.
+; BUG: used lea to 'load' value. Fix to mov from memory; x QWORD 55; exit 55.
 ;
-; Build: nasm -f elf64 19-debug-lea-load.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-debug-lea-load.asm && link /OUT:19-debug-lea-load.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-lea-load.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    x dq 55
+; Expected exit: 55
 
-section .text
-    global _start
-_start:
-    mov rdi, [x]
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+x QWORD 55
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [x]
+    call ExitProcess
+main ENDP
+END

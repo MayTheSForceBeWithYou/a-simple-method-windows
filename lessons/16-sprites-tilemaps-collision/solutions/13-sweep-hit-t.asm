@@ -2,12 +2,17 @@
 ;
 ; TOI stub t=3; exit 3.
 ;
-; Build: nasm -f elf64 13-sweep-hit-t.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-sweep-hit-t.asm && link /OUT:13-sweep-hit-t.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-sweep-hit-t.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,3
-    mov rax,60
-    syscall
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    call ExitProcess
+main ENDP
+END

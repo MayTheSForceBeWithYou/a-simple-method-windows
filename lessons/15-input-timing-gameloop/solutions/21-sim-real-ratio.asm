@@ -2,13 +2,17 @@
 ;
 ; sim_time/real_time *100 = 50 when half speed; exit 50.
 ;
-; Build: nasm -f elf64 21-sim-real-ratio.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 21-sim-real-ratio.asm && link /OUT:21-sim-real-ratio.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-sim-real-ratio.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,50
-    mov rdi,rax
-    mov rax,60
-    syscall
+; Expected exit: 50
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 50
+    call ExitProcess
+main ENDP
+END

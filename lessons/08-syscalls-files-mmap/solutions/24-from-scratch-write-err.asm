@@ -1,26 +1,45 @@
 ; Exercise 24: from scratch write err
 ;
-; FROM SCRATCH: write to fd=-1; expect error (rax<0); exit 1.
+; FROM SCRATCH: write to invalid handle=-1; expect error; exit 1.
 ;
-; Build: nasm -f elf64 24-from-scratch-write-err.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-from-scratch-write-err.asm && link /OUT:24-from-scratch-write-err.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-write-err.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    m db "x"
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,-1
-    lea rsi,[m]
-    mov rdx,1
-    syscall
-    cmp rax,0
-    jl .ok
-    xor rdi,rdi
+; Expected exit: 1
+
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "x"
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; WriteFile with invalid handle (-1)
+    mov rcx, -1             ; invalid handle
+    lea rdx, msg
+    mov r8d, 1
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; WriteFile returns 0 on failure
+    test rax, rax
+    jz .ok
+    
+    ; Unexpected success - exit 0
+    mov rcx, 0
     jmp .o
+    
 .ok:
-    mov rdi,1
+    ; Expected failure - exit 1
+    mov rcx, 1
+    
 .o:
-    mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END

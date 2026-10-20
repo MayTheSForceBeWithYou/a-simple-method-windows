@@ -2,14 +2,15 @@
 ;
 ; version==1 ok exit 1.
 ;
-; Build: nasm -f elf64 18-load-version-check.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-load-version-check.asm && link /OUT:18-load-version-check.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-load-version-check.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    ver dq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     cmp qword [ver],1
     jne .n
     mov rdi,1
@@ -19,3 +20,6 @@ _start:
 .o:
     mov rax,60
     syscall
+
+main ENDP
+END

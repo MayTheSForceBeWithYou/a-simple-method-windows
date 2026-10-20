@@ -1,16 +1,18 @@
 ; Exercise 23: stretch symbol resolve
 ;
 ; STRETCH: symbol table maps name hash to addr 0x20; exit 0x20=32.
-;
-; Build: nasm -f elf64 23-stretch-symbol-resolve.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    sym resq 1
-section .text
-    global _start
-_start:
-    mov qword [sym],32
-    mov rdi,[sym]
-    mov rax,60
-    syscall
+; Expected exit: 32
+
+EXTERN ExitProcess:PROC
+
+.data?
+sym QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [sym], 32
+    mov rcx, QWORD PTR [sym]
+    call ExitProcess
+main ENDP
+END
