@@ -4,7 +4,7 @@ Lesson 04 taught you how to call a function once. This lesson teaches you how to
 
 ## What this lesson asks of you
 
-You must be able to allocate space for multiple local variables in a function's stack frame and access them relative to `rbp`. You will save any callee-saved registers (`rbx`, `r12`–`r15`) you use at the start of your function and restore them before returning, respecting the ABI contract. You will implement recursive functions by saving live arguments (like `rdi`) before a recursive `call` (because argument registers are caller-saved and will be clobbered), then restoring them afterward to complete the computation. You will distinguish tail calls (where no work remains after the recursive call returns) from non-tail recursion, and recognize that tail recursion can be rewritten as a loop. Finally, you will implement mutual recursion (two functions calling each other) using `jmp` when the current stack frame is no longer needed, avoiding unnecessary stack growth.
+You must be able to allocate space for shadow space, multiple local variables, and alignment in a function's stack frame and access them relative to `rbp` or `rsp`. You will save any nonvolatile (callee-saved) registers (`rbx`, `rbp`, `rdi`, `rsi`, `r12`–`r15`) you use at the start of your function and restore them before returning, respecting the Microsoft x64 ABI contract. You will implement recursive functions by saving live arguments (like `rcx`) before a recursive `call` — either on the stack or in a nonvolatile register — because argument registers are volatile (caller-saved) and will be clobbered by the call. You must allocate shadow space (32 bytes minimum) before every recursive call and maintain 16-byte stack alignment. You will distinguish tail calls (where no work remains after the recursive call returns) from non-tail recursion, and recognize that tail recursion can be rewritten as a loop. Finally, you will implement mutual recursion (two functions calling each other) using `jmp` when the current stack frame is no longer needed, avoiding unnecessary stack growth.
 
 ## Multi-local frames
 
@@ -165,73 +165,99 @@ That is `07-tail-ish-loop.asm`. `18-trampoline-depth.asm` is still real recursio
 
 ## Worked example: recursive factorial with proper spill
 
-Let's implement `factorial(n) = n * factorial(n-1)` with base case `factorial(0) = 1`. We must save `rdi` across the recursive call because it is caller-saved and we need its value afterward to multiply.
+Let's implement `factorial(n) = n * factorial(n-1)` with base case `factorial(0) = 1`. We must save `rcx` (the argument) across the recursive call because it is volatile (caller-saved) and the call will clobber it. We also need to allocate shadow space before every recursive call.
+
+<!-- LISTING-PENDING: lessons/05-procedures-recursion/listings/factorial.asm -->
 
 ```asm
-section .text
-    global _start
+EXTERN ExitProcess:PROC
 
-factorial:
-    cmp rdi, 0
-    jg .recurse
+.code
+
+factorial PROC
+    cmp rcx, 0
+    jg recurse_case
     mov rax, 1               ; base case: 0! = 1
     ret
 
-.recurse:
-    push rdi                 ; save n
-    dec rdi                  ; n-1
+recurse_case:
+    push rcx                 ; save n (nonvolatile storage)
+    sub rsp, 40              ; allocate shadow space (32) + alignment (8)
+    
+    dec rcx                  ; n-1
     call factorial           ; rax = (n-1)!
-    pop rdi                  ; restore n
-    imul rax, rdi            ; rax = n * (n-1)!
+    
+    add rsp, 40              ; deallocate stack space
+    pop rcx                  ; restore n
+    imul rax, rcx            ; rax = n * (n-1)!
     ret
+factorial ENDP
 
-_start:
-    mov rdi, 5
-    call factorial
-    mov rdi, rax             ; exit with 5! = 120
-    mov rax, 60
-    syscall
+main PROC
+    sub rsp, 40              ; allocate shadow space + alignment
+    
+    mov rcx, 5
+    call factorial           ; rax = 5! = 120
+    
+    mov ecx, eax             ; exit with 5! = 120
+    call ExitProcess
+main ENDP
+END
 ```
 
 Build and run:
-```bash
-nasm -f elf64 fact.asm -o fact.o
-ld fact.o -o fact
-./fact
-echo $?   # prints 120 (5! = 120)
+```cmd
+ml64 /c fact.asm
+link /OUT:fact.exe /ENTRY:main /SUBSYSTEM:CONSOLE fact.obj kernel32.lib
+fact.exe
+echo %ERRORLEVEL%   REM prints 120 (5! = 120)
 ```
 
-Trace `factorial(3)`: `rdi=3`, push 3, recurse with `rdi=2`, which pushes 2 and recurses with `rdi=1`, which pushes 1 and recurses with `rdi=0`, which returns 1. Back in `factorial(1)`, pop 1, multiply `1 * 1 = 1`, return 1. Back in `factorial(2)`, pop 2, multiply `2 * 1 = 2`, return 2. Back in `factorial(3)`, pop 3, multiply `3 * 2 = 6`, return 6.
+Trace `factorial(3)`: `rcx=3`, push 3 (save), allocate 40 bytes shadow+alignment, recurse with `rcx=2`, which pushes 2, allocates shadow, recurses with `rcx=1`, which pushes 1, allocates shadow, recurses with `rcx=0`, which returns 1. Back in `factorial(1)`, deallocate stack, pop 1, multiply `1 * 1 = 1`, return 1. Back in `factorial(2)`, deallocate, pop 2, multiply `2 * 1 = 2`, return 2. Back in `factorial(3)`, deallocate, pop 3, multiply `3 * 2 = 6`, return 6.
 
-Each call saves its argument, recurses, restores the argument, and multiplies. The stack grows with depth `n` and shrinks as each call returns.
+Each call saves its argument on the stack (via `push rcx`), allocates shadow space for the recursive call, recurses, deallocates shadow space, restores the argument (`pop rcx`), and multiplies. The stack grows with depth `n` (each frame is 48 bytes: 8 for pushed RCX + 40 for shadow/alignment) and shrinks as each call returns.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to forget the `pop rdi` before `imul`. Suppose you write:
+A common mistake is to forget the `pop rcx` before `imul`, or to forget to allocate shadow space before the recursive call. Suppose you write:
 
 ```asm
-.recurse:
-    push rdi
-    dec rdi
+recurse_case:
+    push rcx
+    dec rcx
     call factorial
-    ; MISSING: pop rdi
-    imul rax, rdi            ; BUG: rdi still holds n-1, not n
+    ; MISSING: pop rcx before multiply
+    imul rax, rcx            ; BUG: rcx still holds n-1, not n
     ret
 ```
 
-After the recursive call returns, `rdi` holds the *decremented* value (`n-1`), not the original `n`, because the recursive call overwrote `rdi` with its own argument and never restored it. So you compute `(n-1)! * (n-1)` instead of `n! = n * (n-1)!`. For `factorial(3)`, this produces `2 * 2 = 4` instead of `3 * 2 = 6`.
+After the recursive call returns, `rcx` holds the *decremented* value (`n-1`), not the original `n`, because you never restored it from the stack. So you compute `(n-1)! * (n-1)` instead of `n! = n * (n-1)!`. For `factorial(3)`, this produces `2 * 2 = 4` instead of `3 * 2 = 6`.
 
-The symptom is an incorrect result that is off by a factor related to the recursion depth. The lesson: always match every `push` with a `pop` before using the value you saved.
+Another common mistake is to forget shadow space:
+
+```asm
+recurse_case:
+    push rcx
+    dec rcx
+    call factorial           ; BUG: no shadow space allocated
+    pop rcx
+    imul rax, rcx
+    ret
+```
+
+This violates the Microsoft x64 ABI. The called function expects 32 bytes of shadow space to exist at `[rsp]` through `[rsp+31]` (after `call` pushes the return address, these become `[rsp+8]` through `[rsp+39]`). Without it, the stack may be corrupted, causing crashes or silent misbehavior. **Always** allocate shadow space (plus alignment) before every `call`.
+
+The lesson: match every `push` with a `pop` before using the saved value, and allocate shadow space before every call.
 
 ## Distinctions worth keeping straight
 
 | Confusion | What actually separates them |
 |-----------|------------------------------|
-| Caller-saved vs callee-saved | Caller-saved registers (`rax`, `rcx`, `rdx`, `rsi`, `rdi`, `r8`–`r11`) are clobbered by any call; the caller must save them if needed. Callee-saved registers (`rbx`, `rbp`, `r12`–`r15`) must be preserved by the callee if it uses them. |
-| Local variable allocation size vs alignment | You need `N` bytes for locals, but must allocate a multiple of 16 (accounting for `push rbp`) to maintain stack alignment. Round up: 24 bytes of locals requires `sub rsp, 32`. |
+| Volatile vs nonvolatile (caller-saved vs callee-saved) | Volatile registers (`rax`, `rcx`, `rdx`, `r8`–`r11`) are clobbered by any call; the caller must save them if needed. Nonvolatile registers (`rbx`, `rbp`, `rdi`, `rsi`, `r12`–`r15`) must be preserved by the callee if it uses them. **RSI and RDI are nonvolatile on Windows** (opposite of Linux). |
+| Shadow space + locals + alignment | You need 32 bytes shadow space + `N` bytes for locals + alignment padding. Total must be a multiple of 16 for correct stack alignment before `call`. Example: 32 shadow + 24 locals = 56, round to 64. |
 | `leave` vs `mov rsp, rbp; pop rbp` | They are identical. `leave` is a single instruction that does both. Use `leave` for clarity. |
-| Recursive call vs tail call | A recursive call where work remains afterward (like `imul` or `add`) requires saving state and returning. A tail call where no work remains can use `jmp` instead of `call` to reuse the current frame. |
-| Tail recursion vs loop | Tail recursion can always be rewritten as a loop with an accumulator. The loop avoids stack growth and is more efficient. NASM does not optimize tail calls automatically; you must rewrite them yourself. |
+| Recursive call vs tail call | A recursive call where work remains afterward (like `imul` or `add`) requires saving state, allocating shadow space, and returning. A tail call where no work remains can use `jmp` instead of `call` to reuse the current frame (no shadow space needed for `jmp`). |
+| Tail recursion vs loop | Tail recursion can always be rewritten as a loop with an accumulator. The loop avoids stack growth and is more efficient. The compiler does not optimize tail calls automatically; you must rewrite them yourself. |
 | `call` vs `jmp` for tail calls | `call` pushes a return address you will immediately pop and return; `jmp` skips this overhead. Use `jmp` for tail calls (after ensuring the stack is balanced). |
 | Forgetting to save `rdi` in recursion | Argument registers are caller-saved, so the recursive call clobbers them. If you need the original argument afterward, `push` it before the call and `pop` it after. Forgetting this produces wrong results. |
 
@@ -245,18 +271,19 @@ The symptom is an incorrect result that is off by a factor related to the recurs
 
 ## Key takeaways
 
-- Functions allocate multiple locals by `sub rsp, N` where `N` is rounded up to maintain 16-byte alignment; locals are accessed at `[rbp-8]`, `[rbp-16]`, etc.
-- Callee-saved registers (`rbx`, `rbp`, `r12`–`r15`) must be pushed at function entry and popped before return if the function modifies them; caller-saved registers may be clobbered by any call.
-- Recursive functions must save live arguments (like `rdi`) before the recursive call because argument registers are caller-saved; forgetting to save and restore produces wrong results.
-- Tail calls (where no work remains after the call) can use `jmp` instead of `call` to reuse the current frame and avoid stack growth; NASM does not optimize this automatically.
+- Functions allocate stack space with `sub rsp, N` where `N` includes 32 bytes shadow space + locals + alignment padding (total multiple of 16); locals are accessed at `[rbp-8]`, `[rbp-16]`, or relative to `rsp`.
+- Nonvolatile (callee-saved) registers (`rbx`, `rbp`, `rdi`, `rsi`, `r12`–`r15`) must be pushed at function entry and popped before return if the function modifies them; volatile (caller-saved) registers may be clobbered by any call. **RSI and RDI are nonvolatile on Windows** (opposite of Linux).
+- Recursive functions must save live arguments (like `rcx`) before the recursive call because argument registers are volatile; save them on the stack or in a nonvolatile register, and restore afterward.
+- Before every recursive `call`, allocate shadow space (32 bytes minimum) plus alignment; deallocate after the call returns.
+- Tail calls (where no work remains after the call) can use `jmp` instead of `call` to reuse the current frame and avoid stack growth; the compiler does not optimize this automatically.
 - Tail recursion is equivalent to a loop with an accumulator; rewriting it as a loop eliminates recursion overhead and stack growth.
 - Every `push` must be matched by a `pop` in reverse order (LIFO); unbalanced stack operations cause `ret` to jump to a garbage address and crash.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **System V AMD64 ABI:** Section 3.2 (function calling sequence, register usage, stack alignment)
-- **Recursion patterns:** Any assembly textbook chapter on procedures and recursion
-- **`leave` instruction:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (leave = mov rsp, rbp; pop rbp)
+- **Microsoft x64 calling convention:** https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions (stack usage, shadow space, register preservation)
+- **Recursion patterns:** Any assembly textbook chapter on procedures and recursion (patterns are universal)
+- **`leave` instruction:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (leave = mov rsp, rbp; pop rbp) — same as Linux; instruction is platform-independent
 - **Tail call optimization:** Compiler optimization literature (manual tail-call elimination)
 
 ## Exercises
