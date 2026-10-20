@@ -2,20 +2,24 @@
 ;
 ; rax=3,rbx=3. If equal exit 1 else 0.
 ;
-; Build: nasm -f elf64 02-je-equal.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-je-equal.asm && link /OUT:02-je-equal.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-je-equal.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 3
     mov rbx, 3
     cmp rax, rbx
-    je .yes
-    xor rdi, rdi
-    jmp .exit
-.yes:
-    mov rdi, 1
-.exit:
-    mov rax, 60
-    syscall
+    je yes
+    xor rcx, rcx
+    jmp exit_proc
+yes:
+    mov rcx, 1
+exit_proc:
+    call ExitProcess
+main ENDP
+END

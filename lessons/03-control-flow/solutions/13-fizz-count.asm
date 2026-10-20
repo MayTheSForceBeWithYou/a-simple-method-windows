@@ -2,27 +2,31 @@
 ;
 ; AoC-lite: count numbers 1..20 divisible by 3 (6). Exit 6.
 ;
-; Build: nasm -f elf64 13-fizz-count.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-fizz-count.asm && link /OUT:13-fizz-count.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-fizz-count.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rcx, 1
-.loop:
-    cmp rcx, 20
-    jg .done
-    mov rax, rcx
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    mov r8, 1
+loop_start:
+    cmp r8, 20
+    jg done
+    mov rax, r8
     xor rdx, rdx
     mov rbx, 3
     div rbx
     cmp rdx, 0
-    jne .next
-    inc rdi
-.next:
+    jne next
     inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+next:
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

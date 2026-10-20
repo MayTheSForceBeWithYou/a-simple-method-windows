@@ -1,21 +1,25 @@
 ; Exercise 07: while double
 ;
-; rax=1; while rax<100 rax*=2; exit with final rax clamped: put rax in rdi then and 255; 128&255=128.
+; rax=1; while rax<100 rax*=2; exit with final rax clamped: put rax in rcx then and 255; 128&255=128.
 ;
-; Build: nasm -f elf64 07-while-double.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-while-double.asm && link /OUT:07-while-double.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-while-double.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 128
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 1
-.loop:
+loop_start:
     cmp rax, 100
-    jge .done
+    jge done
     imul rax, 2
-    jmp .loop
-.done:
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+    jmp loop_start
+done:
+    mov rcx, rax
+    and rcx, 255
+    call ExitProcess
+main ENDP
+END

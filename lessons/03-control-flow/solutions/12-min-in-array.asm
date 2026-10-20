@@ -2,28 +2,32 @@
 ;
 ; Same array; min 2.
 ;
-; Build: nasm -f elf64 12-min-in-array.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-min-in-array.asm && link /OUT:12-min-in-array.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-min-in-array.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr dq 3, 9, 2, 7
-    n equ 4
+; Expected exit: 2
 
-section .text
-    global _start
-_start:
-    mov rdi, [arr]
-    mov rcx, 1
-.loop:
-    cmp rcx, n
-    jge .done
-    mov rax, [arr+rcx*8]
-    cmp rax, rdi
-    jge .cont
-    mov rdi, rax
-.cont:
-    inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
+
+.data
+arr QWORD 3, 9, 2, 7
+n EQU 4
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [arr]
+    mov r8, 1
+loop_start:
+    cmp r8, n
+    jge done
+    mov rax, QWORD PTR [arr+r8*8]
+    cmp rax, rcx
+    jge cont
+    mov rcx, rax
+cont:
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

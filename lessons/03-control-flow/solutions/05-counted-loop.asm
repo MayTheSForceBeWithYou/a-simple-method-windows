@@ -1,21 +1,25 @@
 ; Exercise 05: counted loop
 ;
-; Add rcx times: start rdi=0,rcx=5; loop add 3 each time; exit 15.
+; Add r8 times: start rcx=0,r8=5; loop add 3 each time; exit 15.
 ;
-; Build: nasm -f elf64 05-counted-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-counted-loop.asm && link /OUT:05-counted-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-counted-loop.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rcx, 5
-.loop:
-    cmp rcx, 0
-    je .done
-    add rdi, 3
-    dec rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    mov r8, 5
+loop_start:
+    cmp r8, 0
+    je done
+    add rcx, 3
+    dec r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

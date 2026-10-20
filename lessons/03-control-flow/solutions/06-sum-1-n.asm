@@ -1,21 +1,25 @@
 ; Exercise 06: sum 1 n
 ;
-; Sum 1..n for n=10 into rdi (55).
+; Sum 1..n for n=10 into rcx (55).
 ;
-; Build: nasm -f elf64 06-sum-1-n.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-sum-1-n.asm && link /OUT:06-sum-1-n.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-sum-1-n.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rcx, 1
-.loop:
-    cmp rcx, 10
-    jg .done
-    add rdi, rcx
-    inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+; Expected exit: 55
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    mov r8, 1
+loop_start:
+    cmp r8, 10
+    jg done
+    add rcx, r8
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

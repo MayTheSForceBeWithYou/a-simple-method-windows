@@ -2,22 +2,26 @@
 ;
 ; FROM SCRATCH: 6! with a counted loop = 720. Exit 720&255=208.
 ;
-; Build: nasm -f elf64 29-from-scratch-factorial-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 29-from-scratch-factorial-loop.asm && link /OUT:29-from-scratch-factorial-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 29-from-scratch-factorial-loop.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 208
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 1
-    mov rcx, 2
-.loop:
-    cmp rcx, 6
-    jg .done
-    imul rax, rcx
-    inc rcx
-    jmp .loop
-.done:
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+    mov r8, 2
+loop_start:
+    cmp r8, 6
+    jg done
+    imul rax, r8
+    inc r8
+    jmp loop_start
+done:
+    mov rcx, rax
+    and rcx, 255
+    call ExitProcess
+main ENDP
+END

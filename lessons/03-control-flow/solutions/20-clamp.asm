@@ -2,21 +2,25 @@
 ;
 ; x=150. Clamp to [0,100]. Exit 100.
 ;
-; Build: nasm -f elf64 20-clamp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 20-clamp.asm && link /OUT:20-clamp.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-clamp.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 100
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 150
     cmp rax, 0
-    jge .hi
+    jge hi
     xor rax, rax
-.hi:
+hi:
     cmp rax, 100
-    jle .ok
+    jle ok
     mov rax, 100
-.ok:
-    mov rdi, rax
-    mov rax, 60
-    syscall
+ok:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

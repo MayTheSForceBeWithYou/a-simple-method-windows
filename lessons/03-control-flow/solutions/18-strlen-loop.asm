@@ -1,24 +1,28 @@
 ; Exercise 18: strlen loop
 ;
-; Cstring 'hello',0. Count length 5 into rdi.
+; Cstring 'hello',0. Count length 5 into rcx.
 ;
-; Build: nasm -f elf64 18-strlen-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-strlen-loop.asm && link /OUT:18-strlen-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-strlen-loop.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    s db "hello", 0
+; Expected exit: 5
 
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "hello", 0
+
+.code
+main PROC
+    sub rsp, 32
     lea rsi, [s]
-    xor rdi, rdi
-.loop:
-    cmp byte [rsi], 0
-    je .done
-    inc rdi
+    xor rcx, rcx
+loop_start:
+    cmp BYTE PTR [rsi], 0
+    je done
+    inc rcx
     inc rsi
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END

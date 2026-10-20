@@ -1,29 +1,33 @@
 ; Exercise 09: count evens
 ;
-; arr db 1,2,3,4,5,6. Count evens (3). test al,1 / jz.
+; arr BYTE 1,2,3,4,5,6. Count evens (3). test rax,1 / jz.
 ;
-; Build: nasm -f elf64 09-count-evens.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-count-evens.asm && link /OUT:09-count-evens.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-count-evens.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr db 1, 2, 3, 4, 5, 6
-    n equ 6
+; Expected exit: 3
 
-section .text
-    global _start
-_start:
-    xor rdi, rdi
+EXTERN ExitProcess:PROC
+
+.data
+arr BYTE 1, 2, 3, 4, 5, 6
+n EQU 6
+
+.code
+main PROC
+    sub rsp, 32
     xor rcx, rcx
-.loop:
-    cmp rcx, n
-    jge .done
-    movzx rax, byte [arr+rcx]
+    xor r8, r8
+loop_start:
+    cmp r8, n
+    jge done
+    movzx rax, BYTE PTR [arr+r8]
     test rax, 1
-    jnz .odd
-    inc rdi
-.odd:
+    jnz odd
     inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+odd:
+    inc r8
+    jmp loop_start
+done:
+    call ExitProcess
+main ENDP
+END
