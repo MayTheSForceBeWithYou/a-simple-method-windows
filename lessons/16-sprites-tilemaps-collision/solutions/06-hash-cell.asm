@@ -2,19 +2,24 @@
 ;
 ; cell=(x>>3)+((y>>3)<<4); x=10 y=10; compute exit &255.
 ;
-; Build: nasm -f elf64 06-hash-cell.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-hash-cell.asm && link /OUT:06-hash-cell.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-hash-cell.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 17
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 10
     shr rax, 3
     mov rbx, 10
     shr rbx, 3
     shl rbx, 4
     add rax, rbx
-    mov rdi, rax
-    and rdi, 255
-    mov rax, 60
-    syscall
+    and rax, 255
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

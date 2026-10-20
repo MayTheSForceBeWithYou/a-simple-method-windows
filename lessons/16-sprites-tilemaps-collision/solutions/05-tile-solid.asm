@@ -2,14 +2,20 @@
 ;
 ; tile id 2 solid table; exit 1.
 ;
-; Build: nasm -f elf64 05-tile-solid.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-tile-solid.asm && link /OUT:05-tile-solid.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-tile-solid.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    solid db 0,0,1,0
-section .text
-    global _start
-_start:
-    movzx rdi, byte [solid+2]
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+solid BYTE 0,0,1,0
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rcx, BYTE PTR [solid+2]
+    call ExitProcess
+main ENDP
+END

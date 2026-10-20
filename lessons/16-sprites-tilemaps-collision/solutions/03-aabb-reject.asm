@@ -2,12 +2,17 @@
 ;
 ; No overlap -> 0.
 ;
-; Build: nasm -f elf64 03-aabb-reject.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-aabb-reject.asm && link /OUT:03-aabb-reject.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-aabb-reject.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rax, 60
-    syscall
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    call ExitProcess
+main ENDP
+END

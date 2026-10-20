@@ -2,15 +2,21 @@
 ;
 ; Flags bit0 solid bit1 platform; value 3; exit solid&1 =1.
 ;
-; Build: nasm -f elf64 14-tile-collision-mask.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-tile-collision-mask.asm && link /OUT:14-tile-collision-mask.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-tile-collision-mask.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    flags db 3
-section .text
-    global _start
-_start:
-    movzx rdi,byte [flags]
-    and rdi,1
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+flags BYTE 3
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rcx, BYTE PTR [flags]
+    and rcx, 1
+    call ExitProcess
+main ENDP
+END
