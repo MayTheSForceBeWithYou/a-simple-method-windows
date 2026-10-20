@@ -2,12 +2,17 @@
 ;
 ; Alpha blend stub: out=src if a=255; exit 7.
 ;
-; Build: nasm -f elf64 20-alpha-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 20-alpha-stub.asm && link /OUT:20-alpha-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-alpha-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,7
-    mov rax,60
-    syscall
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 7
+    call ExitProcess
+main ENDP
+END

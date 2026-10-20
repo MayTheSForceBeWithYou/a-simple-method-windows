@@ -2,14 +2,20 @@
 ;
 ; STRETCH: "P6\n" length 3; exit 3.
 ;
-; Build: nasm -f elf64 23-stretch-ppm-header-len.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-ppm-header-len.asm && link /OUT:23-stretch-ppm-header-len.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-ppm-header-len.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    h db "P6",10
-section .text
-    global _start
-_start:
-    mov rdi,3
-    mov rax,60
-    syscall
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+h BYTE "P6",10
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    call ExitProcess
+main ENDP
+END

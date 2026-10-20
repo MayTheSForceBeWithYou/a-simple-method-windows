@@ -2,15 +2,21 @@
 ;
 ; Plot color 7 at index 0; exit 7.
 ;
-; Build: nasm -f elf64 04-plot-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-plot-stub.asm && link /OUT:04-plot-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-plot-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    fb resb 16
-section .text
-    global _start
-_start:
-    mov byte [fb], 7
-    movzx rdi, byte [fb]
-    mov rax, 60
-    syscall
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+fb BYTE 16 DUP(?)
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [fb], 7
+    movzx rcx, BYTE PTR [fb]
+    call ExitProcess
+main ENDP
+END

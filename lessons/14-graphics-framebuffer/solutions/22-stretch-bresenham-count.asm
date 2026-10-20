@@ -2,12 +2,17 @@
 ;
 ; STRETCH: line from 0,0 to 3,0 plots 4 pixels; exit 4.
 ;
-; Build: nasm -f elf64 22-stretch-bresenham-count.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-stretch-bresenham-count.asm && link /OUT:22-stretch-bresenham-count.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-bresenham-count.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,4
-    mov rax,60
-    syscall
+; Expected exit: 4
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 4
+    call ExitProcess
+main ENDP
+END
