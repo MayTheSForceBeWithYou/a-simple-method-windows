@@ -1,28 +1,17 @@
-; Exercise 04: mov vs lea (Win32 port) - SOLUTION
+; Exercise 04: mov vs lea
 ;
-; Label x DQ 99. LEA RBX,[x] then MOV RAX,[RBX]. Exit with 99.
-; Add comments explaining which instruction computes address vs loads value.
+; Label x dq 99. lea rbx,[x] then mov rdi,[rbx]. Exit with 99. Comment which is address vs load.
 ;
-; Build: ml64 /c /Fo04-mov-vs-lea.obj 04-mov-vs-lea.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-mov-vs-lea.exe 04-mov-vs-lea.obj kernel32.lib
-; Run: 04-mov-vs-lea.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 04-mov-vs-lea.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 99
+; --- your code below ---
+section .data
+    x dq 99
 
-.DATA
-x DQ 99
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    lea rbx, x                 ; Compute address of x (no memory access)
-    mov rax, [rbx]             ; Load value from that address (memory read)
-    mov rcx, rax               ; Move to exit parameter
-    call ExitProcess
-    
-main ENDP
-
-END
+section .text
+    global _start
+_start:
+    lea rbx, [x]
+    mov rdi, [rbx]
+    mov rax, 60
+    syscall

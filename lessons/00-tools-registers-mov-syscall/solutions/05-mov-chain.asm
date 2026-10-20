@@ -1,24 +1,19 @@
-; Exercise 05: mov chain (Win32 port) - SOLUTION
+; Exercise 05: mov chain
 ;
-; Move 13 through RAX -> RBX -> RCX, then exit with RCX.
+; Set al=3, bl=5, cl=7. Sum into dil, movzx to rdi, exit (expect 15).
 ;
-; Build: ml64 /c /Fo05-mov-chain.obj 05-mov-chain.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-mov-chain.exe 05-mov-chain.obj kernel32.lib
-; Run: 05-mov-chain.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 05-mov-chain.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 13
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    mov rax, 13
-    mov rbx, rax
-    mov rcx, rbx
-    call ExitProcess
-    
-main ENDP
-
-END
+; --- your code below ---
+section .text
+    global _start
+_start:
+    mov al, 3
+    mov bl, 5
+    mov cl, 7
+    mov dil, al
+    add dil, bl
+    add dil, cl
+    movzx rdi, dil
+    mov rax, 60
+    syscall

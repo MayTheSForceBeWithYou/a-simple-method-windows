@@ -1,26 +1,17 @@
-; Exercise 03: bss store (Win32 port) - SOLUTION
+; Exercise 03: bss store
 ;
-; Declare 1 byte in .DATA? (uninitialized). Store 7 into it, load into RCX, exit.
+; resb 1 in .bss. Store 7 into it, load into rdi, exit.
 ;
-; Build: ml64 /c /Fo03-bss-store.obj 03-bss-store.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-bss-store.exe 03-bss-store.obj kernel32.lib
-; Run: 03-bss-store.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 03-bss-store.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 7
+; --- your code below ---
+section .bss
+    slot resb 1
 
-.DATA?
-storage DB ?
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    mov BYTE PTR storage, 7    ; Store 7
-    movzx rcx, BYTE PTR storage ; Load back into RCX
-    call ExitProcess
-    
-main ENDP
-
-END
+section .text
+    global _start
+_start:
+    mov byte [slot], 7
+    movzx rdi, byte [slot]
+    mov rax, 60
+    syscall

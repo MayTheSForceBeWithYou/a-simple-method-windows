@@ -1,25 +1,17 @@
-; Exercise 06: mul unsigned (Win32 port) - SOLUTION
+; Exercise 06: mul unsigned
 ;
-; RAX=21, RBX=2. MUL RBX. Exit with product (42).
+; rax=100000, rbx=3; mul rbx; exit with low 8 bits of rax via movzx... actually exit with rax truncated: use rdi=rax after mul if fits; expect 300000 mod 256? Better: exit status = (rax & 0xff) after confirming product — use mov rdi, rax then and rdi, 255. Product 300000. Status 300000&255=224.
 ;
-; Build: ml64 /c /Fo06-mul-unsigned.obj 06-mul-unsigned.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-mul-unsigned.exe 06-mul-unsigned.obj kernel32.lib
-; Run: 06-mul-unsigned.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 06-mul-unsigned.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 42
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    mov rax, 21
-    mov rbx, 2
-    mul rbx                    ; RDX:RAX = 21 * 2 = 42
-    mov rcx, rax
-    call ExitProcess
-    
-main ENDP
-
-END
+; --- your code below ---
+section .text
+    global _start
+_start:
+    mov rax, 100000
+    mov rbx, 3
+    mul rbx
+    mov rdi, rax
+    and rdi, 255
+    mov rax, 60
+    syscall

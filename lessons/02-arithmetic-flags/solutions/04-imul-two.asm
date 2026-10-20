@@ -1,25 +1,15 @@
-; Exercise 04: imul two (Win32 port) - SOLUTION
+; Exercise 04: imul two
 ;
-; RAX=6, RBX=7. IMUL RAX, RBX. Exit with 42.
+; imul-style: rax=6, imul rax,7; mov rdi,rax; exit 42.
 ;
-; Build: ml64 /c /Fo04-imul-two.obj 04-imul-two.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-imul-two.exe 04-imul-two.obj kernel32.lib
-; Run: 04-imul-two.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 04-imul-two.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 42
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
+; --- your code below ---
+section .text
+    global _start
+_start:
     mov rax, 6
-    mov rbx, 7
-    imul rax, rbx              ; RAX = 6 * 7 = 42
-    mov rcx, rax
-    call ExitProcess
-    
-main ENDP
-
-END
+    imul rax, 7
+    mov rdi, rax
+    mov rax, 60
+    syscall

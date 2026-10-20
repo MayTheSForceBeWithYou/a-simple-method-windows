@@ -1,22 +1,13 @@
-; Exercise 04: zero with xor (Win32 port) - SOLUTION
+; Exercise 04: zero with xor
 ;
-; Use the XOR idiom to zero RCX, then exit with that status.
+; Exit 0. You MUST zero the status register with xor (not mov imm 0).
 ;
-; Build: ml64 /c /Fo04-zero-with-xor.obj 04-zero-with-xor.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-zero-with-xor.exe 04-zero-with-xor.obj kernel32.lib
-; Run: 04-zero-with-xor.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 04-zero-with-xor.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 0
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    xor ecx, ecx               ; Zero ECX (zero-extends to RCX)
-    call ExitProcess
-    
-main ENDP
-
-END
+; --- your code below ---
+section .text
+    global _start
+_start:
+    mov rax, 60
+    xor rdi, rdi
+    syscall

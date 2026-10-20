@@ -1,24 +1,15 @@
-; Exercise 08: lea scale (Win32 port) - SOLUTION
+; Exercise 08: lea scale
 ;
-; Use LEA to multiply: RAX=7, compute RAX*4 with LEA RAX,[RAX*4]. Exit with 28.
+; Without memory load: rbx=100, rcx=3. lea rdi,[rbx+rcx*4] (112), exit.
 ;
-; Build: ml64 /c /Fo08-lea-scale.obj 08-lea-scale.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-lea-scale.exe 08-lea-scale.obj kernel32.lib
-; Run: 08-lea-scale.exe & echo %ERRORLEVEL%
+; Build: nasm -f elf64 08-lea-scale.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 ;
-; Expected: exit code 28
-
-.CODE
-
-EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
-    
-    mov rax, 7
-    lea rax, [rax*4]           ; RAX = RAX * 4 = 28
-    mov rcx, rax
-    call ExitProcess
-    
-main ENDP
-
-END
+; --- your code below ---
+section .text
+    global _start
+_start:
+    mov rbx, 100
+    mov rcx, 3
+    lea rdi, [rbx+rcx*4]
+    mov rax, 60
+    syscall
