@@ -2,15 +2,18 @@
 ;
 ; STRETCH: modal stack depth 1; exit 1.
 ;
-; Build: nasm -f elf64 23-stretch-ui-modal.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-ui-modal.asm && link /OUT:23-stretch-ui-modal.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-ui-modal.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    modal_depth resq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     inc qword [modal_depth]
-    mov rdi,[modal_depth]
-    mov rax,60
-    syscall
+    mov rcx, [modal_depth]
+    call ExitProcess
+
+main ENDP
+END

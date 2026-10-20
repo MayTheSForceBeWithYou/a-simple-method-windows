@@ -2,12 +2,17 @@
 ;
 ; Track piece type 3; exit 3.
 ;
-; Build: nasm -f elf64 02-place-track.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-place-track.asm && link /OUT:02-place-track.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-place-track.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 3
-    mov rax, 60
-    syscall
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    call ExitProcess
+main ENDP
+END

@@ -2,15 +2,18 @@
 ;
 ; Peep follows path; steps remaining 4; exit 4.
 ;
-; Build: nasm -f elf64 13-peep-pathfind-step.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 13-peep-pathfind-step.asm && link /OUT:13-peep-pathfind-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-peep-pathfind-step.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    steps resq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     mov qword [steps],4
-    mov rdi,[steps]
-    mov rax,60
-    syscall
+    mov rcx, [steps]
+    call ExitProcess
+
+main ENDP
+END

@@ -2,12 +2,20 @@
 ;
 ; Slot index 2 offset; exit 2.
 ;
-; Build: nasm -f elf64 21-formation-slot.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 21-formation-slot.asm && link /OUT:21-formation-slot.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-formation-slot.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi,2
-    mov rax,60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
+;
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
+    mov rcx, 2
+    call ExitProcess
+
+main ENDP
+END

@@ -2,15 +2,18 @@
 ;
 ; cash += ticket 15; from 0 exit 15.
 ;
-; Build: nasm -f elf64 15-econ-ticket.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-econ-ticket.asm && link /OUT:15-econ-ticket.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-econ-ticket.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    cash resq 1
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     add qword [cash],15
-    mov rdi,[cash]
-    mov rax,60
-    syscall
+    mov rcx, [cash]
+    call ExitProcess
+
+main ENDP
+END

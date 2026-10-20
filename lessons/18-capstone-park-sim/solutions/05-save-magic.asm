@@ -2,14 +2,20 @@
 ;
 ; Magic 'PK01' first byte 'P'=80; exit 80.
 ;
-; Build: nasm -f elf64 05-save-magic.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-save-magic.asm && link /OUT:05-save-magic.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-save-magic.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    magic db "PK01"
-section .text
-    global _start
-_start:
-    movzx rdi, byte [magic]
-    mov rax, 60
-    syscall
+; Expected exit: 80
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+magic BYTE "PK01"
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rcx, BYTE PTR [magic]
+    call ExitProcess
+main ENDP
+END

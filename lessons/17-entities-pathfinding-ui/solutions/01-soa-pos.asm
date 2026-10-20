@@ -2,16 +2,22 @@
 ;
 ; xs[1]=5 ys[1]=6; exit xs+ys 11.
 ;
-; Build: nasm -f elf64 01-soa-pos.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-soa-pos.asm && link /OUT:01-soa-pos.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-soa-pos.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    xs dq 0,5,0
-    ys dq 0,6,0
-section .text
-    global _start
-_start:
-    mov rdi, [xs+8]
-    add rdi, [ys+8]
-    mov rax, 60
-    syscall
+; Expected exit: 11
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+xs QWORD 0,5,0
+ys QWORD 0,6,0
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [xs+8]
+    add rcx, [ys+8]
+    call ExitProcess
+main ENDP
+END

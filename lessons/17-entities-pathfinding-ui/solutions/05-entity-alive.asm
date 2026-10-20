@@ -2,15 +2,21 @@
 ;
 ; flags bit0 alive; exit 1.
 ;
-; Build: nasm -f elf64 05-entity-alive.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-entity-alive.asm && link /OUT:05-entity-alive.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-entity-alive.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    flags db 1
-section .text
-    global _start
-_start:
-    movzx rdi, byte [flags]
-    and rdi, 1
-    mov rax, 60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+flags BYTE 1
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rcx, BYTE PTR [flags]
+    and rcx, 1
+    call ExitProcess
+main ENDP
+END

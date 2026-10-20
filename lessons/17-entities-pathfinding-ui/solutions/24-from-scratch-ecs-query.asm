@@ -2,14 +2,15 @@
 ;
 ; FROM SCRATCH: count entities with mask POS; 3 of 4; exit 3.
 ;
-; Build: nasm -f elf64 24-from-scratch-ecs-query.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-from-scratch-ecs-query.asm && link /OUT:24-from-scratch-ecs-query.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-ecs-query.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    masks db 1,3,1,2
-section .text
-    global _start
-_start:
+
+EXTERN ExitProcess:PROC
+
+.code
+    
+main PROC
+    sub rsp, 32
     xor rdi,rdi
     xor rcx,rcx
 .l:
@@ -25,3 +26,6 @@ _start:
 .d:
     mov rax,60
     syscall
+
+main ENDP
+END
