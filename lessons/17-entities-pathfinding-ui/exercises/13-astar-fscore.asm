@@ -1,7 +1,7 @@
-; 13-astar-fscore
+; 13-astar-fscore: astar fscore
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 13-astar-fscore>
+.ERR <TODO: Implement astar fscore>
 main PROC
 .ERR <TODO>
 main ENDP

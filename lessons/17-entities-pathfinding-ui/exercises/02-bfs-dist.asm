@@ -1,7 +1,7 @@
-; 02-bfs-dist
+; 02-bfs-dist: bfs dist
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 02-bfs-dist>
+.ERR <TODO: Implement bfs dist>
 main PROC
 .ERR <TODO>
 main ENDP

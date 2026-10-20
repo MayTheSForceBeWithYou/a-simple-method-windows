@@ -1,7 +1,7 @@
-; 14-path-reconstruct
+; 14-path-reconstruct: path reconstruct
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 14-path-reconstruct>
+.ERR <TODO: Implement path reconstruct>
 main PROC
 .ERR <TODO>
 main ENDP

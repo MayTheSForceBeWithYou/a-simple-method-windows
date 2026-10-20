@@ -1,7 +1,7 @@
-; 21-formation-slot
+; 21-formation-slot: formation slot
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 21-formation-slot>
+.ERR <TODO: Implement formation slot>
 main PROC
 .ERR <TODO>
 main ENDP

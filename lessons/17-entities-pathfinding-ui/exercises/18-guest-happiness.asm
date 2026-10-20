@@ -1,7 +1,7 @@
-; 18-guest-happiness
+; 18-guest-happiness: guest happiness
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-guest-happiness>
+.ERR <TODO: Implement guest happiness>
 main PROC
 .ERR <TODO>
 main ENDP

@@ -1,7 +1,7 @@
-; 12-bfs-queue
+; 12-bfs-queue: bfs queue
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 12-bfs-queue>
+.ERR <TODO: Implement bfs queue>
 main PROC
 .ERR <TODO>
 main ENDP

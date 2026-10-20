@@ -1,7 +1,7 @@
-; 06-path-step
+; 06-path-step: path step
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 06-path-step>
+.ERR <TODO: Implement path step>
 main PROC
 .ERR <TODO>
 main ENDP

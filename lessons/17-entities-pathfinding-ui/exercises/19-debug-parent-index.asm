@@ -1,7 +1,7 @@
-; 19-debug-parent-index
+; 19-debug-parent-index: debug parent index
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 19-debug-parent-index>
+.ERR <TODO: Implement debug parent index>
 main PROC
 .ERR <TODO>
 main ENDP

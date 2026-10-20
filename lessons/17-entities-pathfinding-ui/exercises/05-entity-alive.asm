@@ -1,7 +1,7 @@
-; 05-entity-alive
+; 05-entity-alive: entity alive
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 05-entity-alive>
+.ERR <TODO: Implement entity alive>
 main PROC
 .ERR <TODO>
 main ENDP

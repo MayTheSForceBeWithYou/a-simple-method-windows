@@ -1,7 +1,7 @@
-; 09-spawn-entity
+; 09-spawn-entity: spawn entity
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 09-spawn-entity>
+.ERR <TODO: Implement spawn entity>
 main PROC
 .ERR <TODO>
 main ENDP

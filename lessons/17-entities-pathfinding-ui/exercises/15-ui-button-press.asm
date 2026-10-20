@@ -1,7 +1,7 @@
-; 15-ui-button-press
+; 15-ui-button-press: ui button press
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 15-ui-button-press>
+.ERR <TODO: Implement ui button press>
 main PROC
 .ERR <TODO>
 main ENDP

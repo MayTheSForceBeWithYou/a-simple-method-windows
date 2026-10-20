@@ -1,7 +1,7 @@
-; 17-panel-layout
+; 17-panel-layout: panel layout
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 17-panel-layout>
+.ERR <TODO: Implement panel layout>
 main PROC
 .ERR <TODO>
 main ENDP

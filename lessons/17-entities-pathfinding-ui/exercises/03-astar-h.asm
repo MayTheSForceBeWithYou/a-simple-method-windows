@@ -1,7 +1,7 @@
-; 03-astar-h
+; 03-astar-h: astar h
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 03-astar-h>
+.ERR <TODO: Implement astar h>
 main PROC
 .ERR <TODO>
 main ENDP
