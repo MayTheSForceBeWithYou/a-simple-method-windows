@@ -348,6 +348,13 @@ Future course updates will expand these into full implementations.
 - BFS and A\*: [Red Blob Games: Introduction to A\*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
 - Manhattan distance admissibility: [Wikipedia: Taxicab geometry](https://en.wikipedia.org/wiki/Taxicab_geometry)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/17-entities-pathfinding-ui/listings/01-entity-update.asm -->
+<!-- LISTING-PENDING: lessons/17-entities-pathfinding-ui/listings/02-manhattan-dist.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
