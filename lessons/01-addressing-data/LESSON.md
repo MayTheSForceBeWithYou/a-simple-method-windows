@@ -1,228 +1,437 @@
 # Lesson 01 — Addressing Modes & Data Sections
 
-Most computation happens in registers, but real programs read and write memory. This lesson teaches you how to declare data in the right MASM section, how to address it with immediate values, labels, register indirection, and scaled indexing, and crucially how to distinguish between computing an address (`lea`) and loading the value stored at that address (`mov`). Once you master these addressing modes, you can implement arrays, buffers, and structured data layouts.
+Most computation happens in registers, but real programs read and write memory. This lesson teaches you how to declare data in the right MASM section, how to address it with labels, register indirection, displacement, and scaled indexing, and how to distinguish computing an address (`lea`) from loading the value stored there (`mov`). Once you master these addressing modes, you can implement arrays, buffers, and structured data layouts.
 
 ## What this lesson asks of you
 
-You must be able to choose the correct MASM section (`.data`, `.const`, `.data?`, `.code`) for initialized mutable data, read-only constants, zero-filled buffers, and executable code. You will use all the major addressing modes: immediate (constants), register-to-register, direct memory access via labels, register-indirect `[reg]`, base+displacement `[reg+offset]`, and full scaled-index-base `[base+index*scale+disp]`. You will also recognize that `lea` performs address arithmetic without touching memory, while `mov` with brackets loads or stores actual data. By the end, you should be able to index into an array, read and write buffers of different sizes (`BYTE`, `WORD`, `DWORD`, `QWORD`), and debug common mistakes like wrong sizes or uninitialized reads.
+You must choose the correct MASM section (`.DATA`, `.CONST`, `.DATA?`, `.CODE`) for initialized mutable data, read-only constants, zero-filled buffers, and executable code. You will use immediate, register, direct-label, register-indirect `[reg]`, base+displacement `[reg+offset]`, and scaled-index `[base+index*scale]` addressing. You will recognize that `lea` performs address arithmetic without touching memory, while `mov` with a memory operand loads or stores data. By the end you should index into an array, read and write `BYTE`/`WORD`/`DWORD`/`QWORD` buffers, and debug wrong scales and uninitialized reads.
 
 ## PE/COFF sections: where your data lives
 
-A PE (Portable Executable) binary divides memory into **sections**, each with different permissions and purposes. The linker and loader use these sections to decide what gets mapped as read-only, read-write, or executable. In MASM, you use directives to declare which section you are currently defining; the assembler maps these directives to PE section names.
-
-| MASM Directive | PE Section | Purpose | Permission | File bytes? |
+| MASM directive | PE section | Purpose | Permission | File bytes? |
 |----------------|------------|---------|------------|-------------|
-| `.code` | `.text` | Executable code (instructions) | Read + execute | Yes |
-| `.data` | `.data` | Initialized read-write data | Read + write | Yes |
-| `.const` | `.rdata` | Read-only initialized data (constants, strings) | Read only | Yes |
-| `.data?` | `.data` (uninitialized) | Uninitialized or zero-filled data | Read + write | No (size in headers) |
+| `.CODE` | `.text` | Instructions | Read + execute | Yes |
+| `.DATA` | `.data` | Initialized read-write data | Read + write | Yes |
+| `.CONST` | `.rdata` | Read-only initialized data | Read only | Yes |
+| `.DATA?` | uninitialized `.data` / `.bss` | Zero-filled at load | Read + write | Size in headers only |
 
-Use `.const` for string literals you never modify, like prompts or error messages. Use `.data` for variables you initialize and later change, like counters or status flags. Use `.data?` for buffers and large arrays that start at zero — the loader zeros `.data?` at load time, so the object file does not waste space storing zeros. Use `.code` for your instructions.
+Use `.CONST` for strings you never modify. Use `.DATA` for initialized variables you later change. Use `.DATA?` for buffers that start at zero — the loader zeros them, so the object file does not store the zeros. Use `.CODE` for instructions.
 
-Here's how they look in practice:
-
-<!-- LISTING-PENDING: lessons/01-addressing-data/listings/section-declarations.asm -->
+64-bit MASM encodes accesses to these labels as **RIP-relative** by default. You do not write NASM's `[rel symbol]`.
 
 ```asm
-.const
-    prompt BYTE "Enter value: ", 0    ; null-terminated string (immutable)
+; Listing 01: Data section declarations
+;
+; Purpose: Demonstrates different data sections and their uses.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-data-sections.obj 01-data-sections.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-data-sections.exe 01-data-sections.obj kernel32.lib
 
-.data
-    counter QWORD 0                   ; 8-byte initialized counter
+.CONST
+readonly_msg DB "This is read-only", 0
 
-.data?
-    buffer BYTE 256 DUP(?)            ; 256-byte zero-filled buffer
+.DATA
+counter DQ 42                  ; Initialized, writable 64-bit value
+status DD 0                    ; Initialized 32-bit value
 
-.code
+.DATA?
+buffer DB 256 DUP(?)           ; Uninitialized 256-byte buffer
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
 main PROC
-    ; code goes here
-    ret
+    sub rsp, 32
+    
+    ; Load counter value and exit with it
+    mov rax, counter           ; Load from .DATA
+    mov rcx, rax
+    call ExitProcess
 main ENDP
+
 END
 ```
 
-The difference between `BYTE` (or `db`) and `BYTE N DUP(?)` is that `BYTE` with values stores actual byte values in the object file, while `BYTE N DUP(?)` in `.data?` only reserves space without storing anything — the loader fills it with zeros. MASM accepts lowercase synonyms (`db`, `dw`, `dd`, `dq`) from other assemblers, but the uppercase `BYTE`, `WORD`, `DWORD`, `QWORD` are more idiomatic in MASM and match the Win32 API type names.
+`DB`/`DQ`/`DD` are the same sizes as `BYTE`/`QWORD`/`DWORD`. `256 DUP(?)` reserves 256 uninitialized bytes. `mov rax, counter` in MASM loads the **contents** of `counter` (42). That is the opposite of NASM, where `mov rax, counter` is an address immediate and you need `mov rax, [counter]` for the value. In MASM, `mov rax, OFFSET counter` or `lea rax, counter` produces the address.
 
-## Addressing modes: how to name memory locations
+## Addressing modes
 
-An **addressing mode** specifies where the operand lives: in a register, at a fixed address, at an address computed from registers, or as an immediate constant. x86-64 supports a rich set of modes.
-
-### Immediate and register modes
+### Immediate and register
 
 ```asm
-mov rax, 42          ; immediate: rax = 42 (constant)
-mov rbx, rax         ; register: rbx = rax (copy register)
+mov rax, 42          ; immediate
+mov rbx, rax         ; register copy
 ```
 
-Nothing touches memory here.
+Nothing touches memory.
 
 ### Direct (label) addressing
 
+MASM treats a bare data label as a memory operand. Brackets are optional for that case:
+
 ```asm
-mov rax, [counter]   ; load 8 bytes from address 'counter' into rax
-mov [counter], rax   ; store rax into memory at address 'counter'
+mov rax, value1      ; load 8 bytes from label value1
+mov result, rax      ; store rax at label result
 ```
 
-The label `counter` is a symbol resolved by the linker to a fixed address. Brackets mean "load from" or "store to" that address. Without brackets, `mov rax, counter` would load the *address* of `counter` as an immediate, not its contents.
-
-### Register-indirect addressing
-
 ```asm
-mov al, [rsi]        ; load 1 byte from the address in rsi into al
-mov [rdi], al        ; store al to the address in rdi
-```
+; Listing 02: Direct addressing with labels
+;
+; Purpose: Load from and store to memory using label addresses.
+; Expected exit code: 30
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo02-direct-addressing.obj 02-direct-addressing.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-direct-addressing.exe 02-direct-addressing.obj kernel32.lib
 
-The address is whatever value `rsi` or `rdi` currently holds. This is how you walk through buffers: increment `rsi` after each read to move to the next byte.
+.DATA
+value1 DQ 10
+value2 DQ 20
+result DQ 0
 
-### Base + displacement
+.CODE
 
-```asm
-mov eax, [rbx+8]     ; load 4 bytes from address (rbx + 8) into eax
-mov qword [rsp-16], rax   ; store rax at address (rsp - 16)
-```
+EXTRN ExitProcess:PROC
 
-Useful for accessing struct fields at fixed offsets: if `rbx` points to the start of a struct, `[rbx+8]` accesses the field at offset 8. Also used for stack locals relative to `rsp` or `rbp`.
-
-### Scaled index (array indexing)
-
-```asm
-mov al, [rsi+rcx]           ; address = rsi + rcx (1-byte elements)
-mov rax, [rbx+rcx*8]        ; address = rbx + rcx*8 (8-byte elements)
-mov eax, [rbx+rcx*4+16]     ; address = rbx + rcx*4 + 16 (full SIB form)
-```
-
-This is the hardware support for array indexing. If `rbx` points to the start of an array of 8-byte elements and `rcx` holds the index, then `[rbx+rcx*8]` accesses `array[rcx]` directly. The **scale** can be 1, 2, 4, or 8, matching common element sizes. The full **SIB (Scale-Index-Base)** form combines a base register, an index register, a scale, and a constant displacement.
-
-### Size specifiers
-
-When the instruction does not imply the operand size, you must specify it explicitly. MASM uses the `PTR` keyword with a size specifier:
-
-```asm
-mov BYTE PTR [buffer], 65       ; store 1 byte (ASCII 'A')
-mov WORD PTR [buffer], 4241h    ; store 2 bytes (hex literal in MASM uses 'h' suffix)
-mov DWORD PTR [buffer], 1       ; store 4 bytes
-mov QWORD PTR [buffer], rax     ; store 8 bytes
-```
-
-Without the size specifier, `mov [buffer], 65` is ambiguous — does it store a byte, a word, a doubleword, or a quadword? MASM will reject it with an error. When the destination is a register, the size is clear from the register name (`al` = 1 byte, `eax` = 4 bytes, `rax` = 8 bytes), so no `PTR` is needed.
-
-**Note:** MASM also accepts the NASM-style syntax `mov byte [buffer], 65` without `PTR`, but the `BYTE PTR` form is more idiomatic and explicit in MASM code. This course uses the `PTR` form for clarity.
-
-## Load effective address: `lea` vs `mov`
-
-The `lea` instruction computes an address expression and stores the **result address** in a register, without accessing memory. In contrast, `mov` with brackets accesses memory at that address.
-
-```asm
-lea rax, [rbx+rcx*4+8]      ; rax = rbx + rcx*4 + 8 (no memory access)
-mov rax, [rbx+rcx*4+8]      ; rax = qword loaded from address (rbx + rcx*4 + 8)
-```
-
-Why is `lea` useful? It lets you do integer arithmetic in one instruction. For example, `lea rax, [rax+rax*2]` computes `rax = rax * 3` without a multiply instruction. It also computes the address of an array element without dereferencing it:
-
-```asm
-lea rdi, [buffer+rsi]       ; rdi = address of buffer[rsi]
-```
-
-Now `rdi` points to that element, but you have not loaded its value. You might pass this address to a function or use it later.
-
-A common mistake is to write `lea rax, [rbx]` thinking it does something special — it simply copies `rbx` to `rax`, equivalent to `mov rax, rbx`, and is pointless. Use `lea` when you actually need address arithmetic.
-
-Another distinction: in NASM, you write `lea rdi, [rel msg]` to request RIP-relative addressing (needed for position-independent code). In MASM 64-bit mode, **RIP-relative addressing is the default** for symbol references like `[msg]`, so you write simply `lea rdi, msg` or `lea rdi, [msg]` (the brackets are optional for `lea` with a bare symbol). If you want the address of `msg` as an immediate constant (not RIP-relative), you use `mov rsi, OFFSET msg` — but this is rare in 64-bit code. For this course, `lea` with a symbol generates RIP-relative addressing automatically, and you do not need to specify anything special.
-
-## Worked example: indexing into an array and summing elements
-
-Let's write a program that declares an array of quadwords, iterates over it, and sums the values. Here is the source:
-
-<!-- LISTING-PENDING: lessons/01-addressing-data/listings/sum-array.asm -->
-
-```asm
-EXTERN ExitProcess:PROC
-
-.data
-    arr QWORD 10, 20, 30, 40       ; array of four 64-bit values
-    arr_len EQU ($ - arr) / 8      ; number of elements (32 bytes / 8)
-
-.code
 main PROC
-    sub rsp, 40                    ; allocate shadow space + alignment
+    sub rsp, 32
     
-    xor rax, rax                   ; rax will hold the sum (start at 0)
-    xor rcx, rcx                   ; rcx is the loop index (start at 0)
-
-loop_start:
-    cmp rcx, arr_len               ; compare index to length
-    jge loop_done                  ; if index >= length, exit loop
-
-    add rax, [arr+rcx*8]           ; add arr[rcx] to the sum
-    inc rcx                        ; increment index
-    jmp loop_start                 ; repeat
-
-loop_done:
-    mov ecx, eax                   ; exit status = sum (low 32 bits, should be 100)
+    ; Load values from memory
+    mov rax, value1            ; RAX = 10
+    mov rbx, value2            ; RBX = 20
+    
+    ; Compute sum
+    add rax, rbx               ; RAX = 30
+    
+    ; Store result to memory
+    mov result, rax            ; Store 30 to result
+    
+    ; Exit with result
+    mov rcx, rax
     call ExitProcess
-    ; ExitProcess does not return
 main ENDP
+
 END
 ```
 
-Build and run:
-```cmd
-ml64 /c sum_array.asm
-link /OUT:sum_array.exe /ENTRY:main /SUBSYSTEM:CONSOLE sum_array.obj kernel32.lib
-sum_array.exe
-echo %ERRORLEVEL%   REM should print 100
+### Register-indirect addressing
+
+`lea` puts an address in a register. `[rsi]` then loads through that pointer. `BYTE PTR` is required when the register does not imply size (`movzx` source).
+
+```asm
+; Listing 03: Register-indirect addressing
+;
+; Purpose: Access memory through pointer registers.
+; Expected exit code: 72 (ASCII 'H')
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo03-register-indirect.obj 03-register-indirect.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-register-indirect.exe 03-register-indirect.obj kernel32.lib
+
+.DATA
+msg DB "Hello", 0
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; Load address of msg into RSI
+    lea rsi, msg
+    
+    ; Load first byte through register-indirect addressing
+    movzx rcx, BYTE PTR [rsi]  ; RCX = 'H' (72)
+    
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-Trace the reasoning. In `.data`, we declare `arr` with four quadwords (10, 20, 30, 40). The expression `($ - arr) / 8` computes the number of elements: `$` is the current address after the array, so `$ - arr` is 32 bytes, and dividing by 8 (the size of each element) gives 4.
+RSI is nonvolatile. This `main` never returns, so it does not save RSI. A returning procedure that uses RSI must push/pop it.
 
-We allocate 40 bytes on the stack (32 bytes shadow space + 8 for alignment) before any calls. In the loop, `rcx` starts at 0. We compare `rcx` to `arr_len` and jump to `loop_done` if the index is out of bounds. (Note: MASM labels inside a `PROC` are local to that procedure unless you use `@@:` anonymous labels or explicitly declare them global. We use descriptive names like `loop_start` and `loop_done` for clarity.)
+### Base + displacement
 
-Inside the loop body, `add rax, [arr+rcx*8]` uses **scaled-index addressing**: the address is `arr + rcx*8`, which is the address of `arr[rcx]`. MASM generates RIP-relative addressing for `arr` automatically in 64-bit mode. The square brackets load the quadword at that address, and `add` adds it to `rax`. After incrementing `rcx`, we jump back to `loop_start`. When `rcx` reaches 4, the comparison fails and we jump to `loop_done`, where we move the sum (100) into ECX (the low 32 bits; writing ECX zero-extends into RCX) and call `ExitProcess`. The process terminates with exit code 100.
+A record is a base address plus fixed field offsets. Age at 0, height at 8, weight at 16:
+
+```asm
+; Listing 04: Base + displacement addressing
+;
+; Purpose: Access struct-like fields at fixed offsets.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo04-base-displacement.obj 04-base-displacement.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-base-displacement.exe 04-base-displacement.obj kernel32.lib
+
+.DATA
+person_record:
+    DQ 42                      ; Offset 0: age
+    DQ 180                     ; Offset 8: height_cm
+    DQ 75                      ; Offset 16: weight_kg
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; Load base address
+    lea rbx, person_record
+    
+    ; Access fields with displacement
+    mov rax, [rbx+0]           ; age (42)
+    mov rdx, [rbx+8]           ; height (180)
+    mov r8, [rbx+16]           ; weight (75)
+    
+    ; Exit with age
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+After `lea rbx, person_record`: `[rbx+0]` is 42, `[rbx+8]` is 180, `[rbx+16]` is 75. Exit status is 42.
+
+### Scaled index (array indexing)
+
+Scale must match element size. Quadwords use `*8`.
+
+```asm
+; Listing 05: Scaled-index addressing for arrays
+;
+; Purpose: Demonstrate array indexing with proper scaling.
+; Expected exit code: 30 (arr[2])
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo05-array-indexing.obj 05-array-indexing.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-array-indexing.exe 05-array-indexing.obj kernel32.lib
+
+.DATA
+arr DQ 10, 20, 30, 40, 50     ; Array of 5 quadwords (8 bytes each)
+arr_len EQU ($ - arr) / 8
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; Load base address
+    lea rbx, arr
+    
+    ; Access arr[2] using scaled index
+    mov rcx, 2                 ; Index 2
+    mov rax, [rbx+rcx*8]       ; Scale by 8 for quadwords
+                               ; RAX = 30
+    
+    ; Exit with arr[2]
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+`arr_len EQU ($ - arr) / 8` is 5. Index 2 × 8 = offset 16, which is 30.
+
+### Size specifiers
+
+When the instruction does not imply size, MASM requires `PTR`:
+
+```asm
+; Listing 08: Size specifiers - byte, word, dword, qword
+;
+; Purpose: Demonstrate explicit size specifications for memory operands.
+; Expected exit code: 65 (ASCII 'A')
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo08-size-specifiers.obj 08-size-specifiers.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-size-specifiers.exe 08-size-specifiers.obj kernel32.lib
+
+.DATA?
+buffer DB 64 DUP(?)
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    lea rbx, buffer
+    
+    ; Store different sizes
+    mov BYTE PTR [rbx], 65     ; Store 1 byte: 'A'
+    mov WORD PTR [rbx+1], 0x4342  ; Store 2 bytes: 'BC'
+    mov DWORD PTR [rbx+3], 12345678 ; Store 4 bytes
+    mov QWORD PTR [rbx+7], -1  ; Store 8 bytes
+    
+    ; Load and exit with first byte
+    movzx rcx, BYTE PTR [rbx]
+    call ExitProcess
+main ENDP
+
+END
+```
+
+`mov [rbx], 65` is ambiguous; MASM errors. `mov BYTE PTR [rbx], 65` stores one byte. Little-endian: `WORD PTR [rbx+1], 0x4342` stores `42h` then `43h` (`'B'`, `'C'`). `movzx rcx, BYTE PTR [rbx]` zero-extends `'A'` (65) into RCX for `ExitProcess`.
+
+## `lea` vs `mov`
+
+`lea` stores the **address**. `mov` with a memory operand stores the **value**.
+
+```asm
+; Listing 06: LEA vs MOV - computing addresses vs loading values
+;
+; Purpose: Show the crucial difference between LEA and MOV with memory operands.
+; Expected exit code: 20
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo06-lea-vs-mov.obj 06-lea-vs-mov.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-lea-vs-mov.exe 06-lea-vs-mov.obj kernel32.lib
+
+.DATA
+value DQ 20
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; LEA: compute address, no memory access
+    lea rax, value             ; RAX = address of value
+    
+    ; MOV: load value from memory
+    mov rbx, value             ; RBX = 20 (loaded from memory)
+    
+    ; LEA with arithmetic: multiply by 3
+    mov rcx, 5
+    lea rdx, [rcx+rcx*2]       ; RDX = rcx + rcx*2 = 5 + 10 = 15
+    
+    ; Exit with the value (20)
+    mov rcx, rbx
+    call ExitProcess
+main ENDP
+
+END
+```
+
+After `lea rax, value`, RAX is a pointer (some high canonical user address), not 20. After `mov rbx, value`, RBX is 20. `lea rdx, [rcx+rcx*2]` computes 5×3 = 15 in the address unit; no load occurs. Exit uses RBX (20), not RAX (the address) and not RDX (15).
+
+NASM `lea rdi, [rel msg]` maps to MASM `lea rdi, msg`. `mov rsi, OFFSET msg` is an absolute immediate and is rare in 64-bit code.
+
+## Worked example: summing an array
+
+```asm
+; Listing 07: Complete array summing example
+;
+; Purpose: Iterate over array, sum all elements.
+; Expected exit code: 100 (10+20+30+40)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo07-array-sum.obj 07-array-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-array-sum.exe 07-array-sum.obj kernel32.lib
+
+.DATA
+arr DQ 10, 20, 30, 40
+arr_len EQU ($ - arr) / 8
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rax, rax               ; Sum = 0
+    xor rcx, rcx               ; Index = 0
+    lea rbx, arr               ; Base address
+    
+loop_start:
+    cmp rcx, arr_len
+    jge loop_done
+    
+    add rax, [rbx+rcx*8]       ; sum += arr[index]
+    inc rcx
+    jmp loop_start
+    
+loop_done:
+    mov rcx, rax               ; Exit with sum (100)
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Build (from the listings directory, x64 Native Tools Command Prompt):
+
+```bat
+ml64 /c /Fo07-array-sum.obj 07-array-sum.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-array-sum.exe 07-array-sum.obj kernel32.lib
+07-array-sum.exe
+echo %ERRORLEVEL%
+```
+
+`arr_len` is 4. Loop:
+
+| After iteration | RCX (next index) | RAX (sum) |
+|-----------------|------------------|-----------|
+| 1 | 1 | 10 |
+| 2 | 2 | 30 |
+| 3 | 3 | 60 |
+| 4 | 4 | 100 |
+
+Then `cmp rcx, arr_len` (`4 >= 4`) takes `jge loop_done`. Exit 100.
+
+Labels inside a `PROC` are local to that procedure. `sub rsp, 32` is shadow space for `ExitProcess`.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to write `add rax, [arr+rcx]` (scale 1 instead of scale 8). The intent is to access `arr[rcx]`, but without the correct scale, the address is only `arr + rcx` — if `rcx` is 0, this accesses `arr[0]` correctly (by luck, since offset 0 is offset 0 regardless of scale), but if `rcx` is 1, it accesses the byte at offset 1, which is in the middle of the first quadword. The CPU will load 8 bytes starting from that misaligned address, reading parts of two elements and producing nonsense. On the second iteration, you get a garbage value (likely the high bytes of 10 and the low bytes of 20 concatenated as one misaligned quadword), and the sum is wrong.
+*"I can write `add rax, [rbx+rcx]` because RCX is the index."*
 
-The lesson: the **scale** must match the element size. For an array of quadwords (8 bytes each), use `*8`. For an array of doublewords (4 bytes), use `*4`. For an array of words (2 bytes), use `*2`. For byte arrays, use `*1` or omit the scale (they are equivalent). Failing to match the scale is the most common indexing error and produces subtle bugs that only appear when the index is nonzero.
+**Why it fails:** Without `*8`, index 1 addresses byte offset 1, in the middle of the first quadword. The load is a misaligned 8-byte mix of 10 and 20. Scale must match element size: QWORD `*8`, DWORD `*4`, WORD `*2`, BYTE `*1` or omit scale.
+
+A second NASM-shaped mistake: treating `mov rax, counter` as "load address." In MASM that instruction loads the value. Use `lea` or `OFFSET` for the address.
 
 ## Distinctions worth keeping straight
 
-| Confusion | What actually separates them |
-|-----------|------------------------------|
-| `.data` vs `.const` | Both hold initialized data, but `.data` is writable (maps to PE `.data` section) and `.const` is read-only (maps to PE `.rdata` section). Attempting to write to `.const` causes an access violation (exception). Use `.const` for string literals and constants you never modify. |
-| `.data?` vs `.data` | `.data?` is zero-filled at load and occupies no file bytes; `.data` stores actual bytes in the object file. Use `.data?` for large buffers that start at zero to save disk space. |
-| `BYTE value` vs `BYTE N DUP(?)` | The first defines bytes with initial values; the second only reserves space (for `.data?`). You use `BYTE N DUP(?)` in `.data?` to reserve uninitialized space, and `BYTE value` in `.data` or `.const` to store actual bytes. |
-| `mov rax, [label]` vs `mov rax, OFFSET label` | The first loads the value stored at `label` (RIP-relative addressing in 64-bit mode); the second loads the *address* of `label` as an immediate constant. In 64-bit MASM, you rarely need `OFFSET` because RIP-relative addressing is automatic. |
-| `lea rax, [rbx+8]` vs `mov rax, [rbx+8]` | `lea` computes `rbx+8` and stores that address in `rax` without touching memory. `mov` loads the quadword at address `rbx+8` into `rax`. If `rbx` is uninitialized, `mov` will crash or read garbage; `lea` will just compute garbage+8, which may or may not cause a later error. |
-| `mov [buffer], 42` vs `mov BYTE PTR [buffer], 42` | The first is ambiguous and MASM rejects it with an error. You must specify `BYTE PTR`, `WORD PTR`, `DWORD PTR`, or `QWORD PTR` when the size is not implied by a register operand. |
-| Scale `*1` vs `*2` vs `*4` vs `*8` | The scale must match the element size in bytes. Arrays of quadwords need `*8`, arrays of doublewords need `*4`, arrays of words need `*2`, and byte arrays need `*1` (or no scale). Using the wrong scale produces misaligned access and wrong data. |
-| RIP-relative addressing (automatic in MASM 64-bit) | In NASM, you write `[rel symbol]` to request RIP-relative addressing. In MASM 64-bit mode, `[symbol]` automatically generates RIP-relative addressing — you do not need to specify it. This is the default and correct behavior for position-independent x64 code. |
+| Confusion | Reality |
+|-----------|---------|
+| `.DATA` vs `.CONST` | Both initialized; `.CONST` is read-only (`.rdata`). A store there access-violates. |
+| `.DATA?` vs `.DATA` | `.DATA?` is zeroed at load and stores no file bytes. |
+| `mov rax, counter` (MASM) vs NASM | MASM loads **contents**. NASM without brackets loads the **address**. |
+| `lea rax, value` vs `mov rax, value` | `lea` = address, no load. `mov` = load the QWORD. |
+| `mov [buf], 42` vs `mov BYTE PTR [buf], 42` | Ambiguous store is an assemble error. |
+| Scale | Must match element size in bytes. |
+| RIP-relative | Default in 64-bit MASM; no `rel` keyword. |
 
 ## Check yourself
 
-1. You declare a string in `.const` and try to modify it at runtime with `mov BYTE PTR [str], 65`. What happens, and why?
-2. An array of doublewords (4-byte integers) starts at label `nums`. You want to load `nums[3]` into `eax`. Write the instruction using scaled-index addressing.
-3. Explain the difference between `lea rsi, [buffer+10]` and `mov rsi, [buffer+10]`. What does each instruction put in `rsi`, and does either touch memory at address `buffer+10`?
-4. You declare `counter QWORD 1 DUP(?)` in `.data?` but then try to use it before initializing it. The program runs but produces garbage values. What did you forget, and how should you initialize it at runtime?
-5. Trace the value of `rax` after each iteration of the worked example above. What is `rax` after the first iteration (when `rcx=1`)? After the second (when `rcx=2`)? After the third (when `rcx=3`)? After the fourth iteration completes (when `rcx=4`, just before jumping to `loop_done`)?
+1. You put a string in `.CONST` and execute `mov BYTE PTR [str], 65`. What happens?
+2. Array of DWORDs at `nums`. Load `nums[3]` into EAX with scaled-index addressing.
+3. After listing `06-lea-vs-mov`, what is in RAX versus RBX versus RDX just before `mov rcx, rbx`?
+4. `counter DQ ?` in `.DATA?` is used before a store. What value should you expect?
+5. In listing `07-array-sum`, what is RAX after the iteration that consumed `arr[2]` (30)?
 
 ## Key takeaways
 
-- MASM sections (`.code`, `.data`, `.const`, `.data?`) map to PE sections (`.text`, `.data`, `.rdata`, `.data` uninitialized) and separate code, mutable data, immutable constants, and zero-filled buffers, each with different permissions and file representation.
-- Brackets `[]` mean "load from" or "store to" memory at the computed address; without brackets, a label with `OFFSET` is an immediate address constant (but in 64-bit MASM, RIP-relative addressing is automatic, so you rarely use `OFFSET`).
-- Scaled-index addressing `[base+index*scale+disp]` is hardware support for array indexing — the scale must match the element size or you will access wrong offsets.
-- `lea` computes an address expression and stores the result in a register without accessing memory; `mov` with brackets actually loads or stores data.
-- Size specifiers (`BYTE PTR`, `WORD PTR`, `DWORD PTR`, `QWORD PTR`) are mandatory when the operand size is ambiguous — MASM will reject ambiguous stores with an error.
-- Writing to `.const` causes a runtime access violation (exception) because the loader maps it read-only; attempting to execute `.data` or `.data?` will also fault.
+- `.CODE` / `.DATA` / `.CONST` / `.DATA?` map to PE `.text` / `.data` / `.rdata` / uninitialized storage.
+- In MASM, a bare data label in `mov` is a memory operand (contents), not an address immediate.
+- Scaled-index scale must match element size.
+- `lea` computes an address; `mov` with a memory operand accesses memory.
+- `BYTE PTR` / `WORD PTR` / `DWORD PTR` / `QWORD PTR` are required when size is ambiguous.
+- Writes to `.CONST` fault.
 
 ## Lookup (reference only, not curriculum)
 
-- **MASM addressing syntax:** https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe (effective addresses, PTR operators, size specifiers)
-- **PE section attributes:** https://learn.microsoft.com/en-us/windows/win32/debug/pe-format (section headers, flags, permissions)
-- **x86-64 addressing modes:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 1, Chapter 3.7 (operand addressing) — same as Linux; addressing modes are platform-independent
-- **MASM data directives:** https://learn.microsoft.com/en-us/cpp/assembler/masm/directives-reference (`BYTE`, `WORD`, `DWORD`, `QWORD`, `DUP`)
-- **Tool inspection:** `dumpbin /headers <file>` (show PE section headers), `dumpbin /disasm <file>` (disassemble)
+- MASM for x64: https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe
+- PE sections: https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
+- Intel SDM Volume 1, operand addressing
+- MASM data directives: https://learn.microsoft.com/en-us/cpp/assembler/masm/directives-reference
 
 ## Exercises
 
-28 drills: declarations, loads/stores, LEA, indexing, bug hunts, stretch buffer work.
+Work in `exercises/`. Standalone listings quoted above are `lessons/01-addressing-data/listings/01-data-sections.asm` through `08-size-specifiers.asm`.

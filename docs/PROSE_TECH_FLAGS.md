@@ -38,6 +38,10 @@ A technical reviewer will verify and resolve these before final merge.
 **Section:** uses `rbx` without save/restore
 **Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
 
+### Lesson 01 — listings/03-register-indirect.asm
+**Section:** `lea rsi, msg` without saving RSI
+**Doubt:** RSI is nonvolatile on Windows. Same `ExitProcess` never-returns rationale as L00 listing 05. Listings 02/04/05/07/08 also use RBX without saving.
+
 ### Lesson 11 — Parsing & Data Structures
 **Section:** Inline code blocks (lexeme buffer, linked lists, arena, stack, queue, etc.)
 **Doubt:** The lesson contains ~18 inline code blocks showing algorithmic patterns (linked list walking, arena allocation, etc.). These blocks currently use Linux-style section directives (`section .bss`, `section .text`, `global _start`, `syscall`). Should these be updated to MASM syntax (`.data?`, `.code`, `main PROC`, `call ExitProcess`) for consistency, or left as-is because they are illustrative pseudocode showing platform-independent algorithms? The standalone exercises and solutions (handled by another author) are already in MASM syntax.
