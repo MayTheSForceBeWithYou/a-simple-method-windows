@@ -18,8 +18,6 @@ MASM's macro processor runs before the assembler proper. It sees `EQU`, `TEXTEQU
 
 `EQU` defines a symbol whose value is computed at assembly time. It cannot be redefined later (unlike `=`, which allows reassignment).
 
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/constants.asm -->
-
 ```asm
 EXTERN ExitProcess:PROC
 
@@ -56,8 +54,6 @@ main ENDP
 ### Parameterized text with MACRO
 
 A macro is a template for one or more instructions. You declare it with named parameters (or no parameters), and MASM will expand it with the supplied arguments.
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/exit_macro.asm -->
 
 ```asm
 EXTERN ExitProcess:PROC
@@ -100,8 +96,6 @@ Each parameter name is replaced by the corresponding argument text. Arguments ar
 ### REPEAT (REPT) for code generation
 
 `REPEAT N` (or `REPT N`) repeats its body `N` times at assembly time. The repetition happens in the MASM macro processor, so the output object contains `N` copies of the instructions, not a loop at runtime.
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/repeat.asm -->
 
 ```asm
 EXTERN ExitProcess:PROC
@@ -197,8 +191,6 @@ main ENDP
 
 **Example: absolute value macro**
 
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/abs_macro.asm -->
-
 ```asm
 EXTERN ExitProcess:PROC
 
@@ -237,8 +229,6 @@ ENDM
 `INCLUDE file.inc` (no quotes required, though they are accepted) inserts the contents of `file.inc` at that line. Header files typically contain `EQU` constants, `MACRO` definitions, and structure definitions.
 
 **Header guard idiom:**
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/constants.inc -->
 
 ```asm
 ; constants.inc
@@ -283,8 +273,6 @@ When a program grows, you want to split it into logical units: one file for the 
 
 `PUBLIC symbol` marks a symbol (label, function, or data) as visible to other object files. However, functions defined with `PROC` are implicitly public when referenced by `EXTERN` in another file, so explicit `PUBLIC` is often unnecessary for procedures.
 
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/helper.asm -->
-
 ```asm
 ; helper.asm
 .code
@@ -310,8 +298,6 @@ END
 ### Importing with EXTERN
 
 `EXTERN symbol:type` tells MASM that the symbol is defined in another object file. MASM emits a relocation for it; the linker resolves it. **You must specify the type**: `:PROC` for functions, `:QWORD` for 8-byte data, `:BYTE` for byte arrays, etc.
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/main_multifile.asm -->
 
 ```asm
 ; main.asm
@@ -451,8 +437,6 @@ If a file named `clean` exists, `nmake clean` would see it as up-to-date and do 
 
 ### Complete example
 
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/Makefile.mak -->
-
 ```makefile
 # Makefile.mak for NMake
 # Build with: nmake /f Makefile.mak
@@ -514,8 +498,6 @@ Run with `powershell -ExecutionPolicy Bypass -File build.ps1`.
 
 **main.asm:**
 
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/main_with_macro.asm -->
-
 ```asm
 EXTERN add_two_numbers:PROC
 EXTERN ExitProcess:PROC
@@ -540,8 +522,6 @@ END
 ```
 
 **add.asm:**
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/add.asm -->
 
 ```asm
 .code
@@ -602,6 +582,17 @@ END
 - MASM macros: [MACRO directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/macro), [LOCAL directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/local-masm)
 - MASM symbols: [PUBLIC directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/public-masm), [EXTERN directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/extern-masm)
 - NMake: [NMake Reference](https://learn.microsoft.com/en-us/cpp/build/reference/nmake-reference), [Macros and NMake](https://learn.microsoft.com/en-us/cpp/build/reference/macros-and-nmake)
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/02-macro-with-local.asm -->
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/03-rept-repetition.asm -->
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/04-multi-param-macro.asm -->
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/05-multifile-helper.asm -->
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/05-multifile-main.asm -->
+<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/06-conditional-assembly.asm -->
 
 ## Exercises
 
