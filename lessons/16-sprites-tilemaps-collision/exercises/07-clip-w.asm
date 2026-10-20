@@ -1,7 +1,7 @@
-; 07-clip-w
+; 07-clip-w: clip w
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 07-clip-w>
+.ERR <TODO: Implement clip w>
 main PROC
 .ERR <TODO>
 main ENDP

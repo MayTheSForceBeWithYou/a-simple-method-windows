@@ -1,7 +1,7 @@
-; 09-tile-at
+; 09-tile-at: tile at
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 09-tile-at>
+.ERR <TODO: Implement tile at>
 main PROC
 .ERR <TODO>
 main ENDP

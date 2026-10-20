@@ -1,7 +1,7 @@
-; 16-anim-frame
+; 16-anim-frame: anim frame
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 16-anim-frame>
+.ERR <TODO: Implement anim frame>
 main PROC
 .ERR <TODO>
 main ENDP

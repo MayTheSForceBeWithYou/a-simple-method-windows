@@ -1,7 +1,7 @@
-; 04-sprite-origin
+; 04-sprite-origin: sprite origin
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 04-sprite-origin>
+.ERR <TODO: Implement sprite origin>
 main PROC
 .ERR <TODO>
 main ENDP

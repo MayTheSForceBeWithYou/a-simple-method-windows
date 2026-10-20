@@ -1,7 +1,7 @@
-; 05-tile-solid
+; 05-tile-solid: tile solid
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 05-tile-solid>
+.ERR <TODO: Implement tile solid>
 main PROC
 .ERR <TODO>
 main ENDP

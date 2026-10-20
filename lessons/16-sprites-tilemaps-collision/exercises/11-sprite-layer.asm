@@ -1,7 +1,7 @@
-; 11-sprite-layer
+; 11-sprite-layer: sprite layer
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 11-sprite-layer>
+.ERR <TODO: Implement sprite layer>
 main PROC
 .ERR <TODO>
 main ENDP

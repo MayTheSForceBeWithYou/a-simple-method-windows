@@ -1,7 +1,7 @@
-; 21-sprite-batch-count
+; 21-sprite-batch-count: sprite batch count
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 21-sprite-batch-count>
+.ERR <TODO: Implement sprite batch count>
 main PROC
 .ERR <TODO>
 main ENDP

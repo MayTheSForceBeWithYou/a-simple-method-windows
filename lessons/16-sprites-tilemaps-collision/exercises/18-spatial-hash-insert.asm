@@ -1,7 +1,7 @@
-; 18-spatial-hash-insert
+; 18-spatial-hash-insert: spatial hash insert
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-spatial-hash-insert>
+.ERR <TODO: Implement spatial hash insert>
 main PROC
 .ERR <TODO>
 main ENDP

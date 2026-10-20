@@ -1,7 +1,7 @@
-; 17-flip-flags
+; 17-flip-flags: flip flags
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 17-flip-flags>
+.ERR <TODO: Implement flip flags>
 main PROC
 .ERR <TODO>
 main ENDP

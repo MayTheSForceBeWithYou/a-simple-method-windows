@@ -1,7 +1,7 @@
-; 13-sweep-hit-t
+; 13-sweep-hit-t: sweep hit t
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 13-sweep-hit-t>
+.ERR <TODO: Implement sweep hit t>
 main PROC
 .ERR <TODO>
 main ENDP

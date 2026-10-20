@@ -1,7 +1,7 @@
-; 01-tile-index
+; 01-tile-index: tile index
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 01-tile-index>
+.ERR <TODO: Implement tile index>
 main PROC
 .ERR <TODO>
 main ENDP
