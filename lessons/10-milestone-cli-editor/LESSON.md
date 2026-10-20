@@ -29,8 +29,6 @@ The milestone is not a single drill—it's a capstone binary you build by compos
 
 The editor's state starts with three values:
 
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/buffer_state.asm -->
-
 ```asm
 .data?
 buf BYTE 4096 DUP(?)        ; the text bytes
@@ -471,8 +469,6 @@ To enter raw mode, clear both bits. To restore, set them.
 
 **Entering raw mode:**
 
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/raw_mode.asm -->
-
 ```asm
 EXTERN GetStdHandle:PROC
 EXTERN GetConsoleMode:PROC
@@ -626,6 +622,15 @@ The milestone binary is complete when it satisfies all six criteria:
 6. **Viewport rendering:** The editor renders the buffer with `WriteFile` calls (to stdout obtained via `GetStdHandle`), one screenful at a time. No C runtime. Use lesson 09's multi-file build (NMake or PowerShell) to factor rendering, buffer ops, and I/O into separate modules.
 
 Raw mode (from the console mode section) is what makes criterion 1's "accepts keypresses" work—without it, the editor would wait for Enter after every command.
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/01-buffer-append.asm -->
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/02-insert-middle.asm -->
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/03-delete-forward.asm -->
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/04-cursor-clamp.asm -->
 
 ## Exercises
 
