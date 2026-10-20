@@ -239,44 +239,52 @@ Always multiply the row by the number of columns, then add the column. Reversing
 
 Let's write a function that copies a string and returns the length of the copied string (not including the terminator):
 
+<!-- LISTING-PENDING: lessons/06-strings-memory-arrays/listings/strcpy-len.asm -->
+
 ```asm
-section .data
-    src db "hello", 0
-section .bss
-    dst resb 10
+EXTERN ExitProcess:PROC
 
-section .text
-    global _start
+.data
+    src BYTE "hello", 0
+.data?
+    dst BYTE 10 DUP(?)
 
-strcpy_len:
-    ; rdi = dst, rsi = src
+.code
+
+strcpy_len PROC
+    ; rcx = dst, rdx = src
     ; returns: rax = length
     xor rax, rax              ; length = 0
-.loop:
-    mov cl, [rsi+rax]         ; load byte
-    mov [rdi+rax], cl         ; store byte (including NUL)
-    test cl, cl               ; was it NUL?
-    jz .done                  ; if so, stop (length is correct)
+loop_copy:
+    mov r8b, BYTE PTR [rdx+rax]  ; load byte from src
+    mov BYTE PTR [rcx+rax], r8b  ; store byte to dst (including NUL)
+    test r8b, r8b             ; was it NUL?
+    jz done_copy              ; if so, stop (length is correct)
     inc rax                   ; increment length
-    jmp .loop
-.done:
+    jmp loop_copy
+done_copy:
     ret                       ; rax = length (not counting NUL)
+strcpy_len ENDP
 
-_start:
-    lea rdi, [dst]
-    lea rsi, [src]
-    call strcpy_len
-    mov rdi, rax              ; exit with length (5)
-    mov rax, 60
-    syscall
+main PROC
+    sub rsp, 40               ; shadow space + alignment
+    
+    lea rcx, dst
+    lea rdx, src
+    call strcpy_len           ; rax = 5
+    
+    mov ecx, eax              ; exit with length (5)
+    call ExitProcess
+main ENDP
+END
 ```
 
 Build and run:
-```bash
-nasm -f elf64 strcpy_len.asm -o strcpy_len.o
-ld strcpy_len.o -o strcpy_len
-./strcpy_len
-echo $?   # prints 5
+```cmd
+ml64 /c strcpy_len.asm
+link /OUT:strcpy_len.exe /ENTRY:main /SUBSYSTEM:CONSOLE strcpy_len.obj kernel32.lib
+strcpy_len.exe
+echo %ERRORLEVEL%   REM prints 5
 ```
 
 Trace the execution: `rax` starts at 0. We load `src[0]` ('h'), store it at `dst[0]`, test it (nonzero), increment `rax` to 1, and repeat. After copying 'h', 'e', 'l', 'l', 'o', we load `src[5]` (0), store it at `dst[5]`, test it (zero), and stop without incrementing `rax`. So `rax` ends at 5, the correct length.
