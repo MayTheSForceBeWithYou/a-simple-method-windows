@@ -147,8 +147,6 @@ To obtain a standard handle, call `GetStdHandle(constant)`. The returned `HANDLE
 
 To open an existing file for reading:
 
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/open_read.asm -->
-
 ```asm
 EXTERN CreateFileA:PROC
 EXTERN GetLastError:PROC
@@ -216,8 +214,6 @@ Once you have a handle, `ReadFile` and `WriteFile` transfer bytes. Both take fiv
 5. `lpOverlapped` (`[rsp+32]`): Overlapped I/O structure pointer (use `NULL` = 0 for synchronous I/O)
 
 **ReadFile example:**
-
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/read_file.asm -->
 
 ```asm
 EXTERN ReadFile:PROC
@@ -295,8 +291,6 @@ bytesWritten DWORD ?
 | `FILE_END` | 2 | Set offset to end of file + `liDistanceToMove` |
 
 **Example: seek to beginning of file:**
-
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/seek_file.asm -->
 
 ```asm
 EXTERN SetFilePointerEx:PROC
@@ -376,8 +370,6 @@ After `CloseHandle`, the handle is invalid. Attempting to use it in subsequent c
 | `PAGE_EXECUTE_READ` | 0x20 | Execute and read (for JIT code) |
 
 **Example: allocate one page (4096 bytes) of read-write memory:**
-
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/virtual_alloc.asm -->
 
 ```asm
 EXTERN VirtualAlloc:PROC
@@ -507,8 +499,6 @@ For this course, use `VirtualAlloc` for memory allocation. Lesson 18's dynamic d
 5. **Recover error code:** Call `GetLastError` with no arguments; it returns the error code in `rax`.
 6. **Exit with error code:** Move `rax` to `rcx` and call `ExitProcess`.
 
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/open_missing_file.asm -->
-
 ```asm
 EXTERN CreateFileA:PROC
 EXTERN CloseHandle:PROC
@@ -604,6 +594,18 @@ END
 - Virtual memory: [VirtualAlloc](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc), [VirtualFree](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree)
 - Error handling: [GetLastError](https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror), [System Error Codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
 - Standard handles: [GetStdHandle](https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getstdhandle)
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/01-create-file-write.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/02-open-read-file.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/03-set-file-pointer.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/04-virtual-alloc.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/05-file-mapping.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/06-get-process-id.asm -->
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/07-query-performance-counter.asm -->
 
 ## Exercises
 
