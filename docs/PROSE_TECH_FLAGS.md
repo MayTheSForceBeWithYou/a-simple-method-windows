@@ -38,6 +38,10 @@ A technical reviewer will verify and resolve these before final merge.
 **Section:** uses `rbx` without save/restore
 **Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
 
+### Lesson 03 — listings/07-test-zero-check.asm
+**Section:** `mov rdi, 42` without saving RDI
+**Doubt:** RDI is nonvolatile on Windows. `main` never returns. Same never-returns rationale as earlier listings.
+
 ### Lesson 02 — listings/08-test-instruction.asm
 **Section:** `mov rax, 0b0101`
 **Doubt:** Confirm ml64 in VS 2022+ accepts `0b` binary literals. If not, the listing would fail to assemble. Not edited.
