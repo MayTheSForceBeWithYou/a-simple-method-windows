@@ -38,6 +38,18 @@ A technical reviewer will verify and resolve these before final merge.
 **Section:** uses `rbx` without save/restore
 **Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
 
+### Lesson 04 — listings/01-push-pop.asm header
+**Section:** comment "this lesson's NASM examples assume System V"
+**Doubt:** Stale Linux leftover in the listing header. Code itself is MS x64. Not edited.
+
+### Lesson 04 — listings/06-sum3-example.asm alignment vs 05-stack-alignment.asm
+**Section:** `main` uses `sub rsp, 32` (listing 06) vs `sub rsp, 40` (listing 05)
+**Doubt:** If `main` is entered with RSP ≡ 8 (mod 16), `sub rsp, 32` leaves RSP ≡ 8 at `call`. Listing 05's comments say RSP must be 16-byte aligned before CALL. Integer leaf `sum3` may still work. Confirm which allocation `main` should use.
+
+### Lesson 04 — listings/07-frame-pointer.asm
+**Section:** `PROC FRAME` with `mov rbp, rsp` but no `.setframe rbp`
+**Doubt:** Microsoft unwind docs typically pair a frame pointer with `.setframe rbp, 0` (or similar). Confirm whether ml64 requires it here.
+
 ### Lesson 03 — listings/07-test-zero-check.asm
 **Section:** `mov rdi, 42` without saving RDI
 **Doubt:** RDI is nonvolatile on Windows. `main` never returns. Same never-returns rationale as earlier listings.
