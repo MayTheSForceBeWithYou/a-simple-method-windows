@@ -243,8 +243,6 @@ For `0x00F0`, this returns 8 (eight zeros before the first 1).
 
 A 24-bit RGB color packs three 8-bit components: red at bits 16-23, green at bits 8-15, blue at bits 0-7. Let's extract each component from the value `0xABCDEF`:
 
-<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/rgb-extract.asm -->
-
 ```asm
 EXTERN ExitProcess:PROC
 
@@ -336,6 +334,27 @@ After shifting `0xABCDEF` right by 16, `rbx` holds `0xAB`, which looks correct. 
 - **Shift instructions:** Volume 2, entries for `shl`, `shr`, `sar`, `rol`, `ror`
 - **Flag effects:** Volume 1, Chapter 3.4 (RFLAGS register), description of CF, OF, SF, ZF after shifts
 - **Bit manipulation:** Any systems programming textbook chapter on bitwise operations and bitfields
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/01-bit-operations.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/02-and-masking.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/03-or-setting-bits.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/04-xor-toggle.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/05-shl-multiply.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/06-shr-divide.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/07-sar-signed-divide.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/08-pack-bitfields.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/09-xor-swap.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/10-not-instruction.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/11-unpack-bitfield.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/12-rol-rotate.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/13-popcount-loop.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/14-count-trailing-zeros.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/15-count-leading-zeros.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/16-rgb-extraction.asm -->
 
 ## Exercises
 
