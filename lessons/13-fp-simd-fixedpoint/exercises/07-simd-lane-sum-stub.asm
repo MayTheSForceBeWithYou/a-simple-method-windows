@@ -1,7 +1,7 @@
-; 07-simd-lane-sum-stub
+; 07-simd-lane-sum-stub.asm: Stub: lane sum (no SIMD), exit sum
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 07-simd-lane-sum-stub>
+.ERR <TODO: Stub: lane sum (no SIMD), exit sum>
 main PROC
 .ERR <TODO>
 main ENDP

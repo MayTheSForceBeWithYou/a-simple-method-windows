@@ -1,7 +1,7 @@
-; 03-sse-add-scalar
+; 03-sse-add-scalar.asm: Stub: scalar add (no SSE), exit sum
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 03-sse-add-scalar>
+.ERR <TODO: Stub: scalar add (no SSE), exit sum>
 main PROC
 .ERR <TODO>
 main ENDP
