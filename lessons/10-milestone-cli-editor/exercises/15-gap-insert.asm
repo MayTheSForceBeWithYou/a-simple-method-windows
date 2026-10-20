@@ -1,11 +1,13 @@
-; Exercise 15: gap insert
-;
-; Gap buffer: gap_s=2 gap_e=6; insert shrinks gap; free space after insert one = 3; exit 3.
-;
-; Build: nasm -f elf64 15-gap-insert.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 15-gap-insert.asm: Insert in gap buffer (store at gap_start, inc gap_start), exit gap_start
+.DATA?
+buf DB 256 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov gap_start, 0
+    mov gap_end, 256
+    .ERR <TODO: Store 'G' at buf[gap_start], inc gap_start, exit gap_start>
+main ENDP
+END

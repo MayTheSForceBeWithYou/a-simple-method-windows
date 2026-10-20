@@ -1,11 +1,13 @@
-; Exercise 17: utf8 ascii cursor
-;
-; ASCII-only: moving right increments cursor by 1; exit 5 after 5 moves.
-;
-; Build: nasm -f elf64 17-utf8-ascii-cursor.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 17-utf8-ascii-cursor.asm: ASCII-only cursor movement (simple), exit cur
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+cur QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov len, 5
+    mov cur, 2
+    .ERR <TODO: Move cur right (inc cur; clamp to len), exit cur>
+main ENDP
+END

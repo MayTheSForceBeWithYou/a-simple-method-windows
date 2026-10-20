@@ -1,11 +1,10 @@
-; Exercise 14: dirty flag
-;
-; Edit sets dirty=1; save clears; exit dirty 0.
-;
-; Build: nasm -f elf64 14-dirty-flag.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 14-dirty-flag.asm: Set dirty=1 on edit, clear on save, exit dirty
+.DATA?
+dirty QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov dirty, 0
+    .ERR <TODO: Simulate edit (set dirty=1), simulate save (clear dirty=0), exit dirty>
+main ENDP
+END

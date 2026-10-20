@@ -1,11 +1,13 @@
-; Exercise 09: insert at cursor
-;
-; Buffer empty; cursor 0; insert "X"; len=1 cursor=1; exit cursor.
-;
-; Build: nasm -f elf64 09-insert-at-cursor.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 09-insert-at-cursor.asm: Insert 'X' at cursor=0 in empty buffer, exit 1
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+cur QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov len, 0
+    mov cur, 0
+    .ERR <TODO: Insert 'X' at cursor (shift tail if needed), inc len, exit len>
+main ENDP
+END

@@ -1,11 +1,11 @@
-; Exercise 22: stretch undo stack
-;
-; STRETCH: push op code 1 then 2; pop once; exit top 1.
-;
-; Build: nasm -f elf64 22-stretch-undo-stack.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 22-stretch-undo-stack.asm: Push edit action onto stack, exit stack_top
+.DATA?
+undo_stack DQ 16 DUP(?)
+stack_top QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov stack_top, 0
+    .ERR <TODO: Push action (e.g. 42) onto undo_stack, inc stack_top, exit stack_top>
+main ENDP
+END
