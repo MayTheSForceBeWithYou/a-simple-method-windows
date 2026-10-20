@@ -284,12 +284,19 @@ Spatial hashing enables **fast broad-phase collision**: only test pairs of entit
 - Spatial hashing: [Gamasutra: Spatial Hashing](https://web.archive.org/web/20120223230149/http://www.gamedev.net/page/resources/_/technical/game-programming/spatial-hashing-r2697)
 - Fixed-point animation: [Gaffer On Games: Fix Your Timestep!](https://gafferongames.com/post/fix_your_timestep/)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/16-sprites-tilemaps-collision/listings/01-aabb-collision.asm -->
+<!-- LISTING-PENDING: lessons/16-sprites-tilemaps-collision/listings/02-tilemap-index.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Tile map:**

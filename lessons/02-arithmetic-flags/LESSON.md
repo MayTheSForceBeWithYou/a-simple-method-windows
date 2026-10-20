@@ -1,236 +1,431 @@
 # Lesson 02 — Arithmetic & Flags
 
-Arithmetic instructions do more than compute results — they also record facts about those results in the FLAGS register. This lesson teaches you to read those flags and use them for decisions. You will perform addition, subtraction, multiplication, and division correctly for both signed and unsigned integers, understand why `cmp` and `test` exist (they are arithmetic operations that discard the result but keep the flags), and use the `setcc` family to turn flag states into boolean values. The distinction between signed and unsigned arithmetic is not academic — using the wrong division instruction or reading the wrong flag produces silently incorrect results.
+Arithmetic instructions do more than compute results — they also record facts about those results in the FLAGS register. This lesson teaches you to read those flags and use them for decisions. You will perform addition, subtraction, multiplication, and division correctly for both signed and unsigned integers, understand why `cmp` and `test` exist (they discard the result but keep the flags), and use the `setcc` family to turn flag states into 0 or 1. Using the wrong division instruction or the wrong flag produces silently incorrect results.
 
 ## What this lesson asks of you
 
-You must be able to use `add`, `sub`, `inc`, `dec`, and `neg` to perform integer arithmetic, and read the Zero Flag (ZF), Sign Flag (SF), Carry Flag (CF), and Overflow Flag (OF) after these operations. You will set up the `rdx:rax` register pair correctly for division with `cqo` (signed) or `xor rdx, rdx` (unsigned) before invoking `idiv` or `div`, and distinguish between signed multiply (`imul`) and unsigned multiply (`mul`). You will use `cmp` to compare two values and `test` to check bits, then interpret the resulting flags. Finally, you will use `setcc` instructions (like `sete`, `setl`, `setg`) to materialize boolean values (0 or 1) from flag states, which is the foundation for conditional logic without branching.
+Use `add`, `sub`, `inc`, `dec`, and `neg`. Read ZF, SF, CF, and OF. Set up `rdx:rax` with `cqo` before `idiv` or `xor rdx, rdx` before `div`. Distinguish `imul` from `mul`. Use `cmp` and `test`, then `setcc` to materialize booleans.
 
-## Integer arithmetic instructions
+These instructions are the same on Windows and Linux. What changes is the wrapper: `main PROC`, shadow space, `call ExitProcess`.
 
-The basic arithmetic instructions operate on registers and memory. The destination operand (on the left in NASM syntax) is both read and written:
+## Integer arithmetic
+
+Destination is both source and result:
 
 ```asm
-add rdi, rsi      ; rdi = rdi + rsi
-sub rax, 1        ; rax = rax - 1
-inc rcx           ; rcx = rcx + 1
-dec rcx           ; rcx = rcx - 1
-neg rax           ; rax = -rax (two's complement negation)
+; Listing 01: Basic arithmetic operations
+;
+; Purpose: Demonstrates ADD, SUB, INC, DEC, NEG.
+; Expected exit code: 15
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-basic-arithmetic.obj 01-basic-arithmetic.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-basic-arithmetic.exe 01-basic-arithmetic.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 10
+    add rax, 5                 ; RAX = 15
+    sub rax, 3                 ; RAX = 12
+    inc rax                    ; RAX = 13
+    inc rax                    ; RAX = 14
+    dec rax                    ; RAX = 13
+    add rax, 2                 ; RAX = 15
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-All of these update the FLAGS register to record properties of the result. For example, `add` sets ZF (Zero Flag) if the sum is zero, CF (Carry Flag) if there was unsigned overflow, and OF (Overflow Flag) if there was signed overflow. We will examine those flags shortly.
+Trace: 10+5=15, −3=12, inc=13, inc=14, dec=13, +2=15. Exit 15.
 
-One historical quirk: `inc` and `dec` update ZF, SF, and OF, but they **do not** update CF. This is a design decision from the 8086 era (to save encoding space). Most code does not care, but if you need CF after an increment, use `add reg, 1` instead of `inc reg`.
+`inc`/`dec` update ZF, SF, OF, but **not** CF (8086 encoding choice). If you need CF after +1, use `add reg, 1`.
+
+`neg rax` is two's complement: `rax = −rax`.
 
 ## Multiplication: signed vs unsigned
 
-x86-64 provides separate multiply instructions for signed and unsigned integers because the high-order bits of the product differ when negative values are involved.
-
-### Signed multiply: `imul`
-
-The `imul` instruction has three forms:
+### Signed: `imul`
 
 ```asm
-imul rax, rbx         ; rax = rax * rbx (signed, ignores high bits)
-imul rcx, rdi, 5      ; rcx = rdi * 5 (signed, three-operand immediate form)
-imul rbx              ; rdx:rax = rax * rbx (one-operand form, full product)
+; Listing 02: Signed multiplication with IMUL
+;
+; Purpose: Demonstrates IMUL in various forms.
+; Expected exit code: 20
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo02-signed-multiply.obj 02-signed-multiply.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-signed-multiply.exe 02-signed-multiply.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; Two-operand form
+    mov rax, 5
+    imul rax, 4                ; RAX = 5 * 4 = 20
+    
+    ; Three-operand immediate form
+    mov rbx, 3
+    imul rcx, rbx, 7           ; RCX = RBX * 7 = 21
+    
+    ; Exit with first result (20)
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-The two- and three-operand forms truncate the result to the destination size and are sufficient when you know the product fits. The one-operand form produces the full 128-bit result in `rdx:rax` and is useful when you need to detect overflow or handle large products.
+Two- and three-operand `imul` truncate to the destination size. One-operand `imul rbx` writes the full product to `rdx:rax`. The listing exits with 20, discarding the 21 in RCX (which `ExitProcess` would also clobber as argument 1).
 
-### Unsigned multiply: `mul`
+### Unsigned: `mul`
 
 ```asm
-mul rbx               ; rdx:rax = rax * rbx (unsigned)
+; Listing 03: Unsigned multiplication with MUL
+;
+; Purpose: Demonstrates MUL producing rdx:rax result.
+; Expected exit code: 40
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo03-unsigned-multiply.obj 03-unsigned-multiply.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-unsigned-multiply.exe 03-unsigned-multiply.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 10
+    mov rbx, 4
+    mul rbx                    ; RDX:RAX = RAX * RBX = 40
+                               ; RAX = 40, RDX = 0 (high bits)
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-The `mul` instruction only has a one-operand form and always produces the full product in `rdx:rax`. If you multiply two 64-bit unsigned integers, the result may be up to 128 bits, and `rdx` holds the high 64 bits.
+`mul` has only the one-operand form. RDX is 0 here because 40 fits in 64 bits. Multiplying −1 by 2 with `imul` yields −2; with `mul` it treats −1 as `0xFFFFFFFFFFFFFFFF` and produces a huge unsigned product.
 
-The distinction matters. For example, multiplying `-1` (all bits set) by `2` using signed `imul` produces `-2`. Using unsigned `mul` interprets `-1` as `0xFFFFFFFFFFFFFFFF` (the maximum unsigned value) and produces a huge positive result. Choose the instruction that matches your data type.
+## Division: `rdx:rax` as the dividend
 
-## Division: setting up the dividend in `rdx:rax`
+64-bit divide takes a 128-bit dividend in `rdx:rax`. Quotient in RAX, remainder in RDX.
 
-Division is more complex because it takes a double-width dividend. For 64-bit division, the dividend is a 128-bit value in `rdx:rax`, where `rdx` holds the high 64 bits and `rax` holds the low 64 bits. The divisor is a single register or memory operand. After the instruction completes, the quotient is in `rax` and the remainder is in `rdx`.
-
-### Signed division: `idiv`
-
-For signed division, the high half of the dividend must be the **sign extension** of the low half. The `cqo` (Convert Quadword to Octword) instruction does this: it copies the sign bit of `rax` (bit 63) into every bit of `rdx`.
+### Signed: `cqo` then `idiv`
 
 ```asm
-mov rax, -10          ; signed dividend in rax
-cqo                   ; sign-extend rax into rdx:rax (rdx = all 1s if rax < 0)
-mov rbx, 3            ; divisor
-idiv rbx              ; rax = quotient, rdx = remainder
+; Listing 04: Signed division with CQO and IDIV
+;
+; Purpose: Demonstrates proper setup for signed division.
+; Expected exit code: 7 (quotient of 22/3)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo04-signed-division.obj 04-signed-division.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-signed-division.exe 04-signed-division.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 22                ; Dividend in RAX
+    cqo                        ; Sign-extend RAX into RDX:RAX
+    mov rbx, 3                 ; Divisor
+    idiv rbx                   ; RAX = quotient (7), RDX = remainder (1)
+    
+    mov rcx, rax               ; Exit with quotient
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-If you forget `cqo` and `rdx` contains garbage, the dividend is a random 128-bit value, and the quotient will be nonsense (or the instruction will fault with `#DE` if the quotient does not fit in 64 bits).
+22 is nonnegative, so `cqo` zeros RDX. `idiv` yields 7 remainder 1. Exit 7.
 
-### Unsigned division: `div`
-
-For unsigned division, the high half of the dividend is simply the high 64 bits of the 128-bit unsigned value. If your dividend fits in 64 bits (most common case), the high half is zero:
+### Unsigned: zero RDX then `div`
 
 ```asm
-mov rax, 100          ; unsigned dividend in rax
-xor rdx, rdx          ; clear high half (rdx = 0)
-mov rbx, 7            ; divisor
-div rbx               ; rax = quotient, rdx = remainder
+; Listing 05: Unsigned division with zero-extended dividend
+;
+; Purpose: Demonstrates proper setup for unsigned division.
+; Expected exit code: 14 (quotient of 100/7)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo05-unsigned-division.obj 05-unsigned-division.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-unsigned-division.exe 05-unsigned-division.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 100               ; Dividend in RAX
+    xor rdx, rdx               ; Clear high half (RDX = 0)
+    mov rbx, 7                 ; Divisor
+    div rbx                    ; RAX = quotient (14), RDX = remainder (2)
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-If you forget `xor rdx, rdx` and `rdx` is nonzero, you are dividing a huge 128-bit number, and the quotient will overflow or be wrong.
+100 / 7 = 14 remainder 2. Forgetting `xor rdx, rdx` treats leftover RDX as the high half of a 128-bit dividend.
 
-### Division faults
+Zero divisor or a quotient that does not fit in 64 bits raises `#DE`. Windows delivers `EXCEPTION_INT_DIVIDE_BY_ZERO` or `EXCEPTION_INT_OVERFLOW`. Check the divisor in early lessons rather than installing an exception handler.
 
-If the divisor is zero, or if the quotient does not fit in the destination register (e.g., dividing a huge `rdx:rax` by 1), the CPU raises a divide exception (`#DE`, delivered as `SIGFPE` on Linux) and your program crashes. Check divisors before dividing, or handle the signal.
-
-## The FLAGS register: what the CPU records
-
-After most arithmetic and logical instructions, the CPU updates flags in the RFLAGS register. The flags we care about now are:
-
-| Flag | Name | Set when |
-|------|------|----------|
-| ZF | Zero Flag | The result is exactly zero |
-| SF | Sign Flag | The result's most significant bit (msb) is set (negative in signed interpretation) |
-| CF | Carry Flag | Unsigned arithmetic carried out of or borrowed into the msb |
-| OF | Overflow Flag | Signed arithmetic overflowed (result does not fit in the destination's signed range) |
-
-Here is how to think about them:
-
-- **ZF** is straightforward: `ZF=1` means the result is zero. Use it to test equality after `cmp`.
-- **SF** is the high bit of the result. For signed values, `SF=1` means negative; `SF=0` means non-negative. For unsigned values, SF has no standard interpretation.
-- **CF** indicates unsigned overflow. For example, `add al, 1` with `al=255` wraps to 0 and sets CF because the true sum (256) does not fit in 8 bits as an unsigned integer.
-- **OF** indicates signed overflow. For example, `add al, 1` with `al=127` (the maximum positive 8-bit signed value) wraps to -128 and sets OF because the true signed sum (128) exceeds the 8-bit signed range.
-
-You cannot have both signed and unsigned overflow at once in practice; which flag you check depends on whether your data is signed or unsigned.
-
-## Comparison and testing: `cmp` and `test`
-
-Often you want to set flags without keeping the arithmetic result. That is what `cmp` and `test` do.
-
-### `cmp a, b`
-
-`cmp a, b` computes `a - b`, updates the flags, and **discards the result**. It leaves `a` and `b` unchanged. The flags tell you the relationship between `a` and `b`:
-
-- `ZF=1` means `a == b` (the difference is zero).
-- For unsigned comparison: check CF. `CF=0` after `cmp a, b` means `a >= b` (unsigned). `CF=1` means `a < b` (unsigned).
-- For signed comparison: combine SF and OF. The details are subtle, so we typically use conditional jump instructions that do this for us (covered in Lesson 03).
-
-### `test a, b`
-
-`test a, b` computes `a & b` (bitwise AND), updates the flags, and discards the result. It leaves `a` and `b` unchanged. Commonly used to test if bits are set:
+## FLAGS
 
 ```asm
-test rax, rax         ; check if rax is zero (ZF=1 if rax==0)
-test al, 1            ; check if low bit of al is set (ZF=0 if set)
+; Listing 06: FLAGS demonstration
+;
+; Purpose: Show how arithmetic sets ZF, SF, CF, OF.
+; Expected exit code: 0
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo06-flags-demo.obj 06-flags-demo.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-flags-demo.exe 06-flags-demo.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    ; Zero flag: result is zero
+    mov rax, 5
+    sub rax, 5                 ; RAX = 0, ZF = 1
+    
+    ; Sign flag: result is negative
+    mov rbx, 10
+    sub rbx, 20                ; RBX = -10, SF = 1
+    
+    ; Carry flag: unsigned overflow
+    mov cl, 255
+    add cl, 1                  ; CL wraps to 0, CF = 1
+    
+    ; Overflow flag: signed overflow
+    mov al, 127
+    add al, 1                  ; AL wraps to -128, OF = 1
+    
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-`test` also clears CF and OF to zero, which can be useful. The pattern `test rax, rax` is the idiomatic way to check if a register is zero (equivalent to `cmp rax, 0` but shorter).
+| Flag | Set when |
+|------|----------|
+| ZF | Result is zero (`5-5`) |
+| SF | Result msb set (`10-20` → −10) |
+| CF | Unsigned carry/borrow (`255+1` in 8 bits) |
+| OF | Signed overflow (`127+1` in 8-bit signed) |
 
-## Materializing boolean values with `setcc`
+The last `add al, 1` overwrites AL after CL already wrapped; flags at `ExitProcess` are from that last add, not from the ZF example. The listing is a sequence of demonstrations, not a single flag snapshot at exit.
 
-After a comparison, you may want to store the boolean result (true or false, 1 or 0) in a register. The `setcc` family does this. Each instruction checks one or more flags and writes 1 or 0 to an 8-bit destination:
+## `cmp` and `test`
+
+`cmp a, b` computes `a - b`, sets flags, keeps operands. `test a, b` computes `a & b`, sets flags, keeps operands.
 
 ```asm
-cmp rax, rbx
-sete al               ; al = 1 if rax == rbx (ZF=1), else al = 0
+; Listing 07: CMP instruction for comparison
+;
+; Purpose: Demonstrates CMP setting flags without changing operands.
+; Expected exit code: 1 (true, because 10 > 5)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo07-cmp-instruction.obj 07-cmp-instruction.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-cmp-instruction.exe 07-cmp-instruction.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 10
+    mov rbx, 5
+    
+    cmp rax, rbx               ; Compute RAX - RBX, set flags
+                               ; RAX and RBX unchanged
+                               ; ZF = 0 (not equal)
+                               ; For signed: 10 > 5, so result is positive
+    
+    ; Use SETG (set if greater, signed) to get boolean
+    setg cl                    ; CL = 1 if RAX > RBX (signed)
+    movzx rcx, cl
+    
+    call ExitProcess
+main ENDP
+
+END
 ```
-
-Common `setcc` instructions:
-
-| Instruction | Condition | Typical use |
-|-------------|-----------|-------------|
-| `sete` / `setz` | `ZF=1` | Equal / zero |
-| `setne` / `setnz` | `ZF=0` | Not equal / not zero |
-| `setl` / `setg` | Signed less / greater | `a < b` or `a > b` (signed) |
-| `setle` / `setge` | Signed ≤ / ≥ | `a <= b` or `a >= b` (signed) |
-| `setb` / `seta` | Unsigned below / above | `a < b` or `a > b` (unsigned) |
-| `setbe` / `setae` | Unsigned ≤ / ≥ | `a <= b` or `a >= b` (unsigned) |
-
-The destination is always an 8-bit register. To use the result as a 64-bit value, zero-extend it:
 
 ```asm
-cmp rax, rbx
-setl al               ; al = 1 if rax < rbx (signed), else 0
-movzx rdi, al         ; rdi = al (zero-extended to 64 bits)
+; Listing 08: TEST instruction for bit testing
+;
+; Purpose: Demonstrates TEST setting flags with bitwise AND.
+; Expected exit code: 1 (bit 2 is set)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo08-test-instruction.obj 08-test-instruction.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-test-instruction.exe 08-test-instruction.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 0b0101            ; Binary: 0101 (bits 0 and 2 set)
+    test rax, 4                ; Test bit 2 (4 = 0b0100)
+                               ; Computes RAX & 4, sets flags
+                               ; ZF = 0 (result nonzero, bit is set)
+    
+    setnz cl                   ; CL = 1 if ZF = 0 (bit was set)
+    movzx rcx, cl
+    
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-This is the building block for branchless conditional logic (though branching with `jcc` is usually clearer — we cover that in Lesson 03).
+`test rax, rax` is the idiomatic zero check (`cmp rax, 0` but shorter). `test` also clears CF and OF.
 
-## Worked example: signed division with remainder
+MASM accepts `0b0101` as a binary immediate in this listing. If an older ml64 rejects it, that is a listings/toolchain issue — flagged, not edited.
 
-Let's compute `-42 / 5` and print both the quotient and remainder as the exit status. Here is the source:
+## `setcc`
+
+Destination is always 8-bit. Zero-extend with `movzx` for a 64-bit boolean.
 
 ```asm
-section .text
-    global _start
-_start:
-    mov rax, -42          ; dividend (signed)
-    cqo                   ; sign-extend rax into rdx:rax
-    mov rbx, 5            ; divisor
-    idiv rbx              ; quotient in rax, remainder in rdx
+; Listing 09: SETcc family of instructions
+;
+; Purpose: Demonstrates various SETcc instructions.
+; Expected exit code: 3 (three conditions true)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo09-setcc-family.obj 09-setcc-family.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-setcc-family.exe 09-setcc-family.obj kernel32.lib
 
-    ; exit with quotient (should be -8, appears as 256-8=248 unsigned)
-    mov rdi, rax
-    mov rax, 60
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rax, rax               ; Counter = 0
+    
+    ; Test 1: equality
+    mov rbx, 5
+    cmp rbx, 5
+    sete cl                    ; CL = 1 if equal
+    movzx rcx, cl
+    add rax, rcx               ; Count += 1
+    
+    ; Test 2: less than (signed)
+    mov rbx, 3
+    cmp rbx, 10
+    setl cl                    ; CL = 1 if 3 < 10 (signed)
+    movzx rcx, cl
+    add rax, rcx               ; Count += 1
+    
+    ; Test 3: greater than (unsigned)
+    mov rbx, 10
+    cmp rbx, 5
+    seta cl                    ; CL = 1 if 10 > 5 (unsigned)
+    movzx rcx, cl
+    add rax, rcx               ; Count += 1, total = 3
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-Build and run:
-```bash
-nasm -f elf64 sdiv.asm -o sdiv.o
-ld sdiv.o -o sdiv
-./sdiv
-echo $?   # prints 248 (two's complement of -8 as unsigned 8-bit exit code)
-```
+| Instruction | Condition |
+|-------------|-----------|
+| `sete` / `setz` | ZF=1 |
+| `setne` / `setnz` | ZF=0 |
+| `setl` / `setg` | signed < / > |
+| `setle` / `setge` | signed ≤ / ≥ |
+| `setb` / `seta` | unsigned below / above |
+| `setbe` / `setae` | unsigned ≤ / ≥ |
 
-Step through the reasoning. We load `-42` into `rax`. The `cqo` instruction examines bit 63 of `rax` (the sign bit). Since `-42` is negative, bit 63 is 1, so `cqo` sets every bit of `rdx` to 1 (all-ones, representing -1 in two's complement extended across 64 bits). This makes `rdx:rax` the 128-bit signed representation of `-42`.
+## Worked example: signed division setup
 
-Next, `idiv rbx` divides `rdx:rax` by 5. The quotient is `-42 / 5 = -8` (integer division truncates toward zero for negative numbers in x86-64), placed in `rax`. The remainder is `-42 - (5 * -8) = -42 + 40 = -2`, placed in `rdx`. We ignore the remainder here and exit with the quotient.
+Listing `04-signed-division` is the complete signed-divide program: dividend 22, divisor 3, `cqo`, `idiv`, exit with quotient 7.
 
-The shell's exit code is an unsigned 8-bit value, so `-8` wraps to `256 - 8 = 248` when printed by `echo $?`. This is expected behavior — exit codes are unsigned.
+**Step-by-step:**
+
+1. `sub rsp, 32` — shadow space for `ExitProcess`.
+2. `mov rax, 22` — dividend in RAX.
+3. `cqo` — bit 63 of RAX is 0, so RDX becomes 0. `rdx:rax` is the 128-bit signed 22.
+4. `mov rbx, 3` — divisor in RBX (nonvolatile, unused after `idiv` because `main` does not return).
+5. `idiv rbx` — RAX=7, RDX=1.
+6. `mov rcx, rax` — RCX=7.
+7. `call ExitProcess` — process exit code 7.
+
+If the dividend were −42, `cqo` would fill RDX with ones. `idiv` by 5 would put −8 in RAX and −2 in RDX (truncation toward zero). `ExitProcess` takes a UINT; cmd `%ERRORLEVEL%` would show `4294967288` for −8; PowerShell `$LASTEXITCODE` may show −8.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to forget `cqo` before `idiv`, leaving `rdx` uninitialized or containing leftover data. Suppose `rdx` happens to hold `0x0000000000000001` (a small positive value). Then `rdx:rax` represents the 128-bit number `0x0000000000000001:FFFFFFFFFFFFFFD6` (where `0xFFFFFFFFFFFFFFD6` is `-42` as a 64-bit two's complement value). When interpreted as a 128-bit signed number, this is a huge positive value (approximately `2^64 - 42`), not `-42`.
+*"22 is positive, so I can skip `cqo` and leave RDX alone."*
 
-Dividing this huge number by 5 produces a quotient that overflows a 64-bit register, and the CPU raises a divide exception (`#DE`), terminating the program with `SIGFPE`. You never see the quotient — the program crashes. The lesson: **always** use `cqo` before `idiv` when the dividend is a signed 64-bit value, or `xor rdx, rdx` before `div` for unsigned. Failing to set up `rdx` is the most common division error.
+**Why it fails:** `idiv` always consumes 128-bit `rdx:rax`. If RDX is leftover 1, the dividend is `2^64 + 22`, not 22. The quotient does not fit in 64 bits and the CPU raises `#DE` (`EXCEPTION_INT_OVERFLOW` on Windows). Always `cqo` before `idiv` for a 64-bit signed dividend; always `xor rdx, rdx` before `div` for a 64-bit unsigned dividend.
 
 ## Distinctions worth keeping straight
 
-| Confusion | What actually separates them |
-|-----------|------------------------------|
-| `imul` vs `mul` | `imul` is signed multiply; `mul` is unsigned. The low-order bits of the product are identical, but the high-order bits (in `rdx` for one-operand forms) differ when negative values are involved. Use the instruction that matches your data type. |
-| `idiv` vs `div` | `idiv` is signed division and requires `cqo` (sign-extend) setup; `div` is unsigned and requires `xor rdx, rdx` (zero) setup. Using the wrong setup produces wrong results or crashes. |
-| `cqo` vs `xor rdx, rdx` | `cqo` sign-extends `rax` into `rdx:rax` for signed division. `xor rdx, rdx` zeros `rdx` for unsigned division. They are opposites — use the one that matches your data. |
-| CF vs OF | CF indicates unsigned overflow (carry/borrow); OF indicates signed overflow. After `add` or `sub`, check CF for unsigned arithmetic and OF for signed arithmetic. Checking the wrong flag gives you the wrong answer. |
-| `cmp a, b` vs `test a, b` | `cmp` computes `a - b` and sets flags (for equality, signed/unsigned comparison). `test` computes `a & b` and sets flags (for zero checks, bit tests). They discard the result and leave operands unchanged. |
-| `setl` vs `setb` | `setl` (set if less) is for signed comparison (`a < b` signed). `setb` (set if below) is for unsigned comparison (`a < b` unsigned). The same numeric values produce different results when interpreted as signed vs unsigned. |
-| `inc` vs `add reg, 1` | Both increment, but `inc` does **not** update CF (historical quirk). If you need CF after an increment (rare), use `add reg, 1` instead. |
-| `mov eax, -1` vs `movsx rax, eax` | Writing `-1` to `eax` zero-extends to `rax`, making `rax = 0x00000000FFFFFFFF` (a large positive value), not -1. To sign-extend a signed 32-bit value into 64 bits, use `movsxd rax, eax` or `cdqe` (which does the same thing). |
+| Confusion | Reality |
+|-----------|---------|
+| `imul` vs `mul` | Signed vs unsigned. Low bits match; high bits differ for negatives. |
+| `idiv` vs `div` | `cqo` vs zero RDX. |
+| CF vs OF | Unsigned carry vs signed overflow. |
+| `cmp` vs `test` | Subtract vs AND; both discard the result. |
+| `setl` vs `setb` | Signed less vs unsigned below. |
+| `inc` vs `add reg, 1` | `inc` does not update CF. |
+| `mov eax, -1` | Zero-extends to `0x00000000FFFFFFFF`, not −1 in RAX. Use `movsxd`/`cdqe` to sign-extend. |
 
 ## Check yourself
 
-1. After `add rax, rbx`, which flag tells you if unsigned overflow occurred? Which flag tells you if signed overflow occurred?
-2. You want to divide `rax` by 10 using unsigned division. What instruction must you execute before `div` to set up `rdx`, and why?
-3. Trace the worked example above with a positive dividend (`42` instead of `-42`). What is in `rdx` after `cqo`? What is the quotient and remainder? What exit code does the program produce?
-4. Why does `test rax, rax` followed by checking ZF let you determine if `rax` is zero? What does `test` compute, and when is the result zero?
-5. You compare `rax` and `rbx` with `cmp rax, rbx` and want to set `al` to 1 if `rax > rbx` (signed). Which `setcc` instruction do you use?
+1. After `add rax, rbx`, which flag is unsigned overflow? Signed overflow?
+2. Unsigned divide RAX by 10: what must you do to RDX first?
+3. In listing `04-signed-division`, what is in RDX after `idiv`? After `cqo` before `idiv`?
+4. Why does `test rax, rax` then ZF tell you whether RAX is zero?
+5. After `cmp rax, rbx`, which `setcc` sets AL if RAX > RBX signed?
 
 ## Key takeaways
 
-- Arithmetic instructions update FLAGS (ZF, SF, CF, OF) to record properties of the result; read these flags to make decisions without storing the result.
-- Signed and unsigned arithmetic use different instructions for multiply and divide because negative values change the high-order bits; using the wrong instruction produces silent errors.
-- Division requires setting up `rdx:rax` as the dividend: use `cqo` (sign-extend) before `idiv` for signed, or `xor rdx, rdx` (zero) before `div` for unsigned — forgetting this is the most common division bug.
-- `cmp a, b` computes `a - b` and sets flags without storing the result; use it for comparisons. `test a, b` computes `a & b` and sets flags; use it for zero checks and bit tests.
-- The `setcc` family materializes boolean values (0 or 1) from flag states; use `sete`/`setne` for equality, `setl`/`setg`/`setle`/`setge` for signed comparisons, and `setb`/`seta`/`setbe`/`setae` for unsigned comparisons.
-- ZF means the result is zero; SF means the sign bit is set (negative if signed); CF means unsigned overflow; OF means signed overflow.
+- Arithmetic updates ZF, SF, CF, OF.
+- Signed vs unsigned multiply/divide are different instructions.
+- `cqo` before `idiv`; `xor rdx, rdx` before `div`.
+- `cmp` subtracts; `test` ANDs; both keep operands.
+- `setcc` writes 0 or 1 to an 8-bit register; `movzx` widens it.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **Arithmetic instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (Instruction Set Reference), entries for `add`, `sub`, `imul`, `mul`, `idiv`, `div`, `cqo`, `setcc`
-- **FLAGS register:** Volume 1, Chapter 3.4 (RFLAGS register layout and flag descriptions)
-- **Division exceptions:** Volume 1, Chapter 6 (divide error `#DE`)
-- **NASM syntax:** NASM manual, Appendix B (instruction reference)
+- Intel SDM Volume 2: `add`, `sub`, `imul`, `mul`, `idiv`, `div`, `cqo`, `setcc`
+- Intel SDM Volume 1: RFLAGS
+- Windows SEH: https://learn.microsoft.com/en-us/windows/win32/debug/structured-exception-handling
 
 ## Exercises
 
-28 drills covering arithmetic, flags, setcc, mul/div, bug hunts, Project-Euler-lite sums.
+Work in `exercises/`. Quoted listings are `lessons/02-arithmetic-flags/listings/01-basic-arithmetic.asm` through `09-setcc-family.asm`.

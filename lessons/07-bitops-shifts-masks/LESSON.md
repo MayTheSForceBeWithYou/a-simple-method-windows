@@ -244,41 +244,44 @@ For `0x00F0`, this returns 8 (eight zeros before the first 1).
 A 24-bit RGB color packs three 8-bit components: red at bits 16-23, green at bits 8-15, blue at bits 0-7. Let's extract each component from the value `0xABCDEF`:
 
 ```asm
-section .text
-    global _start
+EXTERN ExitProcess:PROC
 
-_start:
-    mov rax, 0xABCDEF        ; color = 0xABCDEF
+.code
+main PROC
+    sub rsp, 40              ; shadow space + alignment
+    
+    mov rax, 0ABCDEFh        ; color = 0xABCDEF (hex literal with 'h' suffix in MASM)
 
     ; extract red (bits 16-23)
     mov rbx, rax
     shr rbx, 16              ; shift bits 16-23 down to bits 0-7
-    and rbx, 0xFF            ; mask to 8 bits
+    and rbx, 0FFh            ; mask to 8 bits
     ; rbx = 0xAB = 171
 
     ; extract green (bits 8-15)
-    mov rcx, rax
-    shr rcx, 8
-    and rcx, 0xFF
-    ; rcx = 0xCD = 205
+    mov r8, rax
+    shr r8, 8
+    and r8, 0FFh
+    ; r8 = 0xCD = 205
 
     ; extract blue (bits 0-7)
     mov rdx, rax
-    and rdx, 0xFF            ; no shift needed (already at bit 0)
+    and rdx, 0FFh            ; no shift needed (already at bit 0)
     ; rdx = 0xEF = 239
 
     ; exit with blue component
-    mov rdi, rdx
-    mov rax, 60
-    syscall
+    mov ecx, edx             ; exit code = 239
+    call ExitProcess
+main ENDP
+END
 ```
 
 Build and run:
-```bash
-nasm -f elf64 rgb.asm -o rgb.o
-ld rgb.o -o rgb
-./rgb
-echo $?   # prints 239
+```cmd
+ml64 /c rgb.asm
+link /OUT:rgb.exe /ENTRY:main /SUBSYSTEM:CONSOLE rgb.obj kernel32.lib
+rgb.exe
+echo %ERRORLEVEL%   REM prints 239
 ```
 
 Trace the extraction: For red, we shift right by 16 (moving bits 16-23 to bits 0-7) and mask with `0xFF` to keep only the low 8 bits. For green, shift by 8 and mask. For blue, no shift is needed (it is already at bits 0-7), so we just mask.
@@ -331,6 +334,27 @@ After shifting `0xABCDEF` right by 16, `rbx` holds `0xAB`, which looks correct. 
 - **Shift instructions:** Volume 2, entries for `shl`, `shr`, `sar`, `rol`, `ror`
 - **Flag effects:** Volume 1, Chapter 3.4 (RFLAGS register), description of CF, OF, SF, ZF after shifts
 - **Bit manipulation:** Any systems programming textbook chapter on bitwise operations and bitfields
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/01-bit-operations.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/02-and-masking.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/03-or-setting-bits.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/04-xor-toggle.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/05-shl-multiply.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/06-shr-divide.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/07-sar-signed-divide.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/08-pack-bitfields.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/09-xor-swap.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/10-not-instruction.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/11-unpack-bitfield.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/12-rol-rotate.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/13-popcount-loop.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/14-count-trailing-zeros.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/15-count-leading-zeros.asm -->
+<!-- LISTING-PENDING: lessons/07-bitops-shifts-masks/listings/16-rgb-extraction.asm -->
 
 ## Exercises
 

@@ -1,271 +1,262 @@
 # Lesson 05 — Procedures & Recursion
 
-Lesson 04 taught you how to call a function once. This lesson teaches you how to write functions that maintain correct state when they call other functions — including themselves. You will allocate multiple local variables in a stack frame, save and restore callee-saved registers you modify, and implement recursion by preserving arguments across calls. You will also recognize when recursion can be replaced with a loop (tail recursion), and when mutual recursion between two functions can be implemented with `jmp` instead of `call` to avoid growing the stack unnecessarily.
+Lesson 04 taught a single call. This lesson keeps a frame correct across nested and recursive calls: multiple locals, callee-saved spills, saving a live argument that lives in a volatile register, and unwind-aware prologues.
 
 ## What this lesson asks of you
 
-You must be able to allocate space for multiple local variables in a function's stack frame and access them relative to `rbp`. You will save any callee-saved registers (`rbx`, `r12`–`r15`) you use at the start of your function and restore them before returning, respecting the ABI contract. You will implement recursive functions by saving live arguments (like `rdi`) before a recursive `call` (because argument registers are caller-saved and will be clobbered), then restoring them afterward to complete the computation. You will distinguish tail calls (where no work remains after the recursive call returns) from non-tail recursion, and recognize that tail recursion can be rewritten as a loop. Finally, you will implement mutual recursion (two functions calling each other) using `jmp` when the current stack frame is no longer needed, avoiding unnecessary stack growth.
+Allocate shadow space plus locals. Save RBX, RBP, RDI, RSI, R12–R15 if you use them. RCX, RDX, R8, R9 are **volatile** — a recursive `call` clobbers them; stash `n` in a nonvolatile (RBX in the factorial listing) or on the stack before the call. Maintain 16-byte alignment. Tail recursion can become a loop; that rewrite is conceptual here.
 
 ## Multi-local frames
 
-`call` enters with `rsp ≡ 8 (mod 16)`. `push rbp` makes it `≡ 0`. Three qwords need 24 bytes; `sub rsp, 32` is the pad that keeps that alignment. Locals live at `[rbp-8]`, `[rbp-16]`, `[rbp-24]`. `leave` is `mov rsp, rbp` / `pop rbp`.
-
-`sum_locals(10)` stores `n`, `n+1`, `n+2` and returns 33. Same shape as `exercises/01-locals-three.asm`.
+`call` enters with RSP ≡ 8 (mod 16). `push rbp` makes it ≡ 0. Three qwords are 24 bytes; `sub rsp, 32` pads. Locals at `[rbp-8]`, `[rbp-16]`, `[rbp-24]`. `leave` is `mov rsp, rbp` / `pop rbp`.
 
 ```asm
-section .text
-global _start
+; Listing 02: Multi-local stack frame (lines 14-40 of LESSON.md)
+;
+; Purpose: sum_locals(n) stores n, n+1, n+2 as locals and returns sum.
+; Expected exit code: 33 (10+11+12)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo02-multi-local-frame.obj 02-multi-local-frame.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-multi-local-frame.exe 02-multi-local-frame.obj kernel32.lib
 
-sum_locals:
+.CODE
+
+EXTRN ExitProcess:PROC
+
+sum_locals PROC FRAME
     push rbp
+    .pushreg rbp
     mov rbp, rsp
-    sub rsp, 32              ; 24 bytes of locals + 8 of alignment
-    mov [rbp-8], rdi
-    lea rax, [rdi+1]
-    mov [rbp-16], rax
-    lea rax, [rdi+2]
-    mov [rbp-24], rax
+    sub rsp, 32                ; 24 bytes locals + 8 alignment
+    .allocstack 32
+    .endprolog
+    
+    mov [rbp-8], rcx           ; local1 = n
+    lea rax, [rcx+1]
+    mov [rbp-16], rax          ; local2 = n+1
+    lea rax, [rcx+2]
+    mov [rbp-24], rax          ; local3 = n+2
+    
     mov rax, [rbp-8]
     add rax, [rbp-16]
     add rax, [rbp-24]
+    
     leave
     ret
+sum_locals ENDP
 
-_start:
-    mov rdi, 10
+main PROC
+    sub rsp, 32
+    mov rcx, 10
     call sum_locals
-    mov rdi, rax             ; 33
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-`sub rsp, 24` would assemble and return 33 here, and break the next `call`. Nested frames (`12-nested-frame.asm`) and a context pointer in `r12` (`17-closure-sim.asm`) use the same prologue.
+`sum_locals(10)` → 10+11+12 = 33. Argument is RCX, not Linux RDI.
 
 ## Callee-saved spills
 
-You may write `rbx` and `r12`–`r15` only if you `push` them first and `pop` them before `ret`. `rbp` is already your frame. Caller-saved `rax`, `rcx`, `rdx`, `rsi`, `rdi`, `r8`–`r11` die across `call`.
+R12 is nonvolatile. Wipe it only after `push r12`.
 
 ```asm
-section .text
-global _start
+; Listing 03: Callee-saved register spill (lines 48-64 of LESSON.md)
+;
+; Purpose: Function using R12 must preserve it.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo03-callee-saved-r12.obj 03-callee-saved-r12.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-callee-saved-r12.exe 03-callee-saved-r12.obj kernel32.lib
 
-wipe:
-    push r12
-    xor r12, r12
-    pop r12
+.CODE
+
+EXTRN ExitProcess:PROC
+
+wipe PROC FRAME
+    push r12                   ; Save nonvolatile R12
+    .pushreg r12
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    xor r12, r12               ; Use R12 temporarily
+    
+    add rsp, 32
+    pop r12                    ; Restore R12
     ret
+wipe ENDP
 
-_start:
+main PROC
+    sub rsp, 32
     mov r12, 42
     call wipe
-    mov rdi, r12             ; 42, not 0
-    mov rax, 60
-    syscall
+    mov rcx, r12               ; Still 42 (preserved)
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-That is `05-save-r12.asm`. `09-fib-iter-proc.asm` uses `rbx` and does not save it. Exit status is still 55 because `_start` never reads `rbx` again. The procedure is still wrong.
+Main puts 42 in R12, `wipe` zeros R12 then restores it, exit 42.
 
-## Recursion is a spill
-
-`sum_to(n)` is `n + sum_to(n-1)`, and `0` at the base. `rdi` does not survive the recursive `call`. Push it, recurse, pop, then add.
+## Worked example: recursive factorial
 
 ```asm
-section .text
-global _start
+; Listing 01: Recursive factorial
+;
+; Purpose: Demonstrate recursion with proper stack management.
+; Expected exit code: 120 (5!)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-factorial.obj 01-factorial.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-factorial.exe 01-factorial.obj kernel32.lib
 
-sum_to:
-    cmp rdi, 0
-    jg .rec
-    xor rax, rax
-    ret
-.rec:
-    push rdi
-    dec rdi
-    call sum_to
-    pop rdi
-    add rax, rdi
-    ret
+.CODE
 
-_start:
-    mov rdi, 5
-    call sum_to
-    mov rdi, rax             ; 15
-    mov rax, 60
-    syscall
+EXTRN ExitProcess:PROC
+
+; factorial(n): returns n!
+; Base case: n <= 1 returns 1
+; Recursive: n * factorial(n-1)
+factorial PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    cmp rcx, 1
+    jg recursive
+    mov rax, 1                 ; Base case: return 1
+    jmp done
+    
+recursive:
+    mov rbx, rcx               ; Save n
+    dec rcx                    ; n-1
+    call factorial             ; factorial(n-1) in RAX
+    imul rax, rbx              ; n * factorial(n-1)
+    
+done:
+    add rsp, 32
+    pop rbx
+    ret
+factorial ENDP
+
+main PROC
+    sub rsp, 32
+    
+    mov rcx, 5
+    call factorial             ; 5! = 120
+    
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-Same spill in `08-from-scratch-rec-pow.asm` (`imul` after the pop), `10-gcd-proc.asm` (`div` writes `rax` and `rdx` before the recurse), `04-tree-sum-flat.asm` (index and partial sum, no `rbp`), and `24-from-scratch-rec-sum-array.asm`. `16-debug-missing-pop.asm` is factorial with the pop deleted: `fact(3)` must exit 6 once `pop rdi` sits before `imul`.
+For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both base and recursive paths share the same epilogue (`done`). RBX is the right stash: it survives the recursive `call`; RCX would not.
 
-`06-ack-lite.asm` is Ackermann with two arguments. The `m=0` and `m>0,n=0` cases are tail calls: stack already balanced, so `jmp ack`. The general case is not: you must hold `m` while `ack(m, n-1)` runs.
-
-## Mutual recursion
-
-`is_even` / `is_odd` never need a new frame. After `dec rdi` the argument is the only live value, so `jmp` the other label. A `call` would push a return address you never use.
-
-```asm
-section .text
-global _start
-
-is_even:
-    test rdi, rdi
-    jnz .go
-    mov rax, 1
-    ret
-.go:
-    dec rdi
-    jmp is_odd
-
-is_odd:
-    test rdi, rdi
-    jnz .go
-    xor rax, rax
-    ret
-.go:
-    dec rdi
-    jmp is_even
-
-_start:
-    mov rdi, 4
-    call is_even
-    mov rdi, rax             ; 1
-    mov rax, 60
-    syscall
-```
-
-`02-mutual-even-odd.asm` and `14-mutual-parity-count.asm` are this pattern. The CPU does not turn `call` into `jmp`. If anything is still on the stack (a saved `rdi`, a frame), `jmp` skips the matching `pop` and `ret` goes to the wrong address.
-
-## Recursion to a loop
-
-When the recursive result is only “add n, then the rest”, an accumulator does the same work and the stack stays put. `sum_acc(6)` exits 21, matching `sum_to(6)`.
-
-```asm
-section .text
-global _start
-
-sum_acc:
-    xor rax, rax
-.next:
-    test rdi, rdi
-    jz .done
-    add rax, rdi
-    dec rdi
-    jmp .next
-.done:
-    ret
-
-_start:
-    mov rdi, 6
-    call sum_acc
-    mov rdi, rax             ; 21
-    mov rax, 60
-    syscall
-```
-
-That is `07-tail-ish-loop.asm`. `18-trampoline-depth.asm` is still real recursion (`bump` increments after the call). Do not rewrite it as this loop.
-
-## Worked example: recursive factorial with proper spill
-
-Let's implement `factorial(n) = n * factorial(n-1)` with base case `factorial(0) = 1`. We must save `rdi` across the recursive call because it is caller-saved and we need its value afterward to multiply.
-
-```asm
-section .text
-    global _start
-
-factorial:
-    cmp rdi, 0
-    jg .recurse
-    mov rax, 1               ; base case: 0! = 1
-    ret
-
-.recurse:
-    push rdi                 ; save n
-    dec rdi                  ; n-1
-    call factorial           ; rax = (n-1)!
-    pop rdi                  ; restore n
-    imul rax, rdi            ; rax = n * (n-1)!
-    ret
-
-_start:
-    mov rdi, 5
-    call factorial
-    mov rdi, rax             ; exit with 5! = 120
-    mov rax, 60
-    syscall
-```
-
-Build and run:
-```bash
-nasm -f elf64 fact.asm -o fact.o
-ld fact.o -o fact
-./fact
-echo $?   # prints 120 (5! = 120)
-```
-
-Trace `factorial(3)`: `rdi=3`, push 3, recurse with `rdi=2`, which pushes 2 and recurses with `rdi=1`, which pushes 1 and recurses with `rdi=0`, which returns 1. Back in `factorial(1)`, pop 1, multiply `1 * 1 = 1`, return 1. Back in `factorial(2)`, pop 2, multiply `2 * 1 = 2`, return 2. Back in `factorial(3)`, pop 3, multiply `3 * 2 = 6`, return 6.
-
-Each call saves its argument, recurses, restores the argument, and multiplies. The stack grows with depth `n` and shrinks as each call returns.
+`0!` is usually 1. This listing treats `n <= 1` as 1, so `factorial(0)` also returns 1. Fine for 5!.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to forget the `pop rdi` before `imul`. Suppose you write:
+*"RCX still holds n after `call factorial`, so I do not need RBX."*
+
+**Why it fails:** RCX is volatile. The recursive `factorial` uses RCX as its argument and does not restore it for the caller. Without RBX (or a stack slot), `imul rax, rcx` multiplies by leftover garbage. Listing `01-factorial` copies `n` to RBX **before** `dec rcx` / `call`.
+
+## Recursive sum (stack save)
 
 ```asm
-.recurse:
-    push rdi
-    dec rdi
-    call factorial
-    ; MISSING: pop rdi
-    imul rax, rdi            ; BUG: rdi still holds n-1, not n
+; Listing 04: Recursive sum_to (lines 70-94 of LESSON.md)
+;
+; Purpose: sum_to(n) = n + sum_to(n-1), base case 0.
+; Expected exit code: 15 (1+2+3+4+5)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo04-recursive-sum.obj 04-recursive-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-recursive-sum.exe 04-recursive-sum.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+sum_to PROC FRAME
+    push rcx                   ; Save RCX (nonvolatile preservation)
+    .pushreg rcx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    cmp rcx, 0
+    jg recursive
+    xor eax, eax               ; Base case: return 0
+    jmp done
+    
+recursive:
+    dec rcx
+    call sum_to
+    pop rcx                    ; Restore original n
+    add rax, rcx               ; Add n to sum(n-1)
     ret
+    
+done:
+    add rsp, 32
+    pop rcx
+    ret
+sum_to ENDP
+
+main PROC
+    sub rsp, 32
+    mov rcx, 5
+    call sum_to
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-After the recursive call returns, `rdi` holds the *decremented* value (`n-1`), not the original `n`, because the recursive call overwrote `rdi` with its own argument and never restored it. So you compute `(n-1)! * (n-1)` instead of `n! = n * (n-1)!`. For `factorial(3)`, this produces `2 * 2 = 4` instead of `3 * 2 = 6`.
+Header comment says "Save RCX (nonvolatile preservation)". RCX is **volatile**. Pushing it is a way to keep `n` across the call, not ABI preservation of a callee-saved register.
 
-The symptom is an incorrect result that is off by a factor related to the recursion depth. The lesson: always match every `push` with a `pop` before using the value you saved.
+The **recursive** path does `pop rcx` / `ret` without `add rsp, 32`. After `sub rsp, 32`, that `pop` reads the shadow space, not the saved RCX. The **base** path does `add rsp, 32` then `pop rcx`. Treat listing 04 as a contrast with listing 01's shared epilogue. Flagged in `docs/PROSE_TECH_FLAGS.md`. Do not "fix" the listing in prose by rewriting it.
+
+## Tail recursion (concept)
+
+If nothing remains after the recursive call except `ret`, you can `jmp` to the top with updated arguments (a loop). Factorial is **not** tail recursive after `imul`. `sum_to` as written is not tail recursive either (`add` after the call).
 
 ## Distinctions worth keeping straight
 
-| Confusion | What actually separates them |
-|-----------|------------------------------|
-| Caller-saved vs callee-saved | Caller-saved registers (`rax`, `rcx`, `rdx`, `rsi`, `rdi`, `r8`–`r11`) are clobbered by any call; the caller must save them if needed. Callee-saved registers (`rbx`, `rbp`, `r12`–`r15`) must be preserved by the callee if it uses them. |
-| Local variable allocation size vs alignment | You need `N` bytes for locals, but must allocate a multiple of 16 (accounting for `push rbp`) to maintain stack alignment. Round up: 24 bytes of locals requires `sub rsp, 32`. |
-| `leave` vs `mov rsp, rbp; pop rbp` | They are identical. `leave` is a single instruction that does both. Use `leave` for clarity. |
-| Recursive call vs tail call | A recursive call where work remains afterward (like `imul` or `add`) requires saving state and returning. A tail call where no work remains can use `jmp` instead of `call` to reuse the current frame. |
-| Tail recursion vs loop | Tail recursion can always be rewritten as a loop with an accumulator. The loop avoids stack growth and is more efficient. NASM does not optimize tail calls automatically; you must rewrite them yourself. |
-| `call` vs `jmp` for tail calls | `call` pushes a return address you will immediately pop and return; `jmp` skips this overhead. Use `jmp` for tail calls (after ensuring the stack is balanced). |
-| Forgetting to save `rdi` in recursion | Argument registers are caller-saved, so the recursive call clobbers them. If you need the original argument afterward, `push` it before the call and `pop` it after. Forgetting this produces wrong results. |
+| Confusion | Reality |
+|-----------|---------|
+| RCX survives `call` | It does not. Stash in RBX/R12 or a local. |
+| Pushing RCX = ABI preserve | RCX is volatile; the push is your private save. |
+| Shared epilogue vs split `ret` | Factorial shares `done`. `sum_to` splits paths; the recursive path omits `add rsp, 32`. |
+| `leave` | `mov rsp, rbp` / `pop rbp`. |
+| Linux RDI argument | Windows RCX. |
 
 ## Check yourself
 
-1. You allocate space for 5 quadwords (40 bytes) of locals in a function. After `push rbp`, `rsp` is 8 (mod 16). How many bytes should you `sub` from `rsp` to maintain alignment?
-2. You write a function that uses `rbx` and `r13`. Which of these must you save and restore, and where in the function do you save them?
-3. Trace the stack for `factorial(2)`: what is on the stack at the deepest recursion (inside `factorial(0)`), and what is the stack height (number of return addresses plus saved values)?
-4. Why can `is_even` and `is_odd` use `jmp` instead of `call` for mutual recursion? What would go wrong if you used `call` followed immediately by `ret`?
-5. Rewrite `countdown(n)` (which prints `n, n-1, ..., 1` by recursing) as a loop. What register holds the accumulator, and how do you avoid recursion?
+1. In listing `01-factorial`, why `mov rbx, rcx` before `dec rcx`?
+2. `sum_locals(10)`: what is at `[rbp-16]` after the three stores?
+3. After `call wipe` in listing 03, what is in R12?
+4. Does the recursive path of listing 04 deallocate the 32-byte frame before `pop rcx`?
+5. Is `factorial` tail recursive?
 
 ## Key takeaways
 
-- Functions allocate multiple locals by `sub rsp, N` where `N` is rounded up to maintain 16-byte alignment; locals are accessed at `[rbp-8]`, `[rbp-16]`, etc.
-- Callee-saved registers (`rbx`, `rbp`, `r12`–`r15`) must be pushed at function entry and popped before return if the function modifies them; caller-saved registers may be clobbered by any call.
-- Recursive functions must save live arguments (like `rdi`) before the recursive call because argument registers are caller-saved; forgetting to save and restore produces wrong results.
-- Tail calls (where no work remains after the call) can use `jmp` instead of `call` to reuse the current frame and avoid stack growth; NASM does not optimize this automatically.
-- Tail recursion is equivalent to a loop with an accumulator; rewriting it as a loop eliminates recursion overhead and stack growth.
-- Every `push` must be matched by a `pop` in reverse order (LIFO); unbalanced stack operations cause `ret` to jump to a garbage address and crash.
+- Locals live in the frame; `leave` tears a RBP frame down.
+- Nonvolatiles (RBX, R12, …) must be saved if used.
+- Recursion must stash live volatile arguments before `call`.
+- `PROC FRAME` unwind directives belong in the prologue.
+- Prefer one epilogue that always deallocates.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **System V AMD64 ABI:** Section 3.2 (function calling sequence, register usage, stack alignment)
-- **Recursion patterns:** Any assembly textbook chapter on procedures and recursion
-- **`leave` instruction:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (leave = mov rsp, rbp; pop rbp)
-- **Tail call optimization:** Compiler optimization literature (manual tail-call elimination)
+- https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention
+- https://learn.microsoft.com/en-us/cpp/build/exception-handling-x64
 
 ## Exercises
 
-24 drills under `exercises/`. Solutions mirror the names in `solutions/`. Build line is in each file header.
-
-Frames and spills: `01-locals-three.asm`, `05-save-r12.asm`, `12-nested-frame.asm`, `17-closure-sim.asm`. Recursion: `03-rec-sum.asm`, `04-tree-sum-flat.asm`, `06-ack-lite.asm`, `08-from-scratch-rec-pow.asm`, `10-gcd-proc.asm`, `15-rec-strlen.asm`, `16-debug-missing-pop.asm`, `21-rec-binary-digits.asm`, `23-stretch-memo-fib-slot.asm`, `24-from-scratch-rec-sum-array.asm`. Mutual `jmp`: `02-mutual-even-odd.asm`, `14-mutual-parity-count.asm`. Loop instead of a stack: `07-tail-ish-loop.asm`, `09-fib-iter-proc.asm`. Also `11-map-array-proc.asm`, `13-variadic-max.asm`, `19-compare-procs.asm`, `20-fold-list.asm`, `22-stretch-quicksort-partition.asm`.
-
-Build with:
-```bash
-nasm -f elf64 FILE -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-```
+Quoted listings: `01-factorial.asm`, `02-multi-local-frame.asm`, `03-callee-saved-r12.asm`, `04-recursive-sum.asm`.

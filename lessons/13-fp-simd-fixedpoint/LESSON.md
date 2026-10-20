@@ -286,12 +286,21 @@ Similarly, after `idiv` in `11-fixed-div.asm`, use `sar` if the quotient can be 
 - Dot product and vector length: [Wikipedia: Dot product](https://en.wikipedia.org/wiki/Dot_product), [Vector magnitude](https://en.wikipedia.org/wiki/Euclidean_vector#Length)
 - Linear interpolation: [Wikipedia: Linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/01-q16-encode.asm -->
+<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/02-q16-add.asm -->
+<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/03-q16-mul.asm -->
+<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/04-q16-clamp.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
 
 ```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
 **Q-format basics:**

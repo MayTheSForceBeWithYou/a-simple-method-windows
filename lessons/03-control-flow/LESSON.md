@@ -1,269 +1,359 @@
 # Lesson 03 — Control Flow
 
-Arithmetic and data movement are computation, but control flow is decision. This lesson teaches you to compare values and branch based on the result, turning linear sequences of instructions into programs that adapt to their inputs. You will use conditional jumps (`je`, `jne`, `jl`, `jg`, `jb`, `ja`) to implement if/else, while loops, for loops, and early exits, and understand the critical distinction between signed and unsigned comparisons. You will also see how jump tables let you dispatch to many cases efficiently, and debug the two most common control-flow bugs: off-by-one loop bounds and inverted conditions.
+Arithmetic and data movement are computation; control flow is decision. This lesson teaches you to compare values and branch, turning a straight-line sequence into if/else, while, for, and early exit. You will distinguish signed jumps (`jl`, `jg`) from unsigned jumps (`jb`, `ja`). Jump tables remain a conceptual tool here — there is no standalone jump-table listing on the listings branch.
+
+These instructions are platform-independent. The Windows wrapper is still `main PROC`, 32-byte shadow space, `call ExitProcess`.
 
 ## What this lesson asks of you
 
-You must be able to use `cmp` or `test` followed by a conditional jump instruction to branch based on register values. You will implement if/else structures, counted loops (for and while), and early loop exits using labels and jumps. You will distinguish signed conditional jumps (`jl`, `jg`, `jle`, `jge`) from unsigned conditional jumps (`jb`, `ja`, `jbe`, `jae`) and choose the correct one for your data type. You will also build a simple jump table to dispatch to different code paths based on an index, which is the foundation for switch statements and function-pointer tables. By the end, you should trace a loop to confirm it runs the correct number of times, and recognize the symptoms of an inverted condition (entering the "then" branch when you meant "else").
+Use `cmp` or `test` then a `jcc`. Implement if, if/else, while, counted for, and break. Choose signed vs unsigned jumps for the data type. Trace loop bounds so you do not miss or double-count an endpoint.
 
-## Conditional jumps: branching on flags
+## Conditional jumps
 
-A **conditional jump** instruction checks one or more flags in RFLAGS and jumps to a label if the condition is true, or falls through to the next instruction if false. You typically set up the flags with `cmp` or `test`, then immediately jump based on the result.
+| Instruction | Condition |
+|-------------|-----------|
+| `je` / `jz` | ZF=1 |
+| `jne` / `jnz` | ZF=0 |
+| `jl` / `jg` / `jle` / `jge` | signed < > ≤ ≥ |
+| `jb` / `ja` / `jbe` / `jae` | unsigned below / above |
 
-### Basic conditional jumps
+"Less/greater" is signed. "Below/above" is unsigned. `jmp` always jumps.
 
-| Instruction | Condition | Typical use |
-|-------------|-----------|-------------|
-| `je` / `jz` | `ZF=1` | Jump if equal / zero |
-| `jne` / `jnz` | `ZF=0` | Jump if not equal / not zero |
-| `jl` / `jnge` | Signed `<` | Jump if less (signed) |
-| `jg` / `jnle` | Signed `>` | Jump if greater (signed) |
-| `jle` / `jng` | Signed `<=` | Jump if less or equal (signed) |
-| `jge` / `jnl` | Signed `>=` | Jump if greater or equal (signed) |
-| `jb` / `jnae` | Unsigned `<` | Jump if below (unsigned) |
-| `ja` / `jnbe` | Unsigned `>` | Jump if above (unsigned) |
-| `jbe` / `jna` | Unsigned `<=` | Jump if below or equal (unsigned) |
-| `jae` / `jnb` | Unsigned `>=` | Jump if above or equal (unsigned) |
-
-The mnemonics use "less" and "greater" for signed comparisons, and "below" and "above" for unsigned comparisons. This naming helps you remember which to use: if your data is signed integers, use `jl`/`jg`; if your data is unsigned integers or addresses, use `jb`/`ja`.
-
-Here is a basic comparison and branch:
+## If
 
 ```asm
-cmp rax, rbx
-je  .equal            ; jump if rax == rbx
-jl  .less             ; jump if rax < rbx (signed)
-; fall through: rax >= rbx (signed)
+; Listing 01: Simple if statement
+;
+; Purpose: Demonstrate conditional execution with JE.
+; Expected exit code: 10 (if path taken)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-simple-if.obj 01-simple-if.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-simple-if.exe 01-simple-if.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 5
+    mov rbx, 5
+    mov rcx, 99                ; Default exit code
+    
+    cmp rax, rbx
+    jne skip_then              ; If not equal, skip
+    
+    ; Then branch (rax == rbx)
+    mov rcx, 10
+    
+skip_then:
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-The `jmp` instruction is an **unconditional jump** — it always jumps, regardless of flags. Use it to skip code or loop back.
+RAX equals RBX, so `jne` falls through, RCX becomes 10, exit 10. If they differed, RCX would stay 99.
 
-### The idiomatic zero check
-
-To check if a register is zero, the idiomatic form is `test reg, reg` followed by `jz`:
+## If-else
 
 ```asm
-test rdi, rdi
-jz   .is_zero
-; rdi is nonzero
-```
+; Listing 02: If-else statement
+;
+; Purpose: Demonstrate if-else with signed comparison.
+; Expected exit code: 20 (else path, since 10 is not negative)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo02-if-else.obj 02-if-else.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-if-else.exe 02-if-else.obj kernel32.lib
 
-This is equivalent to `cmp rdi, 0` but shorter and faster (because `test rdi, rdi` is `rdi & rdi`, which is zero exactly when `rdi` is zero).
+.CODE
 
-## Structured control flow patterns
+EXTRN ExitProcess:PROC
 
-Assembly does not have `if`, `while`, or `for` keywords, but you implement them with labels and jumps. The patterns below are idiomatic translations.
-
-### if/else
-
-```asm
+main PROC
+    sub rsp, 32
+    
+    mov rax, 10
+    
     cmp rax, 0
-    jge .else          ; if rax < 0 (signed), continue; else jump
-    ; then branch: rax is negative
-    ; ...
-    jmp .end           ; skip else branch
-.else:
-    ; else branch: rax is non-negative
-    ; ...
-.end:
+    jge else_branch            ; If RAX >= 0, jump to else
+    
+    ; Then branch: RAX < 0
+    mov rcx, 10
+    jmp end_if
+    
+else_branch:
+    ; Else branch: RAX >= 0
+    mov rcx, 20
+    
+end_if:
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-If you only need an `if` without `else`, omit the `.else` label and jump directly to `.end` when the condition is false:
+The `then` path must `jmp end_if` or it would fall into `else`. 10 ≥ 0, so exit 20.
+
+## While
 
 ```asm
+; Listing 03: While loop
+;
+; Purpose: Demonstrate while loop summing numbers.
+; Expected exit code: 15 (1+2+3+4+5)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo03-while-loop.obj 03-while-loop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-while-loop.exe 03-while-loop.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rax, rax               ; Sum = 0
+    mov rcx, 5                 ; Counter = 5
+    
+loop_start:
+    cmp rcx, 0
+    jle loop_done              ; While rcx > 0
+    
+    add rax, rcx               ; sum += counter
+    dec rcx
+    jmp loop_start
+    
+loop_done:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Comment says "While rcx > 0"; the code exits with `jle` when RCX ≤ 0. That is the same predicate. Sum 5+4+3+2+1 = 15. After the last add, RCX is overwritten with the sum for `ExitProcess`.
+
+## For (counted)
+
+```asm
+; Listing 04: For loop (counted iteration)
+;
+; Purpose: Demonstrate for-style loop from 0 to N-1.
+; Expected exit code: 10 (sum of 0+1+2+3+4)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo04-for-loop.obj 04-for-loop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-for-loop.exe 04-for-loop.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rax, rax               ; Sum = 0
+    xor rcx, rcx               ; Index = 0
+    mov r8, 5                  ; Limit = 5
+    
+loop_start:
+    cmp rcx, r8
+    jge loop_done              ; While index < limit
+    
+    add rax, rcx               ; sum += index
+    inc rcx
+    jmp loop_start
+    
+loop_done:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+This is `for (i = 0; i < 5; i++) sum += i`. Condition `jge` after `cmp i, n` is the C `<` test. Sum 10.
+
+## Signed vs unsigned
+
+−1 as signed is less than 1. As unsigned it is `0xFFFFFFFFFFFFFFFF`, above 1.
+
+```asm
+; Listing 05: Signed vs unsigned comparison
+;
+; Purpose: Show different results for JL vs JB with same values.
+; Expected exit code: 2 (both branches increment)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo05-signed-vs-unsigned.obj 05-signed-vs-unsigned.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-signed-vs-unsigned.exe 05-signed-vs-unsigned.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rcx, rcx               ; Counter = 0
+    
+    ; Compare -1 with 1
+    mov rax, -1                ; All bits set (signed: -1, unsigned: huge)
+    mov rbx, 1
+    
+    ; Signed comparison: -1 < 1
+    cmp rax, rbx
+    jge not_less_signed
+    inc rcx                    ; Count this
+not_less_signed:
+    
+    ; Unsigned comparison: -1 (huge) > 1
+    cmp rax, rbx
+    jbe not_greater_unsigned
+    inc rcx                    ; Count this
+not_greater_unsigned:
+    
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Both increments run. Exit 2. If you used `jl` for the second test you would skip the unsigned increment.
+
+## Early exit (break)
+
+```asm
+; Listing 06: Early loop exit with break
+;
+; Purpose: Demonstrate breaking out of loop early.
+; Expected exit code: 3 (stops when counter == 3)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo06-early-exit.obj 06-early-exit.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-early-exit.exe 06-early-exit.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rcx, rcx               ; Counter = 0
+    
+loop_start:
+    inc rcx
+    
+    cmp rcx, 3
+    je loop_done               ; Break when counter == 3
+    
+    cmp rcx, 10
+    jl loop_start              ; Continue if counter < 10
+    
+loop_done:
+    call ExitProcess
+main ENDP
+
+END
+```
+
+RCX goes 1, 2, 3. At 3, `je loop_done` fires. Exit code is 3 (RCX is already the first argument). The `cmp rcx, 10` bound is never reached.
+
+## Zero check with `test`
+
+```asm
+; Listing 07: Idiomatic zero check with TEST
+;
+; Purpose: Demonstrate TEST for checking if register is zero.
+; Expected exit code: 1 (rdi is nonzero)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo07-test-zero-check.obj 07-test-zero-check.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-test-zero-check.exe 07-test-zero-check.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rdi, 42
+    
     test rdi, rdi
-    jz .end            ; skip the body if rdi is zero
-    ; if body: rdi is nonzero
-    ; ...
-.end:
+    jz is_zero                 ; Jump if zero
+    
+    ; Nonzero path
+    mov rcx, 1
+    jmp end_check
+    
+is_zero:
+    xor ecx, ecx
+    
+end_check:
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-### while loop
+42 is nonzero, so exit 1. RDI is nonvolatile; `main` does not return.
 
-```asm
-.loop:
-    cmp rcx, 0         ; check loop condition
-    jle .done          ; exit if rcx <= 0
-    ; loop body
-    ; ...
-    dec rcx            ; update loop variable
-    jmp .loop          ; repeat
-.done:
-```
+## Jump tables (no listing on this branch)
 
-The condition is checked at the top (a "while" loop in C terms). If the condition is false initially, the body never runs.
+A jump table is an array of code addresses. After a bounds check, `jmp QWORD PTR [table + rax*8]` dispatches. Without the bounds check, an out-of-range index loads a garbage RIP. There is no `jump-table.asm` listing yet; do not invent a filename.
 
-### for loop (counted iteration)
+## Worked example: while-sum
 
-A counted loop from 0 to n-1:
+Listing `03-while-loop` is the full program. Shadow space, sum in RAX, counter in RCX from 5 down to 1.
 
-```asm
-    xor rcx, rcx       ; rcx = 0 (loop counter)
-.for:
-    cmp rcx, n         ; compare counter to limit
-    jge .endfor        ; exit if rcx >= n
-    ; loop body (rcx is the index)
-    ; ...
-    inc rcx            ; increment counter
-    jmp .for           ; repeat
-.endfor:
-```
+| Iteration | RCX at `add` | RAX after `add` | RCX after `dec` |
+|-----------|--------------|-----------------|-----------------|
+| 1 | 5 | 5 | 4 |
+| 2 | 4 | 9 | 3 |
+| 3 | 3 | 12 | 2 |
+| 4 | 2 | 14 | 1 |
+| 5 | 1 | 15 | 0 |
 
-This runs exactly `n` times (assuming `n > 0`). If you write `jg` instead of `jge`, the loop runs `n+1` times (an off-by-one error). If you write `jle`, the loop only checks whether the counter has passed the limit and may loop forever if `n` is large.
-
-### Early exit (break)
-
-To exit a loop early, jump directly to the `.done` or `.endfor` label:
-
-```asm
-.loop:
-    cmp rcx, 0
-    jle .done
-    ; ...
-    test rax, rax      ; check some condition
-    jz .done           ; break if rax is zero
-    ; ...
-    dec rcx
-    jmp .loop
-.done:
-```
-
-### Early continue (skip to next iteration)
-
-To skip the rest of the loop body and start the next iteration, jump back to the top of the loop (after updating the loop variable if necessary):
-
-```asm
-.loop:
-    cmp rcx, 0
-    jle .done
-    test rax, rax
-    jz .skip           ; skip rest of body if rax is zero
-    ; main body
-    ; ...
-.skip:
-    dec rcx
-    jmp .loop
-.done:
-```
-
-## Jump tables: dispatching by index
-
-A **jump table** is an array of addresses. You load an address from the table and jump to it, allowing you to dispatch to different code paths based on an index. This is the low-level mechanism for switch statements with dense cases.
-
-```asm
-section .rodata
-    jump_table dq .case0, .case1, .case2
-
-section .text
-    ; assume rax holds the case index (0, 1, or 2)
-    ; bounds check: if rax >= 3, jump to default or error
-    cmp rax, 3
-    jae .default
-
-    ; dispatch: load address from table and jump
-    jmp [jump_table + rax*8]
-
-.case0:
-    ; handle case 0
-    jmp .end
-.case1:
-    ; handle case 1
-    jmp .end
-.case2:
-    ; handle case 2
-    jmp .end
-.default:
-    ; handle out-of-range
-.end:
-```
-
-The key line is `jmp [jump_table + rax*8]`, which loads the quadword at `jump_table + rax*8` (the address of the case) and jumps to it. This is one indirect jump instead of a chain of comparisons and branches, which is faster when you have many cases.
-
-**Bounds check is mandatory** — if `rax` is out of range, you will load a random address and crash or jump into the middle of unrelated code. Always check `rax` against the table size before dispatching.
-
-## Worked example: counting even numbers in a range
-
-Let's write a program that counts how many even numbers exist in the range `[10, 50)` (10 inclusive, 50 exclusive). We will loop from 10 to 49, test each number's low bit, and increment a counter if the bit is clear (even). Here is the source:
-
-```asm
-section .text
-    global _start
-_start:
-    xor rax, rax       ; rax = counter (starts at 0)
-    mov rcx, 10        ; rcx = loop variable (starts at 10)
-
-.loop:
-    cmp rcx, 50        ; compare rcx to upper bound
-    jge .done          ; exit if rcx >= 50
-
-    test rcx, 1        ; check low bit (1 means odd, 0 means even)
-    jnz .skip          ; if odd (ZF=0), skip increment
-
-    inc rax            ; even: increment counter
-.skip:
-    inc rcx            ; move to next number
-    jmp .loop          ; repeat
-
-.done:
-    mov rdi, rax       ; exit with count as status
-    mov rax, 60
-    syscall
-```
-
-Build and run:
-```bash
-nasm -f elf64 count_even.asm -o count_even.o
-ld count_even.o -o count_even
-./count_even
-echo $?   # should print 20 (there are 20 even numbers in [10,50))
-```
-
-Trace the reasoning. We initialize `rax` (the counter) to 0 and `rcx` (the loop variable) to 10. At the top of the loop, we compare `rcx` to 50. If `rcx >= 50`, we exit. Otherwise, we test the low bit of `rcx` with `test rcx, 1`. If the low bit is 1 (odd), ZF is cleared, and `jnz .skip` jumps over the `inc rax` line. If the low bit is 0 (even), ZF is set, `jnz` falls through, and we increment the counter. Then we increment `rcx` and loop.
-
-The loop runs 40 times (from 10 to 49 inclusive). Half of those numbers are even (10, 12, 14, ..., 48), so `rax` ends up at 20. We exit with 20 as the status.
+Then `cmp rcx, 0` / `jle loop_done`. `mov rcx, rax` then exit 15.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to write `jg .done` instead of `jge .done` at the loop condition. This changes the exit test from `rcx >= 50` to `rcx > 50`. With this change, the loop continues when `rcx == 50`, processes 50 (which is even), increments the counter to 21, then increments `rcx` to 51, compares again, and exits. The result is 21 instead of 20 — an **off-by-one error**.
+*"I should use `jg loop_done` after `cmp rcx, 0` because the loop is while counter is positive."*
 
-The distinction between `jge` (jump if greater or equal) and `jg` (jump if strictly greater) is one instruction, but it changes the loop bounds by one iteration. When you write a loop like `for (i = start; i < end; i++)` in C, the assembly translation is `cmp i, end` followed by `jge .done` (exit if `i >= end`). If you use `jg`, you are writing `i <= end`, which includes the endpoint. Off-by-one errors are the most common loop bug in assembly; always trace the boundary values (`rcx = 49` and `rcx = 50`) to confirm your condition is correct.
+**Why it fails:** `jg` exits when RCX > 0, so the body never runs. The listing uses `jle loop_done` (exit when ≤ 0), which is `while (rcx > 0)`. Using `jl` instead of `jle` would also work here because RCX hits 0 exactly, but `jle` is the direct translation of "not greater than 0."
+
+For a C `for (i = 0; i < n; i++)`, the matching jump after `cmp i, n` is `jge done`, not `jg done`. `jg` includes `i == n` as a live iteration (off-by-one).
 
 ## Distinctions worth keeping straight
 
-| Confusion | What actually separates them |
-|-----------|------------------------------|
-| `jl` vs `jb` | `jl` (jump if less) is for signed comparison; `jb` (jump if below) is for unsigned. For example, `-1` is less than `0` in signed arithmetic, but greater than `0` in unsigned (because `-1` as unsigned is `0xFFFFFFFFFFFFFFFF`, the maximum value). Use `jl`/`jg` for signed data, `jb`/`ja` for unsigned data. |
-| `je` vs `jz` | They are synonyms — both check `ZF=1` and jump if true. `je` reads as "jump if equal" (after `cmp`); `jz` reads as "jump if zero" (after `test`). Use whichever is clearer in context. |
-| `jge` vs `jg` | `jge` includes equality (`>=`); `jg` does not (`>`). The difference is one case at the boundary, but it shifts loop bounds by one. For `for (i = 0; i < n; i++)`, use `jge .done` after `cmp i, n`. For `while (i <= n)`, use `jg .done`. |
-| `cmp a, b` then `jl` vs `jg` | After `cmp a, b`, `jl` jumps if `a < b`, and `jg` jumps if `a > b`. The operands to `cmp` matter — reversing them inverts the comparison. `cmp a, b; jl` is `a < b`, but `cmp b, a; jl` is `b < a` (equivalent to `a > b`). |
-| `test rax, rax` vs `cmp rax, 0` | Both set ZF if `rax` is zero, but `test` is shorter and faster. `test` also clears CF and OF, which can be useful. Prefer `test` for zero checks. |
-| Jump table vs chain of `cmp`/`je` | A jump table dispatches in one indirect jump; a chain of comparisons takes O(n) comparisons. For dense cases (0, 1, 2, ...), use a jump table. For sparse cases or non-integer keys, use comparisons. |
-| Forgetting the bounds check in a jump table | If the index is out of range, `jmp [table + rax*8]` loads a garbage address and crashes. Always check `cmp rax, table_size` and jump to a default case if out of range. |
+| Confusion | Reality |
+|-----------|---------|
+| `jl` vs `jb` | Signed vs unsigned. −1 < 1 signed; −1 above 1 unsigned. |
+| `je` vs `jz` | Synonyms (ZF=1). |
+| `jge` vs `jg` | Inclusive vs exclusive bound. Off-by-one. |
+| Operand order of `cmp` | `cmp a, b; jl` is a < b. |
+| `test reg, reg` vs `cmp reg, 0` | Same ZF; `test` is shorter. |
 
 ## Check yourself
 
-1. Write the assembly for `if (x > 10) { ... } else { ... }` where `x` is in `rax` and the comparison is signed. Which jump instruction do you use after `cmp rax, 10`, and to which label?
-2. You write a loop `for (i = 0; i < 100; i++)` using `rcx` as the counter. What is the correct condition after `cmp rcx, 100` — `jge .done`, `jg .done`, `jle .done`, or `jl .done`? How many times does the loop run if you use each?
-3. Trace the worked example above with `rcx` starting at 48 instead of 10. How many iterations does the loop run, and what is the final value of `rax`?
-4. After `test rdi, 1`, what does `jz` check? If `rdi` is 5, does `jz` jump or fall through?
-5. A jump table has 4 entries (indices 0–3). You receive an index in `rax`. Write the bounds check and the dispatch line.
+1. Signed `if (x > 10) then else`. After `cmp rax, 10`, which jump skips `then`?
+2. `for (i = 0; i < 100; i++)` with RCX. After `cmp rcx, 100`, which of `jge`/`jg`/`jle`/`jl` matches?
+3. Listing `04-for-loop`: if you change `jge` to `jg`, what is the new exit code?
+4. After `test rdi, 1` with RDI=5, does `jz` jump?
+5. In listing `05-signed-vs-unsigned`, what happens to the second increment if you replace `jbe` with `jge`?
 
 ## Key takeaways
 
-- Conditional jumps check flags set by `cmp` or `test` and branch if the condition is true; use signed jumps (`jl`, `jg`) for signed data and unsigned jumps (`jb`, `ja`) for unsigned data.
-- Structured patterns (if/else, while, for) are implemented with labels and jumps — check the condition, jump to skip or exit, and jump back to loop.
-- The idiomatic zero check is `test reg, reg` followed by `jz` (jump if zero) or `jnz` (jump if nonzero) — shorter than `cmp reg, 0`.
-- Off-by-one errors come from using `jg` instead of `jge` (or vice versa) at loop boundaries; always trace the boundary cases to confirm the loop runs the correct number of times.
-- Jump tables dispatch by loading an address from an array and jumping to it; they are faster than chains of comparisons for dense cases, but require a bounds check to prevent crashes.
-- Inverted conditions (using `jge` when you meant `jl`) cause the opposite branch to execute; the symptom is entering the "then" branch when the condition is false.
+- `jcc` reads flags from `cmp`/`test`. Signed vs unsigned mnemonics are not interchangeable.
+- If/else needs a jump around the else. Loops jump back. Break jumps to the done label.
+- `test reg, reg` / `jz` is the zero idiom.
+- Trace the bound values. `jge` vs `jg` is a one-iteration bug.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **Conditional jump instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2, Appendix B (Jcc — conditional jumps)
-- **FLAGS semantics:** Volume 1, Chapter 3.4 (RFLAGS register)
-- **NASM label syntax:** NASM manual, Chapter 3.1 (labels, local labels with `.` prefix)
-- **Control flow patterns:** Any x86-64 assembly textbook or reference (if/else, while, for idioms)
+- Intel SDM Volume 2, Jcc
+- MASM labels: procedure-scoped by default
 
 ## Exercises
 
-30 drills: branches, loops, sums, search, bug hunts, AoC-style counting, jump table.
+Work in `exercises/`. Quoted listings are `01-simple-if.asm` through `07-test-zero-check.asm`.

@@ -1,6 +1,6 @@
 # 12 — Milestone: Tiny Language Compiler
 
-Lesson 11 gave you tokens and AST nodes. This milestone lesson asks you to walk that AST and emit executable output—either bytecode for an interpreter you write, or machine code for the CPU. By the end you'll have drilled the primitives that turn a text program into something runnable: scanning multi-digit numbers and identifiers, folding constant expressions with correct precedence (including parentheses), interpreting a bytecode stream with load/add/jump/halt, allocating local variable slots, and bookkeeping symbol addresses and ELF header sizes. These 24 drills isolate each compiler primitive so you can verify it before integrating into a full compiler binary.
+Lesson 11 gave you tokens and AST nodes. This milestone lesson asks you to walk that AST and emit executable output—either bytecode for an interpreter you write, or machine code for the CPU. By the end you'll have drilled the primitives that turn a text program into something runnable: scanning multi-digit numbers and identifiers, folding constant expressions with correct precedence (including parentheses), interpreting a bytecode stream with load/add/jump/halt, allocating local variable slots, and bookkeeping symbol addresses and PE/COFF header sizes. These 24 drills isolate each compiler primitive so you can verify it before integrating into a full compiler binary.
 
 ## What this lesson asks of you
 
@@ -8,7 +8,7 @@ Lesson 11 gave you tokens and AST nodes. This milestone lesson asks you to walk 
 - Fold constant expressions with `*` before `+`, including inside parentheses (so `(1+2)*3` = 9, not 7).
 - Interpret a bytecode stream: fetch opcode, dispatch to handler (load immediate, add, jump, halt), update instruction pointer.
 - Assign local variables by incrementing a slot counter, and call a function for its return value.
-- Track ELF header size and symbol addresses as data (the drills do not write actual ELF bytes).
+- Track PE/COFF header size and symbol addresses as data (the drills do not write actual PE bytes—they just store values and exit).
 
 ## Why a compiler as milestone 2
 
@@ -442,40 +442,29 @@ The milestone binary is complete when it satisfies all six criteria:
 
 Floating-point is lesson 13. ELF emission (writing actual bytes) is a stretch until the full compiler binary writes them.
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/01-scan-number.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/02-scan-ident.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/03-const-fold.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/04-bytecode-interp.asm -->
+
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
 
-```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-**Scanning:**
-- `02-lex-ident.asm` — test `'a'` in range, exit 1
-- `03-parse-let.asm` — check first letter `'l'`, exit 1 (incomplete keyword test)
-- `09-lex-number.asm` — scan `"42"`, exit 42
-- `10-lex-ident-len.asm` — scan `"foo"`, exit 3
+The exercises and solutions are written by a separate author and use MASM syntax covered in lessons 00-09. They are organized by category:
 
-**Constant folding and control:**
-- `04-codegen-add.asm` — fold `2+3`, exit 5
-- `08-from-scratch-const-fold.asm` — fold `(1+2)*3`, exit 9
-- `11-parse-binop.asm` — fold `2+3`, exit 5
-- `12-parse-paren.asm` — fold `(1+2)*3`, exit 9
-- `16-if-codegen.asm` — if condition 1, then 7, else 9, exit 7
-- `17-while-codegen.asm` — while `i < 3`, increment `i`, exit 3
-- `18-call-codegen.asm` — call returns 11, exit 11
-- `21-debug-fold-bug.asm` — fix: `2*3+4` = 10 (not 14)
-- `24-from-scratch-compile-add.asm` — fold `40+2`, exit 42
+**Scanning:** Test `'a'` in range, exit 1. Check first letter `'l'`, exit 1 (incomplete keyword test). Scan `"42"`, exit 42. Scan `"foo"`, exit 3.
 
-**Bytecode and slots:**
-- `01-emit-mov-imm.asm` — emit mov immediate 42, exit 42
-- `05-bytecode-interp.asm` — interpret `1,4, 1,5, 2, 0`, exit 9
-- `06-symbol-slot.asm` — slot 0 holds 42, exit 42
-- `07-emit-syscall-exit.asm` — emit exit syscall, exit 0
-- `13-codegen-mov.asm` — emit mov 42, exit 42
-- `14-codegen-add-regs.asm` — emit add `10+32`, exit 42
-- `15-local-slot-alloc.asm` — allocate 3 locals, exit 3
-- `19-bytecode-jump.asm` — jump over `1,99`, exit 5
-- `20-type-check-int.asm` — `TYPE_INT = 1`, exit 1
-- `22-stretch-emit-elf-note.asm` — ELF header size 64, exit 64 (no actual ELF)
-- `23-stretch-symbol-resolve.asm` — resolve address `0x20`, exit 32
+**Constant folding and control:** Fold `2+3`, exit 5. Fold `(1+2)*3`, exit 9. Fold `2+3`, exit 5. Fold `(1+2)*3`, exit 9. If condition 1, then 7, else 9, exit 7. While `i < 3`, increment `i`, exit 3. Call returns 11, exit 11. Fix: `2*3+4` = 10 (not 14). Fold `40+2`, exit 42.
+
+**Bytecode and slots:** Emit mov immediate 42, exit 42. Interpret `1,4, 1,5, 2, 0`, exit 9. Slot 0 holds 42, exit 42. Emit exit (stub), exit 0. Emit mov 42, exit 42. Emit add `10+32`, exit 42. Allocate 3 locals, exit 3. Jump over `1,99`, exit 5. `TYPE_INT EQU 1`, exit 1. PE/COFF header size (stub), exit 64 (no actual PE emission). Resolve address `0x20`, exit 32.
+
+Refer to `exercises/12-milestone-tiny-compiler/README.md` for detailed descriptions and expected exit codes.

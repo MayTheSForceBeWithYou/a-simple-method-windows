@@ -1,47 +1,49 @@
-# A Simple Method — Learning Roadmap
+# A Simple Method — Learning Roadmap (Windows Edition)
 
 Learning assembly language programming from the ground up through exercises.
 
-**Target:** Linux x86-64, NASM syntax, System V AMD64 ABI, Linux syscalls  
+**Target:** Windows 11 x64, MASM (ml64) syntax, Microsoft x64 ABI, Win32 API  
 **North star:** Build toward a mini park / coaster-builder simulation (RCT-depth *skills*, original code/assets)  
-**Course root:** `/home/n8/dev/asm`
+**Course root:** Choose a working directory, e.g., `C:\dev\asm`
 
 ---
 
 ## Prerequisites
 
-- Comfortable with a Linux shell (cd, ls, editors, pipes). WSL2 is fine.
+- Comfortable with Windows command line (cmd, PowerShell, basic file operations).
 - Basic programming literacy (variables, loops, functions, arrays) in any language.
-- Willingness to read Intel/AMD manuals and man pages when stuck.
+- Willingness to read Intel/AMD manuals and Microsoft documentation when stuck.
 - **Not required:** prior assembly, OS course, or C — C helps later for ABI intuition.
 
 ## Toolchain
 
 | Tool | Role |
 |------|------|
-| `nasm` | Assembler (`-f elf64`) |
-| `ld` | Linker (static ELF) |
-| `make` | Build orchestration |
-| `gdb` / `rr` | Debugging (breakpoints, registers, memory) |
-| `objdump -d` / `readelf` | Inspect object/ELF |
-| Optional later | `gcc` as driver for libc/X11 glue; `strace` for syscalls |
+| `ml64.exe` | Microsoft Macro Assembler for x64 |
+| `link.exe` | Microsoft linker (PE/COFF executables) |
+| `nmake` / PowerShell | Build orchestration |
+| Visual Studio Debugger / WinDbg | Debugging (breakpoints, registers, memory) |
+| `dumpbin /disasm` | Inspect object/PE files |
+| Optional later | Process Explorer, Process Monitor for system call tracing |
 
-Install (Arch Linux WSL — distro `arch`):
+Install:
 
-```bash
-# From Windows PowerShell/CMD:
-#   wsl -d arch -- bash
-sudo pacman -Syu --needed nasm binutils make gdb
-```
+1. Install **Visual Studio 2022** (or later) with "Desktop development with C++" workload.
+2. Open **x64 Native Tools Command Prompt** from the Start menu (required for `ml64` and `link` to be in PATH).
+3. Verify installation:
+   ```bat
+   ml64 /?
+   link /?
+   ```
 
-Do **not** use Ubuntu/`apt` for this course machine.
+**Do not** use MinGW, MSYS2, or WSL for this Windows course—use native Windows tools.
 
-Canonical build for freestanding programs in early lessons:
+Canonical build for freestanding programs in early lessons (from x64 Native Tools Command Prompt):
 
-```bash
-nasm -f elf64 foo.asm -o foo.o
-ld foo.o -o foo
-./foo
+```bat
+ml64 /c foo.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE foo.obj kernel32.lib
+foo.exe
 ```
 
 ## How to use `exercises/` vs `solutions/`
@@ -63,15 +65,15 @@ Strict sequential through **09**, then **10** (editor milestone).
 
 ## Phase catalog
 
-### 00 — Tools, registers, `mov`, first syscalls
+### 00 — Tools, registers, `mov`, first Win32 API calls
 - **Slug:** `00-tools-registers-mov-syscall`
-- **Goals:** Install/verify toolchain; know GPR names/sizes; `mov`/`xor`; write/exit syscalls; build/run ELF.
+- **Goals:** Install/verify toolchain; know GPR names/sizes; `mov`/`xor`; `GetStdHandle`/`WriteConsoleA`/`ExitProcess`; build/run PE.
 - **Exercise target:** 24–32
 - **Status this run:** **FULL** (≥24 drills + solutions)
 
 ### 01 — Addressing modes & data sections
 - **Slug:** `01-addressing-data`
-- **Goals:** `.data`/`.bss`/`.rodata`/`.text`; immediates, direct, register indirect, displacement, SIB-style scaled index; `lea` vs `mov`.
+- **Goals:** `.data`/`.data?`/`.const`/`.code`; immediates, direct, register indirect, displacement, SIB-style scaled index; `lea` vs `mov`; automatic RIP-relative addressing.
 - **Exercise target:** 24–36
 - **Status:** **FULL**
 
@@ -87,9 +89,9 @@ Strict sequential through **09**, then **10** (editor milestone).
 - **Exercise target:** 24–40
 - **Status:** **FULL**
 
-### 04 — Stack & System V AMD64 calling convention
+### 04 — Stack & Microsoft x64 calling convention
 - **Slug:** `04-stack-calling-convention`
-- **Goals:** `push`/`pop`; red zone awareness; arg regs `rdi,rsi,rdx,rcx,r8,r9`; stack args; alignment; caller/callee-saved; prologue/epilogue.
+- **Goals:** `push`/`pop`; shadow space (32 bytes, mandatory); arg regs `rcx,rdx,r8,r9`; stack args above shadow space; 16-byte alignment; caller/callee-saved (`rdi`/`rsi` are nonvolatile on Windows); prologue/epilogue.
 - **Exercise target:** 24–36
 - **Status:** **FULL**
 
@@ -111,27 +113,27 @@ Strict sequential through **09**, then **10** (editor milestone).
 - **Exercise target:** 24–32 (full: 24)
 - **Status:** **FULL** (24 exercises)
 
-### 08 — Syscalls, files, mmap
+### 08 — Win32 file API, HANDLEs, VirtualAlloc
 - **Slug:** `08-syscalls-files-mmap`
-- **Goals:** open/read/write/close/lseek; error handling via negative rax; `mmap`/`munmap`; simple file copy & sparse buffers.
+- **Goals:** `CreateFileA`/`ReadFile`/`WriteFile`/`CloseHandle`/`SetFilePointerEx`; error handling via `BOOL` return + `GetLastError`; `VirtualAlloc`/`VirtualFree`; simple file copy & sparse buffers.
 - **Exercise target:** 24–36 (full: 24)
 - **Status:** **FULL** (24 exercises)
 
-### 09 — Macros, multi-file, Makefile
+### 09 — Macros, multi-file, NMake
 - **Slug:** `09-macros-multifile-make`
-- **Goals:** `%macro`/`%define`/`%include`; separate asm units + `global`/`extern`; Make dependency graphs.
+- **Goals:** `MACRO`/`EQU`/`INCLUDE`; separate asm units + `PUBLIC`/`EXTERN` with type declarations; NMake or PowerShell build scripts.
 - **Exercise target:** 20–28 (full: 24)
 - **Status:** **FULL** (24 exercises)
 
 ### 10 — Milestone: CLI text editor
 - **Slug:** `10-milestone-cli-editor`
-- **Goals:** Gap/rope or contiguous buffer; cursor; raw tty (`tcsetattr` via libc *or* ioctl); load/save; basic insert/delete/redraw.
+- **Goals:** Gap/rope or contiguous buffer; cursor; raw console mode (`GetConsoleMode`/`SetConsoleMode` clearing `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT`); load/save with `CreateFileA`/`ReadFile`/`WriteFile`; basic insert/delete/redraw.
 - **Exercise target:** 20–30 scaffold drills + one integrated binary (full: 24)
 - **Acceptance criteria:**
   - Open a path, edit, save, quit without corrupting file on normal paths.
   - Arrow keys or h/j/k/l move cursor; insert printable ASCII; backspace deletes.
   - Buffer ≥64 KiB supported; redraw is correct after edits.
-  - Majority of editor logic in asm (thin C/libc OK for termios only).
+  - Majority of editor logic in asm (no C runtime).
 - **Status:** **FULL** (24 exercises)
 
 ### 11 — Parsing & data structures in asm
@@ -142,12 +144,12 @@ Strict sequential through **09**, then **10** (editor milestone).
 
 ### 12 — Milestone: Tiny Language Compiler
 - **Slug:** `12-milestone-tiny-compiler`
-- **Goals:** Lexer → AST or bytecode → emit NASM or raw machine code for a tiny language (ints, lets, if, while, funcs).
+- **Goals:** Lexer → AST or bytecode → emit MASM or raw machine code for a tiny language (ints, lets, if, while, funcs).
 - **Exercise target:** 20–28 + integrated compiler (full: 24)
 - **Acceptance criteria:**
-  - Compiles ≥10 sample programs in the tiny language to runnable ELF (via generated asm + nasm/ld, or direct emit).
+  - Compiles ≥10 sample programs in the tiny language to runnable PE (via generated asm + ml64/link, or direct emit).
   - Supports integers, arithmetic, locals, `if`, `while`, and at least one form of procedure.
-  - Clear error messages on lex/parse failure (stderr).
+  - Clear error messages on lex/parse failure (stderr via `GetStdHandle` + `WriteFile`).
   - Compiler itself predominantly asm (hosted helpers OK).
 - **Status:** **FULL** (24 exercises)
 
@@ -159,13 +161,13 @@ Strict sequential through **09**, then **10** (editor milestone).
 
 ### 14 — Graphics path
 - **Slug:** `14-graphics-framebuffer`
-- **Goals:** P6 PPM image file output via taught syscalls (open/write/close); pixel plots, clear, blit; keep *game logic* in asm.
+- **Goals:** P6 PPM image file output via `CreateFileA`/`WriteFile`/`CloseHandle`; pixel plots, clear, blit; keep *game logic* in asm.
 - **Exercise target:** 20–28 (full: 24)
 - **Status:** **FULL** (24 exercises)
 
 ### 15 — Input, Timing, Game Loop
 - **Slug:** `15-input-timing-gameloop`
-- **Goals:** Keyboard/mouse events; `clock_gettime`; fixed timestep vs variable; frame pacing.
+- **Goals:** Keyboard/mouse events; `QueryPerformanceCounter`/`QueryPerformanceFrequency`; `Sleep`; fixed timestep vs variable; frame pacing.
 - **Exercise target:** 20–28 (full: 24)
 - **Status:** **FULL** (24 exercises)
 

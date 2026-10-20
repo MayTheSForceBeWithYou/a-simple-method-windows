@@ -71,13 +71,14 @@ For simplicity, treat space (`32`) as the only whitespace. A real lexer would al
 A token stores its lexeme text in a buffer, along with a length. For the input `"let"`, copy three bytes and store length 3. The null terminator (if copied) does **not** count toward the length.
 
 ```asm
-section .data
-    src: db "let", 0
-section .bss
-    lexbuf: resb 16
-    lexlen: resq 1
+.data
+src BYTE "let", 0
 
-section .text
+.data?
+lexbuf BYTE 16 DUP(?)
+lexlen QWORD ?
+
+.code
 global _start
 _start:
     xor rcx, rcx
@@ -498,42 +499,31 @@ Also track a count or reserve one empty slot to distinguish full from empty (bot
 - Linked lists and memory safety: [Learn C The Hard Way, Exercise 32](https://learncodethehardway.org/c/ex32.html)
 - Arena allocators: [Wikipedia: Region-based memory management](https://en.wikipedia.org/wiki/Region-based_memory_management)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/01-token-classify.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/02-linked-list-walk.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/03-arena-alloc.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/04-stack-push-pop.asm -->
+
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
 
-```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-**Lexing:**
-- `01-token-kind.asm` — define `TK_NUM = 1`, exit 1
-- `02-lexer-digit.asm` — test `'7'`, exit 1 (is digit)
-- `06-rd-parse-num.asm` — parse `'3'`, exit 3
-- `08-from-scratch-token-buf.asm` — lexeme `'x'`, length 1
-- `09-lexer-skip-ws.asm` — skip spaces in `"  7"`, exit 7
-- `10-token-buffer.asm` — copy `"let"`, length 3, exit 3
-- `15-rd-expect.asm` — expect `'('` in `"(1)"`, exit 1
-- `23-stretch-error-span.asm` — error offset 4, exit 4
+The exercises and solutions are written by a separate author and use MASM syntax covered in lessons 00-09. They are organized by category:
 
-**Lists:**
-- `03-list-node.asm` — one node, value 9, exit 9
-- `11-ll-push-front.asm` — push 1, push 2, exit 2 (head)
-- `12-ll-sum.asm` — sum `3 -> 4 -> 5`, exit 12
-- `19-debug-null-deref-guard.asm` — fix: test before load, exit 0
+**Lexing:** Define `TK_NUM EQU 1`, exit 1. Test `'7'`, exit 1 (is digit). Parse `'3'`, exit 3. Lexeme `'x'`, length 1. Skip spaces in `"  7"`, exit 7. Copy `"let"`, length 3, exit 3. Expect `'('` in `"(1)"`, exit 1. Error offset 4, exit 4.
 
-**Memory and tables:**
-- `04-arena-bump.asm` — two 16-byte allocations, `bump = 32`, exit 32
-- `05-hash-mix.asm` — mix 5 → 45, exit 45
-- `13-hashmap-put-get.asm` — store 42 at index 2, exit 42
-- `14-arena-align.asm` — align 1 → 8, exit 8
-- `21-intern-string.asm` — pointer equality, exit 1
-- `24-from-scratch-vector-push.asm` — push 3 values, exit 3 (no realloc)
+**Lists:** One node, value 9, exit 9. Push 1, push 2, exit 2 (head). Sum `3 -> 4 -> 5`, exit 12. Fix: test before load, exit 0.
 
-**Evaluation:**
-- `07-stack-ds.asm` — push 1, 2, pop, exit 2 (LIFO)
-- `16-expr-stack.asm` — push 2, 3, pop both, add, exit 5
-- `17-precedence.asm` — `2 + 3 * 4`, exit 14
-- `18-ast-node.asm` — `1 + 2 + 3` AST, sum fields, exit 6
-- `20-queue-ring.asm` — enqueue 7, 8, dequeue, exit 7 (FIFO, no wrap)
-- `22-stretch-pratt-stub.asm` — `BP_MUL = 20`, exit 20 (no parser)
+**Memory and tables:** Two 16-byte allocations, `bump = 32`, exit 32. Mix 5 → 45, exit 45. Store 42 at index 2, exit 42. Align 1 → 8, exit 8. Pointer equality, exit 1. Push 3 values, exit 3 (no realloc).
+
+**Evaluation:** Push 1, 2, pop, exit 2 (LIFO). Push 2, 3, pop both, add, exit 5. `2 + 3 * 4`, exit 14. `1 + 2 + 3` AST, sum fields, exit 6. Enqueue 7, 8, dequeue, exit 7 (FIFO, no wrap). `BP_MUL = 20`, exit 20 (no parser).
+
+Refer to `exercises/11-parsing-datastructures/README.md` for detailed descriptions and expected exit codes.
