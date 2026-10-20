@@ -72,6 +72,7 @@ jobs:
         }
         
         Write-Host "Smoke test PASSED!" -ForegroundColor Green
+        exit 0
     
     - name: Report Visual Studio version
       shell: pwsh
