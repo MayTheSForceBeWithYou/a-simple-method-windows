@@ -1,16 +1,23 @@
 ; Exercise 07: repeat macro
 ;
-; %rep 3 increment; exit 3.
+; REPT 3 increment; exit 3.
 ;
-; Build: nasm -f elf64 07-repeat-macro.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-repeat-macro.asm && link /OUT:07-repeat-macro.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-repeat-macro.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-%rep 3
-    inc rdi
-%endrep
-    mov rax, 60
-    syscall
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    xor rcx, rcx
+    ; MASM uses REPT instead of %rep
+    REPT 3
+        inc rcx
+    ENDM
+    
+    call ExitProcess
+main ENDP
+END

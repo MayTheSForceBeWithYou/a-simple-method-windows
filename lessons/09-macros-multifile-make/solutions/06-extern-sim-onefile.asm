@@ -1,17 +1,23 @@
 ; Exercise 06: extern sim onefile
 ;
-; Simulate two units in one file with global helper; exit 5.
+; Simulate two units in one file with helper procedure; exit 5.
 ;
-; Build: nasm -f elf64 06-extern-sim-onefile.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 06-extern-sim-onefile.asm && link /OUT:06-extern-sim-onefile.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-extern-sim-onefile.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     call helper
-    mov rdi, rax
-    mov rax, 60
-    syscall
-helper:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+helper PROC
     mov rax, 5
     ret
+helper ENDP
+END

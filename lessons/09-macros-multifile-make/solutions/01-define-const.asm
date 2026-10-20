@@ -1,14 +1,20 @@
 ; Exercise 01: define const
 ;
-; %define EXIT 60; exit 0.
+; Define constant EXIT; exit 0.
 ;
-; Build: nasm -f elf64 01-define-const.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 01-define-const.asm && link /OUT:01-define-const.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-define-const.obj kernel32.lib
 ;
-; --- your code below ---
-%define SYS_EXIT 60
-section .text
-    global _start
-_start:
-    mov rax, SYS_EXIT
-    xor rdi, rdi
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+; Define constant (MASM uses EQU or = for numeric constants)
+SYS_EXIT EQU 0
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, SYS_EXIT
+    call ExitProcess
+main ENDP
+END

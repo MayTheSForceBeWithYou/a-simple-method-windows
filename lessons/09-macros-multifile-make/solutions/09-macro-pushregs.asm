@@ -1,25 +1,34 @@
 ; Exercise 09: macro pushregs
 ;
-; %macro PUSH_CALLEE 0 push rbx push r12 %endmacro and pops; exit 5.
+; MACRO PUSH_CALLEE / POP_CALLEE for rbx r12; exit 5.
 ;
-; Build: nasm -f elf64 09-macro-pushregs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 09-macro-pushregs.asm && link /OUT:09-macro-pushregs.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-macro-pushregs.obj kernel32.lib
 ;
-; --- your code below ---
-%macro PUSH_CALLEE 0
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
+; MASM macros for saving/restoring callee-saved registers
+PUSH_CALLEE MACRO
     push rbx
     push r12
-%endmacro
-%macro POP_CALLEE 0
+ENDM
+
+POP_CALLEE MACRO
     pop r12
     pop rbx
-%endmacro
-section .text
-    global _start
-_start:
-    mov rbx,5
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rbx, 5
     PUSH_CALLEE
-    mov rbx,0
+    mov rbx, 0
     POP_CALLEE
-    mov rdi,rbx
-    mov rax,60
-    syscall
+    
+    mov rcx, rbx
+    call ExitProcess
+main ENDP
+END

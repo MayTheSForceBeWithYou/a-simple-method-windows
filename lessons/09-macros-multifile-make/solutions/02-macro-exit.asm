@@ -1,16 +1,22 @@
 ; Exercise 02: macro exit
 ;
-; %macro exit_with 1 ... %endmacro; exit 7.
+; MACRO exit_with code ... ENDM; exit 7.
 ;
-; Build: nasm -f elf64 02-macro-exit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-macro-exit.asm && link /OUT:02-macro-exit.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-macro-exit.obj kernel32.lib
 ;
-; --- your code below ---
-%macro exit_with 1
-    mov rax, 60
-    mov rdi, %1
-    syscall
-%endmacro
-section .text
-    global _start
-_start:
+; Expected exit: 7
+
+EXTERN ExitProcess:PROC
+
+; MASM macro with named parameter
+exit_with MACRO code
+    mov rcx, code
+    call ExitProcess
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
     exit_with 7
+main ENDP
+END

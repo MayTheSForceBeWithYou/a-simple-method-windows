@@ -1,20 +1,40 @@
 ; Exercise 17: macro stringize
 ;
-; NASM %%str: %%define S 'Q'; db and write length 1+nl exit 0.
+; MASM text macro: write 'Q' and newline exit 0.
 ;
-; Build: nasm -f elf64 17-macro-stringize.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 17-macro-stringize.asm && link /OUT:17-macro-stringize.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-macro-stringize.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    m db "Q",10
-section .text
-    global _start
-_start:
-    mov rax,1
-    mov rdi,1
-    mov rsi,m
-    mov rdx,2
-    syscall
-    xor rdi,rdi
-    mov rax,60
-    syscall
+; Expected exit: 0
+; Expected stdout: "Q\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.data
+msg BYTE "Q", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, -11
+    call GetStdHandle
+    
+    ; Write message
+    mov rcx, rax
+    lea rdx, msg
+    mov r8d, 2
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

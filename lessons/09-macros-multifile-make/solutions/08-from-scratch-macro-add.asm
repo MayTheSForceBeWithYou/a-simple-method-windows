@@ -1,17 +1,25 @@
 ; Exercise 08: from scratch macro add
 ;
-; FROM SCRATCH: %macro ADD_IMM reg,imm; use to build 40+2 exit 42.
+; FROM SCRATCH: MACRO ADD_IMM reg,imm; use to build 40+2 exit 42.
 ;
-; Build: nasm -f elf64 08-from-scratch-macro-add.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 08-from-scratch-macro-add.asm && link /OUT:08-from-scratch-macro-add.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-from-scratch-macro-add.obj kernel32.lib
 ;
-; --- your code below ---
-%macro ADD_IMM 2
-    add %1, %2
-%endmacro
-section .text
-    global _start
-_start:
-    mov rdi, 40
-    ADD_IMM rdi, 2
-    mov rax, 60
-    syscall
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+; MASM macro with named parameters
+ADD_IMM MACRO reg, imm
+    add reg, imm
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
+    
+    mov rcx, 40
+    ADD_IMM rcx, 2
+    
+    call ExitProcess
+main ENDP
+END

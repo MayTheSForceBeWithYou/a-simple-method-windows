@@ -1,14 +1,19 @@
 ; Exercise 05: makefile note
 ;
-; Single-file stand-in: exit 0. (Real multi-file in EXERCISE.md style comment.)
+; Single-file stand-in: exit 0. (Real multi-file would use build script.)
 ;
-; Build: nasm -f elf64 05-makefile-note.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 05-makefile-note.asm && link /OUT:05-makefile-note.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-makefile-note.obj kernel32.lib
 ;
-; --- your code below ---
-; When expanding: nasm -f elf64 a.asm b.asm; ld a.o b.o -o prog
-section .text
-    global _start
-_start:
-    mov rax,60
-    xor rdi,rdi
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+; When expanding: ml64 /c a.asm b.asm && link a.obj b.obj /OUT:prog.exe /ENTRY:main /SUBSYSTEM:CONSOLE kernel32.lib
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

@@ -1,20 +1,25 @@
 ; Exercise 15: makefile phony doc
 ;
-; Documents Make .PHONY; program exits 0. Read comment about naming targets.
+; Documents build script; program exits 0. Read comment about build targets.
 ;
-; Build: nasm -f elf64 15-makefile-phony-doc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-makefile-phony-doc.asm && link /OUT:15-makefile-phony-doc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-makefile-phony-doc.obj kernel32.lib
 ;
-; --- your code below ---
-; Example Makefile (not assembled):
-; .PHONY: all clean
-; all: prog
-; prog: a.o b.o
-;\tld $^ -o $@
-; %.o: %.asm
-;\tnasm -f elf64 $< -o $@
-section .text
-    global _start
-_start:
-    xor rdi,rdi
-    mov rax,60
-    syscall
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+; Example PowerShell build script (not executed):
+; # Build all
+; $sources = Get-ChildItem *.asm
+; foreach ($src in $sources) {
+;     ml64 /c $src.Name
+; }
+; link *.obj /OUT:prog.exe /ENTRY:main /SUBSYSTEM:CONSOLE kernel32.lib
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END

@@ -2,15 +2,21 @@
 ;
 ; BUG: macro invoked with wrong arg count conceptually; fix EXIT_STATUS 4.
 ;
-; Build: nasm -f elf64 21-debug-macro-arity.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 21-debug-macro-arity.asm && link /OUT:21-debug-macro-arity.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-debug-macro-arity.obj kernel32.lib
 ;
-; --- your code below ---
-%macro EXIT_STATUS 1
-    mov rax,60
-    mov rdi,%1
-    syscall
-%endmacro
-section .text
-    global _start
-_start:
+; Expected exit: 4
+
+EXTERN ExitProcess:PROC
+
+; MASM macro with single parameter
+EXIT_STATUS MACRO code
+    mov rcx, code
+    call ExitProcess
+ENDM
+
+.code
+main PROC
+    sub rsp, 32
     EXIT_STATUS 4
+main ENDP
+END

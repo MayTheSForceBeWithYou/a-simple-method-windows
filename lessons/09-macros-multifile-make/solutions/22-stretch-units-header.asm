@@ -1,22 +1,43 @@
 ; Exercise 22: stretch units header
 ;
-; STRETCH: %define SYS_WRITE 1 / SYS_EXIT 60; print "U\n" exit 0.
+; STRETCH: Define constants for API calls; print "U\n" exit 0.
 ;
-; Build: nasm -f elf64 22-stretch-units-header.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 22-stretch-units-header.asm && link /OUT:22-stretch-units-header.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-units-header.obj kernel32.lib
 ;
-; --- your code below ---
-%define SYS_WRITE 1
-%define SYS_EXIT 60
-section .data
-    m db "U",10
-section .text
-    global _start
-_start:
-    mov rax, SYS_WRITE
-    mov rdi,1
-    mov rsi,m
-    mov rdx,2
-    syscall
-    mov rax, SYS_EXIT
-    xor rdi,rdi
-    syscall
+; Expected exit: 0
+; Expected stdout: "U\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+; Define constants (would be in header file in multi-file project)
+STD_OUTPUT_HANDLE EQU -11
+
+.data
+msg BYTE "U", 10
+
+.data?
+written DWORD ?
+
+.code
+main PROC
+    sub rsp, 56
+    
+    ; Get stdout handle
+    mov rcx, STD_OUTPUT_HANDLE
+    call GetStdHandle
+    
+    ; Write message
+    mov rcx, rax
+    lea rdx, msg
+    mov r8d, 2
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    ; Exit 0
+    mov rcx, 0
+    call ExitProcess
+main ENDP
+END
