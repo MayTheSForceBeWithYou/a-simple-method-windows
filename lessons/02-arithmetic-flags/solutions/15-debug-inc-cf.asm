@@ -1,16 +1,20 @@
-; Exercise 15: debug lecture
+; Exercise 15: debug inc cf
 ;
-; Educational: compute 0xFF as byte in al, add 1 to al (wraps). Exit with CF materialized: after add, setc al; movzx rdi,al expect 1.
+; Educational: compute 0xFF as byte in al, add 1 to al (wraps). Exit with CF materialized: after add, setc al; movzx rcx,al expect 1.
 ;
-; Build: nasm -f elf64 15-debug-inc-cf.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 15-debug-inc-cf.asm && link /OUT:15-debug-inc-cf.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-debug-inc-cf.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov al, 0xFF
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov al, 0FFh
     add al, 1
     setc al
-    movzx rdi, al
-    mov rax, 60
-    syscall
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

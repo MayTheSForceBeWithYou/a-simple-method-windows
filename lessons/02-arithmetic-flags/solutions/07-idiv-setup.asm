@@ -1,17 +1,21 @@
 ; Exercise 07: idiv setup
 ;
-; Divide 84 by 2 using idiv. cqo; idiv. Exit with quotient in rdi.
+; Divide 84 by 2 using idiv. cqo; idiv. Exit with quotient in rcx.
 ;
-; Build: nasm -f elf64 07-idiv-setup.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-idiv-setup.asm && link /OUT:07-idiv-setup.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-idiv-setup.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 84
     cqo
     mov rbx, 2
     idiv rbx
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

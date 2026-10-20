@@ -2,16 +2,20 @@
 ;
 ; rax=-1 (or 0xffffffffffffffff), rbx=0. cmp rax,rbx; setl al; exit 1.
 ;
-; Build: nasm -f elf64 12-setl-signed.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-setl-signed.asm && link /OUT:12-setl-signed.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-setl-signed.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, -1
     mov rbx, 0
     cmp rax, rbx
     setl al
-    movzx rdi, al
-    mov rax, 60
-    syscall
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

@@ -1,17 +1,21 @@
 ; Exercise 02: inc dec
 ;
-; rax=5; inc; inc; dec; mov rdi,rax; exit (6).
+; rax=5; inc; inc; dec; mov rcx,rax; exit (6).
 ;
-; Build: nasm -f elf64 02-inc-dec.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-inc-dec.asm && link /OUT:02-inc-dec.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-inc-dec.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, 5
     inc rax
     inc rax
     dec rax
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

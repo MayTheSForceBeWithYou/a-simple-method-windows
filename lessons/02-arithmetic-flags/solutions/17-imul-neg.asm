@@ -1,15 +1,19 @@
 ; Exercise 17: imul neg
 ;
-; rax=-3; imul rax, -4; mov rdi,rax; exit 12.
+; rax=-3; imul rax, -4; mov rcx,rax; exit 12.
 ;
-; Build: nasm -f elf64 17-imul-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 17-imul-neg.asm && link /OUT:17-imul-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-imul-neg.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, -3
     imul rax, -4
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END
