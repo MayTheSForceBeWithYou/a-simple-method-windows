@@ -8,7 +8,7 @@ You must be able to use `add`, `sub`, `inc`, `dec`, and `neg` to perform integer
 
 ## Integer arithmetic instructions
 
-The basic arithmetic instructions operate on registers and memory. The destination operand (on the left in NASM syntax) is both read and written:
+The basic arithmetic instructions operate on registers and memory. The destination operand (on the left in Intel/MASM syntax) is both read and written:
 
 ```asm
 add rdi, rsi      ; rdi = rdi + rsi
@@ -80,7 +80,7 @@ If you forget `xor rdx, rdx` and `rdx` is nonzero, you are dividing a huge 128-b
 
 ### Division faults
 
-If the divisor is zero, or if the quotient does not fit in the destination register (e.g., dividing a huge `rdx:rax` by 1), the CPU raises a divide exception (`#DE`, delivered as `SIGFPE` on Linux) and your program crashes. Check divisors before dividing, or handle the signal.
+If the divisor is zero, or if the quotient does not fit in the destination register (e.g., dividing a huge `rdx:rax` by 1), the CPU raises a divide exception (`#DE`, delivered as an `EXCEPTION_INT_DIVIDE_BY_ZERO` or `EXCEPTION_INT_OVERFLOW` structured exception on Windows) and your program crashes unless you have set up a structured exception handler. For early lessons, check divisors before dividing to avoid the exception.
 
 ## The FLAGS register: what the CPU records
 
@@ -159,40 +159,52 @@ This is the building block for branchless conditional logic (though branching wi
 
 Let's compute `-42 / 5` and print both the quotient and remainder as the exit status. Here is the source:
 
-```asm
-section .text
-    global _start
-_start:
-    mov rax, -42          ; dividend (signed)
-    cqo                   ; sign-extend rax into rdx:rax
-    mov rbx, 5            ; divisor
-    idiv rbx              ; quotient in rax, remainder in rdx
+<!-- LISTING-PENDING: lessons/02-arithmetic-flags/listings/signed-division.asm -->
 
-    ; exit with quotient (should be -8, appears as 256-8=248 unsigned)
-    mov rdi, rax
-    mov rax, 60
-    syscall
+```asm
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 40               ; allocate shadow space + alignment
+    
+    mov rax, -42              ; dividend (signed)
+    cqo                       ; sign-extend rax into rdx:rax
+    mov rbx, 5                ; divisor
+    idiv rbx                  ; quotient in rax, remainder in rdx
+
+    ; exit with quotient (should be -8, which Windows returns as full 32-bit -8)
+    mov ecx, eax              ; exit code = quotient (sign-extends to 32-bit)
+    call ExitProcess
+    ; ExitProcess does not return
+main ENDP
+END
 ```
 
 Build and run:
-```bash
-nasm -f elf64 sdiv.asm -o sdiv.o
-ld sdiv.o -o sdiv
-./sdiv
-echo $?   # prints 248 (two's complement of -8 as unsigned 8-bit exit code)
+```cmd
+ml64 /c sdiv.asm
+link /OUT:sdiv.exe /ENTRY:main /SUBSYSTEM:CONSOLE sdiv.obj kernel32.lib
+sdiv.exe
+echo %ERRORLEVEL%   REM prints 4294967288 (two's complement of -8 as unsigned 32-bit)
+```
+
+Or in PowerShell:
+```powershell
+$LASTEXITCODE   # prints -8 (PowerShell shows signed interpretation)
 ```
 
 Step through the reasoning. We load `-42` into `rax`. The `cqo` instruction examines bit 63 of `rax` (the sign bit). Since `-42` is negative, bit 63 is 1, so `cqo` sets every bit of `rdx` to 1 (all-ones, representing -1 in two's complement extended across 64 bits). This makes `rdx:rax` the 128-bit signed representation of `-42`.
 
 Next, `idiv rbx` divides `rdx:rax` by 5. The quotient is `-42 / 5 = -8` (integer division truncates toward zero for negative numbers in x86-64), placed in `rax`. The remainder is `-42 - (5 * -8) = -42 + 40 = -2`, placed in `rdx`. We ignore the remainder here and exit with the quotient.
 
-The shell's exit code is an unsigned 8-bit value, so `-8` wraps to `256 - 8 = 248` when printed by `echo $?`. This is expected behavior — exit codes are unsigned.
+Windows `ExitProcess` takes a 32-bit unsigned integer exit code. When we move `-8` into `ecx` (a 32-bit move), the value is sign-extended to 32 bits, producing `0xFFFFFFF8`. Cmd.exe interprets `%ERRORLEVEL%` as an unsigned 32-bit value, so it displays 4294967288 (`2^32 - 8`). PowerShell's `$LASTEXITCODE` shows the signed interpretation, `-8`. Both are correct views of the same bit pattern.
 
 ### A plausible wrong reading (and why it fails)
 
 A common mistake is to forget `cqo` before `idiv`, leaving `rdx` uninitialized or containing leftover data. Suppose `rdx` happens to hold `0x0000000000000001` (a small positive value). Then `rdx:rax` represents the 128-bit number `0x0000000000000001:FFFFFFFFFFFFFFD6` (where `0xFFFFFFFFFFFFFFD6` is `-42` as a 64-bit two's complement value). When interpreted as a 128-bit signed number, this is a huge positive value (approximately `2^64 - 42`), not `-42`.
 
-Dividing this huge number by 5 produces a quotient that overflows a 64-bit register, and the CPU raises a divide exception (`#DE`), terminating the program with `SIGFPE`. You never see the quotient — the program crashes. The lesson: **always** use `cqo` before `idiv` when the dividend is a signed 64-bit value, or `xor rdx, rdx` before `div` for unsigned. Failing to set up `rdx` is the most common division error.
+Dividing this huge number by 5 produces a quotient that overflows a 64-bit register, and the CPU raises a divide exception (`#DE`). On Windows, this is delivered as an `EXCEPTION_INT_OVERFLOW` structured exception, and the program terminates abnormally (unless you have a structured exception handler installed). You never see the quotient — the program crashes. The lesson: **always** use `cqo` before `idiv` when the dividend is a signed 64-bit value, or `xor rdx, rdx` before `div` for unsigned. Failing to set up `rdx` is the most common division error.
 
 ## Distinctions worth keeping straight
 
@@ -224,12 +236,12 @@ Dividing this huge number by 5 produces a quotient that overflows a 64-bit regis
 - The `setcc` family materializes boolean values (0 or 1) from flag states; use `sete`/`setne` for equality, `setl`/`setg`/`setle`/`setge` for signed comparisons, and `setb`/`seta`/`setbe`/`setae` for unsigned comparisons.
 - ZF means the result is zero; SF means the sign bit is set (negative if signed); CF means unsigned overflow; OF means signed overflow.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **Arithmetic instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (Instruction Set Reference), entries for `add`, `sub`, `imul`, `mul`, `idiv`, `div`, `cqo`, `setcc`
-- **FLAGS register:** Volume 1, Chapter 3.4 (RFLAGS register layout and flag descriptions)
-- **Division exceptions:** Volume 1, Chapter 6 (divide error `#DE`)
-- **NASM syntax:** NASM manual, Appendix B (instruction reference)
+- **Arithmetic instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (Instruction Set Reference), entries for `add`, `sub`, `imul`, `mul`, `idiv`, `div`, `cqo`, `setcc` — same as Linux; instructions are platform-independent
+- **FLAGS register:** Intel Manual Volume 1, Chapter 3.4 (RFLAGS register layout and flag descriptions)
+- **Division exceptions:** Intel Manual Volume 1, Chapter 6 (divide error `#DE`); Windows structured exception codes: https://learn.microsoft.com/en-us/windows/win32/debug/structured-exception-handling
+- **MASM instruction syntax:** https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe
 
 ## Exercises
 
