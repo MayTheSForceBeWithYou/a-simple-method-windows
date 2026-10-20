@@ -1,24 +1,16 @@
-; Exercise 24: from scratch reverse string
-;
+; Exercise 24: 24-from-scratch-reverse-string (Win32 port)
 ; FROM SCRATCH: reverse "asm" in place; first byte should be "m"=109.
-;
-; Build: nasm -f elf64 24-from-scratch-reverse-string.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "asm",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    call strlen
-    mov rsi, rax
-    lea rdi, [s]
-    call rev
-    movzx rdi, byte [s]
-    mov rax, 60
-    syscall
-strlen:
-    ; TODO: implement strlen
-rev:
-    ; TODO: implement rev
+; Build: ml64 /c /Fo24-from-scratch-reverse-string.obj 24-from-scratch-reverse-string.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:24-from-scratch-reverse-string.exe 24-from-scratch-reverse-string.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 24-from-scratch-reverse-string>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

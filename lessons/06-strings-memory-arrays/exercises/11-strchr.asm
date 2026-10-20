@@ -1,20 +1,16 @@
-; Exercise 11: strchr
-;
+; Exercise 11: 11-strchr (Win32 port)
 ; Find index of "l" in "hello" -> 2.
-;
-; Build: nasm -f elf64 11-strchr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "hello",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    mov rsi, 'l'
-    call strchr_idx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strchr_idx:
-    ; TODO: implement strchr_idx
+; Build: ml64 /c /Fo11-strchr.obj 11-strchr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:11-strchr.exe 11-strchr.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 11-strchr>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

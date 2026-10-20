@@ -1,22 +1,16 @@
-; Exercise 03: memcmp
-;
+; Exercise 03: 03-memcmp (Win32 port)
 ; memcmp 3 bytes; equal -> 0 exit.
-;
-; Build: nasm -f elf64 03-memcmp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    a db 1,2,3
-    b db 1,2,3
-section .text
-    global _start
-_start:
-    lea rdi, [a]
-    lea rsi, [b]
-    mov rdx, 3
-    call memcmp
-    mov rdi, rax
-    mov rax, 60
-    syscall
-memcmp:
-    ; TODO: implement memcmp
+; Build: ml64 /c /Fo03-memcmp.obj 03-memcmp.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-memcmp.exe 03-memcmp.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 03-memcmp>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

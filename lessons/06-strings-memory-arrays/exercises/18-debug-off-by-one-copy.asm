@@ -1,37 +1,16 @@
-; Exercise 18: debug off by one copy
-;
+; Exercise 18: 18-debug-off-by-one-copy (Win32 port)
 ; BUG: copies n bytes but forgets NUL. Fix strcpy of "ok"; strlen=2.
-;
-; Build: nasm -f elf64 18-debug-off-by-one-copy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db "ok",0
-section .bss
-    dst resb 8
-section .text
-    global _start
-_start:
-    lea rdi, [dst]
-    lea rsi, [src]
-    call strcpy
-    lea rdi, [dst]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strcpy:
-    mov al, [rsi]
-    mov [rdi], al
-    ; BUG: no loop / no NUL guarantee beyond first byte
-    ret
-strlen:
-    mov rax, rdi
-.s:
-    cmp byte [rax], 0
-    je .d
-    inc rax
-    jmp .s
-.d:
-    sub rax, rdi
-    ret
+; Build: ml64 /c /Fo18-debug-off-by-one-copy.obj 18-debug-off-by-one-copy.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:18-debug-off-by-one-copy.exe 18-debug-off-by-one-copy.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 18-debug-off-by-one-copy>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

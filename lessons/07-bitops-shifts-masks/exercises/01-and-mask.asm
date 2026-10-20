@@ -1,11 +1,11 @@
-; Exercise 01: and mask
-;
-; rax=0xFF; and 0x0F; exit 15.
-;
-; Build: nasm -f elf64 01-and-mask.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Exercise (Win32 port)
+; TODO: Port from NASM
+; Build: ml64 /c /FoEXERCISE.obj EXERCISE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:EXERCISE.exe EXERCISE.obj kernel32.lib
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement>
+main PROC
+sub rsp,32
+.ERR <TODO>
+main ENDP
+END

@@ -1,11 +1,16 @@
-; Exercise 23: stretch ascii validate
-;
+; Exercise 23: 23-stretch-utf8-ascii-validate (Win32 port)
 ; STRETCH: validate all bytes <128 in "OK\n"; exit 1 if valid.
-;
-; Build: nasm -f elf64 23-stretch-utf8-ascii-validate.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo23-stretch-utf8-ascii-validate.obj 23-stretch-utf8-ascii-validate.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:23-stretch-utf8-ascii-validate.exe 23-stretch-utf8-ascii-validate.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 23-stretch-utf8-ascii-validate>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

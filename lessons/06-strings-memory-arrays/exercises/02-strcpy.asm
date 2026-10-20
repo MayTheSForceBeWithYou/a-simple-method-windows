@@ -1,26 +1,16 @@
-; Exercise 02: strcpy
-;
+; Exercise 02: 02-strcpy (Win32 port)
 ; Copy 'yo' to bss; return length written 2; exit 2.
-;
-; Build: nasm -f elf64 02-strcpy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db "yo",0
-section .bss
-    dst resb 8
-section .text
-    global _start
-_start:
-    lea rdi, [dst]
-    lea rsi, [src]
-    call strcpy
-    lea rdi, [dst]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strcpy:
-    ; TODO: implement strcpy
-strlen:
-    ; TODO: implement strlen
+; Build: ml64 /c /Fo02-strcpy.obj 02-strcpy.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-strcpy.exe 02-strcpy.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 02-strcpy>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

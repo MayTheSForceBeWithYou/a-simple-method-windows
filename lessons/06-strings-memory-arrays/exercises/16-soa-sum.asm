@@ -1,11 +1,16 @@
-; Exercise 16: soa sum
-;
+; Exercise 16: 16-soa-sum (Win32 port)
 ; SoA xs={1,2,3} ys={4,5,6}; sum all 21.
-;
-; Build: nasm -f elf64 16-soa-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo16-soa-sum.obj 16-soa-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-soa-sum.exe 16-soa-sum.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 16-soa-sum>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

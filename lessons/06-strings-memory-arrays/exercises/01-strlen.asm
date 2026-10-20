@@ -1,19 +1,16 @@
-; Exercise 01: strlen
-;
+; Exercise 01: 01-strlen (Win32 port)
 ; Implement strlen; 'hello' -> 5.
-;
-; Build: nasm -f elf64 01-strlen.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "hello",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strlen:
-    ; TODO: implement strlen
+; Build: ml64 /c /Fo01-strlen.obj 01-strlen.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-strlen.exe 01-strlen.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 01-strlen>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

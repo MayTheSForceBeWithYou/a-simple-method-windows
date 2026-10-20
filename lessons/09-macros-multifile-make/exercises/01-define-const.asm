@@ -1,11 +1,9 @@
-; Exercise 01: define const
-;
-; %define EXIT 60; exit 0.
-;
-; Build: nasm -f elf64 01-define-const.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Exercise (Win32 port)
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO>
+main PROC
+sub rsp,32
+.ERR <TODO>
+main ENDP
+END
