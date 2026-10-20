@@ -1,27 +1,27 @@
 # 10 — Milestone: CLI Text Editor
 
-You've spent nine lessons mastering x86-64 mechanics. This milestone lesson asks you to synthesize that knowledge into a real-world artifact: a command-line text editor. Not a toy—a program that manages a buffer, tracks a cursor, inserts and deletes characters, handles line-based operations, saves and loads files with integrity checks, and flips the terminal into raw mode so every keypress arrives immediately. By the end, you'll have drilled the twenty-four buffer primitives that make an editor work, and you'll understand the acceptance criteria for a complete milestone binary.
+You've spent nine lessons mastering x86-64 mechanics. This milestone lesson asks you to synthesize that knowledge into a real-world artifact: a command-line text editor. Not a toy—a program that manages a buffer, tracks a cursor, inserts and deletes characters, handles line-based operations, saves and loads files with integrity checks, and flips the console into raw mode so every keypress arrives immediately. By the end, you'll have drilled the twenty-four buffer primitives that make an editor work, and you'll understand the acceptance criteria for a complete milestone binary.
 
 ## What this lesson asks of you
 
 - Maintain a byte buffer with a length and a cursor index, clamping the cursor to the valid range `[0, len]`.
 - Insert a byte by shifting the tail rightward, and delete by shifting the tail leftward—never assume memory moves itself.
 - Manage a **gap buffer**: keep free space at the cursor so inserts are cheap, and move the gap by copying bytes when the cursor moves.
-- Scan backward from the cursor to find a line start (the byte after the previous `\n`, or 0), and implement kill-line (delete text up to the newline, leaving the newline itself).
-- Track a dirty flag (set by edits, cleared by save), store a length-prefixed file image with a magic number, and validate that magic on load.
-- Flip a terminal into raw mode with `termios` and `ioctl` so the editor receives keypresses immediately without echo.
+- Scan backward from the cursor to find a line start (the byte after the previous `\r\n` or `\n`, or 0), and implement kill-line (delete text up to the newline, leaving the newline itself).
+- Track a dirty flag (set by edits, cleared by save), store a length-prefixed file image with a magic number, and validate that magic on load (using `CreateFileA`, `ReadFile`, `WriteFile`, `CloseHandle`).
+- Flip the console into raw mode with `GetConsoleMode` and `SetConsoleMode` (clearing `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT`) so the editor receives keypresses immediately without echo.
 
 ## Why a text editor as milestone 1
 
 An editor touches every concept from lessons 00–09:
-- **Memory layout** (`.data`, `.bss`, buffers)
+- **Memory layout** (`.data`, `.data?`, `.const`, buffers)
 - **Arithmetic and flags** (length checks, cursor clamping, gap math)
 - **Control flow** (loops for scanning, conditionals for edge cases)
-- **Procedures** (insert, delete, move, render as separate routines)
+- **Procedures** (insert, delete, move, render as separate routines with MS x64 calling convention)
 - **Strings and arrays** (byte buffers, null-terminated paths)
-- **Bitwise operations** (flag manipulation in `termios`)
-- **Syscalls** (`read`, `write`, `open`, `close`, `ioctl`)
-- **Macros and multi-file** (factoring the editor into modules)
+- **Bitwise operations** (flag manipulation in console mode)
+- **Win32 API** (`GetStdHandle`, `ReadFile`, `WriteFile`, `CreateFileA`, `CloseHandle`, `GetConsoleMode`, `SetConsoleMode`)
+- **Macros and multi-file** (factoring the editor into modules with MASM `MACRO`, `EXTERN`, `PUBLIC`, and NMake)
 
 The milestone is not a single drill—it's a capstone binary you build by composing the patterns from the 24 drills below, applying lesson 09's multi-file build, and meeting six acceptance criteria. The drills isolate each primitive so you can verify it in a 10-line testbench before integrating it into a 500-line editor.
 
@@ -29,11 +29,13 @@ The milestone is not a single drill—it's a capstone binary you build by compos
 
 The editor's state starts with three values:
 
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/buffer_state.asm -->
+
 ```asm
-section .bss
-    buf: resb 4096          ; the text bytes
-    len: resq 1             ; how many bytes are live
-    cur: resq 1             ; cursor index in [0, len]
+.data?
+buf BYTE 4096 DUP(?)        ; the text bytes
+len QWORD ?                 ; how many bytes are live
+cur QWORD ?                 ; cursor index in [0, len]
 ```
 
 An empty buffer has `len = 0` and `cur = 0`. Appending a byte means writing `buf[len]`, then incrementing `len`. The cursor can sit anywhere in `[0, len]`, including at the end (past the last character). When the cursor is at the end, an insert appends. When the cursor is in the middle, an insert shifts the tail.
@@ -446,64 +448,93 @@ syscall
 
 A terminal in **canonical mode** (the default) buffers input until Enter is pressed and echoes each character. An editor needs **raw mode**: every keypress arrives immediately, and nothing is echoed.
 
-On Linux, terminal behavior is controlled by a `struct termios`, manipulated with `ioctl` syscall 16.
+On Windows, console behavior is controlled by a 32-bit **console mode** bitmask, manipulated with `GetConsoleMode` and `SetConsoleMode`.
 
-### struct termios and ioctl
+### Console mode and GetConsoleMode/SetConsoleMode
 
-This course uses raw `ioctl` syscalls (no libc), so `TCGETS` and `TCSETS` read and write the **kernel's** `struct termios`. On x86-64 Linux, that struct is **36 bytes**: four `tcflag_t` fields (4 bytes each, 16 total), one `c_line` byte, and `c_cc[19]` (19 bytes). The field `c_lflag` (a 32-bit bitmask) sits at offset 12. Two bits matter:
+Windows console mode is a `DWORD` (32-bit integer) bitmask. Two bits matter for raw mode:
 
-- `ICANON` (0x2): canonical mode (line buffering).
-- `ECHO` (0x8): echo input.
+- `ENABLE_LINE_INPUT` (0x2): canonical mode (line buffering). When set, `ReadFile` waits for Enter.
+- `ENABLE_ECHO_INPUT` (0x4): echo input. When set, typed characters appear on screen.
 
 To enter raw mode, clear both bits. To restore, set them.
 
-**Note:** glibc's userspace `struct termios` (60 bytes, used by `tcgetattr`/`tcsetattr`) has a different layout. You only meet the glibc version when linking against libc. The listing below reserves 60 bytes for safety, but the kernel `ioctl` only reads/writes 36.
+**Console mode constants (input):**
 
-**ioctl constants:**
-
-- `TCGETS` (0x5401): read current termios.
-- `TCSETS` (0x5402): write new termios.
+| Flag | Value | Meaning |
+|------|------:|---------|
+| `ENABLE_PROCESSED_INPUT` | 0x1 | Process Ctrl+C |
+| `ENABLE_LINE_INPUT` | 0x2 | Line-buffered input |
+| `ENABLE_ECHO_INPUT` | 0x4 | Echo input to console |
+| `ENABLE_WINDOW_INPUT` | 0x8 | Report window events |
+| `ENABLE_MOUSE_INPUT` | 0x10 | Report mouse events |
 
 **Entering raw mode:**
 
+<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/raw_mode.asm -->
+
 ```asm
-section .bss
-    tio resb 60
+EXTERN GetStdHandle:PROC
+EXTERN GetConsoleMode:PROC
+EXTERN SetConsoleMode:PROC
+EXTERN ExitProcess:PROC
 
-section .text
-global _start
-_start:
-    ; get current termios
-    mov rax, 16             ; sys_ioctl
-    xor rdi, rdi            ; fd 0 (stdin)
-    mov rsi, 0x5401         ; TCGETS
-    lea rdx, [tio]
-    syscall
+.data?
+mode DWORD ?
+original_mode DWORD ?
+stdin_handle QWORD ?
 
-    ; clear ICANON and ECHO
-    mov eax, [tio + 12]     ; c_lflag
-    and eax, ~0xA           ; ~(ICANON | ECHO) = ~10 = ~0xA
-    mov [tio + 12], eax
-
-    ; set new termios
-    mov rax, 16
-    xor rdi, rdi
-    mov rsi, 0x5402         ; TCSETS
-    lea rdx, [tio]
-    syscall
-
-    ; now in raw mode
+.code
+main PROC
+    sub rsp, 56             ; shadow space + alignment
+    
+    ; Get stdin handle
+    mov rcx, -10            ; STD_INPUT_HANDLE
+    call GetStdHandle
+    mov stdin_handle, rax   ; save handle
+    
+    ; Get current mode
+    mov rcx, stdin_handle
+    lea rdx, original_mode
+    call GetConsoleMode
+    test rax, rax
+    jz error_exit
+    
+    ; Clear ENABLE_LINE_INPUT (0x2) and ENABLE_ECHO_INPUT (0x4)
+    mov eax, original_mode
+    and eax, NOT (2 OR 4)   ; clear bits 2 and 4
+    mov mode, eax
+    
+    ; Set new mode
+    mov rcx, stdin_handle
+    mov edx, mode
+    call SetConsoleMode
+    test rax, rax
+    jz error_exit
+    
+    ; Now in raw mode
     ; ... editor loop ...
-
-    ; (restore termios on exit by setting the bits back)
-    xor rdi, rdi
-    mov rax, 60
-    syscall
+    
+    ; Restore original mode on exit
+    mov rcx, stdin_handle
+    mov edx, original_mode
+    call SetConsoleMode
+    
+    add rsp, 56
+    mov rcx, 0
+    call ExitProcess
+    
+error_exit:
+    add rsp, 56
+    mov rcx, 1
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `23-stretch-raw-mode-flag.asm` sets a byte flag (modeling the `ICANON` bit), clears it (modeling the `and` operation), and exits 0. It does not call `ioctl`—it's a logic drill.
+**Drill:** `23-stretch-raw-mode-flag.asm` sets a byte flag (modeling the `ENABLE_LINE_INPUT` bit), clears it (modeling the `and` operation), and exits 0. It does not call `SetConsoleMode`—it's a logic drill.
 
-**Important:** A real editor must **restore** the original `termios` on exit. If you forget, the terminal remains in raw mode (no echo, no line editing), and the user must type `reset<Enter>` blindly to recover.
+**Important:** A real editor must **restore** the original console mode on exit. If you forget, the console remains in raw mode (no echo, no line editing), and the user must close the terminal window or run `cmd` to open a fresh console.
 
 ## Worked example: how far does the tail shift in insert-middle?
 
@@ -551,8 +582,9 @@ mov rcx, [len]          ; rcx = 2
 | Insert moves the tail automatically | You must explicitly shift `buf[cur..len)` rightward before storing the new byte |
 | Gap buffer eliminates all shifts | Gap buffer eliminates shifts for inserts **at the gap**; moving the cursor still copies bytes |
 | Kill-line deletes the newline | Kill-line deletes **up to** the newline; the newline remains |
-| Raw mode is on by default | Terminals start in canonical mode (line-buffered, echoed); you must `ioctl` to enter raw mode |
-| `struct termios` is always 60 bytes | The kernel's `struct termios` (used by `ioctl`) is 36 bytes on x86-64; glibc's userspace version (60 bytes) is only used by `tcgetattr`/`tcsetattr` |
+| Raw mode is on by default | Consoles start in canonical mode (line-buffered, echoed); you must call `SetConsoleMode` to enter raw mode |
+| Console mode is a structure | Console mode is a single `DWORD` (32-bit integer) bitmask, not a structure |
+| Windows line endings are `\n` | Windows uses `\r\n` (CRLF, 13 10) by default; `\n` (LF, 10) alone works in raw mode |
 
 ## Check yourself
 
@@ -564,22 +596,23 @@ mov rcx, [len]          ; rcx = 2
 
 4. You have a gap buffer with `gap_start = 5` and `gap_end = 8`. How many bytes of free space remain? After one insert (no gap move), what are the new values?
 
-5. The termios field `c_lflag` is at offset 12 and holds `0x0000082F` before clearing `ICANON` (0x2) and `ECHO` (0x8). What is the value after `and eax, ~0xA`?
+5. The console mode holds `0x0000001F` (all input flags set) before clearing `ENABLE_LINE_INPUT` (0x2) and `ENABLE_ECHO_INPUT` (0x4). What is the value after `and eax, NOT (2 OR 4)`? (Express `NOT (2 OR 4)` as a hexadecimal mask.)
 
 ## Key takeaways
 
 - An editor is a byte buffer with a length, a cursor index in `[0, len]`, and insert/delete operations that shift the tail.
 - Inserting in the middle requires copying `buf[cur..len)` one byte rightward in reverse order to avoid overwriting data.
 - A gap buffer keeps free space at the cursor, making inserts `O(1)` until the gap runs out; moving the cursor copies bytes to move the gap.
-- Line operations scan for newline (`10`) characters; kill-line deletes text up to the newline but leaves the newline itself.
-- A save file includes a magic number (`"ED01"`) and a length prefix to detect corruption and version mismatches.
-- Raw mode (entered via `ioctl` with `TCGETS`/`TCSETS` and clearing `ICANON` and `ECHO` in `c_lflag`) delivers keypresses immediately without echo.
+- Line operations scan for newline (`10`, or `13 10` for CRLF) characters; kill-line deletes text up to the newline but leaves the newline itself.
+- A save file includes a magic number (`"ED01"`) and a length prefix to detect corruption and version mismatches (using `CreateFileA`, `WriteFile`, `ReadFile`, `CloseHandle`).
+- Raw mode (entered via `GetConsoleMode` and `SetConsoleMode` by clearing `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT`) delivers keypresses immediately without echo.
 
 ## Lookup
 
-- `ioctl` and `termios`: [man ioctl_tty(2)](https://man7.org/linux/man-pages/man2/ioctl_tty.2.html), [man termios(3)](https://man7.org/linux/man-pages/man3/termios.3.html)
+- Console mode functions: [GetConsoleMode](https://learn.microsoft.com/en-us/windows/console/getconsolemode), [SetConsoleMode](https://learn.microsoft.com/en-us/windows/console/setconsolemode)
+- Console input flags: [Console Modes (Microsoft Learn)](https://learn.microsoft.com/en-us/windows/console/console-modes)
 - Gap buffer algorithm: [Wikipedia: Gap buffer](https://en.wikipedia.org/wiki/Gap_buffer), [Emacs source `src/insdel.c`](https://github.com/emacs-mirror/emacs/blob/master/src/insdel.c)
-- ANSI escape codes (for cursor positioning, not covered in these drills): [ANSI escape code - Wikipedia](https://en.wikipedia.org/wiki/ANSI_escape_code)
+- Windows console Virtual Terminal Sequences (for cursor positioning, not covered in these drills): [Console Virtual Terminal Sequences](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences)
 
 ## Acceptance criteria
 
@@ -588,28 +621,23 @@ The milestone binary is complete when it satisfies all six criteria:
 1. **Open, edit, quit:** Opens a text file (or starts empty), displays it, accepts keypresses, and quits on a defined key (e.g., `Ctrl+Q`) without losing the buffer.
 2. **Cursor discipline:** The cursor never leaves `[0, len]`. Every move and edit applies the clamp from `21-debug-cursor-oob.asm`.
 3. **Kill-line semantics:** Kill-line removes text from the cursor to the end of the line but leaves the newline, per `24-from-scratch-kill-line.asm`.
-4. **Save/load integrity:** Save writes a length-prefixed image with magic `"ED01"`. Loading a file with a bad magic is rejected with an error message.
+4. **Save/load integrity:** Save writes a length-prefixed image with magic `"ED01"` using `CreateFileA` and `WriteFile`. Loading a file with a bad magic is rejected with an error message.
 5. **Dirty flag:** Any edit sets the dirty flag; only a successful save clears it. Quitting with unsaved changes warns the user.
-6. **Viewport rendering:** The editor renders the buffer with `write` syscalls, one screenful at a time. No libc, no `mmap` of the tty. Use lesson 09's multi-file build to factor rendering, buffer ops, and I/O into separate modules.
+6. **Viewport rendering:** The editor renders the buffer with `WriteFile` calls (to stdout obtained via `GetStdHandle`), one screenful at a time. No C runtime. Use lesson 09's multi-file build (NMake or PowerShell) to factor rendering, buffer ops, and I/O into separate modules.
 
-Raw mode (from the `termios` section) is what makes criterion 1's "accepts keypresses" work—without it, the editor would wait for Enter after every command.
+Raw mode (from the console mode section) is what makes criterion 1's "accepts keypresses" work—without it, the editor would wait for Enter after every command.
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
 
-```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-**Buffer basics:**
-- `01-buffer-init.asm` — empty buffer, exit 0
-- `02-insert-char.asm` — append `'A'`, exit 1
-- `03-cursor-move.asm` — move right then left, exit 0
-- `04-delete-backspace.asm` — backspace at end (dec `len` from 2 to 1)
-- `09-insert-at-cursor.asm` — insert `'X'` in empty buffer, cursor becomes 1
-- `10-insert-middle.asm` — insert `'B'` into `"AC"`, exit 66 (`'B'`)
-- `11-delete-forward.asm` — delete from `"ABCD"`, length becomes 3
+The exercises and solutions are written by a separate author and use MASM syntax and Win32 API covered in lessons 00-09. They are organized by category:
+
+**Buffer basics:** Empty buffer, exit 0. Append `'A'`, exit 1. Move right then left, exit 0. Backspace at end (dec `len` from 2 to 1). Insert `'X'` in empty buffer, cursor becomes 1. Insert `'B'` into `"AC"`, exit 66 (`'B'`). Delete from `"ABCD"`, length becomes 3.
 - `17-utf8-ascii-cursor.asm` — five byte steps, exit 5 (no UTF-8 decoding)
 - `21-debug-cursor-oob.asm` — clamp `cur = 9` with `len = 3`, exit 3
 
@@ -624,12 +652,6 @@ nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
 - `13-render-viewport.asm` — write first 3 bytes `"L1\n"`, exit 0
 - `24-from-scratch-kill-line.asm` — kill from 0 in `"ab\ncd"`, new length 3, exit 3
 
-**File and state:**
-- `06-save-stub.asm` — exit 0 (no write)
-- `07-load-stub.asm` — set `len = 3`, exit 3
-- `14-dirty-flag.asm` — set dirty, mock save (clear dirty), exit 0
-- `18-status-line-len.asm` — length-only status, exit 12
-- `19-save-length-prefix.asm` — compute 4 (magic) + 8 (length) + 0 (content) = 12, exit 12
-- `20-load-validate-magic.asm` — check `word [magic] == 0x4445`, exit 1 if match (inverted test)
-- `22-stretch-undo-stack.asm` — push 1, push 2, pop, exit 1 (remaining top)
-- `23-stretch-raw-mode-flag.asm` — set byte, clear byte, exit 0 (models `ICANON` bit, no `ioctl`)
+**File and state:** Exit 0 (no write, stub). Set `len = 3`, exit 3 (load stub). Set dirty, mock save (clear dirty), exit 0. Length-only status, exit 12. Compute 4 (magic) + 8 (length) + 0 (content) = 12, exit 12. Check `WORD PTR [magic] == 0x4445`, exit 1 if match (inverted test). Push 1, push 2, pop, exit 1 (remaining top). Set byte, clear byte, exit 0 (models `ENABLE_LINE_INPUT` bit, no `SetConsoleMode`).
+
+Refer to `exercises/10-milestone-cli-editor/README.md` for detailed descriptions and expected exit codes.
