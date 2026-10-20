@@ -359,6 +359,13 @@ div rbx                 ; 16 ms / 16 ms step = 1
 - `nanosleep(2)`: [man nanosleep(2)](https://man7.org/linux/man-pages/man2/nanosleep.2.html)
 - Fixed timestep: [Gaffer On Games: Fix Your Timestep!](https://gafferongames.com/post/fix_your_timestep/)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/15-input-timing-gameloop/listings/01-qpc-timing.asm -->
+<!-- LISTING-PENDING: lessons/15-input-timing-gameloop/listings/02-delta-time.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
