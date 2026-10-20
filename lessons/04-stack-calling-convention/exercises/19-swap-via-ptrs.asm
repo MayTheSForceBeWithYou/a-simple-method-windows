@@ -1,23 +1,24 @@
-; Exercise 19: swap via ptrs
-;
-; swap(rdi=&a,rsi=&b). a dq 1,b dq 2; after swap exit a (2).
-;
-; Build: nasm -f elf64 19-swap-via-ptrs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    a dq 1
-    b dq 2
+; Exercise 19: swap via ptrs (Win32 port)
+; swap(RCX=&a, RDX=&b). a=1, b=2; after swap exit a (2).
+; Build: ml64 /c /Fo19-swap-via-ptrs.obj 19-swap-via-ptrs.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:19-swap-via-ptrs.exe 19-swap-via-ptrs.obj kernel32.lib
+; Expected: exit code 2
 
-section .text
-    global _start
-_start:
-    lea rdi, [a]
-    lea rsi, [b]
+.DATA
+a DQ 1
+b DQ 2
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement swap(RCX=ptr1, RDX=ptr2)
+.ERR <TODO: Implement swap via pointers>
+
+main PROC
+    sub rsp, 32
+    lea rcx, a
+    lea rdx, b
     call swap
-    mov rdi, [a]
-    mov rax, 60
-    syscall
-
-swap:
-    ; TODO: implement swap
+    mov rcx, a
+    call ExitProcess
+main ENDP
+END

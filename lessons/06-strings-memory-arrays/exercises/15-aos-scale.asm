@@ -1,11 +1,16 @@
-; Exercise 15: aos scale
-;
+; Exercise 15: 15-aos-scale (Win32 port)
 ; AoS {x,y} *2 for one entity {3,4}->6,8; exit x+y=14.
-;
-; Build: nasm -f elf64 15-aos-scale.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo15-aos-scale.obj 15-aos-scale.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:15-aos-scale.exe 15-aos-scale.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 15-aos-scale>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

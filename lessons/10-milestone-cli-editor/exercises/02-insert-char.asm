@@ -1,11 +1,11 @@
-; Exercise 02: insert char
-;
-; Insert 'A' at end; len=1; exit 1.
-;
-; Build: nasm -f elf64 02-insert-char.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 02-insert-char.asm: Append 'A', exit with length (1)
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov len, 0
+    .ERR <TODO: mov rax, len; mov buf[rax], 'A'; inc len; mov ecx, DWORD PTR len; exit>
+main ENDP
+END

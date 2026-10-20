@@ -1,11 +1,14 @@
-; Exercise 16: gap move left
-;
-; Move gap left: gap_s=3 gap_e=5 -> move left once gap_s=2 gap_e=4; exit gap_s.
-;
-; Build: nasm -f elf64 16-gap-move-left.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 16-gap-move-left.asm: Move gap left (copy byte to gap_end-1, dec both), exit gap_start
+.DATA?
+buf DB 256 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov buf[0], 'X'
+    mov gap_start, 1
+    mov gap_end, 256
+    .ERR <TODO: Move gap left: dec gap_start, dec gap_end, copy buf[gap_start] to buf[gap_end], exit gap_start>
+main ENDP
+END

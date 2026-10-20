@@ -1,11 +1,28 @@
-; Exercise 11: isolate lowbit
+; 11-isolate-lowbit.asm
 ;
-; x=0b101100; x&-x -> 0b100 = 4; exit 4.
+; Isolate the lowest set bit using bitwise trick: x & (-x).
 ;
-; Build: nasm -f elf64 11-isolate-lowbit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Given value 0b11010100 (212), isolate the lowest set bit.
+;       The lowest set bit is bit 2 (value 4).
+;       Exit with the isolated bit value.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: The expression (x & -x) isolates the lowest set bit.
+;       NEG creates two's complement; ANDing with original isolates lowest 1.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 212        ; 0b11010100
+    mov     rbx, rax
+    neg     rbx             ; -x
+    
+    ; TODO: AND rax with rbx to isolate lowest set bit
+    .ERR <TODO: Insert AND instruction>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 4
+main ENDP
+
+END

@@ -1,11 +1,8 @@
-; Exercise 09: lex number
-;
-; Parse "42" into int; exit 42.
-;
-; Build: nasm -f elf64 09-lex-number.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 09-lex-number.asm: Scan multi-digit number "42", exit 42
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Scan multi-digit number "42", exit 42>
+main PROC
+.ERR <TODO>
+main ENDP
+END

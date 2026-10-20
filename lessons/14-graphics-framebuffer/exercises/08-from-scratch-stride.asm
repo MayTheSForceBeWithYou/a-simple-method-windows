@@ -1,11 +1,8 @@
-; Exercise 08: from scratch stride
-;
-; FROM SCRATCH: stride=width*bpp; w=16 bpp=4; exit 64.
-;
-; Build: nasm -f elf64 08-from-scratch-stride.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-stride: from scratch stride
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement from scratch stride>
+main PROC
+.ERR <TODO>
+main ENDP
+END

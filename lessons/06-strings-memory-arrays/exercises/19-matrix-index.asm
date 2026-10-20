@@ -1,11 +1,16 @@
-; Exercise 19: matrix index
-;
+; Exercise 19: 19-matrix-index (Win32 port)
 ; Row-major 3x3; get (r=1,c=2) from 1..9 matrix -> 6.
-;
-; Build: nasm -f elf64 19-matrix-index.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo19-matrix-index.obj 19-matrix-index.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:19-matrix-index.exe 19-matrix-index.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 19-matrix-index>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

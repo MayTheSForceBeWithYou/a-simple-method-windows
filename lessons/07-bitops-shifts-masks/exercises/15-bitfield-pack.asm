@@ -1,11 +1,37 @@
-; Exercise 15: bitfield pack
+; 15-bitfield-pack.asm
 ;
-; Pack a:3bits=5, b:3bits=2, c:2bits=1 into byte; exit value.
+; Pack three 4-bit values into a 12-bit field.
 ;
-; Build: nasm -f elf64 15-bitfield-pack.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Pack a=9, b=5, c=3 into bits 0-3, 4-7, 8-11 respectively.
+;       Exit with the packed value (should be 0x359 = 857).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Mask each value to 4 bits (0xF), shift to position, OR together.
+;       a at bits 0-3 (no shift), b at bits 4-7 (shift by 4), c at bits 8-11 (shift by 8).
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    push    r12
+    .pushreg r12
+    .endprolog
+    
+    mov     rax, 9          ; a = 9
+    and     rax, 0Fh        ; Mask to 4 bits
+    
+    ; TODO: Load b=5, mask, shift by 4, OR into rax
+    .ERR <TODO: Pack b=5 into bits 4-7>
+    
+    ; TODO: Load c=3, mask, shift by 8, OR into rax
+    .ERR <TODO: Pack c=3 into bits 8-11>
+    
+    mov     ecx, eax
+    pop     r12
+    pop     rbx
+    call    ExitProcess     ; Should exit with 857
+main ENDP
+
+END

@@ -1,11 +1,21 @@
-; Exercise 19: save length prefix
-;
-; Serialize u64 len=4 then payload; total bytes 12; exit 12.
-;
-; Build: nasm -f elf64 19-save-length-prefix.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 19-save-length-prefix.asm: Save magic+len+data to file, exit 0
+.DATA
+fname DB "save.dat", 0
+MAGIC EQU 12345678h
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+written DWORD ?
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+main PROC FRAME
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
+    mov len, 0
+    .ERR <TODO: Create file, write MAGIC, write len, write buf, close, exit 0>
+main ENDP
+END

@@ -1,11 +1,8 @@
-; Exercise 08: from scratch point in rect
-;
-; FROM SCRATCH: point in rect -> 1.
-;
-; Build: nasm -f elf64 08-from-scratch-point-in-rect.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-point-in-rect: from scratch point in rect
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement from scratch point in rect>
+main PROC
+.ERR <TODO>
+main ENDP
+END

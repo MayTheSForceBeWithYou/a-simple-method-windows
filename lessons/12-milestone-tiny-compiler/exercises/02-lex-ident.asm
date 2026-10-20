@@ -1,11 +1,8 @@
-; Exercise 02: lex ident
-;
-; Accept first char alpha; 'a' -> 1.
-;
-; Build: nasm -f elf64 02-lex-ident.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 02-lex-ident.asm: Test if byte is lowercase letter ('a'..'z'), exit 1 if true
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Test if byte is lowercase letter ('a'..'z'), exit 1 if true>
+main PROC
+.ERR <TODO>
+main ENDP
+END

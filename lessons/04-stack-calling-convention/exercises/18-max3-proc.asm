@@ -1,20 +1,21 @@
-; Exercise 18: max3 proc
-;
-; max3(a,b,c). Call max3(3,9,7); exit 9.
-;
-; Build: nasm -f elf64 18-max3-proc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 3
-    mov rsi, 9
-    mov rdx, 7
-    call max3
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Exercise 18: max3 proc (Win32 port)
+; max3(a,b,c) returns max. Call max3(3,9,7); exit 9.
+; Build: ml64 /c /Fo18-max3-proc.obj 18-max3-proc.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:18-max3-proc.exe 18-max3-proc.obj kernel32.lib
+; Expected: exit code 9
 
-max3:
-    ; TODO: implement max3
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement max3(RCX, RDX, R8) -> RAX
+.ERR <TODO: Implement max3 using CMP and conditional moves/jumps>
+
+main PROC
+    sub rsp, 32
+    mov rcx, 3
+    mov rdx, 9
+    mov r8, 7
+    call max3
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

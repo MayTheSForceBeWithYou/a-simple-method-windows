@@ -1,11 +1,33 @@
-; Exercise 17: rotate parity
+; 17-rotate-parity.asm
 ;
-; rol 0x01 through 8; count times bit0 set during rotates starting before=1 + after each? Simpler: ror al,1 on 0x01 -> 0x80; exit 0x80=128.
+; Use rotate to compute simple parity (XOR of all bits).
 ;
-; Build: nasm -f elf64 17-rotate-parity.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Compute parity of 8-bit value 0b10110110 (182).
+;       Rotate and XOR bits to accumulate parity into bit 0.
+;       Exit with parity bit (0 or 1).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: One approach: rotate right, XOR into accumulator, repeat 8 times.
+;       Bit 0 ends up holding XOR of all original bits (parity).
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    .endprolog
+    
+    mov     al, 182         ; 0b10110110
+    xor     bl, bl          ; Parity accumulator
+    
+    ; TODO: Loop 8 times, rotating and XORing bit 0 into accumulator
+    .ERR <TODO: Implement rotate-and-XOR loop to compute parity>
+    
+    movzx   ecx, bl
+    and     ecx, 1          ; Keep only parity bit
+    pop     rbx
+    call    ExitProcess
+main ENDP
+
+END

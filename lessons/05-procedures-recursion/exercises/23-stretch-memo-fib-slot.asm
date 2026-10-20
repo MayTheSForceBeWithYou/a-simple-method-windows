@@ -1,26 +1,17 @@
-; Exercise 23: stretch memo fib slot
-;
+; Exercise 23: 23-stretch-memo-fib-slot.asm (Win32 port)
 ; STRETCH: memo[10] slots; fib with memo fill. fib(8)=21; exit 21.
-;
-; Build: nasm -f elf64 23-stretch-memo-fib-slot.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    memo resq 16
-section .text
-    global _start
-_start:
-    ; clear memo to -1
-    mov rcx, 16
-    lea rdi, [memo]
-.cl:
-    mov qword [rdi], -1
-    add rdi, 8
-    loop .cl
-    mov rdi, 8
-    call fibm
-    mov rdi, rax
-    mov rax, 60
-    syscall
-fibm:
-    ; TODO: implement fibm
+; Build: ml64 /c /Fo23-stretch-memo-fib-slot.asm.obj 23-stretch-memo-fib-slot.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:23-stretch-memo-fib-slot.asm.exe 23-stretch-memo-fib-slot.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

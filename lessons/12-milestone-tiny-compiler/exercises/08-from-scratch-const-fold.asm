@@ -1,11 +1,8 @@
-; Exercise 08: from scratch const fold
-;
-; FROM SCRATCH: fold (1+2)*3 exit 9.
-;
-; Build: nasm -f elf64 08-from-scratch-const-fold.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-const-fold.asm: Fold (1+2)*3 with correct precedence, exit 9
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Fold (1+2)*3 with correct precedence, exit 9>
+main PROC
+.ERR <TODO>
+main ENDP
+END

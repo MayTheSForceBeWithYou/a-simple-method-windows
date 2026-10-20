@@ -1,11 +1,20 @@
-; Exercise 06: save stub
-;
-; Pretend save ok; exit 0.
-;
-; Build: nasm -f elf64 06-save-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 06-save-stub.asm: CreateFile, WriteFile buffer, CloseHandle, exit 0
+.DATA
+fname DB "test.txt", 0
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+written DWORD ?
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+main PROC FRAME
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
+    mov len, 0
+    .ERR <TODO: CreateFileA, WriteFile, CloseHandle, exit 0>
+main ENDP
+END

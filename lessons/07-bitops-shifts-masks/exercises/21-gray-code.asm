@@ -1,11 +1,29 @@
-; Exercise 21: gray code
+; 21-gray-code.asm
 ;
-; Binary to gray: n^(n>>1) for n=7 -> 4; exit 4.
+; Convert binary to Gray code using XOR and shift.
 ;
-; Build: nasm -f elf64 21-gray-code.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Convert binary value 12 (0b1100) to Gray code.
+;       Gray code formula: gray = binary ^ (binary >> 1).
+;       Exit with Gray code result (should be 10 = 0b1010).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Copy value to another register, shift right by 1, XOR with original.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 12         ; Binary value = 12
+    mov     rbx, rax
+    
+    ; TODO: Shift rbx right by 1
+    .ERR <TODO: Insert SHR rbx, 1>
+    
+    ; TODO: XOR rax with rbx to get Gray code
+    .ERR <TODO: Insert XOR rax, rbx>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 10
+main ENDP
+
+END

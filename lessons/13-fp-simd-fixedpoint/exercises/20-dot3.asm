@@ -1,11 +1,8 @@
-; Exercise 20: dot3
-;
-; dot (1,2,3)*(4,5,6)=32; exit 32.
-;
-; Build: nasm -f elf64 20-dot3.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 20-dot3
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 20-dot3>
+main PROC
+.ERR <TODO>
+main ENDP
+END

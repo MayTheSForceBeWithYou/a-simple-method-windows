@@ -1,11 +1,31 @@
-; Exercise 03: xor swap
+; 03-xor-swap.asm
 ;
-; xor-swap rax=1 rbx=2; exit rax (2).
+; Swap two registers using the XOR swap algorithm.
 ;
-; Build: nasm -f elf64 03-xor-swap.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Start with RAX = 10, RBX = 20.
+;       Use three XOR operations to swap them.
+;       Exit with RAX (should be 20 after swap).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: The XOR swap pattern is:
+;       xor a, b
+;       xor b, a
+;       xor a, b
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 10
+    mov     rbx, 20
+    
+    ; TODO: XOR swap algorithm (three XORs)
+    .ERR <TODO: Insert first XOR (xor rax, rbx)>
+    .ERR <TODO: Insert second XOR (xor rbx, rax)>
+    .ERR <TODO: Insert third XOR (xor rax, rbx)>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 20
+main ENDP
+
+END

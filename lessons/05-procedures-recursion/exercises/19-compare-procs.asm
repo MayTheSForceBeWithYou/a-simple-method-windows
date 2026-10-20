@@ -1,18 +1,17 @@
-; Exercise 19: compare procs
-;
+; Exercise 19: 19-compare-procs.asm (Win32 port)
 ; cmp_i64(a,b) returns -1/0/1. cmp(3,5) -> -1; exit with al=255 via movzx of signed? Use add 1 -> 0 exit for less. Better: return 0 for less,1 eq,2 greater; exit 0.
-;
-; Build: nasm -f elf64 19-compare-procs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 3
-    mov rsi, 5
-    call cmp_i64
-    mov rdi, rax
-    mov rax, 60
-    syscall
-cmp_i64:
-    ; TODO: implement cmp_i64
+; Build: ml64 /c /Fo19-compare-procs.asm.obj 19-compare-procs.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:19-compare-procs.asm.exe 19-compare-procs.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

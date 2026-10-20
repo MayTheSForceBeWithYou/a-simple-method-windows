@@ -1,11 +1,8 @@
-; Exercise 04: codegen add
-;
-; Fold 2+3 at compile-time; exit 5.
-;
-; Build: nasm -f elf64 04-codegen-add.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 04-codegen-add.asm: Generate ADD instruction sequence, exit 0
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Generate ADD instruction sequence, exit 0>
+main PROC
+.ERR <TODO>
+main ENDP
+END

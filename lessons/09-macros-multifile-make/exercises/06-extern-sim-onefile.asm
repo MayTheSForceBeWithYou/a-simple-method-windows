@@ -1,16 +1,15 @@
-; Exercise 06: extern sim onefile
-;
-; Simulate two units in one file with global helper; exit 5.
-;
-; Build: nasm -f elf64 06-extern-sim-onefile.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call helper
-    mov rdi, rax
-    mov rax, 60
-    syscall
-helper:
-    ; TODO: implement helper
+; 06-extern-sim-onefile.asm
+; Single-file simulation of external function, exit 5.
+; Task: Define helper function, call it from main, exit with result.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Define helper PROC that returns 5 in RAX
+.ERR <TODO: helper PROC; mov rax, 5; ret; helper ENDP>
+
+main PROC
+    ; TODO: call helper; mov ecx, eax; call ExitProcess
+    .ERR <TODO: Call helper, exit with result>
+main ENDP
+END

@@ -1,11 +1,37 @@
-; Exercise 09: write stderr
+; Exercise 09: write stderr (Win32 port)
 ;
-; Write "error\n" to stderr (fd 2), exit 1.
+; Write "Error\n" to stderr (not stdout).
 ;
-; Build: nasm -f elf64 09-write-stderr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo09-write-stderr.obj 09-write-stderr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-write-stderr.exe 09-write-stderr.obj kernel32.lib
+; Run: 09-write-stderr.exe 2>&1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected output: (to stderr) Error\n
+; Expected exit code: 0
+
+.DATA
+msg DB "Error", 13, 10
+msg_len EQU $ - msg
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: Get stderr handle (STD_ERROR_HANDLE = -12, not -11)
+    ; TODO: Write message to stderr
+    .ERR <TODO: Use GetStdHandle with -12 for stderr>
+    
+main ENDP
+
+END

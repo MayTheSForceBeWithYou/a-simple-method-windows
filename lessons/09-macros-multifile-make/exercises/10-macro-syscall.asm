@@ -1,11 +1,24 @@
-; Exercise 10: macro syscall
-;
-; %macro SYSCALL3 0 ... uses rax rdi rsi rdx already set; exit after write. Print "K\n" exit 0.
-;
-; Build: nasm -f elf64 10-macro-syscall.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 10-macro-syscall.asm
+; Zero-arg macro writes "K\n", exit 0.
+
+.DATA
+msg DB "K", 13, 10
+msgLen EQU $ - msg
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+; TODO: Define WriteK MACRO (no args) that writes msg
+.ERR <TODO: Define zero-argument macro>
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    ; TODO: Invoke WriteK
+    .ERR <TODO: Invoke macro, exit 0>
+main ENDP
+END

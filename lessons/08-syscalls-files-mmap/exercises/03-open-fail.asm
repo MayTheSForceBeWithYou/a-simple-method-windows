@@ -1,11 +1,45 @@
-; Exercise 03: open fail
+; 03-open-fail.asm
 ;
-; open nonexistent path; if rax<0 exit 1 else 0. Expect 1.
+; Try to open a missing file, exit 1 on failure.
 ;
-; Build: nasm -f elf64 03-open-fail.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Call CreateFileA on "/no/such/file" with OPEN_EXISTING.
+;       Check for INVALID_HANDLE_VALUE (-1), exit 1 if failed.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: CreateFileA returns INVALID_HANDLE_VALUE (-1) on error.
+;       Compare rax with -1: cmp rax, -1; je error
+
+.DATA
+filename DB "C:\no\such\file.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 56
+    .allocstack 56
+    .endprolog
+    
+    ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
+    .ERR <TODO: Call CreateFileA with OPEN_EXISTING (3)>
+    
+    ; TODO: Check for INVALID_HANDLE_VALUE
+    .ERR <TODO: Compare rax with -1, jump to error label if equal>
+    
+    ; Success (unlikely)
+    mov     rcx, rax
+    call    CloseHandle
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    add     rsp, 56
+    call    ExitProcess
+main ENDP
+
+END

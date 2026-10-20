@@ -1,17 +1,17 @@
-; Exercise 21: rec binary digits
-;
+; Exercise 21: 21-rec-binary-digits.asm (Win32 port)
 ; Count bits set via recursion clearing lowbit. popcount(0b1101)=3; exit 3.
-;
-; Build: nasm -f elf64 21-rec-binary-digits.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 0b1101
-    call poprec
-    mov rdi, rax
-    mov rax, 60
-    syscall
-poprec:
-    ; TODO: implement poprec
+; Build: ml64 /c /Fo21-rec-binary-digits.asm.obj 21-rec-binary-digits.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:21-rec-binary-digits.asm.exe 21-rec-binary-digits.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

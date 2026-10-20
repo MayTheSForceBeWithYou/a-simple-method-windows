@@ -1,11 +1,8 @@
-; Exercise 07: simd lane sum stub
-;
-; Sum 4 bytes as if SIMD lanes; exit 10.
-;
-; Build: nasm -f elf64 07-simd-lane-sum-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 07-simd-lane-sum-stub.asm: Stub: lane sum (no SIMD), exit sum
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Stub: lane sum (no SIMD), exit sum>
+main PROC
+.ERR <TODO>
+main ENDP
+END

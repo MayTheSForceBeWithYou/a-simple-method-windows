@@ -1,11 +1,17 @@
-; Exercise 12: line start end
-;
-; In "ab\ncd" find line start for cur=4 (index of c)->3; exit 3.
-;
-; Build: nasm -f elf64 12-line-start-end.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 12-line-start-end.asm: Find line start (scan back for \n), exit line_start
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+cur QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov buf[0], 'A'
+    mov buf[1], 13
+    mov buf[2], 10
+    mov buf[3], 'B'
+    mov len, 4
+    mov cur, 3
+    .ERR <TODO: Scan back from cur for \n, find line_start, exit line_start>
+main ENDP
+END

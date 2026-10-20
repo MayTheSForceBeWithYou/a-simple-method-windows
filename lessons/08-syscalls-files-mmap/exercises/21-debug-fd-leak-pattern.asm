@@ -1,28 +1,35 @@
-; Exercise 21: debug fd pattern
+; 21-debug-fd-leak-pattern.asm
 ;
-; BUG: wrong syscall number for close (used 1). Fix open /dev/zero and close; exit 0.
+; Fix bug: Open file, forget to close it (intentional leak pattern for debugging).
 ;
-; Build: nasm -f elf64 21-debug-fd-leak-pattern.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: CreateFileA("NUL", GENERIC_READ, ...), intentionally do NOT close, exit 0.
+;       Demonstrates resource leak (in real code, CloseHandle is required).
 ;
-; --- your code below ---
-section .data
-    path db "/dev/zero",0
-section .text
-    global _start
-_start:
-    mov rax,2
-    lea rdi,[path]
-    xor rsi,rsi
-    syscall
-    cmp rax,0
-    jl .e
-    mov rdi,rax
-    mov rax,1
-    syscall
-    xor rdi,rdi
-    jmp .o
-.e:
-    mov rdi,1
-.o:
-    mov rax,60
-    syscall
+; Hint: Bug demonstration - normally you'd CloseHandle, but here we leak it.
+
+.DATA
+filename DB "NUL", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 56
+    .allocstack 56
+    .endprolog
+    
+    ; TODO: CreateFileA("NUL", GENERIC_READ, ...)
+    .ERR <TODO: Open NUL>
+    
+    ; BUG: Should call CloseHandle here, but intentionally skip it
+    ; TODO: Exit 0 without closing (leak demonstration)
+    .ERR <TODO: Exit 0 without CloseHandle>
+    
+    xor     ecx, ecx
+    add     rsp, 56
+    call    ExitProcess
+main ENDP
+
+END

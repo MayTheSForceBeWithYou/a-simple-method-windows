@@ -1,11 +1,8 @@
-; Exercise 24: from scratch overlap area
-;
-; FROM SCRATCH: overlap width 2 height 3 area 6; exit 6.
-;
-; Build: nasm -f elf64 24-from-scratch-overlap-area.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 24-from-scratch-overlap-area: from scratch overlap area
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement from scratch overlap area>
+main PROC
+.ERR <TODO>
+main ENDP
+END

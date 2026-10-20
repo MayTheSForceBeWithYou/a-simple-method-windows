@@ -1,11 +1,19 @@
-; Exercise 09: macro pushregs
-;
-; %macro PUSH_CALLEE 0 push rbx push r12 %endmacro and pops; exit 5.
-;
-; Build: nasm -f elf64 09-macro-pushregs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 09-macro-pushregs.asm
+; Macro pushes RBX, R12; pop in reverse order; exit 5.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: PushRegs MACRO; push rbx; push r12; ENDM
+.ERR <TODO: Define PushRegs macro>
+; TODO: PopRegs MACRO; pop r12; pop rbx; ENDM
+.ERR <TODO: Define PopRegs macro>
+
+main PROC
+    mov eax, 5
+    ; TODO: PushRegs; PopRegs
+    .ERR <TODO: Invoke macros>
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

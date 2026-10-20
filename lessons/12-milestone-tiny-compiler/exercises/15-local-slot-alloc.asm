@@ -1,11 +1,8 @@
-; Exercise 15: local slot alloc
-;
-; Allocate 3 locals; next_slot=3; exit 3.
-;
-; Build: nasm -f elf64 15-local-slot-alloc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 15-local-slot-alloc.asm: Allocate 3 local slots, exit count (3)
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Allocate 3 local slots, exit count (3)>
+main PROC
+.ERR <TODO>
+main ENDP
+END

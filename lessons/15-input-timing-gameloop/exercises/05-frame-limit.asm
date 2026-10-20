@@ -1,11 +1,8 @@
-; Exercise 05: frame limit
-;
-; If frame_time < min, pad; return pad amount 2.
-;
-; Build: nasm -f elf64 05-frame-limit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 05-frame-limit: frame limit
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement frame limit>
+main PROC
+.ERR <TODO>
+main ENDP
+END

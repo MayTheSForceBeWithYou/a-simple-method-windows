@@ -1,0 +1,38 @@
+; 04-cursor-clamp.asm
+;
+; Purpose: Demonstrate cursor clamping to valid range [0, length]
+; Expected exit code: 3
+; Expected stdout: (none)
+;
+; Clamps out-of-range cursor to [0, length]
+
+.DATA?
+buffer DB 256 DUP(?)
+length QWORD ?
+cursor QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    ; Setup: buffer with length 3
+    mov     length, 3
+    
+    ; Simulate corrupted cursor (cursor = 9, out of range)
+    mov     cursor, 9
+    
+    ; Clamp cursor to [0, length]
+    mov     rax, cursor
+    cmp     rax, length
+    jbe     cursor_ok
+    mov     rax, length
+    mov     cursor, rax
+    
+cursor_ok:
+    ; Cursor now clamped to 3
+    ; Exit with clamped cursor value
+    mov     ecx, DWORD PTR cursor
+    call    ExitProcess
+main ENDP
+
+END

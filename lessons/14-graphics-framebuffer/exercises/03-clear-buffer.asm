@@ -1,11 +1,8 @@
-; Exercise 03: clear buffer
-;
-; Clear 8 bytes to 0; exit first byte 0.
-;
-; Build: nasm -f elf64 03-clear-buffer.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 03-clear-buffer: clear buffer
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement clear buffer>
+main PROC
+.ERR <TODO>
+main ENDP
+END

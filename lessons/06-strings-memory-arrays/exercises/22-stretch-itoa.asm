@@ -1,21 +1,16 @@
-; Exercise 22: stretch itoa
-;
+; Exercise 22: 22-stretch-itoa (Win32 port)
 ; STRETCH: itoa 123 into buffer; write then exit 0. Also set len cell=3 and exit 3 instead if no write needed.
-;
-; Build: nasm -f elf64 22-stretch-itoa.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    buf resb 16
-    len resq 1
-section .text
-    global _start
-_start:
-    mov rdi, 123
-    lea rsi, [buf]
-    call itoa
-    mov rdi, rax
-    mov rax, 60
-    syscall
-itoa:
-    ; TODO: implement itoa
+; Build: ml64 /c /Fo22-stretch-itoa.obj 22-stretch-itoa.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:22-stretch-itoa.exe 22-stretch-itoa.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 22-stretch-itoa>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

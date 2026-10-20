@@ -1,0 +1,15 @@
+; Manhattan distance for A*, exit dist
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov rax, 10
+    mov rbx, 5
+    sub rax, rbx
+    test rax, rax
+    jns pos1
+    neg rax
+pos1:
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

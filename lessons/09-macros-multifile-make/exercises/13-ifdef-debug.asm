@@ -1,11 +1,15 @@
-; Exercise 13: ifdef debug
-;
-; %define DEBUG; %ifdef DEBUG mov rdi,1 %else 0; exit 1.
-;
-; Build: nasm -f elf64 13-ifdef-debug.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 13-ifdef-debug.asm
+; IFDEF DEBUG keeps mov ecx, 1; exit 1.
+
+; Uncomment to enable debug:
+; DEBUG = 1
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    ; TODO: IFDEF DEBUG; mov ecx, 1; ELSE; xor ecx, ecx; ENDIF
+    .ERR <TODO: Use IFDEF DEBUG conditional>
+    call ExitProcess
+main ENDP
+END

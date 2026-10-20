@@ -1,11 +1,8 @@
-; Exercise 23: stretch ui modal
-;
-; STRETCH: modal stack depth 1; exit 1.
-;
-; Build: nasm -f elf64 23-stretch-ui-modal.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 23-stretch-ui-modal: stretch ui modal
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement stretch ui modal>
+main PROC
+.ERR <TODO>
+main ENDP
+END

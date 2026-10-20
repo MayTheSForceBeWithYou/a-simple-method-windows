@@ -1,11 +1,11 @@
-; Exercise 01: buffer init
-;
-; resb 64 buffer; store length 0 in len dq; exit len.
-;
-; Build: nasm -f elf64 01-buffer-init.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 01-buffer-init.asm: Initialize buffer (len=0, cur=0), exit 0
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+cur QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    .ERR <TODO: mov len, 0; mov cur, 0; xor ecx, ecx; call ExitProcess>
+main ENDP
+END

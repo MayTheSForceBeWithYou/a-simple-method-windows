@@ -1,11 +1,18 @@
-; Exercise 13: render viewport
-;
-; Render first line only of "L1\nL2\n"; write "L1\n"; exit 0.
-;
-; Build: nasm -f elf64 13-render-viewport.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 13-render-viewport.asm: Write first N bytes of buffer to stdout, exit 0
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+written DWORD ?
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    mov buf[0], 'V'
+    mov len, 1
+    .ERR <TODO: Write viewport (min(len, screensize)) to stdout, exit 0>
+main ENDP
+END

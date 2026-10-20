@@ -1,11 +1,8 @@
-; Exercise 18: fixed angle step
-;
-; Angle += delta; wrap 360; 350+20 -> 10; exit 10.
-;
-; Build: nasm -f elf64 18-fixed-angle-step.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 18-fixed-angle-step
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 18-fixed-angle-step>
+main PROC
+.ERR <TODO>
+main ENDP
+END

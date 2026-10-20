@@ -1,11 +1,34 @@
-; Exercise 06: popcount naive
+; 06-popcount-naive.asm
 ;
-; Popcount of 0b101101 = 4; exit 4.
+; Implement popcount (count set bits) using a loop.
 ;
-; Build: nasm -f elf64 06-popcount-naive.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Count the number of 1 bits in the value 0b10110111 (decimal 183).
+;       The value has 6 set bits. Exit with the count.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Use a loop that:
+;       - Checks if bit 0 is set with TEST reg, 1
+;       - Increments a counter if set
+;       - Shifts right by 1
+;       - Repeats until the value is zero
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    .endprolog
+    
+    mov     rbx, 183        ; Value = 0b10110111 (6 set bits)
+    xor     rax, rax        ; counter = 0
+    
+    ; TODO: Implement popcount loop
+    .ERR <TODO: Create loop that tests bit 0, increments counter if set, shifts right, repeats>
+    
+    mov     ecx, eax
+    pop     rbx
+    call    ExitProcess     ; Should exit with 6
+main ENDP
+
+END

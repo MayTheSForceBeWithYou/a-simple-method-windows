@@ -1,21 +1,16 @@
-; Exercise 09: strcmp
-;
+; Exercise 09: 09-strcmp (Win32 port)
 ; strcmp "abc","abd" -> nonzero (1). Exit 1.
-;
-; Build: nasm -f elf64 09-strcmp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    a db "abc",0
-    b db "abd",0
-section .text
-    global _start
-_start:
-    lea rdi, [a]
-    lea rsi, [b]
-    call strcmp
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strcmp:
-    ; TODO: implement strcmp
+; Build: ml64 /c /Fo09-strcmp.obj 09-strcmp.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-strcmp.exe 09-strcmp.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 09-strcmp>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

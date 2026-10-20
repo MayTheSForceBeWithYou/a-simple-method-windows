@@ -1,11 +1,25 @@
-; Exercise 04: shl mul
+; 04-shl-mul.asm
 ;
-; rax=3; shl 3 (=*8); exit 24.
+; Use SHL (shift left) to multiply by a power of 2.
 ;
-; Build: nasm -f elf64 04-shl-mul.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Load 7 into RAX, then use SHL to multiply by 8 (2^3).
+;       Exit with the result (should be 56).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Shifting left by N multiplies by 2^N.
+;       To multiply by 8, shift left by 3.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 7          ; Starting value
+    
+    ; TODO: Shift left by 3 to multiply by 8
+    .ERR <TODO: Insert SHL instruction to shift left by 3>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 56
+main ENDP
+
+END

@@ -1,11 +1,8 @@
-; Exercise 16: ui focus
-;
-; Tab cycles focus index mod 3; from 2 -> 0; exit 0.
-;
-; Build: nasm -f elf64 16-ui-focus.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 16-ui-focus: ui focus
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement ui focus>
+main PROC
+.ERR <TODO>
+main ENDP
+END

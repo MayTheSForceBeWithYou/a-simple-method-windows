@@ -1,11 +1,15 @@
-; Exercise 04: delete backspace
-;
-; len=2; backspace; exit len 1.
-;
-; Build: nasm -f elf64 04-delete-backspace.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 04-delete-backspace.asm: Backspace at end (dec len), exit len
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+cur QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov buf[0], 'A'
+    mov buf[1], 'B'
+    mov len, 2
+    mov cur, 2
+    .ERR <TODO: Check cur>0; dec len; dec cur; exit len>
+main ENDP
+END

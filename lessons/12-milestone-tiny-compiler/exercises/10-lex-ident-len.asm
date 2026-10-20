@@ -1,11 +1,8 @@
-; Exercise 10: lex ident len
-;
-; Ident "foo" length 3; exit 3.
-;
-; Build: nasm -f elf64 10-lex-ident-len.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 10-lex-ident-len.asm: Scan identifier "foo", exit length (3)
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Scan identifier "foo", exit length (3)>
+main PROC
+.ERR <TODO>
+main ENDP
+END

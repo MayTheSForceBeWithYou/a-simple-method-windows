@@ -1,11 +1,26 @@
-; Exercise 06: eax zero extends
+; Exercise 06: eax zero extends (Win32 port)
 ;
-; Set rax to all 0xFF bytes, then mov eax, 1. Exit with rdi=rax (should be 1).
+; Fill RAX with -1, then write 5 to EAX. Verify upper 32 bits are cleared.
+; Exit with the low byte of RAX (should be 5).
 ;
-; Build: nasm -f elf64 06-eax-zero-extends.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo06-eax-zero-extends.obj 06-eax-zero-extends.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-eax-zero-extends.exe 06-eax-zero-extends.obj kernel32.lib
+; Run: 06-eax-zero-extends.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected: exit code 5
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, -1                ; Fill RAX with all 1s
+    
+    ; TODO: Write 5 to EAX (which zero-extends to RAX)
+    ; Then move RAX to RCX and call ExitProcess
+    .ERR <TODO: Write 5 to EAX and exit with it>
+    
+main ENDP
+
+END

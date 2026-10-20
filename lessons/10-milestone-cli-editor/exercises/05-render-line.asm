@@ -1,11 +1,19 @@
-; Exercise 05: render line
-;
-; Print buffer 'ed\n'; exit 0.
-;
-; Build: nasm -f elf64 05-render-line.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 05-render-line.asm: Write buffer to stdout, exit 0
+.DATA?
+buf DB 256 DUP(?)
+len QWORD ?
+written DWORD ?
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    mov buf[0], 'H'
+    mov buf[1], 'i'
+    mov len, 2
+    .ERR <TODO: GetStdHandle, WriteFile buf with len bytes, exit 0>
+main ENDP
+END

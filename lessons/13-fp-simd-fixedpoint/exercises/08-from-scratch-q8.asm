@@ -1,11 +1,8 @@
-; Exercise 08: from scratch q8
-;
-; FROM SCRATCH: Q8.8 1.5*2 exit integer 3.
-;
-; Build: nasm -f elf64 08-from-scratch-q8.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-q8.asm: Q8.8 format: 8 int, 8 frac bits
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Q8.8 format: 8 int, 8 frac bits>
+main PROC
+.ERR <TODO>
+main ENDP
+END

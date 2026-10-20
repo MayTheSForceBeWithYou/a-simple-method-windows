@@ -1,17 +1,21 @@
-; Exercise 02: call ret leaf
+; Exercise 02: call ret leaf (Win32 port)
 ;
-; Write leaf answer that returns 42 in rax. call it; exit with that.
+; Write leaf function answer() that returns 42 in RAX. Call it; exit with that.
 ;
-; Build: nasm -f elf64 02-call-ret-leaf.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call answer
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Build: ml64 /c /Fo02-call-ret-leaf.obj 02-call-ret-leaf.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-call-ret-leaf.exe 02-call-ret-leaf.obj kernel32.lib
+; Expected: exit code 42
 
-answer:
-    ; TODO: implement answer
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement answer() function that returns 42 in RAX
+.ERR <TODO: Implement answer PROC that returns 42>
+
+main PROC
+    sub rsp, 32
+    
+    call answer
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

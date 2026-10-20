@@ -1,11 +1,8 @@
-; Exercise 15: econ ticket
-;
-; cash += ticket 15; from 0 exit 15.
-;
-; Build: nasm -f elf64 15-econ-ticket.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 15-econ-ticket: econ ticket
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement econ ticket>
+main PROC
+.ERR <TODO>
+main ENDP
+END

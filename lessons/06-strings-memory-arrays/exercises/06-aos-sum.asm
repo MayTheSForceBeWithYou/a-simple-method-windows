@@ -1,11 +1,16 @@
-; Exercise 06: aos sum
-;
+; Exercise 06: 06-aos-sum (Win32 port)
 ; AoS records {dq x,y} two ents. Sum all coords exit.
-;
-; Build: nasm -f elf64 06-aos-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo06-aos-sum.obj 06-aos-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-aos-sum.exe 06-aos-sum.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 06-aos-sum>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

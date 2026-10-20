@@ -1,11 +1,25 @@
-; Exercise 18: mask range
+; 18-mask-range.asm
 ;
-; Make mask of width 5: (1<<5)-1 = 31; exit 31.
+; Create a mask for a range of bits.
 ;
-; Build: nasm -f elf64 18-mask-range.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Generate a mask with bits 2-5 set (value 0b00111100 = 0x3C = 60).
+;       Exit with the mask.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: One method:
+;       - Create mask with N bits set: (1 << N) - 1
+;       - Shift it left to position
+;       Example: (1 << 4) - 1 = 15 (bits 0-3), shift left by 2 → 60 (bits 2-5)
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    ; TODO: Compute mask with bits 2-5 set
+    .ERR <TODO: Create mask for bits 2-5 using shifts and subtract>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 60
+main ENDP
+
+END

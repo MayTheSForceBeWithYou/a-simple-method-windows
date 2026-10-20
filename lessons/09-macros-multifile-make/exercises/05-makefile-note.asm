@@ -1,11 +1,14 @@
-; Exercise 05: makefile note
-;
-; Single-file stand-in: exit 0. (Real multi-file in EXERCISE.md style comment.)
-;
-; Build: nasm -f elf64 05-makefile-note.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 05-makefile-note.asm
+; Single file, exit 0. Comment mentions multi-file build.
+; Task: Simple exit 0 with comment about build process.
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; Build: ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib
+
+main PROC
+    ; TODO: xor ecx, ecx; call ExitProcess
+    .ERR <TODO: Exit 0>
+main ENDP
+END

@@ -1,11 +1,8 @@
-; Exercise 02: place track
-;
-; Track piece type 3; exit 3.
-;
-; Build: nasm -f elf64 02-place-track.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 02-place-track: place track
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement place track>
+main PROC
+.ERR <TODO>
+main ENDP
+END

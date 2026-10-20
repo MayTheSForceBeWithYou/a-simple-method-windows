@@ -1,19 +1,17 @@
-; Exercise 15: rec strlen
-;
+; Exercise 15: 15-rec-strlen.asm (Win32 port)
 ; Recursive strlen on "abcd"; exit 4.
-;
-; Build: nasm -f elf64 15-rec-strlen.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "abcd",0
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    call rstrlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-rstrlen:
-    ; TODO: implement rstrlen
+; Build: ml64 /c /Fo15-rec-strlen.asm.obj 15-rec-strlen.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:15-rec-strlen.asm.exe 15-rec-strlen.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

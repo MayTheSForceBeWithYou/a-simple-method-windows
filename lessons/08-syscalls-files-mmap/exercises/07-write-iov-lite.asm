@@ -1,11 +1,44 @@
-; Exercise 07: write iov lite
+; 07-write-iov-lite.asm
 ;
-; Two writes simulating writev; print 'A\nB\n'; exit 0.
+; Write two separate buffers to stdout using two WriteFile calls.
 ;
-; Build: nasm -f elf64 07-write-iov-lite.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Task: WriteFile "Part1\n", then WriteFile "Part2\n", exit 0.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Two separate WriteFile calls to stdout.
+
+.DATA
+buf1 DB "Part1", 13, 10
+buf1_len EQU $ - buf1
+buf2 DB "Part2", 13, 10
+buf2_len EQU $ - buf2
+bytesWritten DWORD ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: Get stdout, save in rbx
+    .ERR <TODO: GetStdHandle(-11), mov rbx, rax>
+    
+    ; TODO: WriteFile buf1
+    .ERR <TODO: WriteFile(rbx, buf1, buf1_len, &bytesWritten, NULL)>
+    
+    ; TODO: WriteFile buf2
+    .ERR <TODO: WriteFile(rbx, buf2, buf2_len, &bytesWritten, NULL)>
+    
+    xor     ecx, ecx
+    add     rsp, 32
+    pop     rbx
+    call    ExitProcess
+main ENDP
+
+END

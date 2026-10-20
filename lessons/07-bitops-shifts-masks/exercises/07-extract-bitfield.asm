@@ -1,11 +1,30 @@
-; Exercise 07: extract bitfield
+; 07-extract-bitfield.asm
 ;
-; From 0xABCD, extract bits 4..7 (low nibble of high byte of low word): (val>>4)&0xF = 0xC = 12.
+; Extract a bitfield by shifting and masking.
 ;
-; Build: nasm -f elf64 07-extract-bitfield.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Extract a 5-bit field starting at position 3 from value 0x1F8.
+;       The field spans bits 3-7 and has value 31 (0b11111).
+;       Exit with the extracted value.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: To extract a field at position P with width W:
+;       1. Shift right by P to move field to bit 0
+;       2. Mask with (2^W - 1) to keep only W bits
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 1F8h       ; Value = 0b111111000
+    
+    ; TODO: Shift right by 3 to move bits 3-7 to bits 0-4
+    .ERR <TODO: Insert SHR instruction to shift right by 3>
+    
+    ; TODO: Mask to 5 bits (2^5 - 1 = 31 = 0x1F)
+    .ERR <TODO: Insert AND instruction with mask 0x1F>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 31
+main ENDP
+
+END

@@ -1,18 +1,19 @@
-; Exercise 23: leaf no frame
-;
-; Leaf mul3(rdi)=rdi*3 without prologue. Exit 42 for input 14.
-;
-; Build: nasm -f elf64 23-leaf-no-frame.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 14
-    call mul3
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Exercise 23: leaf no frame (Win32 port)
+; Leaf mul3(RCX)=RCX*3 without prologue. Exit 42 for input 14.
+; Build: ml64 /c /Fo23-leaf-no-frame.obj 23-leaf-no-frame.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:23-leaf-no-frame.exe 23-leaf-no-frame.obj kernel32.lib
+; Expected: exit code 42
 
-mul3:
-    ; TODO: implement mul3
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement mul3 as leaf (no PROC FRAME needed)
+.ERR <TODO: Implement leaf function mul3>
+
+main PROC
+    sub rsp, 32
+    mov rcx, 14
+    call mul3
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

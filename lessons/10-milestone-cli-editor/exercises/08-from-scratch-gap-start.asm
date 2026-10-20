@@ -1,11 +1,11 @@
-; Exercise 08: from scratch gap start
-;
-; FROM SCRATCH: gap buffer indices gap_start=0 gap_end=8 capacity 8 empty; exit gap_end-gap_start (=8 free).
-;
-; Build: nasm -f elf64 08-from-scratch-gap-start.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 08-from-scratch-gap-start.asm: Init gap buffer (gap_start=0, gap_end=256), exit 0
+.DATA?
+buf DB 256 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    .ERR <TODO: mov gap_start, 0; mov gap_end, 256; exit 0>
+main ENDP
+END

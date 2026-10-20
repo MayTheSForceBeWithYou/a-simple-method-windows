@@ -1,11 +1,8 @@
-; Exercise 07: peep happy
-;
-; happiness clamp 0..100; set 120->100.
-;
-; Build: nasm -f elf64 07-peep-happy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 07-peep-happy: peep happy
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement peep happy>
+main PROC
+.ERR <TODO>
+main ENDP
+END

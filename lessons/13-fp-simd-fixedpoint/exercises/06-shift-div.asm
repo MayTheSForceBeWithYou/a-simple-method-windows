@@ -1,11 +1,8 @@
-; Exercise 06: shift div
-;
-; Divide by 4 via sar; 20>>2=5.
-;
-; Build: nasm -f elf64 06-shift-div.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 06-shift-div.asm: Fixed-point div: shift left 16, divide, exit
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Fixed-point div: shift left 16, divide, exit>
+main PROC
+.ERR <TODO>
+main ENDP
+END

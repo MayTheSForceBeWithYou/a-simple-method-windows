@@ -1,11 +1,43 @@
-; Exercise 09: write len check
+; 09-write-len-check.asm
 ;
-; write "Z\n"; if rax==2 exit 0 else 1.
+; Write a message to stdout, verify bytes written matches expected.
 ;
-; Build: nasm -f elf64 09-write-len-check.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: WriteFile "Test\n" (5 bytes), check bytesWritten == 5, exit 0.
+;       If mismatch, exit 1.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Compare bytesWritten with expected length.
+
+.DATA
+message DB "Test", 13, 10
+message_len EQU $ - message
+bytesWritten DWORD ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 40
+    .allocstack 40
+    .endprolog
+    
+    ; TODO: Get stdout, WriteFile message
+    .ERR <TODO: GetStdHandle, WriteFile>
+    
+    ; TODO: Check if bytesWritten == message_len
+    .ERR <TODO: cmp bytesWritten, message_len; jne error>
+    
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    add     rsp, 40
+    call    ExitProcess
+main ENDP
+
+END

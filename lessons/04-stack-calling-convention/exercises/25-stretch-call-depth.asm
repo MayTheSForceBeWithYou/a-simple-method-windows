@@ -1,18 +1,19 @@
-; Exercise 25: stretch call depth
-;
-; STRETCH: bump(rdi) calls itself depth times adding 1 each return. bump(0) path: start call chain depth 5 returning 5.
-;
-; Build: nasm -f elf64 25-stretch-call-depth.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 5
-    call bump
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Exercise 25: stretch call depth (Win32 port)
+; STRETCH: bump(RCX) calls itself depth times adding 1 each return. Start depth 5, return 5.
+; Build: ml64 /c /Fo25-stretch-call-depth.obj 25-stretch-call-depth.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:25-stretch-call-depth.exe 25-stretch-call-depth.obj kernel32.lib
+; Expected: exit code 5
 
-bump:
-    ; TODO: implement bump
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement recursive bump(RCX) with depth counter
+.ERR <TODO: Implement recursive bump with call depth>
+
+main PROC
+    sub rsp, 32
+    mov rcx, 5
+    call bump
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

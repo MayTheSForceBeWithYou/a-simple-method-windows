@@ -1,11 +1,16 @@
-; Exercise 21: sparse fill
-;
+; Exercise 21: 21-sparse-fill (Win32 port)
 ; Fill every other byte in 8-byte buf with 1; sum=4.
-;
-; Build: nasm -f elf64 21-sparse-fill.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Build: ml64 /c /Fo21-sparse-fill.obj 21-sparse-fill.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:21-sparse-fill.exe 21-sparse-fill.obj kernel32.lib
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM (MS x64 ABI)
+.ERR <TODO: Implement 21-sparse-fill>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

@@ -1,0 +1,13 @@
+; 02-q16-add.asm: Add two Q16.16 values (1.5 + 2.5 = 4.0)
+; Exit 4
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov eax, (1 SHL 16) + (1 SHL 15)
+    mov ebx, (2 SHL 16) + (1 SHL 15)
+    add eax, ebx
+    shr eax, 16
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

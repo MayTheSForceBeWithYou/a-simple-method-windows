@@ -1,11 +1,32 @@
-; Exercise 20: clz loop
+; 20-count-leading-zeros-loop.asm
 ;
-; Count leading zeros in 16-bit value 0x00F0 -> 8; exit 8.
+; Count leading zeros in a 16-bit value using a loop.
 ;
-; Build: nasm -f elf64 20-count-leading-zeros-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Count leading zeros in 0x0030 (binary 0000000000110000).
+;       There are 10 leading zeros. Exit with the count.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Loop up to 16 times, checking bit 15 each iteration.
+;       If bit 15 is 0, increment counter and shift left.
+;       If bit 15 is 1, stop.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    .endprolog
+    
+    mov     ax, 30h         ; Value = 0x0030 (10 leading zeros)
+    xor     rbx, rbx        ; Counter
+    
+    ; TODO: Implement leading zero count loop
+    .ERR <TODO: Create loop that tests bit 15, increments counter, shifts left>
+    
+    mov     ecx, ebx
+    pop     rbx
+    call    ExitProcess     ; Should exit with 10
+main ENDP
+
+END

@@ -1,11 +1,8 @@
-; Exercise 21: fast inv stub
-;
-; Integer reciprocal stub for 1/2 of 10 -> 5; exit 5.
-;
-; Build: nasm -f elf64 21-fast-inv-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 21-fast-inv-stub
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement 21-fast-inv-stub>
+main PROC
+.ERR <TODO>
+main ENDP
+END

@@ -1,11 +1,8 @@
-; Exercise 22: stretch sat axes
-;
-; STRETCH: SAT axis count for AABB=2; exit 2.
-;
-; Build: nasm -f elf64 22-stretch-sat-axes.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 22-stretch-sat-axes: stretch sat axes
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement stretch sat axes>
+main PROC
+.ERR <TODO>
+main ENDP
+END

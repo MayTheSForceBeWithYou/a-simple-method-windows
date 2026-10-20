@@ -1,11 +1,23 @@
-; Exercise 22: stretch units header
-;
-; STRETCH: %define SYS_WRITE 1 / SYS_EXIT 60; print "U\n" exit 0.
-;
-; Build: nasm -f elf64 22-stretch-units-header.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 22-stretch-units-header.asm (stretch)
+; Define constants, write "U\n", exit 0.
+
+STD_OUTPUT_HANDLE EQU -11
+
+.DATA
+msg DB "U", 13, 10
+msgLen EQU $ - msg
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    ; TODO: GetStdHandle(STD_OUTPUT_HANDLE), WriteFile, exit 0
+    .ERR <TODO: Write "U\n", exit 0>
+main ENDP
+END

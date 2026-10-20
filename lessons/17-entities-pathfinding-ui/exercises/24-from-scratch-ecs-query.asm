@@ -1,11 +1,8 @@
-; Exercise 24: from scratch ecs query
-;
-; FROM SCRATCH: count entities with mask POS; 3 of 4; exit 3.
-;
-; Build: nasm -f elf64 24-from-scratch-ecs-query.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; 24-from-scratch-ecs-query: from scratch ecs query
+.CODE
+EXTRN ExitProcess:PROC
+.ERR <TODO: Implement from scratch ecs query>
+main PROC
+.ERR <TODO>
+main ENDP
+END
