@@ -38,6 +38,10 @@ A technical reviewer will verify and resolve these before final merge.
 **Section:** uses `rbx` without save/restore
 **Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
 
+### Lesson 05 — listings/04-recursive-sum.asm
+**Section:** recursive path `pop rcx` / `ret` without `add rsp, 32`
+**Doubt:** After `push rcx` / `sub rsp, 32`, the saved n is at `[rsp+32]`. The recursive path `pop rcx` pops shadow space, not saved RCX, and `ret` then pops the wrong RIP. The base path does `add rsp, 32` / `pop rcx` / `ret` correctly. Also `.pushreg rcx` labels RCX as if it were nonvolatile; RCX is volatile. Not edited. Contrast with listing `01-factorial.asm`, which shares one epilogue.
+
 ### Lesson 04 — listings/01-push-pop.asm header
 **Section:** comment "this lesson's NASM examples assume System V"
 **Doubt:** Stale Linux leftover in the listing header. Code itself is MS x64. Not edited.
