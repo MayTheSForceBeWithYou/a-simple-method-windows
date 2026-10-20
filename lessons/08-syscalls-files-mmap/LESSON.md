@@ -1,379 +1,628 @@
-# 08 — Syscalls, Files, mmap
+# 08 — Win32 File API, HANDLEs, VirtualAlloc
 
-You've been calling `write` and `exit` on faith since lesson 00. This lesson reveals the register protocol Linux x86-64 syscalls demand, shows you how to read errors encoded as negative return values, and equips you to call `open`, `read`, `close`, `lseek`, and `mmap` without ever invoking libc. By the end you'll see that a syscall is not a magic word—it's just a register contract you honor.
+You've been calling `GetStdHandle`, `WriteConsoleA`, and `ExitProcess` on faith since lesson 00. This lesson reveals the Microsoft x64 calling convention those imported functions demand, shows you how to read errors encoded as `BOOL` returns and `GetLastError`, and equips you to call `CreateFileA`, `ReadFile`, `WriteFile`, `CloseHandle`, `SetFilePointerEx`, and `VirtualAlloc` without ever invoking the C runtime. By the end you'll see that a Win32 API call is not a magic word—it's just a register contract you honor.
 
 ## What this lesson asks of you
 
-- Place syscall number in `rax`, arguments in `rdi, rsi, rdx, r10, r8, r9`, and interpret the `rax` return.
-- Recognize when `rax` encodes `-errno` (values above `0xfffffffffffff000`) and negate to recover the error number.
-- Call `open` with path, flags (`O_RDONLY`, `O_WRONLY`, `O_CREAT`, `O_TRUNC`), and mode, receiving a file descriptor.
-- Pass that file descriptor to `read`, `write`, `lseek`, or `close`.
-- Map anonymous memory with `mmap` and release it with `munmap`.
-- Use `r10` for the fourth syscall argument, not `rcx` (which `syscall` clobbers).
+- Place arguments in `rcx, rdx, r8, r9`, and additional arguments on the stack (starting at `[rsp+32]`), allocate 32-byte shadow space, and interpret the `rax` return.
+- Recognize when `rax` encodes `FALSE` (0), `NULL` (0), or `INVALID_HANDLE_VALUE` (−1), then call `GetLastError` to retrieve the error code.
+- Call `CreateFileA` with path, access flags (`GENERIC_READ`, `GENERIC_WRITE`), share mode, security attributes, creation disposition (`CREATE_ALWAYS`, `OPEN_EXISTING`), and attributes, receiving a `HANDLE`.
+- Pass that `HANDLE` to `ReadFile`, `WriteFile`, `SetFilePointerEx`, or `CloseHandle`.
+- Map anonymous memory with `VirtualAlloc` and release it with `VirtualFree`.
+- Understand that Windows has no raw `syscall` instruction equivalent for user code—all kernel services go through imported DLL functions.
 
-## The syscall register protocol
+## The Microsoft x64 register protocol
 
-A syscall is a controlled transfer into kernel mode. The CPU instruction `syscall` reads `rax` as an integer index, switches privilege level, and jumps to a kernel-side dispatch table. The kernel reads argument registers, performs the requested operation, writes a return value into `rax`, and returns control to the next instruction after your `syscall`.
+A Win32 API call is an imported function from a kernel-mode DLL (typically `kernel32.dll`). The linker resolves `call FunctionName` to an indirect call through the Import Address Table (IAT). The CPU transfers control to the kernel-side implementation, which reads argument registers and stack slots, performs the requested operation, writes a return value into `rax`, and returns control to the next instruction after your `call`.
 
-**Syscall argument ABI:**
+**Microsoft x64 calling convention:**
 
 | Register | Role |
 |----------|------|
-| `rax` | Syscall number (input), return value (output) |
-| `rdi` | Argument 1 |
-| `rsi` | Argument 2 |
-| `rdx` | Argument 3 |
-| `r10` | Argument 4 (not `rcx`; `syscall` clobbers `rcx` and `r11`) |
-| `r8` | Argument 5 |
-| `r9` | Argument 6 |
+| `rcx` | Argument 1 |
+| `rdx` | Argument 2 |
+| `r8` | Argument 3 |
+| `r9` | Argument 4 |
+| `[rsp+32]` | Argument 5 (first stack parameter, above shadow space) |
+| `[rsp+40]` | Argument 6 |
+| `[rsp+48]` | Argument 7, etc. |
+| `rax` | Return value (integer, pointer, or `BOOL`) |
 
-The instruction clobbers `rcx` (saved `rip`) and `r11` (saved `rflags`). All other registers—including `rdi` through `r9`—remain intact after the syscall returns. If you need the fd again for a second operation, you don't have to reload it.
+The caller must allocate **32 bytes of shadow space** (home space) at `[rsp]` to `[rsp+31]` before every `call`, even if the function has fewer than four arguments. This space is reserved for the callee to spill register arguments if needed.
 
-**Common syscalls:**
+**Volatile (caller-saved) registers:** `rax`, `rcx`, `rdx`, `r8`, `r9`, `r10`, `r11`, `xmm0`–`xmm5`  
+**Nonvolatile (callee-saved) registers:** `rbx`, `rbp`, `rdi`, `rsi`, `r12`–`r15`, `xmm6`–`xmm15`
 
-| Number | Name | Arg1 (`rdi`) | Arg2 (`rsi`) | Arg3 (`rdx`) | Arg4 (`r10`) | Arg5 (`r8`) | Arg6 (`r9`) |
-|-------:|------|--------------|--------------|--------------|--------------|-------------|-------------|
-| 0 | `read` | fd | buffer | count | — | — | — |
-| 1 | `write` | fd | buffer | count | — | — | — |
-| 2 | `open` | path | flags | mode | — | — | — |
-| 3 | `close` | fd | — | — | — | — | — |
-| 8 | `lseek` | fd | offset | whence | — | — | — |
-| 9 | `mmap` | addr | length | prot | flags | fd | offset |
-| 11 | `munmap` | addr | length | — | — | — | — |
-| 12 | `brk` | addr | — | — | — | — | — |
-| 22 | `pipe` | fds | — | — | — | — | — |
-| 39 | `getpid` | — | — | — | — | — | — |
-| 60 | `exit` | status | — | — | — | — | — |
-| 228 | `clock_gettime` | clockid | timespec | — | — | — | — |
+**Note:** On Windows, `rdi` and `rsi` are **nonvolatile** (must be saved/restored if modified). This is the opposite of the Linux System V ABI.
 
-## Interpreting syscall returns
+**Common Win32 functions:**
 
-Most syscalls return 0 on success and encode failure as a negative value. That negative value is not a valid result—it's `-errno`. The kernel cannot return the error code directly because 0 is often a valid success return (for example, `close` or `munmap` return 0). Instead, Linux x86-64 reserves the top page of address space (addresses `≥ 0xfffffffffffff000`) for error codes. When `rax` falls in that range after a syscall, you negate it to recover the `errno`.
+| Function | Arg1 (`rcx`) | Arg2 (`rdx`) | Arg3 (`r8`) | Arg4 (`r9`) | Arg5+ (`[rsp+32]…`) |
+|----------|--------------|--------------|-------------|-------------|---------------------|
+| `CreateFileA` | path | access | share | security | disposition, attrs, template |
+| `ReadFile` | handle | buffer | count | &read | overlapped |
+| `WriteFile` | handle | buffer | count | &written | overlapped |
+| `CloseHandle` | handle | — | — | — | — |
+| `SetFilePointerEx` | handle | offset | &newpos | whence | — |
+| `VirtualAlloc` | addr | size | type | protect | — |
+| `VirtualFree` | addr | size | type | — | — |
+| `GetLastError` | — | — | — | — | — |
+| `ExitProcess` | exitCode | — | — | — | — |
 
-**Detection pattern:**
+## Interpreting Win32 returns and GetLastError
+
+Most Win32 file functions return `BOOL` (nonzero = `TRUE` = success, zero = `FALSE` = failure) or a pointer/handle (non-null/non-`INVALID_HANDLE_VALUE` = success). On failure, the error code is not returned directly—it's stored in thread-local storage and retrieved by calling `GetLastError`.
+
+**Return patterns:**
+
+| Function | Success | Failure |
+|----------|---------|---------|
+| `CreateFileA` | Valid `HANDLE` (nonzero, ≠ −1) | `INVALID_HANDLE_VALUE` (−1, or `0xFFFFFFFFFFFFFFFF`) |
+| `ReadFile`, `WriteFile` | Nonzero (`TRUE`) | Zero (`FALSE`) |
+| `CloseHandle` | Nonzero (`TRUE`) | Zero (`FALSE`) |
+| `SetFilePointerEx` | Nonzero (`TRUE`) | Zero (`FALSE`) |
+| `VirtualAlloc` | Valid address (nonzero) | `NULL` (0) |
+| `VirtualFree` | Nonzero (`TRUE`) | Zero (`FALSE`) |
+
+**Detection pattern for `BOOL` functions:**
 
 ```asm
-syscall
+call WriteFile
 test rax, rax
-js .error               ; SF set means negative, which means -errno
-; success path: rax holds the real return (fd, bytes read, etc.)
-jmp .continue
+jz error_handler        ; Zero = FALSE = failure
+; success path: rax was nonzero (TRUE)
+jmp continue
 
-.error:
-neg rax                 ; -errno → errno
-; rax now holds 2 (ENOENT), 13 (EACCES), etc.
+error_handler:
+    call GetLastError   ; rax = error code (e.g., ERROR_ACCESS_DENIED = 5)
+    ; handle error
 ```
 
-A syscall that returns a file descriptor (like `open`) will return a small nonnegative integer (typically 3 or higher) on success, or a negative value on failure. A syscall like `read` or `write` returns the byte count (which may be less than requested) on success, or negative on failure. A syscall like `close` or `munmap` returns 0 on success.
+**Detection pattern for `CreateFileA`:**
 
-**Why the signed jump works:** When the high bit of a 64-bit value is set, the number is negative in two's complement. `js` (jump if sign) checks the sign flag, which is set when the result's high bit is 1—exactly the top page condition.
+```asm
+call CreateFileA
+cmp rax, -1             ; INVALID_HANDLE_VALUE
+je error_handler
+; success path: rax holds a valid HANDLE
 
-## File descriptors and the open-read-write-close cycle
+error_handler:
+    call GetLastError
+    ; rax = error code (e.g., ERROR_FILE_NOT_FOUND = 2)
+```
 
-A **file descriptor** is a small nonnegative integer the kernel hands you as a handle for an open file. You pass that integer to `read`, `write`, `lseek`, and `close`. Three descriptors are pre-opened for every process:
+**Common error codes:**
 
-| Descriptor | Name | Use |
-|-----------:|------|-----|
-| 0 | stdin | Standard input (keyboard, redirected file, or pipe) |
-| 1 | stdout | Standard output (terminal, redirected file, or pipe) |
-| 2 | stderr | Standard error (usually the terminal, unbuffered) |
+| Code | Name | Meaning |
+|-----:|------|---------|
+| 2 | `ERROR_FILE_NOT_FOUND` | File does not exist |
+| 3 | `ERROR_PATH_NOT_FOUND` | Directory does not exist |
+| 5 | `ERROR_ACCESS_DENIED` | Permission denied |
+| 32 | `ERROR_SHARING_VIOLATION` | File is locked by another process |
+| 80 | `ERROR_FILE_EXISTS` | File already exists (when using `CREATE_NEW`) |
+
+**Why `GetLastError` is needed:** Unlike Linux, where the return value encodes both success/failure and the error code, Windows separates the two. This allows functions to return useful values (like byte counts or handles) without reserving a special failure range.
+
+## HANDLEs and the CreateFile-Read-Write-Close cycle
+
+A **`HANDLE`** is a 64-bit opaque pointer the kernel hands you as a handle for an open file, console, or other kernel object. You pass that handle to `ReadFile`, `WriteFile`, `SetFilePointerEx`, and `CloseHandle`. Three standard handles are pre-opened for every console process:
+
+| Constant | Value | Name | Use |
+|----------|------:|------|-----|
+| `STD_INPUT_HANDLE` | −10 | stdin | Standard input (keyboard, redirected file, or pipe) |
+| `STD_OUTPUT_HANDLE` | −11 | stdout | Standard output (console, redirected file, or pipe) |
+| `STD_ERROR_HANDLE` | −12 | stderr | Standard error (usually the console, unbuffered) |
+
+To obtain a standard handle, call `GetStdHandle(constant)`. The returned `HANDLE` is a kernel object identifier, not a small integer like Linux file descriptors.
 
 ### Opening a file
 
-Syscall 2 (`open`) takes a null-terminated path string, an integer of bitwise-ORed flags, and a permission mode (used only when creating a new file).
+`CreateFileA` (the ANSI version; `CreateFileW` is the Unicode version) takes seven arguments:
 
-**Common flags:**
+1. `lpFileName` (`rcx`): Null-terminated path string
+2. `dwDesiredAccess` (`rdx`): Access flags (`GENERIC_READ`, `GENERIC_WRITE`, `GENERIC_READ | GENERIC_WRITE`)
+3. `dwShareMode` (`r8`): Share flags (0 = exclusive, `FILE_SHARE_READ` = 1, `FILE_SHARE_WRITE` = 2)
+4. `lpSecurityAttributes` (`r9`): Security descriptor pointer (usually `NULL` = 0)
+5. `dwCreationDisposition` (`[rsp+32]`): Creation mode (`CREATE_ALWAYS`, `OPEN_EXISTING`, `OPEN_ALWAYS`, `CREATE_NEW`, `TRUNCATE_EXISTING`)
+6. `dwFlagsAndAttributes` (`[rsp+40]`): Attributes (e.g., `FILE_ATTRIBUTE_NORMAL` = 0x80)
+7. `hTemplateFile` (`[rsp+48]`): Template file handle (usually `NULL` = 0)
+
+**Common access flags:**
 
 | Flag | Value | Meaning |
 |------|------:|---------|
-| `O_RDONLY` | 0 | Open for reading |
-| `O_WRONLY` | 1 | Open for writing |
-| `O_RDWR` | 2 | Open for reading and writing |
-| `O_CREAT` | 64 | Create the file if it doesn't exist |
-| `O_TRUNC` | 512 | Truncate file to zero length if it exists |
-| `O_APPEND` | 1024 | Append mode (writes always go to end) |
+| `GENERIC_READ` | 0x80000000 | Open for reading |
+| `GENERIC_WRITE` | 0x40000000 | Open for writing |
+| `GENERIC_READ \| GENERIC_WRITE` | 0xC0000000 | Open for reading and writing |
+
+**Creation disposition flags:**
+
+| Flag | Value | Meaning |
+|------|------:|---------|
+| `CREATE_NEW` | 1 | Create new file; fail if exists |
+| `CREATE_ALWAYS` | 2 | Create new file; truncate if exists |
+| `OPEN_EXISTING` | 3 | Open existing file; fail if doesn't exist |
+| `OPEN_ALWAYS` | 4 | Open existing file; create if doesn't exist |
+| `TRUNCATE_EXISTING` | 5 | Open and truncate to zero; fail if doesn't exist |
 
 To open an existing file for reading:
 
-```asm
-section .data
-    path: db "/tmp/data.txt", 0
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/open_read.asm -->
 
-section .text
-global _start
-_start:
-    mov rax, 2              ; sys_open
-    lea rdi, [path]
-    xor rsi, rsi            ; O_RDONLY = 0
-    xor rdx, rdx            ; mode unused when not creating
-    syscall
-    test rax, rax
-    js .open_failed
-    ; rax now holds the file descriptor (e.g. 3)
+```asm
+EXTERN CreateFileA:PROC
+EXTERN GetLastError:PROC
+EXTERN ExitProcess:PROC
+
+.data
+path BYTE "data.txt", 0
+
+.code
+main PROC
+    sub rsp, 56             ; shadow space (32) + 3 args (24) = 56
+    
+    lea rcx, path           ; lpFileName
+    mov rdx, 80000000h      ; dwDesiredAccess = GENERIC_READ
+    xor r8, r8              ; dwShareMode = 0 (exclusive)
+    xor r9, r9              ; lpSecurityAttributes = NULL
+    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
+    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
+    call CreateFileA
+    
+    cmp rax, -1             ; INVALID_HANDLE_VALUE
+    je open_failed
+    ; rax now holds the file HANDLE
+    
+    ; (close and exit...)
+    add rsp, 56
+    mov rcx, 0
+    call ExitProcess
+    
+open_failed:
+    call GetLastError       ; rax = ERROR_FILE_NOT_FOUND (2)
+    mov rcx, rax
+    add rsp, 56
+    call ExitProcess
+main ENDP
+END
 ```
 
 To create a new file (or truncate an existing one) for writing:
 
 ```asm
-    mov rax, 2
-    lea rdi, [path]
-    mov rsi, 64 | 1 | 512   ; O_CREAT | O_WRONLY | O_TRUNC = 577
-    mov rdx, 420            ; 0644 octal = rw-r--r--
-    syscall
+    sub rsp, 56
+    lea rcx, path
+    mov rdx, 40000000h      ; GENERIC_WRITE
+    xor r8, r8
+    xor r9, r9
+    mov QWORD PTR [rsp+32], 2   ; CREATE_ALWAYS (create or truncate)
+    mov QWORD PTR [rsp+40], 80h ; FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+    add rsp, 56
 ```
 
-The mode `420` is `0644` octal: owner can read/write, group and others can read. The kernel applies your process's umask, so the final permissions may be more restrictive.
+Windows has no direct equivalent to Unix permission modes (0644, etc.). File permissions are controlled by Access Control Lists (ACLs), which are beyond the scope of this lesson. For simple file creation, use `FILE_ATTRIBUTE_NORMAL` (0x80).
 
 ### Reading and writing
 
-Once you have a descriptor, `read` (syscall 0) and `write` (syscall 1) transfer bytes:
+Once you have a handle, `ReadFile` and `WriteFile` transfer bytes. Both take five arguments:
+
+1. `hFile` (`rcx`): The file `HANDLE`
+2. `lpBuffer` (`rdx`): Pointer to the buffer
+3. `nNumberOfBytesToRead/Write` (`r8`): Byte count
+4. `lpNumberOfBytesRead/Written` (`r9`): Pointer to a `DWORD` (4 bytes) to receive the actual byte count
+5. `lpOverlapped` (`[rsp+32]`): Overlapped I/O structure pointer (use `NULL` = 0 for synchronous I/O)
+
+**ReadFile example:**
+
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/read_file.asm -->
 
 ```asm
-    mov rdi, rax            ; fd from open
-    mov rax, 0              ; sys_read
-    lea rsi, [buffer]       ; destination
-    mov rdx, 256            ; count
-    syscall
-    ; rax = number of bytes read, or 0 at EOF, or negative on error
+EXTERN ReadFile:PROC
+
+.data?
+buffer BYTE 256 DUP(?)
+bytesRead DWORD ?
+
+.code
+; assume rax holds file HANDLE from CreateFileA
+    mov rbx, rax            ; save handle in nonvolatile rbx
+    sub rsp, 40             ; shadow space (32) + 1 arg (8) = 40
+    
+    mov rcx, rbx            ; hFile
+    lea rdx, buffer         ; lpBuffer
+    mov r8, 256             ; nNumberOfBytesToRead
+    lea r9, bytesRead       ; lpNumberOfBytesRead
+    mov QWORD PTR [rsp+32], 0   ; lpOverlapped = NULL
+    call ReadFile
+    
+    add rsp, 40
+    test rax, rax
+    jz read_failed          ; FALSE = failure
+    ; bytesRead now holds the actual count (may be less than 256)
+    ; bytesRead = 0 means end-of-file
 ```
 
-`read` may return fewer bytes than you requested (short read), especially when reading from a pipe or terminal. A return of 0 means end-of-file. A negative return is an error.
+`ReadFile` may return fewer bytes than you requested (short read), especially when reading from a pipe or console. The `lpNumberOfBytesRead` output is zero at end-of-file. A return of `FALSE` (0) means an error occurred; call `GetLastError` to retrieve the code.
 
-`write` is symmetric:
+**WriteFile example:**
 
 ```asm
-    mov rdi, fd
-    mov rax, 1              ; sys_write
-    lea rsi, [data]
-    mov rdx, 12
-    syscall
-    ; rax = bytes written, or negative on error
+EXTERN WriteFile:PROC
+
+.data
+message BYTE "Hello, file!", 13, 10    ; CRLF line ending
+message_len EQU $ - message
+
+.data?
+bytesWritten DWORD ?
+
+.code
+    sub rsp, 40
+    
+    mov rcx, rbx            ; hFile (saved from CreateFileA)
+    lea rdx, message        ; lpBuffer
+    mov r8, message_len     ; nNumberOfBytesToWrite
+    lea r9, bytesWritten    ; lpNumberOfBytesWritten
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
+    add rsp, 40
+    test rax, rax
+    jz write_failed
+    ; bytesWritten now holds the actual count
 ```
+
+**Important:** `lpNumberOfBytesWritten` is a pointer to a `DWORD` (32-bit), not a `QWORD` (64-bit). Passing a `QWORD` will cause the function to write the count to the lower 4 bytes and leave the upper 4 bytes untouched, which may corrupt adjacent data.
 
 ### Seeking
 
-Syscall 8 (`lseek`) moves the file offset:
+`SetFilePointerEx` moves the file offset. It takes four arguments:
 
-| `rdx` (whence) | Value | Meaning |
-|----------------|------:|---------|
-| `SEEK_SET` | 0 | Set offset to `rsi` |
-| `SEEK_CUR` | 1 | Add `rsi` to current offset |
-| `SEEK_END` | 2 | Set offset to end of file + `rsi` |
+1. `hFile` (`rcx`): The file `HANDLE`
+2. `liDistanceToMove` (`rdx`): 64-bit signed offset (passed as a `LARGE_INTEGER`, which is just a `QWORD` in assembly)
+3. `lpNewFilePointer` (`r8`): Pointer to a `QWORD` to receive the new offset (can be `NULL` if you don't need it)
+4. `dwMoveMethod` (`r9`): Seek mode
+
+**Seek modes:**
+
+| Constant | Value | Meaning |
+|----------|------:|---------|
+| `FILE_BEGIN` | 0 | Set offset to `liDistanceToMove` (absolute) |
+| `FILE_CURRENT` | 1 | Add `liDistanceToMove` to current offset (relative) |
+| `FILE_END` | 2 | Set offset to end of file + `liDistanceToMove` |
+
+**Example: seek to beginning of file:**
+
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/seek_file.asm -->
 
 ```asm
-    mov rax, 8              ; sys_lseek
-    mov rdi, fd
-    xor rsi, rsi            ; offset 0
-    xor rdx, rdx            ; SEEK_SET
-    syscall
-    ; rax = new file offset
+EXTERN SetFilePointerEx:PROC
+
+.data?
+newPos QWORD ?
+
+.code
+    sub rsp, 32             ; shadow space only (4 register args)
+    
+    mov rcx, rbx            ; hFile (saved from CreateFileA)
+    xor rdx, rdx            ; liDistanceToMove = 0
+    lea r8, newPos          ; lpNewFilePointer
+    xor r9, r9              ; dwMoveMethod = FILE_BEGIN
+    call SetFilePointerEx
+    
+    add rsp, 32
+    test rax, rax
+    jz seek_failed
+    ; newPos now holds the new file offset (should be 0)
+```
+
+To seek to the end of a file (to append), use `FILE_END` with offset 0:
+
+```asm
+    mov rcx, rbx
+    xor rdx, rdx            ; offset 0
+    xor r8, r8              ; lpNewFilePointer = NULL (don't need result)
+    mov r9, 2               ; FILE_END
+    call SetFilePointerEx
 ```
 
 ### Closing
 
-Syscall 3 (`close`) releases the descriptor:
+`CloseHandle` releases the handle:
 
 ```asm
-    mov rax, 3
-    mov rdi, fd
-    syscall
-    ; rax = 0 on success, negative on error
+EXTERN CloseHandle:PROC
+
+.code
+    sub rsp, 32
+    mov rcx, rbx            ; HANDLE to close
+    call CloseHandle
+    add rsp, 32
+    test rax, rax
+    jz close_failed         ; FALSE = failure
+    ; Success: rax was nonzero (TRUE)
 ```
 
-After close, the descriptor is invalid. The kernel reuses low-numbered descriptors first, so the next `open` will likely return 3 again if that was the first file you opened.
+After `CloseHandle`, the handle is invalid. Attempting to use it in subsequent calls will fail with `ERROR_INVALID_HANDLE` (6). Unlike Linux file descriptors, Windows does not guarantee that new handles will be numerically sequential or reuse low values first—handles are opaque kernel pointers.
 
-## Anonymous memory mapping
+## Anonymous memory allocation with VirtualAlloc
 
-Syscall 9 (`mmap`) asks the kernel for virtual memory. The most common use in freestanding programs is **anonymous mapping**: memory not backed by any file.
+`VirtualAlloc` asks the kernel for virtual memory. The most common use in freestanding programs is **anonymous allocation**: memory not backed by any file.
 
-**Arguments for anonymous mmap:**
+**Arguments for VirtualAlloc:**
 
-- `rdi`: address hint (usually 0, let kernel choose)
-- `rsi`: length in bytes (must be multiple of page size, typically 4096)
-- `rdx`: protection flags (`PROT_READ` = 1, `PROT_WRITE` = 2, combine to 3)
-- `r10`: mapping flags (`MAP_PRIVATE` = 2, `MAP_ANONYMOUS` = 32, combine to `0x22`)
-- `r8`: file descriptor (must be -1 for anonymous)
-- `r9`: offset (must be 0 for anonymous)
+1. `lpAddress` (`rcx`): Address hint (usually `NULL` = 0, let kernel choose)
+2. `dwSize` (`rdx`): Length in bytes (kernel rounds up to page size, typically 4096)
+3. `flAllocationType` (`r8`): Allocation type flags
+4. `flProtect` (`r9`): Protection flags
+
+**Allocation type flags:**
+
+| Flag | Value | Meaning |
+|------|------:|---------|
+| `MEM_COMMIT` | 0x1000 | Allocate physical memory for pages |
+| `MEM_RESERVE` | 0x2000 | Reserve address space without physical memory |
+| `MEM_COMMIT \| MEM_RESERVE` | 0x3000 | Reserve and commit in one call (most common) |
+
+**Protection flags:**
+
+| Flag | Value | Meaning |
+|------|------:|---------|
+| `PAGE_READONLY` | 2 | Read-only |
+| `PAGE_READWRITE` | 4 | Read and write |
+| `PAGE_EXECUTE_READ` | 0x20 | Execute and read (for JIT code) |
+
+**Example: allocate one page (4096 bytes) of read-write memory:**
+
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/virtual_alloc.asm -->
 
 ```asm
-    mov rax, 9              ; sys_mmap
-    xor rdi, rdi            ; let kernel pick address
-    mov rsi, 4096           ; one page
-    mov rdx, 3              ; PROT_READ | PROT_WRITE
-    mov r10, 0x22           ; MAP_PRIVATE | MAP_ANONYMOUS
-    mov r8, -1
-    xor r9, r9
-    syscall
-    ; rax = base address of new mapping, or negative on error
+EXTERN VirtualAlloc:PROC
+EXTERN VirtualFree:PROC
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    
+    xor rcx, rcx            ; lpAddress = NULL (let kernel choose)
+    mov rdx, 4096           ; dwSize = one page
+    mov r8, 3000h           ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9, 4               ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    test rax, rax
+    jz alloc_failed         ; NULL = failure
+    ; rax now holds the base address of the allocated memory
+    
+    ; You can now read and write through the pointer in rax
+    ; The memory is initialized to zero
+    mov BYTE PTR [rax], 42  ; write a byte
+    
+    ; Release the memory
+    mov rcx, rax            ; lpAddress
+    xor rdx, rdx            ; dwSize = 0 (required for MEM_RELEASE)
+    mov r8, 8000h           ; dwFreeType = MEM_RELEASE
+    call VirtualFree
+    
+    add rsp, 32
+    test rax, rax
+    jz free_failed          ; FALSE = failure
+    
+    mov rcx, 0
+    call ExitProcess
+    
+alloc_failed:
+    call GetLastError       ; rax = error code
+    mov rcx, rax
+    add rsp, 32
+    call ExitProcess
+    
+free_failed:
+    call GetLastError
+    mov rcx, rax
+    add rsp, 32
+    call ExitProcess
+main ENDP
+END
 ```
 
-You can now read and write through the pointer in `rax`. The memory is initialized to zero.
+**Important differences from Linux `mmap`:**
 
-To release the mapping:
+- `VirtualAlloc` always returns `NULL` (0) on failure, not a negative value. Check with `test rax, rax; jz error`.
+- `VirtualFree` requires `dwSize = 0` and `dwFreeType = MEM_RELEASE` (0x8000) to free the entire allocation.
+- Windows page size is typically 4096 bytes (same as x86-64 Linux), but you can query it with `GetSystemInfo`.
+- Allocated memory is always zeroed by the kernel.
+
+**Why VirtualAlloc?** Lesson 18's save file will use `CreateFileMapping` and `MapViewOfFile` to map the save data directly into memory, avoiding a separate `ReadFile` call. `VirtualAlloc` is useful when you need scratch space larger than the stack, or when you want to control alignment and page boundaries.
+
+## Shadow space is mandatory, even for functions with < 4 arguments
+
+The Microsoft x64 ABI requires the caller to allocate **32 bytes of shadow space** (also called "home space") on the stack before every `call`, even if the function has fewer than four arguments. This space is at `[rsp]` to `[rsp+31]` and is reserved for the callee to spill the four register arguments (`rcx`, `rdx`, `r8`, `r9`) if needed.
+
+**Example: calling a one-argument function:**
 
 ```asm
-    mov rdi, rax            ; address returned by mmap
-    mov rax, 11             ; sys_munmap
-    mov rsi, 4096           ; same length
-    syscall
-    ; rax = 0 on success
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32             ; allocate shadow space (4 × 8 = 32 bytes)
+    mov rcx, 0              ; first argument: exit code 0
+    call ExitProcess
+    ; ExitProcess never returns, but if it did:
+    ; add rsp, 32
+    ; ret
+main ENDP
+END
 ```
 
-**Why anonymous mmap?** Lesson 18's save file will use `mmap` with a real file descriptor to map the save data directly into memory, avoiding a separate `read` call. Anonymous mappings are useful when you need scratch space larger than the stack, or when you want to control alignment and page boundaries.
+Even though `ExitProcess` takes only one argument, you must allocate 32 bytes. If you omit this, the callee may overwrite your return address or local variables when spilling registers.
 
-## The fourth argument goes in r10, not rcx
+**Fifth and subsequent arguments** go on the stack **above** the shadow space, starting at `[rsp+32]`, `[rsp+40]`, etc. You saw this in the `CreateFileA` example, which has seven arguments.
 
-The user-space calling convention (lesson 04) uses `rcx` for the fourth argument. But the `syscall` instruction clobbers `rcx` (stores the return address there) and `r11` (stores `rflags`). To avoid losing the fourth argument, the syscall ABI places it in `r10` instead.
+**Stack alignment:** At the point of a `call` instruction, `rsp` must be 16-byte aligned. The `call` itself pushes an 8-byte return address, leaving `rsp` misaligned inside the function. To restore alignment, allocate an odd multiple of 8 bytes. For functions that make calls, the typical pattern is:
 
 ```asm
-    mov rax, 9              ; mmap
-    xor rdi, rdi
-    mov rsi, 4096
-    mov rdx, 3
-    mov r10, 0x22           ; fourth argument, not rcx
-    mov r8, -1
-    xor r9, r9
-    syscall
+myFunc PROC
+    sub rsp, 40             ; 32 (shadow) + 8 (alignment) = 40
+    ; now rsp is 16-byte aligned again
+    call SomeOtherFunc
+    add rsp, 40
+    ret
+myFunc ENDP
 ```
 
-If you accidentally use `rcx`, the kernel will see garbage (the saved `rip`) and the syscall will fail with `EINVAL` or produce unexpected behavior.
+If you forget shadow space or misalign the stack, Windows may crash your program with an access violation or silently corrupt data.
 
-## Other syscalls in the drills
+## Windows equivalents to other Linux syscalls
 
-- **`brk` (12):** Adjusts the program break (end of the data segment). Called with `rdi = 0` to query the current break, or with a new address to move it. Returns the current (or new) break in `rax`.
-- **`pipe` (22):** Creates a unidirectional pipe (kernel buffer). Takes a pointer to two dwords in `rdi`, writes the read-end fd first, then the write-end fd. Returns 0 on success.
-- **`getpid` (39):** Returns the process ID in `rax`. Takes no arguments.
-- **`clock_gettime` (228):** Reads a monotonic or real-time clock. `rdi` is the clock ID (`CLOCK_MONOTONIC` = 1, `CLOCK_REALTIME` = 0), `rsi` is a pointer to a `timespec` struct (two qwords: seconds and nanoseconds). Returns 0 on success. Lesson 15 uses this for frame timing.
+Windows has no direct equivalent to Linux's `brk` syscall, which adjusts the program break (end of the data segment). On Windows, dynamic memory allocation uses one of three mechanisms:
+
+1. **`VirtualAlloc` / `VirtualFree`:** Low-level page-granular allocation (covered above). Use this when you need large blocks or control over page boundaries.
+2. **`HeapAlloc` / `HeapFree`:** Higher-level heap allocation. Requires a heap handle (obtain with `GetProcessHeap` or `HeapCreate`). Suitable for small, frequent allocations.
+3. **C runtime `malloc` / `free`:** If you link with the CRT (which this course avoids), these wrap `HeapAlloc`.
+
+For this course, use `VirtualAlloc` for memory allocation. Lesson 18's dynamic data structures (trees, lists) will demonstrate reusable memory pools built on top of `VirtualAlloc`.
+
+**Pipes, process IDs, and timing:**
+
+- **Pipes:** `CreatePipe` creates a unidirectional pipe (analogous to Linux `pipe(2)`). It takes pointers to two `HANDLE` variables (read end and write end).
+- **Process ID:** `GetCurrentProcessId` returns the process ID as a `DWORD` (32-bit). No arguments.
+- **Timing:** Lesson 15 will cover `QueryPerformanceCounter` and `QueryPerformanceFrequency` (high-resolution timer, analogous to Linux `clock_gettime(CLOCK_MONOTONIC, ...)`), and `Sleep` (millisecond granularity sleep, analogous to `nanosleep` but coarser).
 
 ## Worked example: opening a missing file and recovering the error
 
-**Task:** Open `/no/such/file` for reading. If it fails, exit with the errno as the status. If it succeeds, exit 0.
+**Task:** Open `C:\no\such\file.txt` for reading. If it fails, call `GetLastError` and exit with the error code as the status. If it succeeds, close the handle and exit 0.
 
 **Step-by-step reasoning:**
 
-1. **Syscall 2 (`open`):** path in `rdi`, flags in `rsi`, mode in `rdx`.
-2. **Flags:** We want `O_RDONLY` = 0.
-3. **Mode:** Unused when not creating, so 0.
-4. **Check return:** `open` returns a nonnegative fd on success, or negative on failure.
-5. **Distinguish failure:** Use `test rax, rax` then `js` (jump if sign).
-6. **Recover errno:** `neg rax` converts `-errno` to `errno`.
-7. **Exit with errno:** Move `rax` to `rdi` and call `exit`.
+1. **Call `CreateFileA`:** Allocate shadow space (32 bytes) + 3 stack arguments (24 bytes) = 56 bytes total (multiple of 16 for alignment).
+2. **Arguments:** Path in `rcx`, `GENERIC_READ` (0x80000000) in `rdx`, share mode 0 in `r8`, security attributes `NULL` in `r9`, disposition `OPEN_EXISTING` (3) in `[rsp+32]`, attributes `FILE_ATTRIBUTE_NORMAL` (0x80) in `[rsp+40]`, template `NULL` in `[rsp+48]`.
+3. **Check return:** `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1) on failure.
+4. **Distinguish failure:** Use `cmp rax, -1` then `je` (jump if equal).
+5. **Recover error code:** Call `GetLastError` with no arguments; it returns the error code in `rax`.
+6. **Exit with error code:** Move `rax` to `rcx` and call `ExitProcess`.
+
+<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/open_missing_file.asm -->
 
 ```asm
-section .data
-    path: db "/no/such/file", 0
+EXTERN CreateFileA:PROC
+EXTERN CloseHandle:PROC
+EXTERN GetLastError:PROC
+EXTERN ExitProcess:PROC
 
-section .text
-global _start
-_start:
-    mov rax, 2              ; sys_open
-    lea rdi, [path]
-    xor rsi, rsi            ; O_RDONLY
-    xor rdx, rdx
-    syscall
+.data
+path BYTE "C:\no\such\file.txt", 0
 
-    test rax, rax
-    js .failed              ; negative means -errno
-
-    ; Success path: rax holds fd
-    mov rdi, rax            ; (hypothetical: use fd here)
-    xor rdi, rdi            ; exit 0
-    mov rax, 60
-    syscall
-
-.failed:
-    neg rax                 ; -errno → errno
-    mov rdi, rax            ; exit with errno (2 for ENOENT)
-    mov rax, 60
-    syscall
+.code
+main PROC
+    sub rsp, 56             ; shadow space (32) + 3 args (24)
+    
+    lea rcx, path           ; lpFileName
+    mov rdx, 80000000h      ; dwDesiredAccess = GENERIC_READ
+    xor r8, r8              ; dwShareMode = 0
+    xor r9, r9              ; lpSecurityAttributes = NULL
+    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
+    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
+    call CreateFileA
+    
+    add rsp, 56             ; deallocate before branching
+    cmp rax, -1             ; INVALID_HANDLE_VALUE
+    je failed
+    
+    ; Success path: rax holds valid HANDLE
+    mov rbx, rax            ; save handle in nonvolatile rbx
+    sub rsp, 32
+    mov rcx, rbx
+    call CloseHandle        ; close the handle
+    add rsp, 32
+    
+    mov rcx, 0              ; exit 0
+    call ExitProcess
+    
+failed:
+    call GetLastError       ; rax = ERROR_FILE_NOT_FOUND (2)
+    mov rcx, rax            ; exit with error code
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Expected output:** Exit status 2 (`ENOENT` = "No such file or directory").
+**Expected output:** Exit status 2 (`ERROR_FILE_NOT_FOUND` = "The system cannot find the file specified").
 
 **Plausible wrong reading and why it fails:**
 
-*"The `test rax, rax` could be `cmp rax, 0`, so maybe I should use `jl` (jump if less than) instead of `js`."*
+*"The `cmp rax, -1` checks for `INVALID_HANDLE_VALUE`, but maybe I should use `test rax, rax` and `jz` (jump if zero) like I do for `BOOL` returns."*
 
-**Why it's wrong:** `jl` checks the signed-less-than condition using `SF ≠ OF`. For a syscall return, `rax` will be in the range `0xfffffffffffff000` to `0xffffffffffffffff` (negative in two's complement), which sets `SF` but not `OF` (no subtraction overflow occurred in the `test`). However, `js` directly checks `SF`, which is set by the high bit. Both work here, but `js` is clearer: it directly tests "is the value negative?" without involving overflow logic. More importantly, `test rax, rax` is preferred over `cmp rax, 0` because it's one byte shorter and conveys intent (test for zero/negative) rather than comparison.
+**Why it's wrong:** `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1, or `0xFFFFFFFFFFFFFFFF`) on failure, not `NULL` (0). A `test rax, rax` followed by `jz` checks if `rax` is zero, which would be a valid (though unlikely) handle value. If you use `jz`, you'll miss the failure case. Always check the documentation for the specific return value: `CreateFileA` and `CreateFileW` return `INVALID_HANDLE_VALUE` on failure, while many other Win32 functions return `NULL` (0) or `FALSE` (0).
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| `rcx` holds the fourth syscall argument | `r10` holds the fourth argument; `syscall` clobbers `rcx` and `r11` |
-| A syscall failure returns an error code in `rax` | Failure returns `-errno` (a negative value); you must negate to get the error code |
-| `open` returns 0 on success | `open` returns the file descriptor (≥ 0, typically ≥ 3) on success, negative on failure |
-| `close` returns the fd on success | `close` returns 0 on success, negative on error |
-| `read` always reads the requested count | `read` may return fewer bytes (short read), 0 at EOF, or negative on error |
-| `mmap` returns null on failure | `mmap` returns a negative value (`-errno`) on failure; null (0) is a valid address hint input |
-| You can `write` to any fd | fd must be valid (returned by `open` or pre-opened 0/1/2) and opened with write permission |
+| Fifth argument goes in a fifth register | Fifth argument goes on the stack at `[rsp+32]`, above shadow space |
+| A Win32 failure returns an error code in `rax` | Failure returns `FALSE` (0) or `INVALID_HANDLE_VALUE` (−1); call `GetLastError` to retrieve the error code |
+| `CreateFileA` returns `NULL` on failure | `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1) on failure, not `NULL` (0) |
+| `CloseHandle` returns the handle on success | `CloseHandle` returns `TRUE` (nonzero) on success, `FALSE` (0) on error |
+| `ReadFile` always reads the requested count | `ReadFile` may return fewer bytes (short read), 0 at EOF (in `lpNumberOfBytesRead`), or `FALSE` on error |
+| `VirtualAlloc` returns −1 on failure | `VirtualAlloc` returns `NULL` (0) on failure; nonzero is a valid address |
+| You can `WriteFile` to any `HANDLE` | `HANDLE` must be valid (returned by `CreateFileA` or `GetStdHandle`) and opened with write permission |
+| Shadow space is optional for small functions | Shadow space (32 bytes) is mandatory before every `call`, even for zero-argument functions |
+| `lpNumberOfBytesWritten` is a `QWORD` pointer | It's a `DWORD` pointer (4 bytes, not 8); passing a `QWORD` will corrupt adjacent memory |
 
 ## Check yourself
 
-1. After `syscall`, you have `rax = 0xfffffffffffffffb` (−5 in two's complement). Is this a valid return, or an error? If it's an error, what is the errno?
+1. After `call CreateFileA`, you have `rax = 0xFFFFFFFFFFFFFFFF` (−1). Is this a valid `HANDLE`, or an error? What should you call next to retrieve the error code?
    
-2. You call `open` with `O_WRONLY | O_CREAT | O_TRUNC` and mode 420. Does this create the file if it's missing? Does it empty the file if it exists? What are the final permission bits?
+2. You call `CreateFileA` with `GENERIC_WRITE`, creation disposition `CREATE_ALWAYS`, and attributes `FILE_ATTRIBUTE_NORMAL`. Does this create the file if it's missing? Does it empty the file if it exists?
 
-3. You `mmap` 8192 bytes with `PROT_READ | PROT_WRITE` and `MAP_PRIVATE | MAP_ANONYMOUS`, fd −1, offset 0. What value should go in `r10`? Can you write to the returned address?
+3. You call `VirtualAlloc` with size 8192, allocation type `MEM_COMMIT | MEM_RESERVE` (0x3000), and protection `PAGE_READWRITE` (4). What value should go in `r8`? Can you write to the returned address?
 
-4. Your `read` call requested 512 bytes but returned 100. Is this an error, or can this happen in normal operation? What does return value 0 mean?
+4. Your `ReadFile` call requested 512 bytes but `lpNumberOfBytesRead` contains 100, and the return value is `TRUE`. Is this an error, or can this happen in normal operation? What does `lpNumberOfBytesRead = 0` with return `TRUE` mean?
 
-5. You accidentally put the `mmap` flags (0x22) in `rcx` instead of `r10`. What will the kernel see in `r10` after `syscall` executes?
+5. You accidentally allocate only 24 bytes of stack space before calling `CreateFileA` (which has 7 arguments). What will likely happen when `CreateFileA` tries to spill its register arguments to shadow space?
 
 ## Key takeaways
 
-- Syscalls follow a strict register contract: number in `rax`, arguments in `rdi, rsi, rdx, r10, r8, r9`, return in `rax`.
-- `syscall` clobbers `rcx` and `r11`, so the fourth argument goes in `r10`.
-- A return value `≥ 0xfffffffffffff000` (negative in two's complement) encodes `-errno`; negate to recover the error code.
-- `open` returns a file descriptor (nonnegative) on success or negative on failure.
-- `read` and `write` may transfer fewer bytes than requested (short reads/writes are not errors).
-- `mmap` with `MAP_ANONYMOUS` allocates zeroed memory; `munmap` releases it with the same length.
+- Win32 API calls follow the Microsoft x64 calling convention: arguments in `rcx, rdx, r8, r9`, then stack at `[rsp+32]`, return in `rax`.
+- Caller must allocate 32 bytes of shadow space before every `call`, even for functions with fewer than four arguments.
+- Most Win32 functions return `BOOL` (nonzero = success, zero = failure) or `INVALID_HANDLE_VALUE`/`NULL` on error; call `GetLastError` to retrieve the error code.
+- `CreateFileA` returns a `HANDLE` (opaque pointer) on success or `INVALID_HANDLE_VALUE` (−1) on failure.
+- `ReadFile` and `WriteFile` may transfer fewer bytes than requested (short reads/writes are not errors); check `lpNumberOfBytesRead/Written`.
+- `VirtualAlloc` with `MEM_COMMIT | MEM_RESERVE` allocates zeroed memory; `VirtualFree` with `MEM_RELEASE` releases it (size must be 0 for `MEM_RELEASE`).
+- Windows has no raw `syscall` instruction for user code—all kernel services go through imported DLL functions (`kernel32.lib`, `user32.lib`, etc.).
 
 ## Lookup
 
-- Linux x86-64 syscall table and ABI: [man syscall(2)](https://man7.org/linux/man-pages/man2/syscall.2.html), [arch/x86/entry/entry_64.S](https://github.com/torvalds/linux/blob/master/arch/x86/entry/entry_64.S)
-- Individual syscalls: [man 2 open](https://man7.org/linux/man-pages/man2/open.2.html), [man 2 read](https://man7.org/linux/man-pages/man2/read.2.html), [man 2 mmap](https://man7.org/linux/man-pages/man2/mmap.2.html)
-- Error codes: [man errno(3)](https://man7.org/linux/man-pages/man3/errno.3.html), `/usr/include/asm-generic/errno-base.h`
-- `syscall` instruction: [Intel SDM Vol. 2B SYSCALL](https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-2b-manual.html)
+- Microsoft x64 calling convention: [x64 calling convention (Microsoft Learn)](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
+- Win32 file functions: [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea), [ReadFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile), [WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile), [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle), [SetFilePointerEx](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex)
+- Virtual memory: [VirtualAlloc](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc), [VirtualFree](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree)
+- Error handling: [GetLastError](https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror), [System Error Codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
+- Standard handles: [GetStdHandle](https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getstdhandle)
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
 
-```bash
-nasm -f elf64 FILE.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-**File operations:**
-- `01-write-only.asm` — two writes to stdout, exit 0
-- `02-read-stdin-one.asm` — read one byte from stdin, exit that byte or 0 at EOF
-- `03-open-fail.asm` — open missing file, exit 1 on failure
-- `05-errno-neg.asm` — open `/nope`, exit errno 2 (`ENOENT`)
-- `08-from-scratch-close.asm` — open and close `/dev/zero`, exit 0
-- `10-open-dev-null.asm` — open `/dev/null` write-only, close, exit 0
-- `11-read-dev-zero.asm` — read 8 bytes from `/dev/zero`, exit 0 (do not sum)
-- `09-write-len-check.asm` — write and check byte count, exit 0
-- `07-write-iov-lite.asm` — two separate `write` calls (not `writev`), exit 0
-- `17-dup-concept.asm` — write to fd 1, exit 0 (no `dup` call)
-- `21-debug-fd-leak-pattern.asm` — fix: change `mov rax, 1` to `mov rax, 3` for close
-- `24-from-scratch-write-err.asm` — write to fd −1, exit 1 on error
+The exercises and solutions are written by a separate author and use the Win32 API and MASM syntax covered in this lesson. They are organized by category:
 
-**Error handling:**
-- `18-error-eacces-sim.asm` — open `/` with `O_WRONLY`, exit 1 on `EACCES`
+**File operations:** Two `WriteFile` calls to stdout, read one byte from stdin, open missing file and handle error with `GetLastError`, open and close `NUL` (Windows equivalent of `/dev/null`), read from `NUL`, check byte count after `WriteFile`, two separate `WriteFile` calls, write to stdout, debug handle leak pattern, write to invalid handle and handle error.
 
-**Seeking:**
-- `06-lseek-concept.asm` — arithmetic offset, not syscall 8, exit 10
-- `19-pwrite-emul.asm` — open `/dev/null`, `lseek` to 0 (`SEEK_SET`), write, close, exit 0
+**Error handling:** Open `C:\` with `GENERIC_WRITE` (should fail with `ERROR_ACCESS_DENIED`), exit 1 on error.
 
-**Memory mapping:**
-- `04-mmap-anon.asm` — map one page, store 42, exit 42
-- `12-mmap-write-read.asm` — map, store 99 at offset 100, exit 99
-- `13-munmap.asm` — map then unmap, exit 0
-- `14-brk-stub.asm` — call `brk(0)`, exit 0 if nonzero
-- `20-mmap-pagesize-fill.asm` — map, fill 16 bytes with 1, exit 16
-- `22-stretch-file-copy-mem.asm` — map one page, copy four bytes from `.data`, sum them, exit 10
+**Seeking:** Arithmetic offset computation (no `SetFilePointerEx` call), open `NUL`, `SetFilePointerEx` to 0 (`FILE_BEGIN`), write, close, exit 0.
 
-**Other syscalls:**
-- `15-getpid.asm` — call `getpid`, exit `pid & 0x7f` (status varies)
-- `16-clock-gettime-stub.asm` — call `clock_gettime`, exit 0
-- `23-stretch-pipe-syscalls.asm` — call `pipe`, exit 0 (do not read/write)
+**Memory mapping:** Allocate one page with `VirtualAlloc`, store 42, exit 42. Allocate, store 99 at offset 100, exit 99. Allocate then free with `VirtualFree`, exit 0. Query process heap with `GetProcessHeap`, exit 0 if nonzero. Allocate, fill 16 bytes with 1, exit 16. Allocate one page, copy four bytes from `.data`, sum them, exit 10.
+
+**Other Win32 functions:** Call `GetCurrentProcessId`, exit `pid & 0x7F` (status varies). Call `QueryPerformanceCounter` (stub), exit 0. Call `CreatePipe` (stub), exit 0 (do not read/write).
+
+Refer to `exercises/08-syscalls-files-mmap/README.md` for detailed descriptions and expected exit codes.
