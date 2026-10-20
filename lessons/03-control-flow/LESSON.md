@@ -150,31 +150,33 @@ To skip the rest of the loop body and start the next iteration, jump back to the
 
 A **jump table** is an array of addresses. You load an address from the table and jump to it, allowing you to dispatch to different code paths based on an index. This is the low-level mechanism for switch statements with dense cases.
 
-```asm
-section .rodata
-    jump_table dq .case0, .case1, .case2
+<!-- LISTING-PENDING: lessons/03-control-flow/listings/jump-table.asm -->
 
-section .text
+```asm
+.const
+    jump_table QWORD case0_label, case1_label, case2_label
+
+.code
     ; assume rax holds the case index (0, 1, or 2)
     ; bounds check: if rax >= 3, jump to default or error
     cmp rax, 3
-    jae .default
+    jae default_case
 
     ; dispatch: load address from table and jump
-    jmp [jump_table + rax*8]
+    jmp QWORD PTR [jump_table + rax*8]
 
-.case0:
+case0_label:
     ; handle case 0
-    jmp .end
-.case1:
+    jmp end_switch
+case1_label:
     ; handle case 1
-    jmp .end
-.case2:
+    jmp end_switch
+case2_label:
     ; handle case 2
-    jmp .end
-.default:
+    jmp end_switch
+default_case:
     ; handle out-of-range
-.end:
+end_switch:
 ```
 
 The key line is `jmp [jump_table + rax*8]`, which loads the quadword at `jump_table + rax*8` (the address of the case) and jumps to it. This is one indirect jump instead of a chain of comparisons and branches, which is faster when you have many cases.
@@ -185,42 +187,49 @@ The key line is `jmp [jump_table + rax*8]`, which loads the quadword at `jump_ta
 
 Let's write a program that counts how many even numbers exist in the range `[10, 50)` (10 inclusive, 50 exclusive). We will loop from 10 to 49, test each number's low bit, and increment a counter if the bit is clear (even). Here is the source:
 
+<!-- LISTING-PENDING: lessons/03-control-flow/listings/count-even.asm -->
+
 ```asm
-section .text
-    global _start
-_start:
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 40        ; allocate shadow space + alignment
+    
     xor rax, rax       ; rax = counter (starts at 0)
     mov rcx, 10        ; rcx = loop variable (starts at 10)
 
-.loop:
+loop_start:
     cmp rcx, 50        ; compare rcx to upper bound
-    jge .done          ; exit if rcx >= 50
+    jge loop_done      ; exit if rcx >= 50
 
     test rcx, 1        ; check low bit (1 means odd, 0 means even)
-    jnz .skip          ; if odd (ZF=0), skip increment
+    jnz skip_increment ; if odd (ZF=0), skip increment
 
     inc rax            ; even: increment counter
-.skip:
+skip_increment:
     inc rcx            ; move to next number
-    jmp .loop          ; repeat
+    jmp loop_start     ; repeat
 
-.done:
-    mov rdi, rax       ; exit with count as status
-    mov rax, 60
-    syscall
+loop_done:
+    mov ecx, eax       ; exit with count as status (20)
+    call ExitProcess
+    ; ExitProcess does not return
+main ENDP
+END
 ```
 
 Build and run:
-```bash
-nasm -f elf64 count_even.asm -o count_even.o
-ld count_even.o -o count_even
-./count_even
-echo $?   # should print 20 (there are 20 even numbers in [10,50))
+```cmd
+ml64 /c count_even.asm
+link /OUT:count_even.exe /ENTRY:main /SUBSYSTEM:CONSOLE count_even.obj kernel32.lib
+count_even.exe
+echo %ERRORLEVEL%   REM should print 20 (there are 20 even numbers in [10,50))
 ```
 
-Trace the reasoning. We initialize `rax` (the counter) to 0 and `rcx` (the loop variable) to 10. At the top of the loop, we compare `rcx` to 50. If `rcx >= 50`, we exit. Otherwise, we test the low bit of `rcx` with `test rcx, 1`. If the low bit is 1 (odd), ZF is cleared, and `jnz .skip` jumps over the `inc rax` line. If the low bit is 0 (even), ZF is set, `jnz` falls through, and we increment the counter. Then we increment `rcx` and loop.
+Trace the reasoning. We allocate shadow space, then initialize `rax` (the counter) to 0 and `rcx` (the loop variable) to 10. At the top of the loop, we compare `rcx` to 50. If `rcx >= 50`, we jump to `loop_done`. Otherwise, we test the low bit of `rcx` with `test rcx, 1`. If the low bit is 1 (odd), ZF is cleared, and `jnz skip_increment` jumps over the `inc rax` line. If the low bit is 0 (even), ZF is set, `jnz` falls through, and we increment the counter. Then we increment `rcx` and loop.
 
-The loop runs 40 times (from 10 to 49 inclusive). Half of those numbers are even (10, 12, 14, ..., 48), so `rax` ends up at 20. We exit with 20 as the status.
+The loop runs 40 times (from 10 to 49 inclusive). Half of those numbers are even (10, 12, 14, ..., 48), so `rax` ends up at 20. We move 20 into ECX (zero-extending to RCX) and call `ExitProcess` with exit code 20.
 
 ### A plausible wrong reading (and why it fails)
 
@@ -257,12 +266,12 @@ The distinction between `jge` (jump if greater or equal) and `jg` (jump if stric
 - Jump tables dispatch by loading an address from an array and jumping to it; they are faster than chains of comparisons for dense cases, but require a bounds check to prevent crashes.
 - Inverted conditions (using `jge` when you meant `jl`) cause the opposite branch to execute; the symptom is entering the "then" branch when the condition is false.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **Conditional jump instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2, Appendix B (Jcc — conditional jumps)
-- **FLAGS semantics:** Volume 1, Chapter 3.4 (RFLAGS register)
-- **NASM label syntax:** NASM manual, Chapter 3.1 (labels, local labels with `.` prefix)
-- **Control flow patterns:** Any x86-64 assembly textbook or reference (if/else, while, for idioms)
+- **Conditional jump instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2, Appendix B (Jcc — conditional jumps) — same as Linux; control flow is platform-independent
+- **FLAGS semantics:** Intel Manual Volume 1, Chapter 3.4 (RFLAGS register)
+- **MASM label syntax:** https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe (labels in MASM are procedure-scoped by default; use descriptive names or `@@:` for anonymous labels)
+- **Control flow patterns:** Any x86-64 assembly textbook or reference (if/else, while, for idioms — patterns are universal)
 
 ## Exercises
 
