@@ -1,11 +1,24 @@
-; Exercise 01: add sub
+; Exercise 01: add sub (Win32 port)
 ;
-; rdi=100; add 20; sub 78; exit (42).
+; RAX=100; add 20; sub 78; exit (42).
 ;
-; Build: nasm -f elf64 01-add-sub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo01-add-sub.obj 01-add-sub.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-add-sub.exe 01-add-sub.obj kernel32.lib
+; Run: 01-add-sub.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected: exit code 42
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 100
+    
+    ; TODO: Add 20, then sub 78, exit with result
+    .ERR <TODO: Perform arithmetic and exit>
+    
+main ENDP
+
+END

@@ -1,11 +1,25 @@
-; Exercise 08: div remainder
+; Exercise 08: div remainder (Win32 port)
 ;
-; Unsigned: 20 / 6. Exit with remainder (rdx) = 2.
+; RAX=100, divisor=7. XOR RDX and DIV. Exit with remainder (2).
 ;
-; Build: nasm -f elf64 08-div-remainder.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo08-div-remainder.obj 08-div-remainder.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-div-remainder.exe 08-div-remainder.obj kernel32.lib
+; Run: 08-div-remainder.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected: exit code 2
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, 100
+    mov rbx, 7
+    
+    ; TODO: XOR RDX, RDX; DIV RBX; exit with RDX (remainder)
+    .ERR <TODO: Use DIV and exit with remainder>
+    
+main ENDP
+
+END

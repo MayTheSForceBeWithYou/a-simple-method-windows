@@ -1,11 +1,24 @@
-; Exercise 03: neg
+; Exercise 03: neg (Win32 port)
 ;
-; mov rdi, 5; neg rdi; add rdi, 10; exit (5).
+; RAX=-42; negate it; exit (42).
 ;
-; Build: nasm -f elf64 03-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo03-neg.obj 03-neg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-neg.exe 03-neg.obj kernel32.lib
+; Run: 03-neg.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected: exit code 42
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    mov rax, -42
+    
+    ; TODO: NEG RAX, exit
+    .ERR <TODO: Negate and exit>
+    
+main ENDP
+
+END

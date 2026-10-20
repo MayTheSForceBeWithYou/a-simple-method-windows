@@ -1,17 +1,30 @@
-; Exercise 02: inc dec
+; Exercise 02: inc dec (Win32 port) - SOLUTION
 ;
-; rax=5; inc; inc; dec; mov rdi,rax; exit (6).
+; RAX=0; inc 5 times; dec 2 times; exit (3).
 ;
-; Build: nasm -f elf64 02-inc-dec.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c /Fo02-inc-dec.obj 02-inc-dec.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-inc-dec.exe 02-inc-dec.obj kernel32.lib
+; Run: 02-inc-dec.exe & echo %ERRORLEVEL%
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 5
+; Expected: exit code 3
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32
+    
+    xor rax, rax
     inc rax
     inc rax
+    inc rax
+    inc rax
+    inc rax                    ; RAX = 5
     dec rax
-    mov rdi, rax
-    mov rax, 60
-    syscall
+    dec rax                    ; RAX = 3
+    mov rcx, rax
+    call ExitProcess
+    
+main ENDP
+
+END
