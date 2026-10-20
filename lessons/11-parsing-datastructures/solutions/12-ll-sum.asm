@@ -1,26 +1,31 @@
 ; Exercise 12: ll sum
 ;
 ; List 3->4->5; sum=12.
-;
-; Build: nasm -f elf64 12-ll-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    ; nodes inline: val,next
-    n3 dq 5,0
-    n2 dq 4,n3
-    n1 dq 3,n2
-section .text
-    global _start
-_start:
-    lea rsi,[n1]
-    xor rdi,rdi
-.l:
-    test rsi,rsi
-    jz .d
-    add rdi,[rsi]
-    mov rsi,[rsi+8]
-    jmp .l
-.d:
-    mov rax,60
-    syscall
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
+.data
+n3 QWORD 5, 0
+n2 QWORD 4, 0
+n1 QWORD 3, 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rax, n3
+    mov QWORD PTR [n2+8], rax
+    lea rax, n2
+    mov QWORD PTR [n1+8], rax
+    lea rsi, n1
+    xor rcx, rcx
+loop_sum:
+    test rsi, rsi
+    jz done_sum
+    add rcx, QWORD PTR [rsi]
+    mov rsi, QWORD PTR [rsi+8]
+    jmp loop_sum
+done_sum:
+    call ExitProcess
+main ENDP
+END
