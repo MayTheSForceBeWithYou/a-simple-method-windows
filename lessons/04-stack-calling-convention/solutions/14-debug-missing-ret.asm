@@ -1,18 +1,19 @@
 ; Exercise 14: debug missing ret
-;
-; BUG: function falls through. Fix with ret. Should exit 3.
-;
-; Build: nasm -f elf64 14-debug-missing-ret.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call three
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; BUG fixed: added ret. Exit 3.
+; Expected exit: 3
 
-three:
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    call three
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+three PROC
     mov rax, 3
     ret
+three ENDP
+END

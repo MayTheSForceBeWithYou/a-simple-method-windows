@@ -1,23 +1,28 @@
 ; Exercise 08: caller saved reload
 ;
-; Put 5 in rdx; call a function that returns 1; then add rdx — must reload rdx because caller-saved. Exit 6.
+; Put 5 in r10; call function that returns 1; add r10 — must save r10 (volatile). Exit 6.
 ;
-; Build: nasm -f elf64 08-caller-saved-reload.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 08-caller-saved-reload.asm && link /OUT:08-caller-saved-reload.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-caller-saved-reload.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdx, 5
-    push rdx
-    call one
-    pop rdx
-    add rax, rdx
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Expected exit: 6
 
-one:
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov r10, 5
+    push r10
+    call one
+    pop r10
+    add rax, r10
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+one PROC
     mov rax, 1
-    mov rdx, 999
+    mov r10, 999
     ret
+one ENDP
+END

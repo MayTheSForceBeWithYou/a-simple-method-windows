@@ -1,21 +1,26 @@
 ; Exercise 03: add two args
 ;
-; Function add(rdi,rsi)->rax. Call with 10,32; exit 42.
+; Function add(rcx,rdx)->rax. Call with 10,32; exit 42.
 ;
-; Build: nasm -f elf64 03-add-two-args.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 03-add-two-args.asm && link /OUT:03-add-two-args.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-add-two-args.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 10
-    mov rsi, 32
-    call add2
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Expected exit: 42
 
-add2:
-    mov rax, rdi
-    add rax, rsi
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 10
+    mov rdx, 32
+    call add2
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+add2 PROC
+    mov rax, rcx
+    add rax, rdx
     ret
+add2 ENDP
+END

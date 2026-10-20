@@ -2,17 +2,22 @@
 ;
 ; Write leaf answer that returns 42 in rax. call it; exit with that.
 ;
-; Build: nasm -f elf64 02-call-ret-leaf.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 02-call-ret-leaf.asm && link /OUT:02-call-ret-leaf.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-call-ret-leaf.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call answer
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Expected exit: 42
 
-answer:
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    call answer
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+answer PROC
     mov rax, 42
     ret
+answer ENDP
+END

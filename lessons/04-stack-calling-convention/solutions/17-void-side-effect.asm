@@ -1,28 +1,35 @@
 ; Exercise 17: void side effect
-;
-; Procedure writes byte '!' and newline to a global buf via args (rsi=buf). Then write syscall from _start. Exit 0.
-;
-; Build: nasm -f elf64 17-void-side-effect.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
-;
-; --- your code below ---
-section .data
-    buf db 0, 10
+; Write '!' and newline. MS x64 ABI.
+; Expected exit: 0
+; Expected stdout: "!\n"
 
-section .text
-    global _start
-_start:
-    mov dil, '!'
-    lea rsi, [buf]
+EXTERN ExitProcess:PROC
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+
+.data
+buf BYTE 0, 10
+
+.code
+main PROC
+    sub rsp, 56
+    mov cl, '!'
+    lea rdx, buf
     call store_byte
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, buf
-    mov rdx, 2
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+    mov rcx, -11
+    call GetStdHandle
+    mov rcx, rax
+    lea rdx, buf
+    mov r8, 2
+    lea r9, [rsp+32]
+    mov QWORD PTR [rsp+40], 0
+    call WriteFile
+    xor rcx, rcx
+    call ExitProcess
+main ENDP
 
-store_byte:
-    mov [rsi], dil
+store_byte PROC
+    mov BYTE PTR [rdx], cl
     ret
+store_byte ENDP
+END

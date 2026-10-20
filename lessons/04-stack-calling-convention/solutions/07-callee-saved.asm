@@ -1,22 +1,26 @@
 ; Exercise 07: callee saved
 ;
-; Caller puts 9 in rbx. Callee must preserve rbx. Callee uses rbx temporarily but restores. Exit rbx (9).
+; Caller puts 9 in rbx. Callee must preserve rbx. Exit rbx (9). (rbx is nonvolatile on Windows)
 ;
-; Build: nasm -f elf64 07-callee-saved.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-callee-saved.asm && link /OUT:07-callee-saved.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-callee-saved.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 9
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rbx, 9
     call clobber_careful
-    mov rdi, rbx
-    mov rax, 60
-    syscall
+    mov rcx, rbx
+    call ExitProcess
+main ENDP
 
-clobber_careful:
+clobber_careful PROC
     push rbx
     mov rbx, 123
-    ; pretend work
     pop rbx
     ret
+clobber_careful ENDP
+END

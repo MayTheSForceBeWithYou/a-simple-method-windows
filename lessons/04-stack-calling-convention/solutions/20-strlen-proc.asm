@@ -1,29 +1,30 @@
 ; Exercise 20: strlen proc
-;
-; strlen(rdi)->rax. 'assembly' len 8; exit 8.
-;
-; Build: nasm -f elf64 20-strlen-proc.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "assembly", 0
+; strlen('assembly')=8. MS x64 ABI.
+; Expected exit: 8
 
-section .text
-    global _start
-_start:
-    lea rdi, [s]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
+EXTERN ExitProcess:PROC
 
-strlen:
-    mov rax, rdi
-.loop:
-    cmp byte [rax], 0
-    je .done
+.data
+s BYTE "assembly", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rcx, s
+    call strlen_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strlen_fn PROC
+    mov rax, rcx
+loop_start:
+    cmp BYTE PTR [rax], 0
+    je loop_done
     inc rax
-    jmp .loop
-.done:
-    sub rax, rdi
+    jmp loop_start
+loop_done:
+    sub rax, rcx
     ret
+strlen_fn ENDP
+END

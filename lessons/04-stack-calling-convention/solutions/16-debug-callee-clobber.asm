@@ -1,21 +1,22 @@
 ; Exercise 16: debug callee clobber
-;
-; BUG: callee clobbers rbx without save. Fix; exit 11.
-;
-; Build: nasm -f elf64 16-debug-callee-clobber.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; BUG fixed: preserve rbx. Exit 11.
+; Expected exit: 11
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rbx, 11
     call evil
-    mov rdi, rbx
-    mov rax, 60
-    syscall
+    mov rcx, rbx
+    call ExitProcess
+main ENDP
 
-evil:
+evil PROC
     push rbx
     mov rbx, 0
     pop rbx
     ret
+evil ENDP
+END

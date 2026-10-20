@@ -1,32 +1,37 @@
 ; Exercise 12: recursion fib
-;
-; Naive fib(7)=13. Exit 13. (OK if slow.)
-;
-; Build: nasm -f elf64 12-recursion-fib.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 7
-    call fib
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Naive fib(7)=13. MS x64 ABI.
+; Expected exit: 13
 
-fib:
-    cmp rdi, 1
-    jle .base
-    push rdi
-    dec rdi
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, 7
     call fib
-    pop rdi
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+fib PROC
+    cmp rcx, 1
+    jle base_case
+    push rcx
+    sub rsp, 32
+    dec rcx
+    call fib
+    add rsp, 32
+    pop rcx
     push rax
-    sub rdi, 2
+    sub rsp, 32
+    sub rcx, 2
     call fib
+    add rsp, 32
     pop rdx
     add rax, rdx
     ret
-.base:
-    mov rax, rdi
+base_case:
+    mov rax, rcx
     ret
+fib ENDP
+END
