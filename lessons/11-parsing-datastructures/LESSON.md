@@ -70,8 +70,6 @@ For simplicity, treat space (`32`) as the only whitespace. A real lexer would al
 
 A token stores its lexeme text in a buffer, along with a length. For the input `"let"`, copy three bytes and store length 3. The null terminator (if copied) does **not** count toward the length.
 
-<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/lexeme.asm -->
-
 ```asm
 .data
 src BYTE "let", 0
@@ -500,6 +498,15 @@ Also track a count or reserve one empty slot to distinguish full from empty (bot
 - Pratt parsing (operator precedence): [Matklad: Simple but Powerful Pratt Parsing](https://matklad.github.io/2020/04/13/simple-but-powerful-pratt-parsing.html)
 - Linked lists and memory safety: [Learn C The Hard Way, Exercise 32](https://learncodethehardway.org/c/ex32.html)
 - Arena allocators: [Wikipedia: Region-based memory management](https://en.wikipedia.org/wiki/Region-based_memory_management)
+
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/01-token-classify.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/02-linked-list-walk.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/03-arena-alloc.asm -->
+<!-- LISTING-PENDING: lessons/11-parsing-datastructures/listings/04-stack-push-pop.asm -->
 
 ## Exercises
 
