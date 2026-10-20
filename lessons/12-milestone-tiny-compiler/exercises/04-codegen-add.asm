@@ -1,7 +1,7 @@
-; 04-codegen-add
+; 04-codegen-add.asm: Generate ADD instruction sequence, exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 04-codegen-add>
+.ERR <TODO: Generate ADD instruction sequence, exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

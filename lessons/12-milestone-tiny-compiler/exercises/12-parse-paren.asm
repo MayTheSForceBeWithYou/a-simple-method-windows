@@ -1,7 +1,7 @@
-; 12-parse-paren
+; 12-parse-paren.asm: Parse (1+2), return inner value 3
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 12-parse-paren>
+.ERR <TODO: Parse (1+2), return inner value 3>
 main PROC
 .ERR <TODO>
 main ENDP

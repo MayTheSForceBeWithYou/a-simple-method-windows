@@ -1,7 +1,7 @@
-; 07-emit-syscall-exit
+; 07-emit-syscall-exit.asm: Emit exit syscall sequence, exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 07-emit-syscall-exit>
+.ERR <TODO: Emit exit syscall sequence, exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

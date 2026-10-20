@@ -1,7 +1,7 @@
-; 23-stretch-symbol-resolve
+; 23-stretch-symbol-resolve.asm: Resolve symbol address, exit address
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 23-stretch-symbol-resolve>
+.ERR <TODO: Resolve symbol address, exit address>
 main PROC
 .ERR <TODO>
 main ENDP

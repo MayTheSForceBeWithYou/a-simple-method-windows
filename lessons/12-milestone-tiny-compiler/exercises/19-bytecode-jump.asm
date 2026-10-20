@@ -1,7 +1,7 @@
-; 19-bytecode-jump
+; 19-bytecode-jump.asm: Bytecode jump instruction (set IP), exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 19-bytecode-jump>
+.ERR <TODO: Bytecode jump instruction (set IP), exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

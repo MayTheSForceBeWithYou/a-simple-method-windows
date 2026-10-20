@@ -1,7 +1,7 @@
-; 17-while-codegen
+; 17-while-codegen.asm: Generate while-loop jump, exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 17-while-codegen>
+.ERR <TODO: Generate while-loop jump, exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

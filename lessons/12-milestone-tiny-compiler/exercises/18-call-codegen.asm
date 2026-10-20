@@ -1,7 +1,7 @@
-; 18-call-codegen
+; 18-call-codegen.asm: Generate call instruction, exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-call-codegen>
+.ERR <TODO: Generate call instruction, exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

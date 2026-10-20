@@ -1,7 +1,7 @@
-; 10-lex-ident-len
+; 10-lex-ident-len.asm: Scan identifier "foo", exit length (3)
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 10-lex-ident-len>
+.ERR <TODO: Scan identifier "foo", exit length (3)>
 main PROC
 .ERR <TODO>
 main ENDP

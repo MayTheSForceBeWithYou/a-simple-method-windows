@@ -1,7 +1,7 @@
-; 16-if-codegen
+; 16-if-codegen.asm: Generate if-branch jump, exit 0
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 16-if-codegen>
+.ERR <TODO: Generate if-branch jump, exit 0>
 main PROC
 .ERR <TODO>
 main ENDP

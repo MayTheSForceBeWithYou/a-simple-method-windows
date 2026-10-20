@@ -1,7 +1,7 @@
-; 06-symbol-slot
+; 06-symbol-slot.asm: Allocate variable slot (increment counter), exit slot number
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 06-symbol-slot>
+.ERR <TODO: Allocate variable slot (increment counter), exit slot number>
 main PROC
 .ERR <TODO>
 main ENDP

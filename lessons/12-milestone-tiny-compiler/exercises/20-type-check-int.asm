@@ -1,7 +1,7 @@
-; 20-type-check-int
+; 20-type-check-int.asm: Check expression type is INT, exit 1 if true
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 20-type-check-int>
+.ERR <TODO: Check expression type is INT, exit 1 if true>
 main PROC
 .ERR <TODO>
 main ENDP
