@@ -1,7 +1,7 @@
-; 03-clear-buffer
+; 03-clear-buffer: clear buffer
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 03-clear-buffer>
+.ERR <TODO: Implement clear buffer>
 main PROC
 .ERR <TODO>
 main ENDP

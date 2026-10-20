@@ -1,7 +1,7 @@
-; 22-stretch-bresenham-count
+; 22-stretch-bresenham-count: stretch bresenham count
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 22-stretch-bresenham-count>
+.ERR <TODO: Implement stretch bresenham count>
 main PROC
 .ERR <TODO>
 main ENDP

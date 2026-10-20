@@ -1,7 +1,7 @@
-; 09-clear-color
+; 09-clear-color: clear color
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 09-clear-color>
+.ERR <TODO: Implement clear color>
 main PROC
 .ERR <TODO>
 main ENDP

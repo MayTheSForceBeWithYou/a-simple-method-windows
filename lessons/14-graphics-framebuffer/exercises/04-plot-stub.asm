@@ -1,7 +1,7 @@
-; 04-plot-stub
+; 04-plot-stub: plot stub
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 04-plot-stub>
+.ERR <TODO: Implement plot stub>
 main PROC
 .ERR <TODO>
 main ENDP

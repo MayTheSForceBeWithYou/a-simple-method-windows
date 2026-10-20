@@ -1,7 +1,7 @@
-; 20-alpha-stub
+; 20-alpha-stub: alpha stub
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 20-alpha-stub>
+.ERR <TODO: Implement alpha stub>
 main PROC
 .ERR <TODO>
 main ENDP

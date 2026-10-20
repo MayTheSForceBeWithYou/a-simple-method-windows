@@ -1,7 +1,7 @@
-; 14-blit-key
+; 14-blit-key: blit key
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 14-blit-key>
+.ERR <TODO: Implement blit key>
 main PROC
 .ERR <TODO>
 main ENDP

@@ -1,7 +1,7 @@
-; 05-blit-copy
+; 05-blit-copy: blit copy
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 05-blit-copy>
+.ERR <TODO: Implement blit copy>
 main PROC
 .ERR <TODO>
 main ENDP

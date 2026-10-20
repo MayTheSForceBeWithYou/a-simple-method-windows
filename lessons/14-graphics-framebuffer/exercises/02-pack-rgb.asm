@@ -1,7 +1,7 @@
-; 02-pack-rgb
+; 02-pack-rgb: pack rgb
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 02-pack-rgb>
+.ERR <TODO: Implement pack rgb>
 main PROC
 .ERR <TODO>
 main ENDP

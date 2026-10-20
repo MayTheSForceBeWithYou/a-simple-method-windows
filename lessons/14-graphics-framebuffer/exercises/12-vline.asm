@@ -1,7 +1,7 @@
-; 12-vline
+; 12-vline: vline
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 12-vline>
+.ERR <TODO: Implement vline>
 main PROC
 .ERR <TODO>
 main ENDP
