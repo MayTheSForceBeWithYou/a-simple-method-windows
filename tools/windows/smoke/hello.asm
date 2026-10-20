@@ -11,21 +11,23 @@
 ;
 ; Expected output: "Hello from Windows x64!"
 ; Expected exit code: 42
+;
+; Note: Uses WriteFile instead of WriteConsoleA for proper output redirection
 
 EXTERN GetStdHandle:PROC
-EXTERN WriteConsoleA:PROC
+EXTERN WriteFile:PROC
 EXTERN ExitProcess:PROC
 
 .data
-msg BYTE "Hello from Windows x64!", 13, 10, 0
-msg_len EQU $ - msg - 1
+msg BYTE "Hello from Windows x64!", 13, 10
+msg_len EQU $ - msg
 
 .data?
 written DWORD ?
 
 .code
 main PROC
-    sub rsp, 40
+    sub rsp, 56
     
     mov rcx, -11
     call GetStdHandle
@@ -36,8 +38,9 @@ main PROC
     mov r8d, msg_len
     lea r9, written
     mov QWORD PTR [rsp+32], 0
-    call WriteConsoleA
+    call WriteFile
     
+    add rsp, 56
     mov rcx, 42
     call ExitProcess
 main ENDP
