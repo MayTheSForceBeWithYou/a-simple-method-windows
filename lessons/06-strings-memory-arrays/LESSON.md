@@ -1,352 +1,231 @@
 # Lesson 06 — Strings, Memory, Arrays
 
-Strings are not special types — they are byte sequences with conventions about terminators and copying. This lesson teaches you to implement `strlen`, `strcpy`, and `memcpy` from scratch, distinguish null-terminated strings from counted buffers, and index arrays of structures (AoS), structures of arrays (SoA), and row-major matrices. You will use `rep movsb` for bulk copying after ensuring the direction flag is clear, and understand the difference between operations that stop at NUL (string functions) and operations that stop at a count (memory functions).
+Strings are byte sequences with a terminator convention. This lesson implements `strlen` and `strcpy`, distinguishes NUL-terminated walks from counted `memcpy`/`memcmp`/`memset`, uses `rep movsb` only after `cld`, and indexes AoS, SoA, and row-major matrices.
+
+Argument registers are MS x64: first pointer in RCX, second in RDX. `rep movsb` still uses RSI/RDI as implicit pointers — those two are **nonvolatile on Windows**, so a returning procedure that uses them must save/restore them.
 
 ## What this lesson asks of you
 
-You must be able to write a loop that scans a null-terminated string (ending in byte 0) to compute its length or find a character, copy one string to another including the terminator, and compare two byte sequences for equality. You will implement counted operations (`memcpy`, `memcmp`, `memset`) that do not interpret terminators but instead process an explicit byte count. You will use `rep movsb` (repeat move string byte) to copy memory efficiently after `cld` clears the direction flag. Finally, you will index arrays of structures (where each record's fields are adjacent), structures of arrays (where each field spans all records), and two-dimensional row-major matrices using stride arithmetic.
+Scan until byte 0 for length. Copy including the terminator (store then test). Counted copies ignore embedded NULs. `cld` before `rep movsb`. Index records with a stride, matrices with `row * cols + col`.
 
-## Null-terminated strings: walking until NUL
+## Two `strlen` shapes
 
-A **null-terminated string** is a sequence of bytes ending with 0. The length of the string is the number of bytes before the terminator, not including the terminator itself. To compute the length, start a pointer at the beginning, scan forward until you find byte 0, and return the distance traveled:
-
-```asm
-strlen:
-    mov rax, rdi          ; rax = pointer (start at rdi)
-.scan:
-    cmp byte [rax], 0     ; check if current byte is NUL
-    je .done              ; if so, stop
-    inc rax               ; move to next byte
-    jmp .scan             ; repeat
-.done:
-    sub rax, rdi          ; length = end pointer - start pointer
-    ret
-```
-
-If the string is `"hello"` (5 ASCII bytes followed by 0), `strlen` returns 5. The terminator is not counted.
-
-### Searching for a character: `strchr`
-
-To find the first occurrence of a byte in a string, scan until you find it or hit the terminator:
+Count with an index in RAX:
 
 ```asm
-strchr:
-    ; rdi = string, rsi = character to find
-    mov rax, rdi
-.scan:
-    cmp byte [rax], sil    ; does current byte match?
-    je .found
-    cmp byte [rax], 0      ; end of string?
-    je .not_found
+; Listing 01: String length function
+;
+; Purpose: Implement strlen - count bytes until null terminator.
+; Expected exit code: 11 (length of "Hello world")
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-strlen.obj 01-strlen.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-strlen.exe 01-strlen.obj kernel32.lib
+
+.DATA
+test_str DB "Hello world", 0
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+; strlen(str): returns length of null-terminated string
+; RCX = pointer to string
+; Returns: RAX = length
+my_strlen PROC
+    xor rax, rax               ; Length = 0
+loop_start:
+    cmp BYTE PTR [rcx+rax], 0  ; Check for null terminator
+    je loop_done
     inc rax
-    jmp .scan
-.found:
-    sub rax, rdi           ; return index
+    jmp loop_start
+loop_done:
     ret
-.not_found:
-    mov rax, -1            ; or use a sentinel like 255
-    ret
-```
-
-This returns the **index** (offset from the start), not the pointer. If the character is not found, return a sentinel value (like -1 or 255).
-
-## Copying strings: including the terminator
-
-`strcpy(dst, src)` copies bytes from `src` to `dst` until it copies the NUL terminator. The critical rule: **copy the byte, then test it**. If you test before copying, the NUL is never written and the destination is not a valid string.
-
-```asm
-strcpy:
-    ; rdi = dst, rsi = src
-.loop:
-    mov cl, [rsi]         ; load byte from source
-    mov [rdi], cl         ; store byte to destination (including NUL)
-    inc rsi
-    inc rdi
-    test cl, cl           ; was it NUL?
-    jnz .loop             ; if not, continue
-    ret
-```
-
-After this function returns, `dst` contains a copy of `src`, including the terminating 0.
-
-### Bounded copy: stopping at a length
-
-`strncpy(dst, src, n)` copies at most `n` bytes from `src` to `dst`. If `src` is shorter than `n`, copy its terminator and stop. If `src` is longer, copy `n` bytes and **add a terminator at dst[n]** to ensure `dst` is a valid string. This requires a buffer of size `n+1`.
-
-## Counted operations: `memcpy`, `memcmp`, `memset`
-
-**Memory functions** do not interpret null bytes as terminators — they process an explicit byte count.
-
-### `memcpy(dst, src, count)`
-
-Copy `count` bytes from `src` to `dst`, regardless of content:
-
-```asm
-memcpy:
-    ; rdi = dst, rsi = src, rdx = count
-    xor rcx, rcx
-.loop:
-    cmp rcx, rdx
-    jge .done
-    mov al, [rsi+rcx]
-    mov [rdi+rcx], al
-    inc rcx
-    jmp .loop
-.done:
-    ret
-```
-
-If the source contains embedded null bytes, they are copied like any other byte.
-
-### `memcmp(a, b, count)`
-
-Compare `count` bytes of `a` and `b`, returning 0 if equal, nonzero if different:
-
-```asm
-memcmp:
-    ; rdi = a, rsi = b, rdx = count
-    xor rcx, rcx
-.loop:
-    cmp rcx, rdx
-    jge .equal
-    mov al, [rdi+rcx]
-    cmp al, [rsi+rcx]
-    jne .not_equal
-    inc rcx
-    jmp .loop
-.equal:
-    xor rax, rax          ; return 0
-    ret
-.not_equal:
-    mov rax, 1            ; return nonzero
-    ret
-```
-
-### `memset(dst, value, count)`
-
-Fill `count` bytes of `dst` with `value`:
-
-```asm
-memset:
-    ; rdi = dst, rsi = value (byte), rdx = count
-    xor rcx, rcx
-.loop:
-    cmp rcx, rdx
-    jge .done
-    mov [rdi+rcx], sil
-    inc rcx
-    jmp .loop
-.done:
-    ret
-```
-
-## Bulk copy with `rep movsb`
-
-The `movsb` instruction copies one byte from `[rsi]` to `[rdi]`, then adjusts both pointers. The direction of adjustment depends on the Direction Flag (DF): if DF=0, pointers increment (forward); if DF=1, pointers decrement (backward). Always clear DF with `cld` before using `rep movsb`.
-
-The `rep` prefix repeats `movsb` `rcx` times:
-
-```asm
-    lea rsi, [src]
-    lea rdi, [dst]
-    mov rcx, count
-    cld                   ; clear direction flag (forward)
-    rep movsb             ; copy rcx bytes from [rsi] to [rdi]
-```
-
-After `rep movsb`, `rcx` is 0, and `rsi` and `rdi` point past the end of the copied range. This is faster than a loop for large blocks, but **only works correctly for non-overlapping ranges**. If `dst` starts inside `src` (forward overlap), later source bytes are overwritten before being read. For overlapping ranges, copy backward or use a different approach.
-
-Similarly, `rep stosb` fills `rcx` bytes at `[rdi]` with the byte in `al`:
-
-```asm
-    lea rdi, [buffer]
-    mov al, 0
-    mov rcx, 256
-    cld
-    rep stosb             ; fill 256 bytes with 0
-```
-
-## Arrays of structures (AoS) vs structures of arrays (SoA)
-
-When you have multiple records, each with several fields, you can lay them out in two ways.
-
-### Array of structures (AoS)
-
-Each record's fields are adjacent in memory:
-
-```asm
-section .data
-    points dq 1, 2, 3, 4, 5, 6   ; three points: (1,2), (3,4), (5,6)
-```
-
-To access point `i`, compute `address = base + i * sizeof(point)`. For a structure with two quadwords (x, y), `sizeof(point) = 16`:
-
-```asm
-    mov rax, 1                   ; index of second point
-    imul rax, 16                 ; stride = 16 bytes
-    lea rbx, [points]
-    mov rcx, [rbx+rax]           ; x of second point = 3
-    mov rdx, [rbx+rax+8]         ; y of second point = 4
-```
-
-Use AoS when you usually process one entire record at a time.
-
-### Structure of arrays (SoA)
-
-Each field is an array spanning all records:
-
-```asm
-section .data
-    xs dq 1, 3, 5
-    ys dq 2, 4, 6
-```
-
-To access the `i`-th element, use `xs[i]` and `ys[i]`:
-
-```asm
-    mov rax, 1                   ; index
-    mov rcx, [xs+rax*8]          ; xs[1] = 3
-    mov rdx, [ys+rax*8]          ; ys[1] = 4
-```
-
-Use SoA when you often process one field across many records (e.g., sum all x-coordinates).
-
-## Row-major matrix indexing
-
-A two-dimensional matrix with `rows` rows and `cols` columns is stored in memory row-by-row. To access element `(row, col)`, use the formula:
-
-```
-index = row * cols + col
-address = base + index * sizeof(element)
-```
-
-For a 3×3 matrix of quadwords:
-
-```asm
-section .data
-    matrix dq 1, 2, 3, 4, 5, 6, 7, 8, 9   ; 3 rows, 3 columns
-
-; access matrix[1][2] (second row, third column)
-    mov rax, 1                   ; row
-    imul rax, 3                  ; cols
-    add rax, 2                   ; col
-    mov rdi, [matrix+rax*8]      ; element at (1,2) = 6
-```
-
-Always multiply the row by the number of columns, then add the column. Reversing this (column * rows + row) accesses the transposed matrix.
-
-## Worked example: copying a string with length check
-
-Let's write a function that copies a string and returns the length of the copied string (not including the terminator):
-
-<!-- LISTING-PENDING: lessons/06-strings-memory-arrays/listings/strcpy-len.asm -->
-
-```asm
-EXTERN ExitProcess:PROC
-
-.data
-    src BYTE "hello", 0
-.data?
-    dst BYTE 10 DUP(?)
-
-.code
-
-strcpy_len PROC
-    ; rcx = dst, rdx = src
-    ; returns: rax = length
-    xor rax, rax              ; length = 0
-loop_copy:
-    mov r8b, BYTE PTR [rdx+rax]  ; load byte from src
-    mov BYTE PTR [rcx+rax], r8b  ; store byte to dst (including NUL)
-    test r8b, r8b             ; was it NUL?
-    jz done_copy              ; if so, stop (length is correct)
-    inc rax                   ; increment length
-    jmp loop_copy
-done_copy:
-    ret                       ; rax = length (not counting NUL)
-strcpy_len ENDP
+my_strlen ENDP
 
 main PROC
-    sub rsp, 40               ; shadow space + alignment
+    sub rsp, 32
     
-    lea rcx, dst
-    lea rdx, src
-    call strcpy_len           ; rax = 5
+    lea rcx, test_str
+    call my_strlen             ; RAX = 11
     
-    mov ecx, eax              ; exit with length (5)
+    mov rcx, rax
     call ExitProcess
 main ENDP
+
 END
 ```
 
-Build and run:
-```cmd
-ml64 /c strcpy_len.asm
-link /OUT:strcpy_len.exe /ENTRY:main /SUBSYSTEM:CONSOLE strcpy_len.obj kernel32.lib
-strcpy_len.exe
-echo %ERRORLEVEL%   REM prints 5
+`"Hello world"` is 11 bytes before NUL. Space counts. The terminator does not.
+
+Walk a pointer, then subtract:
+
+```asm
+; Listing 02: strlen implementation (lines 12-25 of LESSON.md)
+;
+; Purpose: Count bytes until NUL terminator.
+; Expected exit code: 5 (length of "hello")
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo02-strlen-implementation.obj 02-strlen-implementation.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-strlen-implementation.exe 02-strlen-implementation.obj kernel32.lib
+
+.DATA
+test_str DB "hello", 0
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+; strlen(RCX) -> RAX
+my_strlen PROC
+    mov rax, rcx               ; RAX = pointer
+scan:
+    cmp BYTE PTR [rax], 0      ; Check for NUL
+    je done
+    inc rax
+    jmp scan
+done:
+    sub rax, rcx               ; Length = end - start
+    ret
+my_strlen ENDP
+
+main PROC
+    sub rsp, 32
+    lea rcx, test_str
+    call my_strlen
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-Trace the execution: `rax` starts at 0. We load `src[0]` ('h'), store it at `dst[0]`, test it (nonzero), increment `rax` to 1, and repeat. After copying 'h', 'e', 'l', 'l', 'o', we load `src[5]` (0), store it at `dst[5]`, test it (zero), and stop without incrementing `rax`. So `rax` ends at 5, the correct length.
+Same contract: RCX in, RAX = length 5. Listing 01 never mutates RCX; listing 02 uses RAX as a moving pointer and needs RCX preserved (the callee does not `call` anyone, so RCX stays).
+
+`strchr` is the same scan: compare to the wanted byte, else compare to 0, else increment. Return index or a sentinel. No listing on this branch.
+
+## Worked example: `strcpy` including NUL
+
+**Copy the byte, then test it.** Test-before-copy omits the terminator.
+
+```asm
+; Listing 03: strcpy implementation (lines 56-68 of LESSON.md)
+;
+; Purpose: Copy string including NUL terminator.
+; Expected exit code: 0
+; Expected output: (none, but dst contains copy)
+;
+; Build: ml64 /c /Fo03-strcpy-implementation.obj 03-strcpy-implementation.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-strcpy-implementation.exe 03-strcpy-implementation.obj kernel32.lib
+
+.DATA
+src DB "test", 0
+
+.DATA?
+dst DB 10 DUP(?)
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+; strcpy(RCX=dst, RDX=src)
+my_strcpy PROC
+copy_loop:
+    mov al, [rdx]              ; Load byte from source
+    mov [rcx], al              ; Store to dest (including NUL)
+    inc rdx
+    inc rcx
+    test al, al                ; Was it NUL?
+    jnz copy_loop
+    ret
+my_strcpy ENDP
+
+main PROC
+    sub rsp, 32
+    lea rcx, dst
+    lea rdx, src
+    call my_strcpy
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
+```
+
+RCX = destination, RDX = source (not RDI/RSI). After four ASCII bytes, AL is 0, that 0 is stored, `test al, al` / `jnz` falls through. `dst` is `"test", 0`. Exit 0.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to test the byte **before** storing it, intending to avoid copying the NUL:
+*"Test for NUL first, then copy, so I do not write past the source."*
+
+**Why it fails:** The terminator is never stored. The destination is not a C string. The next `strlen` on `dst` reads uninitialized `.DATA?` bytes until a coincidental zero. Listing 03 stores AL, increments, then tests.
+
+## Counted operations (no listing)
+
+`memcpy`/`memcmp`/`memset` take an explicit count in (typically) R8 as the third argument. They copy, compare, or fill that many bytes, including embedded zeros.
 
 ```asm
-.loop:
-    mov cl, [rsi+rax]
-    test cl, cl               ; check if NUL
-    jz .done                  ; if so, stop
-    mov [rdi+rax], cl         ; BUG: NUL is never written
-    inc rax
-    jmp .loop
+; memcpy: RCX=dst, RDX=src, R8=count
+    xor r9, r9
+copy:
+    cmp r9, r8
+    jge done
+    mov al, [rdx+r9]
+    mov [rcx+r9], al
+    inc r9
+    jmp copy
+done:
+    ret
 ```
 
-With this code, the loop stops as soon as it sees the NUL, without storing it. The destination ends with `"hello"` but no terminator, so `strlen(dst)` will scan past the end of the buffer, reading garbage until it finds a zero somewhere in memory (or crashes). The lesson: always copy the byte **before** testing it when writing string functions.
+This fragment is not a standalone listing.
+
+## `rep movsb` and Windows RSI/RDI
+
+`movsb` copies `[rsi]` to `[rdi]` and steps both. `rep` repeats RCX times. `cld` first (DF=0, forward).
+
+RSI and RDI are **nonvolatile**. A returning `memcpy` that uses `rep movsb` must `push rsi` / `push rdi` (and unwind codes if FRAME) and pop them before `ret`. Overlapping ranges need a backward copy (`std`) or a different algorithm.
+
+`rep stosb` fills `[rdi]` with AL, RCX times.
+
+## AoS vs SoA vs row-major
+
+AoS: each record's fields adjacent. Point `i` at `base + i * 16` for two qwords.
+
+SoA: `xs[i]` and `ys[i]` as separate arrays, `[xs+rax*8]`.
+
+Row-major: `index = row * cols + col`, then `base + index * sizeof`. For 3×3 qwords, `matrix[1][2]` is index 5, value 6 if filled 1..9.
 
 ## Distinctions worth keeping straight
 
-| Confusion | What actually separates them |
-|-----------|------------------------------|
-| String functions (`strlen`, `strcpy`) vs memory functions (`memcpy`, `memcmp`) | String functions stop at the first NUL byte (0); memory functions process an explicit byte count and do not interpret NUL as special. |
-| Copying before vs after testing NUL | When copying a string, store the byte **then** test it. Testing first leaves the terminator uncopied, and the destination is not a valid string. |
-| `movsb` forward vs backward | `movsb` increments pointers if DF=0 (forward), decrements if DF=1 (backward). Always `cld` before `rep movsb` unless you explicitly want backward copy. |
-| `rep movsb` on overlapping ranges | `rep movsb` forward works only if `dst` does not overlap `src` or if `dst` starts before `src`. If `dst` starts inside `src`, later source bytes are clobbered. Use backward copy or an explicit loop for overlaps. |
-| AoS vs SoA | Array of structures (AoS) keeps one record's fields adjacent (stride = sizeof(record)); structure of arrays (SoA) keeps one field of all records adjacent (stride = sizeof(element)). Use AoS when processing whole records, SoA when processing one field across many records. |
-| Row-major vs column-major | Row-major stores rows consecutively: `index = row * cols + col`. Column-major stores columns consecutively: `index = col * rows + row`. x86-64 C/C++ uses row-major by default. |
-| `strlen` return vs `strcpy` terminator | `strlen` returns the count of bytes **before** the NUL (length 5 for "hello"). `strcpy` copies **including** the NUL, so the destination needs `strlen(src) + 1` bytes of space. |
+| Confusion | Reality |
+|-----------|---------|
+| `strlen` includes NUL | It does not. |
+| Test then copy | Drops the terminator. Store then test. |
+| `memcpy` stops at NUL | It uses a count. |
+| Linux `strcpy(rdi, rsi)` | Windows `strcpy(rcx, rdx)`. |
+| `rep movsb` clobbers RSI/RDI | Save them; they are callee-saved here. |
+| `.DATA?` dst | Uninitialized until you copy. |
 
 ## Check yourself
 
-1. Write a loop that computes the length of a null-terminated string at `rdi`, returning the count in `rax`. What condition do you check, and when do you stop incrementing the pointer?
-2. You call `strcpy(dst, "abc")`. How many bytes are written to `dst`, and what is the value of the last byte written?
-3. Explain why `rep movsb` fails for `memcpy(dst, dst+4, 8)` (copying 8 bytes from `dst+4` to `dst` forward). What bytes end up being copied?
-4. An array of 10 structures, each containing 3 quadwords, starts at `base`. Write the expression to access the second quadword of the 5th structure (index 4).
-5. A 4×5 matrix (4 rows, 5 columns) of quadwords starts at `mat`. Write the formula to access element `mat[2][3]` (third row, fourth column).
+1. Listing 01: what is RAX after scanning `"Hello world"` including the space?
+2. Listing 02: why `sub rax, rcx` at `done`?
+3. Listing 03: how many stores run for `"test", 0`?
+4. Why push RSI/RDI around `rep movsb` on Windows but often not on Linux?
+5. Row-major 4×4 DWORDs: address of `(2, 3)` relative to base?
 
 ## Key takeaways
 
-- Null-terminated strings end with byte 0; string functions (`strlen`, `strcpy`, `strchr`) stop at NUL, while memory functions (`memcpy`, `memcmp`, `memset`) process an explicit byte count.
-- When copying a string, store each byte **then** test it for NUL; testing first leaves the terminator uncopied and the destination invalid.
-- `rep movsb` copies `rcx` bytes from `[rsi]` to `[rdi]` efficiently, but requires `cld` to clear the direction flag and only works for non-overlapping or backward-safe ranges.
-- Array of structures (AoS) stores each record's fields adjacently (stride = record size); structure of arrays (SoA) stores each field as a separate array (stride = element size). Choose based on access pattern.
-- Row-major matrices index as `row * cols + col`; always multiply row by column count first, then add column.
-- `strlen` returns the length **not** counting the NUL; allocate `strlen(s) + 1` bytes to hold the string and its terminator.
+- Two equivalent `strlen`s: index vs pointer-difference.
+- `strcpy` arguments are RCX/RDX; copy then `test al, al`.
+- Counted ops ignore terminators.
+- `cld` + `rep movsb`; preserve RSI/RDI.
+- Stride math for AoS/SoA/matrices.
 
-## Lookup
+## Lookup (reference only, not curriculum)
 
-- **String functions:** `man 3 strlen`, `man 3 strcpy`, `man 3 strcmp`, `man 3 strncpy`
-- **Memory functions:** `man 3 memcpy`, `man 3 memcmp`, `man 3 memset`
-- **String instructions:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2, entries for `movsb`, `stosb`, `rep`, `cld`, `std`
-- **Direction flag:** Volume 1, Chapter 3.4 (RFLAGS register, DF bit)
-- **Array indexing:** Any systems programming textbook chapter on arrays and data layout
+- Intel SDM: `movsb`, `rep`, `cld`
+- MS x64: RSI/RDI nonvolatile
 
 ## Exercises
 
-24 drills under `exercises/`. Solutions mirror names in `solutions/`. Build with:
-```bash
-nasm -f elf64 FILE -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-```
-
-Strings: `01-strlen.asm`, `02-strcpy.asm`, `08-from-scratch-strchr.asm`, `09-strcmp.asm`, `10-strncmp.asm`, `11-strchr.asm`, `12-strcat-lite.asm`, `17-bounded-strcpy.asm`, `18-debug-off-by-one-copy.asm`, `20-count-char.asm`, `22-stretch-itoa.asm`, `23-stretch-utf8-ascii-validate.asm`, `24-from-scratch-reverse-string.asm`. Memory: `03-memcmp.asm`, `04-memset.asm`, `07-rep-movsb.asm`, `13-memcpy-overlap-safe.asm`, `14-memchr.asm`. Layout: `05-array-reverse.asm`, `06-aos-sum.asm`, `15-aos-scale.asm`, `16-soa-sum.asm`, `19-matrix-index.asm`, `21-sparse-fill.asm`.
+Quoted listings: `01-strlen.asm`, `02-strlen-implementation.asm`, `03-strcpy-implementation.asm`.
