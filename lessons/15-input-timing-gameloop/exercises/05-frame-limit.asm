@@ -1,7 +1,7 @@
-; 05-frame-limit
+; 05-frame-limit: frame limit
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 05-frame-limit>
+.ERR <TODO: Implement frame limit>
 main PROC
 .ERR <TODO>
 main ENDP

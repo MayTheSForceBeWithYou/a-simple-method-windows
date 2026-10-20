@@ -1,7 +1,7 @@
-; 15-pause-flag
+; 15-pause-flag: pause flag
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 15-pause-flag>
+.ERR <TODO: Implement pause flag>
 main PROC
 .ERR <TODO>
 main ENDP

@@ -1,7 +1,7 @@
-; 12-timestep-spiral
+; 12-timestep-spiral: timestep spiral
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 12-timestep-spiral>
+.ERR <TODO: Implement timestep spiral>
 main PROC
 .ERR <TODO>
 main ENDP

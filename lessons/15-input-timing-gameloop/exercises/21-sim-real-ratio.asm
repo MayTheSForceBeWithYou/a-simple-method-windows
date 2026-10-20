@@ -1,7 +1,7 @@
-; 21-sim-real-ratio
+; 21-sim-real-ratio: sim real ratio
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 21-sim-real-ratio>
+.ERR <TODO: Implement sim real ratio>
 main PROC
 .ERR <TODO>
 main ENDP

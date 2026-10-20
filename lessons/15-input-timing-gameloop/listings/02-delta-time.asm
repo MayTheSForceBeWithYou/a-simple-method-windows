@@ -1,0 +1,15 @@
+; Calculate delta time, exit with dt
+.DATA?
+prev_time QWORD ?
+curr_time QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov prev_time, 100
+    mov curr_time, 142
+    mov rax, curr_time
+    sub rax, prev_time
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END

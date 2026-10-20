@@ -1,7 +1,7 @@
-; 09-key-down-up
+; 09-key-down-up: key down up
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 09-key-down-up>
+.ERR <TODO: Implement key down up>
 main PROC
 .ERR <TODO>
 main ENDP

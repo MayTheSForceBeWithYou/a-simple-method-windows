@@ -1,7 +1,7 @@
-; 18-input-queue
+; 18-input-queue: input queue
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-input-queue>
+.ERR <TODO: Implement input queue>
 main PROC
 .ERR <TODO>
 main ENDP

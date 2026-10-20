@@ -1,7 +1,7 @@
-; 02-dt-accum
+; 02-dt-accum: dt accum
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 02-dt-accum>
+.ERR <TODO: Implement dt accum>
 main PROC
 .ERR <TODO>
 main ENDP

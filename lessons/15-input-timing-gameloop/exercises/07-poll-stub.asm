@@ -1,7 +1,7 @@
-; 07-poll-stub
+; 07-poll-stub: poll stub
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 07-poll-stub>
+.ERR <TODO: Implement poll stub>
 main PROC
 .ERR <TODO>
 main ENDP

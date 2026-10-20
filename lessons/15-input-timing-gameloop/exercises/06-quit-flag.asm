@@ -1,7 +1,7 @@
-; 06-quit-flag
+; 06-quit-flag: quit flag
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 06-quit-flag>
+.ERR <TODO: Implement quit flag>
 main PROC
 .ERR <TODO>
 main ENDP

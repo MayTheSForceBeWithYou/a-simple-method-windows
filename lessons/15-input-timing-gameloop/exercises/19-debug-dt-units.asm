@@ -1,7 +1,7 @@
-; 19-debug-dt-units
+; 19-debug-dt-units: debug dt units
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 19-debug-dt-units>
+.ERR <TODO: Implement debug dt units>
 main PROC
 .ERR <TODO>
 main ENDP

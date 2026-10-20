@@ -1,7 +1,7 @@
-; 08-from-scratch-loop-counter
+; 08-from-scratch-loop-counter: from scratch loop counter
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 08-from-scratch-loop-counter>
+.ERR <TODO: Implement from scratch loop counter>
 main PROC
 .ERR <TODO>
 main ENDP
