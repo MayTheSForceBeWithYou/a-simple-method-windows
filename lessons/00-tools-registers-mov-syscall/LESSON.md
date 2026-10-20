@@ -1,191 +1,473 @@
 # Lesson 00 — Tools, Registers, `mov`, Win32 API Calls
 
-Assembly is not an opaque ritual. This lesson makes the toolchain cycle concrete: you type instructions in a text file, `ml64.exe` translates them to machine code, `link.exe` packages the result as a Windows PE executable, and your CPU runs it. Once you understand how data moves between registers and how to request operating system services via the Win32 API, you can write programs that do real work. By the end of this lesson, you will build executables from scratch, name every general-purpose register, call Win32 API functions to print text and exit cleanly, and understand why Windows uses function calls where Linux uses the `syscall` instruction.
+Assembly is not an opaque ritual. This lesson makes the toolchain cycle concrete: you type instructions in a text file, `ml64.exe` translates them to machine code, `link.exe` packages the result as a Windows PE executable, and your CPU runs it. Once you understand how data moves between registers and how to request operating system services via the Win32 API, you can write programs that do real work. By the end of this lesson, you will build executables from scratch, name every general-purpose register, call Win32 API functions to print text and exit cleanly, and understand why Windows uses imported function calls where Linux uses the `syscall` instruction.
 
 ## What this lesson asks of you
 
-You must be able to assemble and link a freestanding x86-64 PE executable using `ml64.exe` and `link.exe /ENTRY:main /SUBSYSTEM:CONSOLE`, write a program that calls Win32 API functions (`GetStdHandle`, `WriteFile` or `WriteConsoleA`, and `ExitProcess`) to print text and terminate, and name the general-purpose registers and their size variants (64/32/16/8-bit). You will also distinguish between `mov` (data transfer) and `xor reg, reg` (the idiomatic zero), understand the Microsoft x64 calling convention (first four arguments in RCX, RDX, R8, R9 with required 32-byte shadow space), and interpret basic tool output from `dumpbin` to confirm your program matches your intent. These are not language features to memorize — they are the observable mechanics of how a Windows process starts, runs, and stops.
+You must be able to assemble and link a freestanding x86-64 PE executable using `ml64.exe` and `link.exe /ENTRY:main /SUBSYSTEM:CONSOLE`, write a program that calls Win32 API functions (`GetStdHandle`, `WriteFile`, and `ExitProcess`) to print text and terminate, and name the general-purpose registers and their size variants (64/32/16/8-bit). You will also distinguish between `mov` (data transfer) and `xor reg, reg` (the idiomatic zero), understand the Microsoft x64 calling convention (first four arguments in RCX, RDX, R8, R9 with required 32-byte shadow space), and interpret basic tool output from `dumpbin` to confirm your program matches your intent. These are not language features to memorize — they are the observable mechanics of how a Windows process starts, runs, and stops.
 
 ## Toolchain: from source text to runnable PE executable
 
-This course targets **Windows 11** with **Visual Studio 2022 or later**. You must work from the **x64 Native Tools Command Prompt for VS** (find it in your Start menu under "Visual Studio 2022" → "x64 Native Tools Command Prompt"). This specialized command prompt sets environment variables so `ml64.exe` (Microsoft Macro Assembler for x64) and `link.exe` (Microsoft linker) are in your PATH. Verify with `ml64 /?` and `link /?`.
+This course targets **Windows 11** with **Visual Studio 2022 or later**. You must work from the **x64 Native Tools Command Prompt for VS** (Start menu → Visual Studio 2022 → x64 Native Tools Command Prompt). That prompt puts `ml64.exe` (Microsoft Macro Assembler for x64) and `link.exe` (Microsoft linker) on PATH. Verify with `ml64 /?` and `link /?`.
 
-The basic build cycle has two steps. First, `ml64 /c program.asm` assembles your source text (`program.asm`) into an object file (`program.obj`) containing machine code and metadata. The `/c` flag means "compile only, do not link." Second, `link /OUT:program.exe /ENTRY:main /SUBSYSTEM:CONSOLE program.obj kernel32.lib` links the object file with the Win32 import library (`kernel32.lib`) into an executable binary named `program.exe`. The `/ENTRY:main` flag specifies the entry point symbol, and `/SUBSYSTEM:CONSOLE` indicates a console (not GUI) application. The linker resolves symbols, lays out PE (Portable Executable) sections, and produces a file the Windows loader can run. Run the program with `.\program.exe` (or just `program`) and check its exit status with `echo %ERRORLEVEL%` in cmd.exe or `$LASTEXITCODE` in PowerShell.
+The basic build cycle has two steps. First, `ml64 /c program.asm` assembles source into `program.obj`. The `/c` flag means assemble only, do not link. Second, `link /OUT:program.exe /ENTRY:main /SUBSYSTEM:CONSOLE program.obj kernel32.lib` links the object with the Win32 import library into a console PE executable. `/ENTRY:main` names the entry symbol. `/SUBSYSTEM:CONSOLE` tells the loader this is a console process, not a GUI process. Run with `program.exe` and inspect the exit status with `echo %ERRORLEVEL%` in cmd.exe or `$LASTEXITCODE` in PowerShell.
 
-Repeat this cycle until it becomes automatic: edit `.asm`, assemble with `ml64 /c`, link with `link`, run, inspect. This is your feedback loop.
+The listing files in this lesson show the exact `ml64` and `link` command lines in their headers. Repeat the cycle until it is automatic: edit `.asm`, assemble, link, run, inspect.
 
 ## How your program talks to Windows: the Win32 API
 
-Your program is a sequence of instructions and data loaded into memory. The CPU fetches each instruction from memory, decodes it, executes it, and moves to the next. Instructions can read and write registers (small, fast storage inside the CPU) and memory (larger, slower, addressed storage). But the CPU alone cannot read files, print to the terminal, or allocate more memory — those operations require cooperation from the Windows kernel.
+Your program is a sequence of instructions and data loaded into memory. The CPU fetches each instruction, decodes it, executes it, and moves to the next. Instructions can read and write registers and memory. The CPU alone cannot print to the console or exit a process — those operations require the Windows kernel.
 
-Unlike Linux, where programs request kernel services using the `syscall` instruction with a number in `rax`, Windows programs call imported functions from system DLLs (dynamic-link libraries). The three most important for console programs are `GetStdHandle`, `WriteFile` (or `WriteConsoleA` for simpler console-only text), and `ExitProcess`, all exported from `kernel32.dll`. You import these by declaring them as `EXTERN` symbols and linking with `kernel32.lib`, which provides the import stubs. At runtime, the Windows loader resolves these stubs to the actual function addresses in `kernel32.dll`.
+Linux user-mode programs request kernel services with the `syscall` instruction and a number in `rax`. That approach does not carry over. Windows syscall numbers are undocumented and change between builds; user-mode code goes through exported DLL functions instead. The three functions this lesson uses are `GetStdHandle`, `WriteFile`, and `ExitProcess`, all from `kernel32.dll`. You import them by declaring `EXTRN Name:PROC` (MASM also accepts `EXTERN`) and linking `kernel32.lib`. At runtime the loader patches the Import Address Table so `call WriteFile` becomes an indirect call through the IAT.
 
-Windows uses the **Microsoft x64 calling convention**: the first four integer or pointer arguments go into **RCX, RDX, R8, R9** (in that order), and any additional arguments go on the stack above a required 32-byte **shadow space** (also called home space) that the caller must allocate. The shadow space is reserved for the callee to spill the register arguments if needed, though modern code rarely does this. Before every `call` instruction, you must ensure that RSP points to at least 32 bytes of free stack space, and that RSP is 16-byte aligned (the `call` itself pushes an 8-byte return address, misaligning it by 8, so your shadow space allocation should restore alignment). The return value comes back in RAX, just like on Linux.
+Windows uses the **Microsoft x64 calling convention**: the first four integer or pointer arguments go in **RCX, RDX, R8, R9**. Further arguments go on the stack starting at `[rsp+32]`. The caller must allocate **32 bytes of shadow space** (home space) before every `call`. Return values come back in RAX.
 
-For `WriteConsoleA(handle, buffer, chars_to_write, &chars_written, NULL)`, you set RCX to the console handle (obtained from `GetStdHandle`), RDX to the buffer address, R8 to the character count, R9 to the address of a variable that will receive the actual count written, and the fifth argument (NULL) goes at `[rsp+32]` (the first stack slot after shadow space). For `ExitProcess(exitCode)`, you set RCX to the exit code (a 32-bit unsigned integer, though you pass it as a 64-bit value in RCX). These are function calls, not syscalls, so you use the `call` instruction and the function returns normally.
+`GetStdHandle` takes one argument: the standard-handle constant in RCX. `STD_OUTPUT_HANDLE` is −11; `STD_ERROR_HANDLE` is −12; `STD_INPUT_HANDLE` is −10. The HANDLE comes back in RAX.
+
+`WriteFile` takes five arguments: HANDLE in RCX, buffer pointer in RDX, byte count in R8, pointer to a DWORD that receives the written count in R9, and an OVERLAPPED pointer (NULL for synchronous I/O) at `[rsp+32]`.
+
+`ExitProcess` takes the exit code in RCX (UINT, 32-bit). It does not return.
 
 ## General-purpose registers and their size variants
 
-x86-64 provides sixteen general-purpose registers (GPRs). Each has multiple names depending on how many bits you want to access:
+x86-64 provides sixteen general-purpose registers. Each has multiple names depending on how many bits you access:
 
 | 64-bit | 32-bit | 16-bit | 8-bit low | Notes |
 |--------|--------|--------|-----------|-------|
 | `rax` | `eax` | `ax` | `al` | Accumulator; function return value |
 | `rbx` | `ebx` | `bx` | `bl` | General use; nonvolatile (callee-saved) |
-| `rcx` | `ecx` | `cx` | `cl` | First integer/pointer argument; volatile (caller-saved) |
+| `rcx` | `ecx` | `cx` | `cl` | First integer/pointer argument; volatile |
 | `rdx` | `edx` | `dx` | `dl` | Second integer/pointer argument; volatile |
-| `rsi` | `esi` | `si` | `sil` | Source index; **nonvolatile on Windows** (callee-saved) |
-| `rdi` | `edi` | `di` | `dil` | Destination index; **nonvolatile on Windows** (callee-saved) |
-| `rbp` | `ebp` | `bp` | `bpl` | Base pointer (stack frame, optional); nonvolatile |
-| `rsp` | `esp` | `sp` | `spl` | Stack pointer (top of stack) |
-| `r8`–`r11` | `r8d`–`r11d` | `r8w`–`r11w` | `r8b`–`r11b` | R8, R9 are arguments 3 and 4; R8-R11 are volatile |
-| `r12`–`r15` | `r12d`–`r15d` | `r12w`–`r15w` | `r12b`–`r15b` | General use; nonvolatile (callee-saved) |
+| `rsi` | `esi` | `si` | `sil` | Source index; **nonvolatile on Windows** |
+| `rdi` | `edi` | `di` | `dil` | Destination index; **nonvolatile on Windows** |
+| `rbp` | `ebp` | `bp` | `bpl` | Frame pointer (optional); nonvolatile |
+| `rsp` | `esp` | `sp` | `spl` | Stack pointer |
+| `r8`–`r11` | `r8d`–`r11d` | `r8w`–`r11w` | `r8b`–`r11b` | R8, R9 are arguments 3 and 4; R8–R11 volatile |
+| `r12`–`r15` | `r12d`–`r15d` | `r12w`–`r15w` | `r12b`–`r15b` | General use; nonvolatile |
 
-The size you choose matters. Writing to a 32-bit register name (`eax`) **zero-extends** the value into the full 64-bit register (`rax`), meaning the upper 32 bits are cleared. Writing to an 8-bit register name (`al`) leaves the upper 56 bits of `rax` **unchanged**. This is an architectural rule you must internalize: `mov eax, 42` sets `rax` to exactly 42 (clearing the high bits), but `mov al, 42` only modifies the lowest byte.
+Writing a 32-bit register name (`eax`) **zero-extends** into the full 64-bit register. Writing an 8-bit name (`al`) leaves the upper 56 bits unchanged. Listing `03-register-sizes` makes that observable.
 
-**Critical for Windows:** RSI and RDI are **nonvolatile** registers under the Microsoft x64 ABI, meaning if you modify them in your function, you must save them on entry and restore them before returning. This is the opposite of the Linux System V ABI, where RSI and RDI are volatile (caller-saved) because they are used for the first two function arguments. On Windows, the first two arguments use RCX and RDX instead.
+**Critical for Windows:** RSI and RDI are **nonvolatile**. If a procedure that returns modifies them, it must save and restore them. This is the opposite of the Linux System V ABI, where they are volatile argument registers. RBX, RBP, and R12–R15 are also nonvolatile. RAX, RCX, RDX, R8–R11 are volatile.
 
 ## Moving data with `mov` and the zero idiom
 
-The `mov` instruction copies data from source to destination. In Intel/NASM syntax the destination comes first and the source second (`mov dest, src`): `mov rax, 42` puts the immediate value 42 into `rax`, and `mov rdi, rax` copies the contents of `rax` into `rdi`. You cannot `mov` directly from memory to memory; at most one operand can be a memory reference.
+`mov dest, src` copies from source to destination. You cannot `mov` memory to memory; at most one operand may be a memory reference. Listing `05-mov-data-movement` moves immediates into registers, copies register to register, and uses `add` to accumulate an exit code.
 
-To zero a register, you could write `mov rax, 0`, which works but requires encoding the immediate value 0 in the instruction. The idiomatic way is `xor rax, rax` — exclusive-OR of a value with itself always produces zero, and this encoding is shorter and recognized by the CPU's dependency-tracking logic. You will see `xor edi, edi` (zeroing the 32-bit `edi`, which zero-extends to `rdi`) frequently in examples.
+To zero a register, `mov ecx, 0` works. The idiomatic form is `xor ecx, ecx`: XOR of a value with itself is zero, the encoding is shorter, and writing ECX zero-extends into RCX. Listing `04-xor-zero-idiom` shows both.
 
 ## PE/COFF sections and data declarations in MASM
 
-An assembly source file is divided into **sections**. In MASM, you use directives to declare sections: `.code` for executable code, `.data` for initialized read-write data, `.const` for read-only constants, and `.data?` for uninitialized zero-filled data (which occupies no file space — the loader zeros it at load time). These MASM directives map to PE (Portable Executable) sections: `.code` becomes the `.text` section in the PE file, `.data` becomes `.data`, `.const` becomes `.rdata` (read-only data), and `.data?` becomes uninitialized space in `.data`.
+MASM section directives map onto PE sections:
 
-You declare data with directives like `BYTE` (1 byte), `WORD` (2 bytes), `DWORD` (4 bytes), and `QWORD` (8 bytes). MASM also accepts the lowercase synonyms `db`, `dw`, `dd`, `dq` from other assemblers. For example, `msg BYTE "Hello", 10, 0` declares a byte sequence containing the ASCII codes for "Hello", followed by byte 10 (newline) and a null terminator. The special symbol `$` represents the current assembly address, so `msg_len EQU $ - msg` defines `msg_len` as the distance in bytes from label `msg` to the current position — in other words, the length of `msg`. MASM uses `EQU` (uppercase or lowercase) for constants, which cannot be reassigned; you can also use `=` for reassignable symbols, but `EQU` is more common for true constants.
+| MASM | PE section | Purpose |
+|------|------------|---------|
+| `.CODE` | `.text` | Executable instructions |
+| `.DATA` | `.data` | Initialized read-write data |
+| `.CONST` | `.rdata` | Read-only initialized data |
+| `.DATA?` | `.bss`/uninitialized `.data` | Uninitialized storage, zeroed at load |
 
-## Entry point: `main PROC` and the linker
+MASM is case-insensitive for directives. The listings use `.CODE`, `.DATA`, `.DATA?`. Data may be declared with `DB`/`DW`/`DD`/`DQ` or `BYTE`/`WORD`/`DWORD`/`QWORD`. `$` is the current assembly address, so `msg_len EQU $ - msg` is the length of `msg` in bytes.
 
-When you link with `link.exe`, you specify the entry point with the `/ENTRY:` flag (e.g., `/ENTRY:main`). In MASM, you define procedures with the `PROC` and `ENDP` directives. A procedure declared with `PROC` is implicitly public when named as the entry point, so you do not need a separate `PUBLIC` declaration (though you can include one for clarity). You must end the file with the `END` directive, optionally naming the entry point again:
+Windows console text conventionally uses CRLF (`13, 10`), not Unix LF (`10`). The hello listing stores `"Hello, asm", 13, 10`.
 
-<!-- LISTING-PENDING: lessons/00-tools-registers-mov-syscall/listings/entry-skeleton.asm -->
+## Entry point: `main PROC`, unwind info, and the linker
+
+`link.exe /ENTRY:main` looks for the symbol `main`. `PROC`/`ENDP` define a procedure. The file must end with `END`.
+
+A procedure that saves nonvolatile registers or allocates stack and then calls other functions should emit **unwind information** so Windows can walk the stack on exceptions. ml64 does that with `PROC FRAME` plus prologue directives:
+
+- `.pushreg reg` — records a `push` of a nonvolatile register
+- `.allocstack n` — records `sub rsp, n`
+- `.endprolog` — marks the end of the prologue; the body follows
+
+Those directives assemble to no instructions. They describe the prologue to the unwinder. Listing `02-hello-world` uses this form.
+
+The smallest complete program that only calls `ExitProcess` does not need FRAME. It still needs 32 bytes of shadow space before the call:
 
 ```asm
-.code
+; Listing 01: Exit with status code
+;
+; Purpose: Demonstrates the minimal Win32 program that exits with a specific status.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo01-exit-code.obj 01-exit-code.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-exit-code.exe 01-exit-code.obj kernel32.lib
+; Run: 01-exit-code.exe & echo %ERRORLEVEL%
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
 main PROC
-    ; your code here
-    ret
+    mov ecx, 42                ; Exit status in RCX (first argument, MS x64 ABI)
+    sub rsp, 32                ; Shadow space (32 bytes required by ABI)
+    call ExitProcess           ; Never returns
 main ENDP
+
 END
 ```
 
-This is a **linker and MASM convention**, not a language keyword. The `PROC`/`ENDP` pair defines a procedure; `END` marks the end of the source file. If you forget `END`, the assembler will issue an error. The linker expects the symbol you named with `/ENTRY:` to exist and be a valid code address; if you misspell it or forget to define `main`, the linker will complain about an unresolved entry point.
+`mov ecx, 42` zero-extends into RCX. `sub rsp, 32` is the mandatory shadow space. `ExitProcess` never returns, so there is no `add rsp, 32` and no `ret`.
 
 ## Worked example: printing "Hello" and exiting
 
-Let's walk through a complete program that prints "Hello, asm\n" to stdout and exits with status 0. Here is the source:
-
-<!-- LISTING-PENDING: lessons/00-tools-registers-mov-syscall/listings/hello-world.asm -->
+The complete stdout program is listing `02-hello-world`. It uses `WriteFile` (the same API used for files and redirected stdout) rather than `WriteConsoleA` (console-only).
 
 ```asm
-EXTERN GetStdHandle:PROC
-EXTERN WriteConsoleA:PROC
-EXTERN ExitProcess:PROC
+; Listing 02: Hello, World
+;
+; Purpose: Complete program that writes "Hello, asm\n" to stdout and exits cleanly.
+; Expected exit code: 0
+; Expected output: Hello, asm\n
+;
+; Build: ml64 /c /Fo02-hello-world.obj 02-hello-world.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-hello-world.exe 02-hello-world.obj kernel32.lib
 
-.data
-    msg BYTE "Hello, asm", 10, 0
-    msg_len EQU $ - msg - 1    ; subtract 1 for null terminator
+.DATA
+msg DB "Hello, asm", 13, 10   ; Message with CR LF (Windows line ending)
+msg_len EQU $ - msg            ; Length = 12 bytes
 
-.data?
-    charsWritten QWORD ?
+.DATA?
+bytes_written DQ ?             ; Storage for WriteFile output parameter
 
-.code
-main PROC
-    ; Allocate shadow space (32 bytes minimum, but we need 40 for alignment)
-    ; After 'call' pushes 8 bytes, stack is misaligned by 8, so add 40 to realign
-    sub rsp, 40
+.CODE
 
-    ; Get stdout handle: GetStdHandle(STD_OUTPUT_HANDLE = -11)
-    mov rcx, -11            ; STD_OUTPUT_HANDLE constant
-    call GetStdHandle
-    mov rbx, rax            ; save handle in RBX (nonvolatile)
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
 
-    ; Write to console: WriteConsoleA(handle, buffer, chars, &written, NULL)
-    mov rcx, rbx            ; console handle
-    lea rdx, msg            ; buffer address
-    mov r8d, msg_len        ; number of characters (32-bit is fine, zero-extends)
-    lea r9, charsWritten    ; address of DWORD to receive count
-    mov QWORD PTR [rsp+32], 0  ; fifth argument (NULL) at first stack slot after shadow space
-    call WriteConsoleA
+main PROC FRAME
+    push rbx                   ; Save nonvolatile register
+    .pushreg rbx
+    sub rsp, 32                ; Shadow space for calls
+    .allocstack 32
+    .endprolog
 
-    ; Exit: ExitProcess(0)
-    xor ecx, ecx            ; exit code 0 (writing ECX zero-extends RCX)
+    ; GetStdHandle(STD_OUTPUT_HANDLE = -11)
+    mov ecx, -11               ; STD_OUTPUT_HANDLE
+    call GetStdHandle          ; Returns handle in RAX
+
+    mov rbx, rax               ; Save stdout handle in nonvolatile RBX
+
+    ; WriteFile(handle, buffer, count, &bytes_written, NULL)
+    mov rcx, rbx               ; arg1: handle
+    lea rdx, msg               ; arg2: buffer address
+    mov r8d, msg_len           ; arg3: byte count
+    lea r9, bytes_written      ; arg4: pointer to bytes written
+    mov qword ptr [rsp+32], 0  ; arg5 (on stack): overlapped = NULL
+    call WriteFile
+
+    ; ExitProcess(0)
+    xor ecx, ecx               ; Exit status 0
     call ExitProcess
-    ; ExitProcess does not return
 main ENDP
+
 END
 ```
 
-Step through the reasoning. In `.data`, we declare `msg` as a byte sequence: the ASCII codes for "Hello, asm", byte 10 (newline), and a null terminator (0). The null terminator is not required by `WriteConsoleA`, which takes an explicit character count, but it is good practice when you might later pass the string to a function expecting a C-style string. `msg_len EQU $ - msg - 1` computes the length in bytes by subtracting the address of `msg` from the current address `$`, then subtracting 1 to exclude the null terminator. After assembling the 13-byte sequence, `$` points one byte past the null, so `$ - msg` equals 13, and `msg_len` equals 12. In `.data?`, we reserve 8 bytes (a QWORD) for `charsWritten`, which `WriteConsoleA` will fill with the actual number of characters written. This variable is uninitialized, so it goes in `.data?` to save file space.
+Step through the register and stack state.
 
-In `.code`, we define `main PROC` as the entry point. The first instruction allocates **40 bytes** on the stack. Why 40? We need 32 bytes of shadow space (the Microsoft x64 ABI requires this before every call), plus the stack must remain 16-byte aligned. The `call` instruction will push an 8-byte return address, misaligning RSP by 8. So we allocate 40 bytes: 32 for shadow space and 8 for alignment padding. After `sub rsp, 40`, RSP is 16-byte aligned again, minus the 8 bytes the next `call` will push, leaving RSP correctly aligned inside the called function.
+`.DATA` holds `msg`: ASCII `"Hello, asm"` plus CR (13) and LF (10), 12 bytes. `msg_len EQU $ - msg` is 12. `.DATA?` reserves `bytes_written`. `WriteFile` writes a DWORD (4 bytes) through that pointer; the listing reserves 8. Extra space is harmless if nothing else shares those bytes.
 
-Next, we call `GetStdHandle(STD_OUTPUT_HANDLE)` to obtain a handle to the standard output. The constant `STD_OUTPUT_HANDLE` is -11 (a pseudo-handle). We place -11 in RCX (the first argument register) and `call GetStdHandle`. The handle returns in RAX. We save it in RBX because RBX is nonvolatile (callee-saved) — any function we call must preserve RBX, so we can trust it will still hold our handle after `WriteConsoleA` returns.
+`main PROC FRAME` begins the unwind-aware prologue. After the process starts, RSP holds the return address and is 8 mod 16. `push rbx` stores the incoming RBX and leaves RSP 0 mod 16. `sub rsp, 32` allocates shadow space. `.pushreg` / `.allocstack` / `.endprolog` record that prologue for the unwinder.
 
-Next, we call `WriteConsoleA(handle, buffer, chars_to_write, &chars_written, NULL)`. The five arguments are:
-- RCX: console handle (we move RBX, the saved handle, into RCX)
-- RDX: buffer address (we use `lea rdx, msg` to load the address; in MASM 64-bit mode, this generates RIP-relative addressing automatically)
-- R8: character count (we move `msg_len`, which is 12, into R8D; writing a 32-bit register zero-extends the upper 32 bits of the 64-bit register)
-- R9: address of a QWORD to receive the count written (we use `lea r9, charsWritten`)
-- Fifth argument at `[rsp+32]`: NULL (we mov 0 into the first stack slot after shadow space, which is at offset 32 from RSP)
+`mov ecx, -11` then `call GetStdHandle` returns a HANDLE in RAX. The next `call` will clobber RAX, RCX, RDX, R8–R11, so the HANDLE is copied into RBX (nonvolatile).
 
-Then `call WriteConsoleA` invokes the function. It writes 12 characters (excluding the null terminator) to the console, fills `charsWritten` with 12, and returns a nonzero value in RAX (indicating success; zero would mean failure, in which case you would call `GetLastError` to learn why).
+`WriteFile` setup immediately before the call:
 
-Finally, we prepare to exit: `xor ecx, ecx` zeroes RCX (the exit code) idiomatically, and `call ExitProcess` terminates the process. `ExitProcess` does not return; the process ends immediately.
+| Slot | Value |
+|------|--------|
+| RCX | stdout HANDLE (from RBX) |
+| RDX | address of `msg` (`lea` is RIP-relative in 64-bit MASM) |
+| R8 | 12 (`msg_len`, written as `r8d`) |
+| R9 | address of `bytes_written` |
+| `[rsp+32]` | 0 (lpOverlapped = NULL) |
+
+Then `xor ecx, ecx` / `call ExitProcess` terminates with status 0.
 
 ### A plausible wrong reading (and why it fails)
 
-A common mistake is to forget the shadow space allocation or to misalign the stack before calling a function. Suppose you remove the `sub rsp, 40` instruction, thinking "I'm only using register arguments, so I don't need stack space." When you `call GetStdHandle`, the function expects the caller to have reserved 32 bytes of shadow space at `[rsp]` through `[rsp+31]`. Without it, the function might write into your return address (at `[rsp]`) or other important stack data, corrupting the stack and causing a crash or silent misbehavior when the function returns.
+*"I saved RBX with `push rbx` and then allocated 32 bytes of shadow space, so `[rsp+32]` is free for the fifth `WriteFile` argument."*
 
-Another common mistake is to use the Linux (System V) calling convention registers by habit: putting the first argument in RDI instead of RCX. If you write `mov rdi, -11` and `call GetStdHandle`, the function looks for its first argument in RCX, finds whatever garbage value happens to be there, interprets it as a pseudo-handle constant, and returns an invalid handle or crashes. Nothing about x86-64 function calls is automatic or forgiving — the ABI is a contract, and both sides must follow it exactly. Consult the Microsoft x64 calling convention documentation and map parameters by **role** (first arg → RCX, second → RDX, third → R8, fourth → R9, fifth and beyond → stack), not by Linux habit.
+**Why it fails:** After `push rbx` then `sub rsp, 32`, the saved RBX lives at `[rsp+32]`. Storing 0 there overwrites the saved RBX. `ExitProcess` never returns, so this listing still exits 0, which hides the overwrite. A procedure that later `pop rbx` / `ret` would restore 0 instead of the caller's RBX and violate the ABI. The fifth parameter needs its own stack slot *in addition* to shadow space: typically `sub rsp, 40` or `sub rsp, 48` after the push so `[rsp+32]` is not the saved register. Listing `06-write-two-messages` allocates 40 bytes after two pushes and does not collide. Do not treat the hello listing's 32-byte allocation as the general pattern for a 5-argument call that also pushed a register. See `docs/PROSE_TECH_FLAGS.md`.
+
+A second wrong reading is putting the first argument in RDI because Linux does. `GetStdHandle` reads RCX. Garbage in RCX produces `INVALID_HANDLE_VALUE` or a crash. Map arguments by role: 1→RCX, 2→RDX, 3→R8, 4→R9, 5+→`[rsp+32]` onward.
+
+## Register sizes, XOR-zero, and `mov`
+
+Listing `03-register-sizes` fills RAX with −1, then writes 42 to EAX (RAX becomes `0x000000000000002A`) versus AL (RAX becomes `0xFFFFFFFFFFFFFF2A`). It exits 42.
+
+```asm
+; Listing 03: Register size variants and zero-extension
+;
+; Purpose: Demonstrates how writing to 32-bit register names zero-extends to 64 bits,
+;          while writing to 8-bit or 16-bit names leaves upper bits unchanged.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo03-register-sizes.obj 03-register-sizes.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-register-sizes.exe 03-register-sizes.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32                ; Shadow space
+
+    ; Demonstrate zero-extension with 32-bit write
+    mov rax, -1                ; Fill RAX with all 1s (0xFFFFFFFFFFFFFFFF)
+    mov eax, 42                ; Write to EAX zeros upper 32 bits
+                               ; RAX is now 0x000000000000002A (42)
+
+    ; Demonstrate partial update with 8-bit write
+    mov rax, -1                ; Fill RAX with all 1s again
+    mov al, 42                 ; Write to AL leaves upper 56 bits unchanged
+                               ; RAX is now 0xFFFFFFFFFFFFFF2A
+
+    ; Exit with 42 (using zero-extending 32-bit write)
+    mov ecx, 42                ; Zero-extends to RCX
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Listing `04-xor-zero-idiom` zeros ECX two ways and exits 0:
+
+```asm
+; Listing 04: The XOR-to-zero idiom
+;
+; Purpose: Demonstrates the idiomatic way to zero a register using XOR.
+; Expected exit code: 0
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo04-xor-zero-idiom.obj 04-xor-zero-idiom.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-xor-zero-idiom.exe 04-xor-zero-idiom.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32                ; Shadow space
+
+    ; Two ways to zero a register:
+    mov ecx, 0                 ; Explicit zero (works but longer encoding)
+    
+    ; Better: XOR idiom
+    xor ecx, ecx               ; Shorter encoding, recognized by CPU
+                               ; XOR of anything with itself = 0
+                               ; Also zero-extends to 64 bits (ECX -> RCX)
+
+    call ExitProcess           ; Exit with 0
+main ENDP
+
+END
+```
+
+Listing `05-mov-data-movement` accumulates 5 + 5 + 5 = 15 in RAX and exits 15. It uses RBX without saving it. `main` never returns (`ExitProcess`), so the process does not restore a caller. A returning procedure would have to `push rbx` / `pop rbx`.
+
+```asm
+; Listing 05: Moving data with MOV
+;
+; Purpose: Demonstrates various forms of the MOV instruction.
+; Expected exit code: 15
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo05-mov-data-movement.obj 05-mov-data-movement.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-mov-data-movement.exe 05-mov-data-movement.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 32                ; Shadow space
+
+    ; Immediate to register
+    mov rax, 5                 ; RAX = 5
+
+    ; Register to register
+    mov rbx, rax               ; RBX = RAX = 5
+
+    ; Add to get 10
+    add rax, rbx               ; RAX = 10
+
+    ; Move to another register
+    mov rdx, rax               ; RDX = 10
+    
+    ; Compute exit code: 10 + 5 = 15
+    add rax, rbx               ; RAX = 15
+    
+    ; Move to exit parameter register
+    mov rcx, rax               ; RCX = 15
+    
+    call ExitProcess
+main ENDP
+
+END
+```
+
+## Two writes, then stderr
+
+`GetStdHandle` once, then two `WriteFile` calls. HANDLE stays in RBX across both calls because RBX is nonvolatile. RSI is pushed as well so the unwind info matches the extra alignment `sub rsp, 40`.
+
+```asm
+; Listing 06: Multiple writes to stdout
+;
+; Purpose: Demonstrates calling WriteFile multiple times with different messages.
+; Expected exit code: 0
+; Expected output: First line\nSecond line\n
+;
+; Build: ml64 /c /Fo06-write-two-messages.obj 06-write-two-messages.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-write-two-messages.exe 06-write-two-messages.obj kernel32.lib
+
+.DATA
+msg1 DB "First line", 13, 10
+msg1_len EQU $ - msg1
+msg2 DB "Second line", 13, 10
+msg2_len EQU $ - msg2
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    push rsi
+    .pushreg rsi
+    sub rsp, 40                ; Shadow space + alignment (total 56, 16-aligned)
+    .allocstack 40
+    .endprolog
+
+    ; Get stdout handle
+    mov ecx, -11
+    call GetStdHandle
+    mov rbx, rax               ; Save handle
+
+    ; Write first message
+    mov rcx, rbx
+    lea rdx, msg1
+    mov r8d, msg1_len
+    lea r9, bytes_written
+    mov qword ptr [rsp+32], 0
+    call WriteFile
+
+    ; Write second message
+    mov rcx, rbx
+    lea rdx, msg2
+    mov r8d, msg2_len
+    lea r9, bytes_written
+    mov qword ptr [rsp+32], 0
+    call WriteFile
+
+    ; Exit
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Stderr is the same pattern with `STD_ERROR_HANDLE = -12`:
+
+```asm
+; Listing 07: Writing to stderr instead of stdout
+;
+; Purpose: Demonstrates using GetStdHandle with STD_ERROR_HANDLE.
+; Expected exit code: 0
+; Expected output: (to stderr) Error message\n
+;
+; Build: ml64 /c /Fo07-stderr-output.obj 07-stderr-output.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-stderr-output.exe 07-stderr-output.obj kernel32.lib
+; Run: 07-stderr-output.exe 2>&1
+
+.DATA
+msg DB "Error message", 13, 10
+msg_len EQU $ - msg
+
+.DATA?
+bytes_written DQ ?
+
+.CODE
+
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+
+    ; GetStdHandle(STD_ERROR_HANDLE = -12)
+    mov ecx, -12               ; STD_ERROR_HANDLE (not -11 for stdout)
+    call GetStdHandle
+    mov rbx, rax
+
+    ; WriteFile to stderr
+    mov rcx, rbx
+    lea rdx, msg
+    mov r8d, msg_len
+    lea r9, bytes_written
+    mov qword ptr [rsp+32], 0
+    call WriteFile
+
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Same `[rsp+32]` versus saved-RBX layout as the hello listing. Redirect stderr with `2>` to see the message separately from stdout.
 
 ## Distinctions worth keeping straight
 
 | Confusion | What actually separates them |
 |-----------|------------------------------|
-| `mov rax, 42` vs `mov eax, 42` | Both leave all of `rax` equal to 42. Writing any 32-bit register zeroes the upper 32 bits of the full 64-bit register (zero-extension), so `mov eax, 42` clears the top half of `rax` too. Because 42 fits in 32 bits, MASM will assemble `mov rax, 42` as effectively `mov eax, 42` (5 bytes) unless the immediate requires the full 64-bit width. |
-| `mov al, 42` vs `mov eax, 42` | `mov al, 42` only changes the lowest byte of `rax`; the upper bits remain unchanged. `mov eax, 42` zero-extends and clears all upper bits. |
-| `xor ecx, ecx` vs `mov rcx, 0` | Both set RCX to zero, but `xor ecx, ecx` (or `xor rcx, rcx`) produces a shorter encoding and is the idiomatic form. Writing ECX zero-extends into RCX automatically. |
-| Win32 API calls vs `syscall` | Windows programs call imported functions (like `GetStdHandle`, `WriteConsoleA`, `ExitProcess`) using the `call` instruction and the Microsoft x64 calling convention. The `syscall` instruction exists on x86-64 but is not used by Windows user-mode programs — syscall numbers are undocumented and change between Windows builds. Linux uses `syscall` with stable syscall numbers; Windows uses a stable API of exported functions. |
-| `main PROC` vs `_start` | On Windows with `link.exe /ENTRY:main`, your entry point is `main` (or whatever symbol you specify with `/ENTRY`). There is no C runtime unless you link with the C runtime library (`msvcrt.lib` or similar), which we do not do in early lessons. On Linux with `ld`, the default entry point is `_start`. The entry point name is a convention, not a language feature. |
-| `ml64 /c` vs `ml64` alone | The `/c` flag means "assemble only, do not link." Without it, `ml64` will attempt to invoke the linker, which may fail with missing flags. Always use `/c` for assembly-only, then run `link.exe` explicitly with the required flags. |
-| Shadow space (32 bytes) vs no allocation | The Microsoft x64 ABI **requires** the caller to allocate at least 32 bytes (4 × 8-byte slots) on the stack before every `call`, even if the function has fewer than four arguments. This shadow space is reserved for the callee to spill RCX, RDX, R8, R9 if needed. Omitting it violates the ABI and can corrupt the stack. On Linux, there is a 128-byte "red zone" below RSP that leaf functions can use without adjusting RSP, but no shadow space requirement for calls. |
-| RSI/RDI nonvolatile vs volatile | On Windows, RSI and RDI are **nonvolatile** (callee-saved): if your function modifies them, you must save them on entry and restore them before returning. On Linux (System V ABI), RSI and RDI are **volatile** (caller-saved) because they hold the first two function arguments and the callee is free to clobber them. This is a fundamental ABI difference. |
+| `mov rax, 42` vs `mov eax, 42` | Writing any 32-bit register zeroes the upper 32 bits. Because 42 fits in 32 bits, both leave RAX equal to 42. |
+| `mov al, 42` vs `mov eax, 42` | `al` changes only the low byte. `eax` zero-extends. |
+| `xor ecx, ecx` vs `mov rcx, 0` | Both zero RCX; XOR is the idiomatic shorter form. |
+| Win32 `call` vs Linux `syscall` | Windows user-mode code calls exported functions. Syscall numbers are undocumented and change between builds. |
+| `WriteFile` vs `WriteConsoleA` | `WriteFile` works for files, pipes, and redirected stdout. `WriteConsoleA` talks to a console and fails if stdout is redirected. This course's listings use `WriteFile`. |
+| `main PROC` vs `_start` | `link /ENTRY:main` names the entry. Linux `ld` defaults to `_start`. |
+| Shadow space vs 5th argument | `[rsp+0..31]` is shadow space. The 5th argument is `[rsp+32]`, which requires extra allocation if you also `push`ed registers. |
+| RSI/RDI volatility | Nonvolatile on Windows; volatile argument registers on Linux. |
+| `PROC` vs `PROC FRAME` | FRAME plus `.pushreg` / `.allocstack` / `.endprolog` emits unwind codes. Needed when you save nonvolatiles or allocate a frame and may be unwound. |
 
 ## Check yourself
 
-1. What happens to the upper 32 bits of RAX when you execute `mov eax, 100`? What about when you execute `mov al, 100`?
-2. Trace the register values after each instruction in the "Hello" example above. What is in RCX, RDX, R8, and R9 just before the `call WriteConsoleA`? What is in RAX after `WriteConsoleA` returns (assuming success)?
-3. Why must you allocate shadow space before every `call` instruction, even if the function you are calling has fewer than four arguments or no arguments at all? What might happen if you forget it?
-4. Explain why RSI and RDI are nonvolatile (callee-saved) on Windows but volatile (caller-saved) on Linux. What does this difference mean for your code if you modify RSI or RDI in a Windows function?
-5. Rewrite the exit sequence to exit with status 42 instead of 0. Which register changes, and what value does it hold? (Remember that `ExitProcess` takes an unsigned 32-bit exit code in the low 32 bits of RCX.)
+1. After `mov rax, -1` then `mov eax, 100`, what is in RAX? After `mov rax, -1` then `mov al, 100`?
+2. Immediately before `call WriteFile` in listing `02-hello-world`, what is in RCX, RDX, R8, R9, and `[rsp+32]`?
+3. Why allocate 32 bytes of shadow space before `call ExitProcess` even though it takes one argument?
+4. Why are RSI and RDI nonvolatile on Windows? What must a returning procedure do if it uses them?
+5. Change listing `01-exit-code` to exit 7. Which register holds 7 at the `call`?
 
 ## Key takeaways
 
-- Assembly source is text that `ml64.exe` translates to machine code in an object file (`.obj`); `link.exe` then links that object with import libraries into a PE executable the Windows loader can run.
-- On x86-64, every general-purpose register has 64-, 32-, 16-, and 8-bit views; writing to the 32-bit name zero-extends into the full 64 bits, but writing to the 8- or 16-bit view leaves upper bits unchanged.
-- Windows programs call Win32 API functions (like `GetStdHandle`, `WriteConsoleA`, `ExitProcess`) using the `call` instruction and the Microsoft x64 calling convention: first four arguments in RCX, RDX, R8, R9, return value in RAX.
-- The Microsoft x64 ABI requires the caller to allocate 32 bytes of shadow space on the stack before every `call`, and to maintain 16-byte stack alignment at the point of the `call` instruction. Omitting shadow space violates the ABI and can corrupt the stack.
-- RSI and RDI are **nonvolatile** (callee-saved) registers on Windows, meaning you must preserve them if you modify them. This is the opposite of Linux, where they are volatile (caller-saved) argument registers.
-- `xor reg, reg` is the idiomatic way to zero a register because it produces shorter code and is recognized by CPU optimizations; `xor ecx, ecx` zero-extends into RCX automatically.
-- The linker expects the symbol you specify with `/ENTRY:` (e.g., `/ENTRY:main`) to exist and be a valid code address; MASM procedures are defined with `PROC`/`ENDP` and the file must end with the `END` directive.
+- `ml64 /c` produces a COFF `.obj`; `link /ENTRY:main /SUBSYSTEM:CONSOLE ... kernel32.lib` produces a PE `.exe`.
+- 32-bit writes zero-extend; 8- and 16-bit writes leave upper bits.
+- Win32 calls use RCX, RDX, R8, R9, then `[rsp+32]`; return in RAX; 32-byte shadow space is mandatory.
+- `PROC FRAME` with `.pushreg` / `.allocstack` / `.endprolog` is how ml64 emits unwind info.
+- RSI and RDI are nonvolatile on Windows.
+- `xor reg, reg` is the zero idiom.
+- Linux `syscall` is not a portable Windows interface.
 
 ## Lookup (reference only, not curriculum)
 
-- **Microsoft x64 calling convention:** https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions
-- **MASM for x64 (ml64.exe):** https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe
-- **Win32 API functions (kernel32):** https://learn.microsoft.com/en-us/windows/win32/api/
-  - `GetStdHandle`: https://learn.microsoft.com/en-us/windows/console/getstdhandle
-  - `WriteConsoleA`: https://learn.microsoft.com/en-us/windows/console/writeconsole
-  - `ExitProcess`: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
-- **x86-64 instruction reference:** Intel® 64 and IA-32 Architectures Software Developer's Manual, Volume 2 (Instruction Set Reference) — same as Linux; x86-64 instructions are platform-independent
-- **PE/COFF format:** https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
-- **Tool inspection:** `dumpbin /disasm <file>` (disassemble), `dumpbin /headers <file>` (view PE headers)
-- **Debugger:** Visual Studio debugger, WinDbg, or `x64dbg` for low-level assembly debugging
+- Microsoft x64 calling convention: https://learn.microsoft.com/en-us/cpp/build/x64-software-conventions
+- MASM for x64 (ml64.exe): https://learn.microsoft.com/en-us/cpp/assembler/masm/masm-for-x64-ml64-exe
+- `GetStdHandle`: https://learn.microsoft.com/en-us/windows/console/getstdhandle
+- `WriteFile`: https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile
+- `ExitProcess`: https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-exitprocess
+- x64 exception handling (unwind): https://learn.microsoft.com/en-us/cpp/build/exception-handling-x64
+- PE/COFF format: https://learn.microsoft.com/en-us/windows/win32/debug/pe-format
+- `dumpbin /disasm`, `dumpbin /headers`
 
 ## Exercises
 
-Work in `exercises/`. Build commands are in each file header. Solutions mirror names under `solutions/`.
+Work in `exercises/`. Build commands are in each file header. Solutions mirror names under `solutions/`. The standalone listings quoted above live on the listings branch as `lessons/00-tools-registers-mov-syscall/listings/01-exit-code.asm` through `07-stderr-output.asm`.

@@ -25,6 +25,19 @@ A technical reviewer will verify and resolve these before final merge.
 
 <!-- Entries added during rewrite will appear below -->
 
+### Lesson 00 — listings/02-hello-world.asm and 07-stderr-output.asm
+**Section:** Worked example / stderr listing (quoted verbatim)
+**Doubt:** After `push rbx` then `sub rsp, 32`, the saved RBX lives at `[rsp+32]`. Both listings store 0 there as `WriteFile`'s 5th argument (`lpOverlapped`). That overwrites the saved nonvolatile. `ExitProcess` never returns, so the programs still exit 0. A returning epilogue that `pop rbx` would restore 0. Listing `06-write-two-messages.asm` allocates 40 bytes after two pushes and does not collide. Confirm whether the listings author intends this as a hidden bug for later, or whether the 5th-arg slot should be extra stack (`sub rsp, 40`/`48`).
+**Quoted text:** `mov qword ptr [rsp+32], 0  ; arg5 (on stack): overlapped = NULL`
+
+### Lesson 00 — listings/02-hello-world.asm bytes_written
+**Section:** `.DATA? bytes_written DQ ?`
+**Doubt:** `WriteFile`'s `lpNumberOfBytesWritten` is `LPDWORD` (4 bytes). The listing reserves a QWORD (8 bytes). Harmless if adjacent storage is unused; a DWORD would match the API. Not edited.
+
+### Lesson 00 — listings/05-mov-data-movement.asm
+**Section:** uses `rbx` without save/restore
+**Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
+
 ### Lesson 11 — Parsing & Data Structures
 **Section:** Inline code blocks (lexeme buffer, linked lists, arena, stack, queue, etc.)
 **Doubt:** The lesson contains ~18 inline code blocks showing algorithmic patterns (linked list walking, arena allocation, etc.). These blocks currently use Linux-style section directives (`section .bss`, `section .text`, `global _start`, `syscall`). Should these be updated to MASM syntax (`.data?`, `.code`, `main PROC`, `call ExitProcess`) for consistency, or left as-is because they are illustrative pseudocode showing platform-independent algorithms? The standalone exercises and solutions (handled by another author) are already in MASM syntax.
