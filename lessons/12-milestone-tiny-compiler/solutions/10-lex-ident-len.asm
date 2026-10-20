@@ -1,26 +1,28 @@
 ; Exercise 10: lex ident len
 ;
 ; Ident "foo" length 3; exit 3.
-;
-; Build: nasm -f elf64 10-lex-ident-len.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "foo",0
-section .text
-    global _start
-_start:
-    lea rsi,[s]
-    xor rdi,rdi
-.l:
-    movzx rax,byte [rsi]
-    cmp al,'a'
-    jb .d
-    cmp al,'z'
-    ja .d
-    inc rdi
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "foo", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rsi, s
+    xor rcx, rcx
+loop_len:
+    movzx rax, BYTE PTR [rsi]
+    cmp al, 'a'
+    jb done_len
+    cmp al, 'z'
+    ja done_len
+    inc rcx
     inc rsi
-    jmp .l
-.d:
-    mov rax,60
-    syscall
+    jmp loop_len
+done_len:
+    call ExitProcess
+main ENDP
+END

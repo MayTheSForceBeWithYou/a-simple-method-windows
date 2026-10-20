@@ -1,26 +1,28 @@
 ; Exercise 09: lex number
 ;
 ; Parse "42" into int; exit 42.
-;
-; Build: nasm -f elf64 09-lex-number.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "42",0
-section .text
-    global _start
-_start:
-    lea rsi,[s]
-    xor rdi,rdi
-.l:
-    movzx rax,byte [rsi]
-    test rax,rax
-    jz .d
-    sub rax,'0'
-    imul rdi,10
-    add rdi,rax
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "42", 0
+
+.code
+main PROC
+    sub rsp, 32
+    lea rsi, s
+    xor rcx, rcx
+loop_parse:
+    movzx rax, BYTE PTR [rsi]
+    test rax, rax
+    jz done_parse
+    sub rax, '0'
+    imul rcx, 10
+    add rcx, rax
     inc rsi
-    jmp .l
-.d:
-    mov rax,60
-    syscall
+    jmp loop_parse
+done_parse:
+    call ExitProcess
+main ENDP
+END
