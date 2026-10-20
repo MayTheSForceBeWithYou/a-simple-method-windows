@@ -1,11 +1,39 @@
-; Exercise 05: errno neg
+; 05-errno-neg.asm
 ;
-; On failed open, mov rdi,rax; neg rdi; exit with small errno (clipped and 127).
+; Open a missing file, retrieve error code using GetLastError.
 ;
-; Build: nasm -f elf64 05-errno-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Try to open a nonexistent file, check for failure,
+;       call GetLastError to get error code, exit with it.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: GetLastError returns DWORD error code in EAX.
+;       ERROR_FILE_NOT_FOUND = 2, ERROR_PATH_NOT_FOUND = 3.
+
+.DATA
+filename DB "C:\nope.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN GetLastError:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 56
+    .allocstack 56
+    .endprolog
+    
+    ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
+    .ERR <TODO: Call CreateFileA>
+    
+    ; TODO: Check for INVALID_HANDLE_VALUE (-1)
+    .ERR <TODO: cmp rax, -1; jne success>
+    
+    ; Failed, get error code
+    ; TODO: Call GetLastError
+    .ERR <TODO: call GetLastError, mov ecx, eax>
+    
+    add     rsp, 56
+    call    ExitProcess
+main ENDP
+
+END

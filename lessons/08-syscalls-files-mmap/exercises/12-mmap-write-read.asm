@@ -1,11 +1,39 @@
-; Exercise 12: mmap write read
+; 12-mmap-write-read.asm
 ;
-; mmap 4096; write 99 at +100; read back; exit 99. SYS_mmap=9 PROT_RW=3 MAP_PRIVATE|ANON=0x22
+; Allocate memory, store 99 at offset 100, read it back, exit 99.
 ;
-; Build: nasm -f elf64 12-mmap-write-read.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: VirtualAlloc 4096 bytes, write 99 at [base+100], read back, exit 99.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: VirtualAlloc, mov BYTE PTR [rax+100], 99, movzx ecx, BYTE PTR [rax+100]
+
+.CODE
+
+EXTRN VirtualAlloc:PROC
+EXTRN VirtualFree:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: VirtualAlloc 4096 bytes
+    .ERR <TODO: VirtualAlloc(NULL, 4096, 0x3000, 4)>
+    
+    ; TODO: Store 99 at offset 100
+    .ERR <TODO: mov BYTE PTR [rax+100], 99>
+    
+    ; TODO: Read back and exit with value
+    .ERR <TODO: movzx ecx, BYTE PTR [rax+100]>
+    
+    ; TODO: VirtualFree
+    .ERR <TODO: VirtualFree(address, 0, 0x8000)>
+    
+    add     rsp, 32
+    pop     rbx
+    call    ExitProcess
+main ENDP
+
+END

@@ -1,11 +1,29 @@
-; Exercise 15: getpid
+; 15-getpid.asm
 ;
-; SYS_getpid=39; exit pid&0x7f (nonzero usually).
+; Get current process ID, exit with low 7 bits.
 ;
-; Build: nasm -f elf64 15-getpid.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Call GetCurrentProcessId, AND with 0x7F, exit with result.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: GetCurrentProcessId returns DWORD in EAX.
+
+.CODE
+
+EXTRN GetCurrentProcessId:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: Call GetCurrentProcessId
+    .ERR <TODO: call GetCurrentProcessId>
+    
+    ; TODO: Mask to low 7 bits, exit with result
+    .ERR <TODO: and eax, 7Fh; mov ecx, eax>
+    
+    add     rsp, 32
+    call    ExitProcess
+main ENDP
+
+END

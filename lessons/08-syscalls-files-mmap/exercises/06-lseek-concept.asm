@@ -1,11 +1,24 @@
-; Exercise 06: lseek concept
+; 06-lseek-concept.asm
 ;
-; Without real file: simulate offset add; exit 10.
+; Arithmetic offset calculation (not actual SetFilePointer call).
 ;
-; Build: nasm -f elf64 06-lseek-concept.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Start with offset 5, add 5, exit with 10.
+;       Demonstrates offset arithmetic without Win32 API.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: This is a trivial arithmetic drill, not a real file operation.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 5          ; Starting offset
+    
+    ; TODO: Add 5 to offset
+    .ERR <TODO: add rax, 5>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 10
+main ENDP
+
+END

@@ -1,11 +1,50 @@
-; Exercise 19: pwrite emul
+; 19-pwrite-emul.asm
 ;
-; Emulate pwrite via lseek+write on /dev/null: open, lseek end, write. Exit 0 on success.
+; Open NUL, seek to position 0, write data, close, exit 0.
 ;
-; Build: nasm -f elf64 19-pwrite-emul.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: CreateFileA("NUL", GENERIC_WRITE, ..., OPEN_EXISTING),
+;       SetFilePointer(handle, 0, NULL, FILE_BEGIN),
+;       WriteFile("Test"), CloseHandle, exit 0.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Emulates pwrite by seeking then writing.
+
+.DATA
+filename DB "NUL", 0
+message DB "Test"
+message_len EQU $ - message
+bytesWritten DWORD ?
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN SetFilePointer:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 48
+    .allocstack 48
+    .endprolog
+    
+    ; TODO: CreateFileA("NUL", GENERIC_WRITE, ...)
+    .ERR <TODO: Open NUL for writing>
+    
+    ; TODO: SetFilePointer(handle, 0, NULL, FILE_BEGIN)
+    .ERR <TODO: Seek to offset 0>
+    
+    ; TODO: WriteFile(handle, message, message_len, &bytesWritten, NULL)
+    .ERR <TODO: Write message>
+    
+    ; TODO: CloseHandle, exit 0
+    .ERR <TODO: Close and exit>
+    
+    xor     ecx, ecx
+    add     rsp, 48
+    pop     rbx
+    call    ExitProcess
+main ENDP
+
+END

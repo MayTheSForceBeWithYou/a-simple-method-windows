@@ -1,11 +1,38 @@
-; Exercise 11: read dev zero
+; 11-read-dev-zero.asm
 ;
-; open /dev/zero; read 8 bytes; sum should be 0; exit 0.
+; Open NUL device, read 8 bytes (all zeros), exit 0.
 ;
-; Build: nasm -f elf64 11-read-dev-zero.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: CreateFileA("NUL", GENERIC_READ, ...), ReadFile 8 bytes, exit 0.
+;       Do NOT sum the bytes, just verify read succeeds.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: NUL on Windows acts like /dev/zero for reads (returns zeros).
+
+.DATA
+filename DB "NUL", 0
+buffer DB 8 DUP(?)
+bytesRead DWORD ?
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN ReadFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 48
+    .allocstack 48
+    .endprolog
+    
+    ; TODO: CreateFileA, ReadFile 8 bytes, CloseHandle
+    .ERR <TODO: Open NUL, ReadFile into buffer, close>
+    
+    xor     ecx, ecx
+    add     rsp, 48
+    pop     rbx
+    call    ExitProcess
+main ENDP
+
+END

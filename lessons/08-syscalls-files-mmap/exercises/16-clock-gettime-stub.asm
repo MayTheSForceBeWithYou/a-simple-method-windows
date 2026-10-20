@@ -1,11 +1,39 @@
-; Exercise 16: clock gettime stub
+; 16-clock-gettime-stub.asm
 ;
-; SYS_clock_gettime=228 CLOCK_MONOTONIC=1 into timespec; exit 0 if syscall ok.
+; Query performance counter (high-resolution timer), exit 0.
 ;
-; Build: nasm -f elf64 16-clock-gettime-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Call QueryPerformanceCounter with pointer to QWORD, exit 0.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: QueryPerformanceCounter(&counter) returns nonzero on success.
+
+.DATA
+counter QWORD ?
+
+.CODE
+
+EXTRN QueryPerformanceCounter:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 32
+    .allocstack 32
+    .endprolog
+    
+    ; TODO: QueryPerformanceCounter(&counter)
+    .ERR <TODO: lea rcx, counter; call QueryPerformanceCounter>
+    
+    ; TODO: Check result, exit 0
+    .ERR <TODO: test eax, eax; jz error; exit 0>
+    
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    add     rsp, 32
+    call    ExitProcess
+main ENDP
+
+END

@@ -1,11 +1,36 @@
-; Exercise 24: from scratch write err
+; 24-from-scratch-write-err.asm (from scratch)
 ;
-; FROM SCRATCH: write to fd=-1; expect error (rax<0); exit 1.
+; Try to write to an invalid handle, detect error, exit 1.
 ;
-; Build: nasm -f elf64 24-from-scratch-write-err.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Call WriteFile with handle = INVALID_HANDLE_VALUE (-1),
+;       check return value (should be 0 = failure), exit 1.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: WriteFile returns 0 on error. Check return value in EAX.
+
+.DATA
+message DB "Test"
+message_len EQU $ - message
+bytesWritten DWORD ?
+
+.CODE
+
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 40
+    .allocstack 40
+    .endprolog
+    
+    ; TODO: WriteFile(INVALID_HANDLE_VALUE, message, message_len, &bytesWritten, NULL)
+    .ERR <TODO: Call WriteFile with handle = -1>
+    
+    ; TODO: Check for error (return 0), exit 1
+    .ERR <TODO: test eax, eax; jz error; exit 1>
+    
+    mov     ecx, 1
+    add     rsp, 40
+    call    ExitProcess
+main ENDP
+
+END
