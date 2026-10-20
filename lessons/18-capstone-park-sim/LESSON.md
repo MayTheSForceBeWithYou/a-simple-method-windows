@@ -533,6 +533,13 @@ Open `output.ppm` in an image viewer. The park is visible. Criterion 6 is met.
 - File I/O: lesson 08 (Syscalls, Files, mmap)
 - P6 PPM format: lesson 14 (Graphics: Framebuffer & PPM Output)
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/18-capstone-park-sim/listings/01-visitor-spawn.asm -->
+<!-- LISTING-PENDING: lessons/18-capstone-park-sim/listings/02-pathfind-step.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
