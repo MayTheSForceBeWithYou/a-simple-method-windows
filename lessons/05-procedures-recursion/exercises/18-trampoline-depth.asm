@@ -1,17 +1,17 @@
-; Exercise 18: trampoline depth
-;
+; Exercise 18: 18-trampoline-depth.asm (Win32 port)
 ; bump_depth(n) adds n via recursion; n=8 exit 8.
-;
-; Build: nasm -f elf64 18-trampoline-depth.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 8
-    call bump
-    mov rdi, rax
-    mov rax, 60
-    syscall
-bump:
-    ; TODO: implement bump
+; Build: ml64 /c /Fo18-trampoline-depth.asm.obj 18-trampoline-depth.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:18-trampoline-depth.asm.exe 18-trampoline-depth.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

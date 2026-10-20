@@ -1,19 +1,19 @@
-; Exercise 02: mutual even odd
-;
+; Exercise 02: mutual even odd (Win32 port)
 ; is_even/is_odd mutual recursion. is_even(4)->1; exit 1.
-;
-; Build: nasm -f elf64 02-mutual-even-odd.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 4
+; Build: ml64 /c /Fo02-mutual-even-odd.obj 02-mutual-even-odd.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-mutual-even-odd.exe 02-mutual-even-odd.obj kernel32.lib
+; Expected: exit code 1
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement is_even and is_odd with mutual recursion
+.ERR <TODO: Implement mutual recursion>
+
+main PROC
+    sub rsp, 32
+    mov rcx, 4
     call is_even
-    mov rdi, rax
-    mov rax, 60
-    syscall
-is_even:
-    ; TODO: implement is_even
-is_odd:
-    ; TODO: implement is_odd
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

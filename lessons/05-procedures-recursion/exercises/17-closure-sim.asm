@@ -1,20 +1,17 @@
-; Exercise 17: closure sim
-;
+; Exercise 17: 17-closure-sim.asm (Win32 port)
 ; Pass context pointer in r12 (callee-saved): ctx dq 10; add_ctx(rdi) returns rdi+[ctx]. Call with 5 -> 15.
-;
-; Build: nasm -f elf64 17-closure-sim.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    ctx dq 10
-section .text
-    global _start
-_start:
-    lea r12, [ctx]
-    mov rdi, 5
-    call add_ctx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-add_ctx:
-    ; TODO: implement add_ctx
+; Build: ml64 /c /Fo17-closure-sim.asm.obj 17-closure-sim.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:17-closure-sim.asm.exe 17-closure-sim.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END

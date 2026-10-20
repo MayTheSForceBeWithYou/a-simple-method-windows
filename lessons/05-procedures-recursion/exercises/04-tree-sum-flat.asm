@@ -1,20 +1,22 @@
-; Exercise 04: tree sum flat
-;
-; Simulate binary heap array dq 1,2,3,4,5 (5 nodes). Recursively sum heap indices. Exit 15.
-;
-; Build: nasm -f elf64 04-tree-sum-flat.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    heap dq 1,2,3,4,5
-    n equ 5
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    call heap_sum
-    mov rdi, rax
-    mov rax, 60
-    syscall
-heap_sum:
-    ; TODO: implement heap_sum
+; Exercise 04: tree sum flat (Win32 port)
+; Simulate binary heap array DQ 1,2,3,4,5. Recursively sum. Exit 15.
+; Build: ml64 /c /Fo04-tree-sum-flat.obj 04-tree-sum-flat.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-tree-sum-flat.exe 04-tree-sum-flat.obj kernel32.lib
+; Expected: exit code 15
+
+.DATA
+heap DQ 1, 2, 3, 4, 5
+heap_len EQU ($ - heap) / 8
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Implement recursive tree sum over heap array
+.ERR <TODO: Implement recursive heap sum>
+
+main PROC
+    sub rsp, 32
+    call tree_sum
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

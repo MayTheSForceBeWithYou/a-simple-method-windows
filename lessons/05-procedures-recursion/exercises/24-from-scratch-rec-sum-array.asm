@@ -1,20 +1,17 @@
-; Exercise 24: from scratch rec sum array
-;
+; Exercise 24: 24-from-scratch-rec-sum-array.asm (Win32 port)
 ; FROM SCRATCH: rec_sum(arr,n) sums n qwords. {2,3,4} n=3 -> 9.
-;
-; Build: nasm -f elf64 24-from-scratch-rec-sum-array.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    arr dq 2,3,4
-section .text
-    global _start
-_start:
-    lea rdi, [arr]
-    mov rsi, 3
-    call rec_sum
-    mov rdi, rax
-    mov rax, 60
-    syscall
-rec_sum:
-    ; TODO: implement rec_sum
+; Build: ml64 /c /Fo24-from-scratch-rec-sum-array.asm.obj 24-from-scratch-rec-sum-array.asm.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:24-from-scratch-rec-sum-array.asm.exe 24-from-scratch-rec-sum-array.asm.obj kernel32.lib
+; Expected: see original exercise
+
+.CODE
+EXTRN ExitProcess:PROC
+
+; TODO: Port from NASM to MASM
+.ERR <TODO: Implement this exercise>
+
+main PROC
+    sub rsp, 32
+    ; TODO: Implement
+    .ERR <TODO: Complete implementation>
+main ENDP
+END
