@@ -1,21 +1,21 @@
 ; Exercise 24: from scratch ntz
-;
-; FROM SCRATCH: number of trailing zeros in 0b1011000 = 3; exit 3.
-;
-; Build: nasm -f elf64 24-from-scratch-ntz.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 0b1011000
-    xor rdi, rdi
-.l:
+; Number of trailing zeros in 0b1011000 = 3.
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 1011000b
+    xor rcx, rcx
+loop_ntz:
     test rax, 1
-    jnz .d
+    jnz done_ntz
     shr rax, 1
-    inc rdi
-    jmp .l
-.d:
-    mov rax,60
-    syscall
+    inc rcx
+    jmp loop_ntz
+done_ntz:
+    call ExitProcess
+main ENDP
+END

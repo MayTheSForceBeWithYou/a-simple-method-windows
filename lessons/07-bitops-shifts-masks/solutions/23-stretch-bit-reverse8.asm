@@ -1,13 +1,10 @@
-; Exercise 23: stretch bit reverse8
-;
-; STRETCH: reverse bits of 0b10000000 -> 1; exit 1.
-;
-; Build: nasm -f elf64 23-stretch-bit-reverse8.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     movzx eax, byte [v]
     xor ebx, ebx
     mov ecx, 8
@@ -20,6 +17,6 @@ _start:
     loop .l
     mov edi, ebx
     mov rax,60
-    syscall
-section .data
-    v db 0b10000000
+    call ExitProcess
+main ENDP
+END

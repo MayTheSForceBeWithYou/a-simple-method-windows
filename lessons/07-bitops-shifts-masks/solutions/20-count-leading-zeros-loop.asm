@@ -1,30 +1,31 @@
 ; Exercise 20: clz loop
-;
-; Count leading zeros in 16-bit value 0x00F0 -> 8; exit 8.
-;
-; Build: nasm -f elf64 20-count-leading-zeros-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    movzx rax, word [val]
-    xor rdi, rdi
-    mov rcx, 16
-.l:
+; Count leading zeros in 0x00F0 (16-bit) -> 8.
+; Expected exit: 8
+
+EXTERN ExitProcess:PROC
+
+.data
+val WORD 00F0h
+
+.code
+main PROC
+    sub rsp, 32
+    movzx rax, val
+    xor rcx, rcx
+    mov r8, 16
+loop_clz:
     test rax, rax
-    jz .pad
-    test rax, 0x8000
-    jnz .d
+    jz pad_clz
+    test rax, 8000h
+    jnz done_clz
     shl rax, 1
-    inc rdi
-    dec rcx
-    jnz .l
-    jmp .d
-.pad:
-    mov rdi, 16
-.d:
-    mov rax,60
-    syscall
-section .data
-    val dw 0x00F0
+    inc rcx
+    dec r8
+    jnz loop_clz
+    jmp done_clz
+pad_clz:
+    mov rcx, 16
+done_clz:
+    call ExitProcess
+main ENDP
+END

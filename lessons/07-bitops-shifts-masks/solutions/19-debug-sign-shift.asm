@@ -1,15 +1,14 @@
-; Exercise 19: debug sign shift
-;
-; BUG: used shr on negative intending arithmetic. Fix with sar; -16>>2 = -4; exit with al of -4 (252).
-;
-; Build: nasm -f elf64 19-debug-sign-shift.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov rax, -16
     sar rax, 2
-    movzx rdi, al
+    movzx rcx, al
     mov rax,60
-    syscall
+    call ExitProcess
+main ENDP
+END
