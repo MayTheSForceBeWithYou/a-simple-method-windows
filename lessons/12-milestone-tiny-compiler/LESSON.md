@@ -442,6 +442,15 @@ The milestone binary is complete when it satisfies all six criteria:
 
 Floating-point is lesson 13. ELF emission (writing actual bytes) is a stretch until the full compiler binary writes them.
 
+## Standalone listings
+
+These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
+
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/01-scan-number.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/02-scan-ident.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/03-const-fold.asm -->
+<!-- LISTING-PENDING: lessons/12-milestone-tiny-compiler/listings/04-bytecode-interp.asm -->
+
 ## Exercises
 
 Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
