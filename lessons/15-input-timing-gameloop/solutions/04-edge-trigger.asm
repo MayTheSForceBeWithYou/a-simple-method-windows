@@ -2,22 +2,27 @@
 ;
 ; prev=0 cur=1 -> rising exit 1.
 ;
-; Build: nasm -f elf64 04-edge-trigger.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 04-edge-trigger.asm && link /OUT:04-edge-trigger.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-edge-trigger.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
     mov eax, 0
     mov ebx, 1
     cmp eax, 0
-    jne .n
+    jne not_rising
     cmp ebx, 1
-    jne .n
-    mov rdi, 1
-    jmp .o
-.n:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    jne not_rising
+    mov rcx, 1
+    jmp exit_proc
+not_rising:
+    xor rcx, rcx
+exit_proc:
+    call ExitProcess
+main ENDP
+END

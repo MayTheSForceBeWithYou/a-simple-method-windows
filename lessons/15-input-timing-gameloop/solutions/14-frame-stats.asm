@@ -2,15 +2,21 @@
 ;
 ; fps counter frames=60 over 1s; exit 60.
 ;
-; Build: nasm -f elf64 14-frame-stats.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 14-frame-stats.asm && link /OUT:14-frame-stats.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-frame-stats.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    frames resq 1
-section .text
-    global _start
-_start:
-    mov qword [frames],60
-    mov rdi,[frames]
-    mov rax,60
-    syscall
+; Expected exit: 60
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+frames QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [frames], 60
+    mov rcx, [frames]
+    call ExitProcess
+main ENDP
+END

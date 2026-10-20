@@ -2,16 +2,21 @@
 ;
 ; dx=5 dy=-2; manhattan 7; exit 7.
 ;
-; Build: nasm -f elf64 11-mouse-delta.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 11-mouse-delta.asm && link /OUT:11-mouse-delta.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-mouse-delta.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,5
-    mov rbx,-2
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 5
+    mov rbx, -2
     neg rbx
-    add rax,rbx
-    mov rdi,rax
-    mov rax,60
-    syscall
+    add rax, rbx
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

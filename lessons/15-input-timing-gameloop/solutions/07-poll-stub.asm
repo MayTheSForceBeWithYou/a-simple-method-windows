@@ -2,12 +2,17 @@
 ;
 ; No event -> exit 0.
 ;
-; Build: nasm -f elf64 07-poll-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 07-poll-stub.asm && link /OUT:07-poll-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-poll-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rax, 60
-    syscall
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    call ExitProcess
+main ENDP
+END

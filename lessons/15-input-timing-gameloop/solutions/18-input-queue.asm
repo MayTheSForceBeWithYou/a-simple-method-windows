@@ -2,21 +2,27 @@
 ;
 ; Enqueue event 9; dequeue; exit 9.
 ;
-; Build: nasm -f elf64 18-input-queue.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 18-input-queue.asm && link /OUT:18-input-queue.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-input-queue.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    q resq 4
-    h resq 1
-    t resq 1
-section .text
-    global _start
-_start:
-    mov rcx,[t]
-    mov qword [q+rcx*8],9
-    inc qword [t]
-    mov rcx,[h]
-    mov rdi,[q+rcx*8]
-    inc qword [h]
-    mov rax,60
-    syscall
+; Expected exit: 9
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+q QWORD 4 DUP(?)
+h QWORD ?
+t QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov rcx, [t]
+    mov QWORD PTR [q+rcx*8], 9
+    inc QWORD PTR [t]
+    mov rcx, [h]
+    mov rcx, [q+rcx*8]
+    inc QWORD PTR [h]
+    call ExitProcess
+main ENDP
+END

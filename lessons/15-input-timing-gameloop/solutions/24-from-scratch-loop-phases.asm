@@ -2,17 +2,22 @@
 ;
 ; FROM SCRATCH: phases input,update,render counted; 3 phases * 2 frames = 6; exit 6.
 ;
-; Build: nasm -f elf64 24-from-scratch-loop-phases.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 24-from-scratch-loop-phases.asm && link /OUT:24-from-scratch-loop-phases.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-loop-phases.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi,rdi
-    mov rcx,2
-.frame:
-    add rdi,3
-    dec rcx
-    jnz .frame
-    mov rax,60
-    syscall
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    xor rcx, rcx
+    mov rbx, 2
+frame_loop:
+    add rcx, 3
+    dec rbx
+    jnz frame_loop
+    call ExitProcess
+main ENDP
+END

@@ -2,15 +2,21 @@
 ;
 ; STRETCH: rumble frames remaining 2; exit 2.
 ;
-; Build: nasm -f elf64 23-stretch-haptic-stub.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 23-stretch-haptic-stub.asm && link /OUT:23-stretch-haptic-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-haptic-stub.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    rumble resq 1
-section .text
-    global _start
-_start:
-    mov qword [rumble],2
-    mov rdi,[rumble]
-    mov rax,60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+rumble QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [rumble], 2
+    mov rcx, [rumble]
+    call ExitProcess
+main ENDP
+END

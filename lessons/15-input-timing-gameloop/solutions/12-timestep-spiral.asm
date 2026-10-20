@@ -2,20 +2,25 @@
 ;
 ; Spiral of death guard: max 3 catchup steps; given 100ms dt step 16 -> would be 6, clamp 3; exit 3.
 ;
-; Build: nasm -f elf64 12-timestep-spiral.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-timestep-spiral.asm && link /OUT:12-timestep-spiral.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-timestep-spiral.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,100
-    xor rdx,rdx
-    mov rbx,16
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 100
+    xor rdx, rdx
+    mov rbx, 16
     div rbx
-    cmp rax,3
-    jbe .ok
-    mov rax,3
-.ok:
-    mov rdi,rax
-    mov rax,60
-    syscall
+    cmp rax, 3
+    jbe clamp_ok
+    mov rax, 3
+clamp_ok:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

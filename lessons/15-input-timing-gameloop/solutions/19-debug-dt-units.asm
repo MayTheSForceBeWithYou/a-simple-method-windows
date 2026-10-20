@@ -2,19 +2,24 @@
 ;
 ; BUG: mixed ms/us. Fix treat 16000us as 16ms steps of 16 -> 1 step; exit 1.
 ;
-; Build: nasm -f elf64 19-debug-dt-units.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-debug-dt-units.asm && link /OUT:19-debug-dt-units.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-dt-units.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax,16000
-    xor rdx,rdx
-    mov rbx,1000
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+main PROC
+    sub rsp, 32
+    mov rax, 16000
+    xor rdx, rdx
+    mov rbx, 1000
     div rbx
-    xor rdx,rdx
-    mov rbx,16
+    xor rdx, rdx
+    mov rbx, 16
     div rbx
-    mov rdi,rax
-    mov rax,60
-    syscall
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+END

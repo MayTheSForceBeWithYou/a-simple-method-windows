@@ -2,19 +2,25 @@
 ;
 ; W and Shift both down -> run=1; exit 1.
 ;
-; Build: nasm -f elf64 10-chord.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 10-chord.asm && link /OUT:10-chord.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-chord.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    w resb 1
-    shift resb 1
-section .text
-    global _start
-_start:
-    mov byte [w],1
-    mov byte [shift],1
-    movzx eax,byte [w]
-    and al,[shift]
-    movzx rdi,al
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+w BYTE ?
+shift BYTE ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov BYTE PTR [w], 1
+    mov BYTE PTR [shift], 1
+    movzx eax, BYTE PTR [w]
+    and al, BYTE PTR [shift]
+    movzx rcx, al
+    call ExitProcess
+main ENDP
+END

@@ -2,15 +2,21 @@
 ;
 ; STRETCH: input ring full drops; dropped count 1; exit 1.
 ;
-; Build: nasm -f elf64 22-stretch-ring-drop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-stretch-ring-drop.asm && link /OUT:22-stretch-ring-drop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-ring-drop.obj kernel32.lib
 ;
-; --- your code below ---
-section .bss
-    dropped resq 1
-section .text
-    global _start
-_start:
-    mov qword [dropped],1
-    mov rdi,[dropped]
-    mov rax,60
-    syscall
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+dropped QWORD ?
+
+.code
+main PROC
+    sub rsp, 32
+    mov QWORD PTR [dropped], 1
+    mov rcx, [dropped]
+    call ExitProcess
+main ENDP
+END
