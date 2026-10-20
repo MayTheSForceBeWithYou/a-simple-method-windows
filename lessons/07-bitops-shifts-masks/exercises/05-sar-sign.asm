@@ -1,11 +1,26 @@
-; Exercise 05: sar sign
+; 05-sar-sign.asm
 ;
-; rax=-8; sar 1; exit with al of result (-4 -> 252 unsigned status).
+; Use SAR (shift arithmetic right) to divide a signed negative number.
 ;
-; Build: nasm -f elf64 05-sar-sign.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Load -16 into RAX, then use SAR to divide by 4 (shift right by 2).
+;       Exit with the result (should be -4, which is 252 as an 8-bit unsigned).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: SAR preserves the sign bit, correctly dividing signed values.
+;       Use SAR, not SHR, for signed division.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, -16        ; Signed negative value
+    
+    ; TODO: Shift arithmetic right by 2 to divide by 4
+    .ERR <TODO: Insert SAR instruction to shift right by 2>
+    
+    mov     ecx, eax
+    and     ecx, 0FFh       ; Exit with low byte
+    call    ExitProcess     ; Should exit with 252
+main ENDP
+
+END

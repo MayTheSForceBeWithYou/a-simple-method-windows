@@ -1,11 +1,28 @@
-; Exercise 12: next power check
+; 12-next-power-of-two-bit.asm
 ;
-; Test if 16 is power of two (x&&!(x&(x-1))); exit 1.
+; Find the highest set bit and return the next power of 2.
 ;
-; Build: nasm -f elf64 12-next-power-of-two-bit.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Given 0b00101100 (44), find the highest set bit (bit 5 = 32).
+;       Return the next power of 2, which is bit 6 = 64.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: One approach:
+;       - Subtract 1, OR with original (spreads 1s down from highest bit)
+;       - Add 1 to get next power of 2
+;       Example: 44 - 1 = 43, 44 | 43 = 47, 47 + 1 = 48... (adjust logic)
+;       Or use a simpler method: shift highest bit left by 1.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 44         ; 0b00101100
+    
+    ; TODO: Find next power of 2 above highest set bit
+    .ERR <TODO: Implement algorithm to find next power of 2>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 64
+main ENDP
+
+END

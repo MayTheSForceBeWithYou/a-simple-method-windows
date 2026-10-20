@@ -1,11 +1,28 @@
-; Exercise 13: shl combine
+; 13-shl-shl-combine.asm
 ;
-; Build 0xAB by (0xA<<4)|0xB; exit 0xAB=171.
+; Combine two values into one register using shifts.
 ;
-; Build: nasm -f elf64 13-shl-shl-combine.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Put value 0x12 in the high byte (bits 8-15) and 0x34 in the low byte
+;       (bits 0-7) of a 16-bit value.
+;       Exit with the combined value (should be 0x1234 = 4660).
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Shift the high byte left by 8, OR it with the low byte.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     ax, 12h         ; High byte value
+    
+    ; TODO: Shift left by 8 to position in high byte
+    .ERR <TODO: Insert SHL instruction to shift left by 8>
+    
+    ; TODO: OR with low byte value
+    .ERR <TODO: Insert OR instruction with 0x34>
+    
+    movzx   ecx, ax
+    call    ExitProcess     ; Should exit with 4660 (0x1234)
+main ENDP
+
+END

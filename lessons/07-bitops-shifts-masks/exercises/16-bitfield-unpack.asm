@@ -1,11 +1,27 @@
-; Exercise 16: bitfield unpack
+; 16-bitfield-unpack.asm
 ;
-; From 0b01_010_101 extract mid field bits3-5 (=2); exit 2.
+; Unpack a 4-bit field from bits 4-7 of a packed value.
 ;
-; Build: nasm -f elf64 16-bitfield-unpack.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Given packed value 0x359, extract the field at bits 4-7 (should be 5).
+;       Exit with the extracted value.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Hint: Shift right by 4 to move bits 4-7 to bits 0-3, then mask with 0xF.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 359h       ; Packed value = 0x359
+    
+    ; TODO: Shift right by 4
+    .ERR <TODO: Insert SHR instruction to shift right by 4>
+    
+    ; TODO: Mask to 4 bits
+    .ERR <TODO: Insert AND instruction with 0xF>
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Should exit with 5
+main ENDP
+
+END

@@ -1,11 +1,28 @@
-; Exercise 14: sar vs shr
+; 14-sar-vs-shr.asm
 ;
-; For -4 (64-bit): shr 1 vs sar 1; exit (sar_result == -2) as 1.
+; Demonstrate the difference between SAR and SHR on a negative value.
 ;
-; Build: nasm -f elf64 14-sar-vs-shr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Task: Load -32 into AL (as signed 8-bit: 0xE0 = -32).
+;       Use SHR to divide by 4 (shift right by 2).
+;       Exit with the result to see the incorrect unsigned result.
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Then compare: if you used SAR instead, you'd get -8 (0xF8 = 248).
+;
+; Hint: SHR on -32 (0xE0) shifts right filling with 0, giving 0x38 = 56.
+;       SAR on -32 (0xE0) shifts right preserving sign, giving 0xF8 = 248.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     al, 0E0h        ; -32 as signed byte (0xE0 = 224 unsigned)
+    
+    ; TODO: Use SHR to shift right by 2 (demonstrates wrong result for signed)
+    .ERR <TODO: Insert SHR instruction to shift right by 2>
+    
+    movzx   ecx, al
+    call    ExitProcess     ; Will exit with 56 (wrong for signed division)
+main ENDP
+
+END
