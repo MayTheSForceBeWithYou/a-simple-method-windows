@@ -25,19 +25,19 @@ main PROC
     mov rcx, [cur]
     lea rdx, buf
     
-.l:
+L_l:
     mov rax, rcx
     inc rax
     cmp rax, [len]
-    jge .fin
+    jge L_fin
     
     movzx r8, BYTE PTR [rdx+rcx+1]
     mov BYTE PTR [rdx+rcx], r8b
     
     inc rcx
-    jmp .l
+    jmp L_l
     
-.fin:
+L_fin:
     dec QWORD PTR [len]
     mov rcx, [len]
     call ExitProcess

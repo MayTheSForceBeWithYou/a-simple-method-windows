@@ -2,33 +2,50 @@
 ;
 ; Copy 8 bytes forward non-overlap; checksum low byte sum of dst. src 1..8 sum=36.
 ;
-; Build: nasm -f elf64 13-memcpy-overlap-safe.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db 1,2,3,4,5,6,7,8
-section .bss
-    dst resb 8
-section .text
-    global _start
-_start:
-    lea rsi, [src]
-    lea rdi, [dst]
-    mov rcx, 8
+; Expected exit: 36
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE 1,2,3,4,5,6,7,8
+
+.data?
+dst BYTE 8 DUP(?)
+
+.code
+main PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    lea rcx, dst
+    lea rdx, src
+    mov r8, 8
     call memcpy
-    xor rdi, rdi
-    xor rcx, rcx
-.sum:
-    cmp rcx, 8
-    jge .o
-    movzx rax, byte [dst+rcx]
-    add rdi, rax
-    inc rcx
-    jmp .sum
-.o:
-    mov rax, 60
-    syscall
-memcpy:
+    xor r9, r9
+    xor r10, r10
+sum_loop:
+    cmp r10, 8
+    jge sum_done
+    movzx rax, BYTE PTR [dst+r10]
+    add r9, rax
+    inc r10
+    jmp sum_loop
+sum_done:
+    mov rcx, r9
+    call ExitProcess
+main ENDP
+
+memcpy PROC
+    push rsi
+    push rdi
+    mov rdi, rcx
+    mov rsi, rdx
+    mov rcx, r8
     cld
     rep movsb
+    pop rdi
+    pop rsi
     ret
+memcpy ENDP
+END

@@ -18,17 +18,17 @@ main PROC
     
     ; Check if valid (nonzero)
     test rax, rax
-    jz .z
+    jz L_z
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.z:
+L_z:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

@@ -1,20 +1,26 @@
 ; Exercise 23: leaf no frame
 ;
-; Leaf mul3(rdi)=rdi*3 without prologue. Exit 42 for input 14.
+; Leaf mul3(rcx)=rcx*3 without prologue. Exit 42 for input 14.
 ;
-; Build: nasm -f elf64 23-leaf-no-frame.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rdi, 14
-    call mul3
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Expected exit: 42
+; Expected stdout: (none)
 
-mul3:
-    mov rax, rdi
+EXTERN ExitProcess:PROC
+
+.code
+main PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    mov rcx, 14
+    call mul3
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+mul3 PROC
+    mov rax, rcx
     imul rax, 3
     ret
+mul3 ENDP
+END

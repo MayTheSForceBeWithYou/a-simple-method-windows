@@ -25,18 +25,18 @@ main PROC
     ; Shift right from end
     mov rcx, [len]
     
-.shift:
+L_shift:
     cmp rcx, [cur]
-    jl .put
+    jl L_put
     
     lea rdx, buf
     movzx rax, BYTE PTR [rdx+rcx-1]
     mov BYTE PTR [rdx+rcx], al
     
     dec rcx
-    jmp .shift
+    jmp L_shift
     
-.put:
+L_put:
     lea rdx, buf
     mov BYTE PTR [rdx+1], 'B'
     inc QWORD PTR [len]

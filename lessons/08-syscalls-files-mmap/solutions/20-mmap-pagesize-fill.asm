@@ -33,15 +33,15 @@ main PROC
     xor rcx, rcx
     xor rdi, rdi
     
-.s:
+L_s:
     cmp rcx, 16
-    jge .o
+    jge L_o
     movzx rax, BYTE PTR [rbx+rcx]
     add rdi, rax
     inc rcx
-    jmp .s
+    jmp L_s
     
-.o:
+L_o:
     ; Exit with sum (16)
     mov rcx, rdi
     call ExitProcess

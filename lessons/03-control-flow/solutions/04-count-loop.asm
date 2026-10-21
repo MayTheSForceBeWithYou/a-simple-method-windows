@@ -1,4 +1,5 @@
 ; Exercise 04: count loop (Win32 port) - SOLUTION
+; Expected exit: 5
 
 .CODE
 

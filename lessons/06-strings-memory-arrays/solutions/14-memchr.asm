@@ -2,32 +2,40 @@
 ;
 ; Find 7 in bytes 3,5,7,9; index 2.
 ;
-; Build: nasm -f elf64 14-memchr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    buf db 3,5,7,9
-section .text
-    global _start
-_start:
-    lea rdi, [buf]
-    mov rsi, 7
-    mov rdx, 4
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+buf BYTE 3,5,7,9
+
+.code
+main PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    lea rcx, buf
+    mov rdx, 7
+    mov r8, 4
     call memchr_idx
-    mov rdi, rax
-    mov rax, 60
-    syscall
-memchr_idx:
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+memchr_idx PROC
     xor rax, rax
-.l:
-    cmp rax, rdx
-    jge .m
-    movzx rcx, byte [rdi+rax]
-    cmp rcx, rsi
-    je .h
+mem_loop:
+    cmp rax, r8
+    jge mem_miss
+    movzx r9, BYTE PTR [rcx+rax]
+    cmp r9, rdx
+    je mem_hit
     inc rax
-    jmp .l
-.m:
+    jmp mem_loop
+mem_miss:
     mov rax, 255
-.h:
+mem_hit:
     ret
+memchr_idx ENDP
+END

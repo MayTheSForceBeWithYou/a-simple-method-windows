@@ -2,20 +2,25 @@
 ;
 ; FROM SCRATCH: one tick: place path, peep step, cash+=1; exit cash 1.
 ;
-; Build: ml64 /c 24-from-scratch-sim-integrate.asm && link /OUT:24-from-scratch-sim-integrate.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-sim-integrate.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov byte [map],1
-    inc qword [peep_x]
-    inc qword [cash]
-    mov rcx, [cash]
-    call ExitProcess
+.data
+peep_x QWORD 0
+cash QWORD 0
 
+.data?
+map BYTE 256 DUP(0)
+
+.code
+main PROC
+    sub rsp, 40
+    mov BYTE PTR [map], 1
+    inc QWORD PTR [peep_x]
+    inc QWORD PTR [cash]
+    mov rcx, QWORD PTR [cash]
+    call ExitProcess
 main ENDP
 END

@@ -22,7 +22,7 @@ main PROC
     
     ; Check for NULL (failure)
     test rax, rax
-    jz .fail
+    jz L_fail
     
     ; Store 42 at allocated address
     mov rbx, rax
@@ -32,7 +32,7 @@ main PROC
     mov rcx, [rbx]
     call ExitProcess
     
-.fail:
+L_fail:
     ; Exit 2 on allocation failure
     mov rcx, 2
     call ExitProcess

@@ -1,4 +1,5 @@
 ; Exercise 02: if else (Win32 port) - SOLUTION
+; Expected exit: 20
 
 .CODE
 

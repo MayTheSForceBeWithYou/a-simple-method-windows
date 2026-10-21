@@ -2,20 +2,20 @@
 ;
 ; Erase cell to EMPTY=0; exit 0.
 ;
-; Build: ml64 /c 10-map-erase.asm && link /OUT:10-map-erase.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-map-erase.obj kernel32.lib
-;
+; Expected exit: 0
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov byte [map+5],1
-    mov byte [map+5],0
-    movzx rdi,byte [map+5]
-    mov rax,60
-    syscall
+.data?
+map BYTE 256 DUP(0)
 
+.code
+main PROC
+    sub rsp, 40
+    mov BYTE PTR [map+5], 1
+    mov BYTE PTR [map+5], 0
+    movzx rcx, BYTE PTR [map+5]
+    call ExitProcess
 main ENDP
 END

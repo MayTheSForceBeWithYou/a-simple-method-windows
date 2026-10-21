@@ -21,12 +21,12 @@ main PROC
     
     mov rax, [cur]
     cmp rax, [len]
-    jbe .ok
+    jbe L_ok
     
     mov rax, [len]
     mov [cur], rax
     
-.ok:
+L_ok:
     mov rcx, [cur]
     call ExitProcess
 main ENDP

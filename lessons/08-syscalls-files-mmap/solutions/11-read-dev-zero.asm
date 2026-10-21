@@ -23,7 +23,7 @@ main PROC
     
     ; Check for NULL (failure)
     test rax, rax
-    jz .e
+    jz L_e
     
     ; Memory is automatically zero-filled
     ; Sum 8 bytes (should all be 0)
@@ -32,22 +32,22 @@ main PROC
     xor rcx, rcx
     mov cl, 8
     
-.sum_loop:
+L_sum_loop:
     movzx rdx, BYTE PTR [r8]
     add rdi, rdx
     inc r8
     dec cl
-    jnz .sum_loop
+    jnz L_sum_loop
     
     ; Exit with sum (should be 0)
     mov rcx, rdi
-    jmp .o
+    jmp L_o
     
-.e:
+L_e:
     ; Exit 1 on error
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

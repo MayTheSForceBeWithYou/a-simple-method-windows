@@ -17,10 +17,10 @@ main PROC
     
     mov QWORD PTR [len], 2
     cmp QWORD PTR [len], 0
-    je .o
+    je L_o
     dec QWORD PTR [len]
     
-.o:
+L_o:
     mov rcx, [len]
     call ExitProcess
 main ENDP

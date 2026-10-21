@@ -1,4 +1,5 @@
 ; Exercise 05: signed cmp (Win32 port) - SOLUTION
+; Expected exit: 1
 
 .CODE
 

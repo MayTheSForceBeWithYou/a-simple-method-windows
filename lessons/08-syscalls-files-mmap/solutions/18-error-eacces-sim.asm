@@ -29,20 +29,20 @@ main PROC
     
     ; Check for failure
     cmp rax, -1
-    je .bad
+    je L_bad
     
     ; Success - close and exit 0
     mov rcx, rax
     call CloseHandle
     
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

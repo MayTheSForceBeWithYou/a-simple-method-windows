@@ -22,7 +22,7 @@ main PROC
     
     ; Check for NULL (failure)
     test rax, rax
-    jz .f
+    jz L_f
     
     ; Write 99 at offset +100
     mov rbx, rax
@@ -32,7 +32,7 @@ main PROC
     movzx rcx, BYTE PTR [rbx+100]
     call ExitProcess
     
-.f:
+L_f:
     ; Exit 2 on allocation failure
     mov rcx, 2
     call ExitProcess

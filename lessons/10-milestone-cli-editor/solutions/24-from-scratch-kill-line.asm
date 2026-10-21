@@ -26,31 +26,31 @@ main PROC
     mov rcx, 0
     lea rdx, buf
     
-.f:
+L_f:
     cmp BYTE PTR [rdx+rcx], 10
-    je .got
+    je L_got
     inc rcx
-    jmp .f
+    jmp L_f
     
-.got:
+L_got:
     ; Delete [0,rcx) - move from rcx onwards to start
     mov r8, rcx
     mov r9, [len]
     mov rdi, 0
     mov rsi, r8
     
-.cpy:
+L_cpy:
     cmp rsi, r9
-    jge .done
+    jge L_done
     
     movzx rax, BYTE PTR [rdx+rsi]
     mov BYTE PTR [rdx+rdi], al
     
     inc rsi
     inc rdi
-    jmp .cpy
+    jmp L_cpy
     
-.done:
+L_done:
     mov [len], rdi
     mov rcx, [len]
     call ExitProcess

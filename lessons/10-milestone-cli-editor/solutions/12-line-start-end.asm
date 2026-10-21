@@ -18,15 +18,15 @@ main PROC
     mov rcx, 4
     lea rdx, buf
     
-.l:
+L_l:
     test rcx, rcx
-    jz .d
+    jz L_d
     dec rcx
     cmp BYTE PTR [rdx+rcx], 10
-    jne .l
+    jne L_l
     inc rcx
     
-.d:
+L_d:
     call ExitProcess
 main ENDP
 END

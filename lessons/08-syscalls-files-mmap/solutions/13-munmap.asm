@@ -23,7 +23,7 @@ main PROC
     
     ; Check for NULL (failure)
     test rax, rax
-    jz .f
+    jz L_f
     
     ; VirtualFree(address, 0, MEM_RELEASE)
     mov rcx, rax        ; lpAddress
@@ -33,13 +33,13 @@ main PROC
     
     ; VirtualFree returns nonzero on success, 0 on failure
     test rax, rax
-    jz .f
+    jz L_f
     
     ; Success - exit 0
     mov rcx, 0
     call ExitProcess
     
-.f:
+L_f:
     ; Failure - exit 1
     mov rcx, 1
     call ExitProcess

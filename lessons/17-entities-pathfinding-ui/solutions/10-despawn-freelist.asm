@@ -2,18 +2,19 @@
 ;
 ; Free id 3 onto freelist top; exit 3.
 ;
-; Build: ml64 /c 10-despawn-freelist.asm && link /OUT:10-despawn-freelist.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-despawn-freelist.obj kernel32.lib
-;
+; Expected exit: 3
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov qword [free_top],3
-    mov rcx, [free_top]
-    call ExitProcess
+.data
+free_top QWORD 0
 
+.code
+main PROC
+    sub rsp, 40
+    mov QWORD PTR [free_top], 3
+    mov rcx, QWORD PTR [free_top]
+    call ExitProcess
 main ENDP
 END

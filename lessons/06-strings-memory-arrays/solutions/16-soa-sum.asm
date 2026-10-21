@@ -2,20 +2,24 @@
 ;
 ; SoA xs={1,2,3} ys={4,5,6}; sum all 21.
 ;
-; Build: nasm -f elf64 16-soa-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    xs dq 1,2,3
-    ys dq 4,5,6
-section .text
-    global _start
-_start:
-    mov rdi, [xs]
-    add rdi, [xs+8]
-    add rdi, [xs+16]
-    add rdi, [ys]
-    add rdi, [ys+8]
-    add rdi, [ys+16]
-    mov rax, 60
-    syscall
+; Expected exit: 21
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+xs QWORD 1,2,3
+ys QWORD 4,5,6
+
+.code
+main PROC
+    sub rsp, 40
+    mov rcx, QWORD PTR [xs]
+    add rcx, QWORD PTR [xs+8]
+    add rcx, QWORD PTR [xs+16]
+    add rcx, QWORD PTR [ys]
+    add rcx, QWORD PTR [ys+8]
+    add rcx, QWORD PTR [ys+16]
+    call ExitProcess
+main ENDP
+END
