@@ -19,7 +19,8 @@ fill_loop:
     jge do_sum
     test r8, 1
     jnz fill_odd
-    mov BYTE PTR [buf+r8], 1
+    lea r11, [buf]
+    mov BYTE PTR [r11+r8], 1
 fill_odd:
     inc r8
     jmp fill_loop
@@ -29,7 +30,8 @@ do_sum:
 sum_loop:
     cmp r8, 8
     jge sum_done
-    movzx rax, BYTE PTR [buf+r8]
+    lea r11, [buf]
+    movzx rax, BYTE PTR [r11+r8]
     add rcx, rax
     inc r8
     jmp sum_loop

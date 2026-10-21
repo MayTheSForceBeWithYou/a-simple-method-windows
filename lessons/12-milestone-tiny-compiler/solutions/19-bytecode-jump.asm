@@ -6,17 +6,17 @@
 EXTERN ExitProcess:PROC
 
 .data
-code BYTE 3,2, 1,99, 1,5, 0
+vmcode BYTE 3,2, 1,99, 1,5, 0
 
 .data?
-st QWORD 4 DUP(?)
+stk QWORD 4 DUP(?)
 sp_ QWORD ?
 
 .code
 main PROC
     sub rsp, 32
     mov QWORD PTR [sp_], 0
-    lea rsi, code
+    lea rsi, [vmcode]
 loop_vm:
     movzx rax, BYTE PTR [rsi]
     inc rsi
@@ -31,7 +31,8 @@ vm_load:
     movzx rax, BYTE PTR [rsi]
     inc rsi
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [st+rcx*8], rax
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
     jmp loop_vm
 vm_jmp:
@@ -42,7 +43,8 @@ vm_jmp:
 vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov rcx, QWORD PTR [st+rcx*8]
+    lea r11, [stk]
+    mov rcx, QWORD PTR [r11+rcx*8]
     call ExitProcess
 main ENDP
 END

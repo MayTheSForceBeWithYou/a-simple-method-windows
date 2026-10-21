@@ -6,7 +6,7 @@
 EXTERN ExitProcess:PROC
 
 .data
-code BYTE 1,4, 1,5, 2, 0
+vmcode BYTE 1,4, 1,5, 2, 0
 
 .data?
 stack QWORD 8 DUP(?)
@@ -16,7 +16,7 @@ sp_ QWORD ?
 main PROC
     sub rsp, 32
     mov QWORD PTR [sp_], 0
-    lea rsi, code
+    lea rsi, [vmcode]
 loop_vm:
     movzx rax, BYTE PTR [rsi]
     inc rsi
@@ -31,23 +31,28 @@ vm_load:
     movzx rax, BYTE PTR [rsi]
     inc rsi
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [stack+rcx*8], rax
+    lea r11, [stack]
+    mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
     jmp loop_vm
 vm_add:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov rax, QWORD PTR [stack+rcx*8]
+    lea r11, [stack]
+    mov rax, QWORD PTR [r11+rcx*8]
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    add rax, QWORD PTR [stack+rcx*8]
-    mov QWORD PTR [stack+rcx*8], rax
+    lea r11, [stack]
+    add rax, QWORD PTR [r11+rcx*8]
+    lea r11, [stack]
+    mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
     jmp loop_vm
 vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov rcx, QWORD PTR [stack+rcx*8]
+    lea r11, [stack]
+    mov rcx, QWORD PTR [r11+rcx*8]
     call ExitProcess
 main ENDP
 END

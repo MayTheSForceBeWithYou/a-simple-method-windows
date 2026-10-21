@@ -26,7 +26,8 @@ loop_start:
     add rax, r9
     shr rax, 1
     mov rcx, rax
-    mov rdx, QWORD PTR [arr+rcx*8]
+    lea r11, [arr]
+    mov rdx, QWORD PTR [r11+rcx*8]
     cmp rdx, r10
     je found
     jl go_right
@@ -39,10 +40,10 @@ go_right:
     jmp loop_start
 found:
     mov rcx, r8
-    jmp out
+    jmp L_done
 miss:
     mov rcx, 255
-out:
+L_done:
     call ExitProcess
 main ENDP
 END

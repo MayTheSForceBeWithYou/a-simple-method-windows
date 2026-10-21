@@ -18,8 +18,10 @@ main PROC
     mov rax, 1
     imul rax, 8
     add rax, 2
-    mov BYTE PTR [fb+rax], 9
-    movzx rcx, BYTE PTR [fb+rax]
+    lea r11, [fb]
+    mov BYTE PTR [r11+rax], 9
+    lea r11, [fb]
+    movzx rcx, BYTE PTR [r11+rax]
     call ExitProcess
 main ENDP
 END

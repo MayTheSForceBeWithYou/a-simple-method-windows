@@ -321,7 +321,8 @@ function Test-RunnableAsm {
             $stdinText = [string]$expected.Stdin
         }
         $run = Invoke-BuiltExe -ExePath $exePath -OutDir $OutDir -Name $name -StdinText $stdinText
-        $issues = Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr
+        # Empty List unwraps to $null in PowerShell; wrap so StrictMode can see .Count.
+        $issues = @(Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr)
 
         if ($issues.Count -eq 0) {
             Add-Result -File $relativePath -Status "PASS" -Details "" -Kind $Kind
@@ -362,7 +363,7 @@ function Test-ExerciseScaffold {
             $stdinText = [string]$expected.Stdin
         }
         $run = Invoke-BuiltExe -ExePath $exePath -OutDir $OutDir -Name $name -StdinText $stdinText
-        $issues = Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr
+        $issues = @(Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr)
 
         $matched = $true
         if ($expected.HasAny) {

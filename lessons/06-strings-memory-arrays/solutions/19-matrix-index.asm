@@ -16,7 +16,8 @@ main PROC
     mov rax, 1
     imul rax, 3
     add rax, 2
-    mov rcx, QWORD PTR [m+rax*8]
+    lea r11, [m]
+    mov rcx, QWORD PTR [r11+rax*8]
     call ExitProcess
 main ENDP
 END

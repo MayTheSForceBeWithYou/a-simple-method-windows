@@ -16,13 +16,16 @@ main PROC
     mov QWORD PTR [head], 0
     mov QWORD PTR [tail], 0
     mov rcx, QWORD PTR [tail]
-    mov QWORD PTR [q+rcx*8], 7
+    lea r11, [q]
+    mov QWORD PTR [r11+rcx*8], 7
     inc QWORD PTR [tail]
     mov rcx, QWORD PTR [tail]
-    mov QWORD PTR [q+rcx*8], 8
+    lea r11, [q]
+    mov QWORD PTR [r11+rcx*8], 8
     inc QWORD PTR [tail]
     mov rcx, QWORD PTR [head]
-    mov rcx, QWORD PTR [q+rcx*8]
+    lea r11, [q]
+    mov rcx, QWORD PTR [r11+rcx*8]
     inc QWORD PTR [head]
     call ExitProcess
 main ENDP

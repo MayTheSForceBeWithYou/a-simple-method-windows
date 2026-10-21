@@ -17,10 +17,10 @@ main PROC
     cmp rax, 10
     jge no
     mov rcx, 1
-    jmp out
+    jmp L_done
 no:
     xor rcx, rcx
-out:
+L_done:
     call ExitProcess
 main ENDP
 END

@@ -5,7 +5,7 @@ EXTERN ExitProcess:PROC
 .code
 main PROC
     sub rsp, 32
-    mov al, 0x80
+    mov al, 80h
     rol al, 1
     movzx rcx, al
     call ExitProcess

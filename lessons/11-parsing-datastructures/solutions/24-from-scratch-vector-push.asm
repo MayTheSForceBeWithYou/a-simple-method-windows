@@ -24,7 +24,8 @@ main ENDP
 
 push1 PROC
     mov rcx, QWORD PTR [len]
-    mov QWORD PTR [data+rcx*8], 1
+    lea r11, [data]
+    mov QWORD PTR [r11+rcx*8], 1
     inc QWORD PTR [len]
     ret
 push1 ENDP

@@ -18,7 +18,8 @@ main PROC
 query_loop:
     cmp r9, 4
     jge query_done
-    movzx rax, BYTE PTR [masks+r9]
+    lea r11, [masks]
+    movzx rax, BYTE PTR [r11+r9]
     test rax, 1
     jz query_next
     inc r8

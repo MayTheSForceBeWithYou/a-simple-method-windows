@@ -15,12 +15,14 @@ n EQU 4
 .code
 main PROC
     sub rsp, 32
-    mov rcx, [arr]
+    lea r11, [arr]
+    mov rcx, QWORD PTR [r11]
     mov r8, 1
 loop_start:
     cmp r8, n
     jge done
-    mov rax, QWORD PTR [arr+r8*8]
+    lea r11, [arr]
+    mov rax, QWORD PTR [r11+r8*8]
     cmp rax, rcx
     jge cont
     mov rcx, rax

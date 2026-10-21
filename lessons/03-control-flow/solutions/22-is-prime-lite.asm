@@ -25,10 +25,10 @@ loop_start:
     jmp loop_start
 composite:
     xor rcx, rcx
-    jmp out
+    jmp L_done
 prime:
     mov rcx, 1
-out:
+L_done:
     call ExitProcess
 main ENDP
 END

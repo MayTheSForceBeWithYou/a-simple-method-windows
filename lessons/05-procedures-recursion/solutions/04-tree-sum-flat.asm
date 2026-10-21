@@ -23,7 +23,8 @@ heap_sum PROC
     push rbx
     push rcx
     sub rsp, 32
-    mov rax, heap[rcx*8]
+    lea r11, [heap]
+    mov rax, QWORD PTR [r11+rcx*8]
     mov rbx, rax
     mov rax, rcx
     imul rax, 2

@@ -22,22 +22,28 @@ main PROC
 loop_start:
     cmp rcx, 4
     jge loop_end
-    mov al, BYTE PTR [src+rcx]
+    lea r11, [src]
+    mov al, BYTE PTR [r11+rcx]
     test al, al
     jz skip_pixel
-    mov BYTE PTR [dst+rcx], al
+    lea r11, [dst]
+    mov BYTE PTR [r11+rcx], al
 skip_pixel:
     inc rcx
     jmp loop_start
 loop_end:
     xor rcx, rcx
-    movzx rax, BYTE PTR [dst]
+    lea r11, [dst]
+    movzx rax, BYTE PTR [r11]
     add rcx, rax
-    movzx rax, BYTE PTR [dst+1]
+    lea r11, [dst]
+    movzx rax, BYTE PTR [r11+1]
     add rcx, rax
-    movzx rax, BYTE PTR [dst+2]
+    lea r11, [dst]
+    movzx rax, BYTE PTR [r11+2]
     add rcx, rax
-    movzx rax, BYTE PTR [dst+3]
+    lea r11, [dst]
+    movzx rax, BYTE PTR [r11+3]
     add rcx, rax
     call ExitProcess
 main ENDP

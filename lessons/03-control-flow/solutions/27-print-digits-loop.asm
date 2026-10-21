@@ -24,22 +24,26 @@ loop_start:
     jge write_buf
     mov rax, r8
     add rax, '0'
-    mov BYTE PTR [buf+r8], al
+    lea r11, [buf]
+    mov BYTE PTR [r11+r8], al
     inc r8
     jmp loop_start
 write_buf:
-    mov BYTE PTR [buf+5], 10
+    lea r11, [buf]
+    mov BYTE PTR [r11+5], 10
     
     ; Get stdout
     mov rcx, -11
     call GetStdHandle
-    mov hStdOut, rax
+    lea r11, [hStdOut]
+    mov QWORD PTR [r11], rax
     
     ; Write buffer
-    mov rcx, hStdOut
-    lea rdx, buf
+    lea r11, [hStdOut]
+    mov rcx, QWORD PTR [r11]
+    lea rdx, [buf]
     mov r8d, 6
-    lea r9, written
+    lea r9, [written]
     mov QWORD PTR [rsp+32], 0
     call WriteFile
     

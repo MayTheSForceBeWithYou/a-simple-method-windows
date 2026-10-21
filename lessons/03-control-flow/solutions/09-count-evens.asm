@@ -20,7 +20,8 @@ main PROC
 loop_start:
     cmp r8, n
     jge done
-    movzx rax, BYTE PTR [arr+r8]
+    lea r11, [arr]
+    movzx rax, BYTE PTR [r11+r8]
     test rax, 1
     jnz odd
     inc rcx

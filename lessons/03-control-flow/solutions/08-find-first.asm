@@ -19,7 +19,8 @@ main PROC
 loop_start:
     cmp r8, n
     jge missing
-    movzx rax, BYTE PTR [arr+r8]
+    lea r11, [arr]
+    movzx rax, BYTE PTR [r11+r8]
     cmp rax, 4
     je found
     inc r8

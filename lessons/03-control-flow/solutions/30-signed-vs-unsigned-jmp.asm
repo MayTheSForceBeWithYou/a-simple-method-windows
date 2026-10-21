@@ -15,10 +15,10 @@ main PROC
     cmp rax, 1
     jl less
     mov rcx, 0
-    jmp out
+    jmp L_done
 less:
     mov rcx, 1
-out:
+L_done:
     call ExitProcess
 main ENDP
 END

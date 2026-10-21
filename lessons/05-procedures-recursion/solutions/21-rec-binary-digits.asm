@@ -7,7 +7,7 @@ EXTERN ExitProcess:PROC
 .code
 main PROC
     sub rsp, 32
-    mov rcx, 0b1101
+    mov rcx, 1101b
     call poprec
     mov rcx, rax
     call ExitProcess

@@ -18,8 +18,8 @@ main PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
-    lea rcx, dst
-    lea rdx, src
+    lea rcx, [dst]
+    lea rdx, [src]
     mov r8, 8
     call memcpy
     xor r9, r9
@@ -27,7 +27,8 @@ main PROC FRAME
 sum_loop:
     cmp r10, 8
     jge sum_done
-    movzx rax, BYTE PTR [dst+r10]
+    lea r11, [dst]
+    movzx rax, BYTE PTR [r11+r10]
     add r9, rax
     inc r10
     jmp sum_loop
