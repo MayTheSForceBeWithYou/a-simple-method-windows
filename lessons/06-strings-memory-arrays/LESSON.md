@@ -158,25 +158,44 @@ RCX = destination, RDX = source (not RDI/RSI). After four ASCII bytes, AL is 0, 
 
 **Why it fails:** The terminator is never stored. The destination is not a C string. The next `strlen` on `dst` reads uninitialized `.DATA?` bytes until a coincidental zero. Listing 03 stores AL, increments, then tests.
 
-## Counted operations (no listing)
+## Counted operations: `memcpy` loop
 
-`memcpy`/`memcmp`/`memset` take an explicit count in (typically) R8 as the third argument. They copy, compare, or fill that many bytes, including embedded zeros.
+`memcpy`/`memcmp`/`memset` take an explicit count in (typically) R8 as the third argument. They copy, compare, or fill that many bytes, including embedded zeros. Listing `04-memcpy-loop` copies 4 bytes from `"test", 0` and exits 4. It does **not** copy the terminator: R8 is 4, not 5.
 
 ```asm
-; memcpy: RCX=dst, RDX=src, R8=count
-    xor r9, r9
+; Listing 04: Byte memcpy loop (LESSON.md block 4)
+; Expected exit: 4
+; Expected stdout: (none)
+
+.DATA
+src DB "test", 0
+
+.DATA?
+dst DB 16 DUP(?)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    lea     rcx, dst
+    lea     rdx, src
+    mov     r8, 4
+    xor     r9, r9
 copy:
-    cmp r9, r8
-    jge done
-    mov al, [rdx+r9]
-    mov [rcx+r9], al
-    inc r9
-    jmp copy
+    cmp     r9, r8
+    jge     done
+    mov     al, BYTE PTR [rdx+r9]
+    mov     BYTE PTR [rcx+r9], al
+    inc     r9
+    jmp     copy
 done:
-    ret
+    mov     ecx, 4
+    call    ExitProcess
+main ENDP
+END
 ```
 
-This fragment is not a standalone listing.
+There is no `sub rsp` before `call ExitProcess`. `ExitProcess` never returns; the listing still relies on the process dying rather than a balanced frame. Flagged in `docs/PROSE_TECH_FLAGS.md`.
 
 ## `rep movsb` and Windows RSI/RDI
 
@@ -228,4 +247,4 @@ Row-major: `index = row * cols + col`, then `base + index * sizeof`. For 3×3 qw
 
 ## Exercises
 
-Quoted listings: `01-strlen.asm`, `02-strlen-implementation.asm`, `03-strcpy-implementation.asm`.
+Quoted listings: `01-strlen.asm`, `02-strlen-implementation.asm`, `03-strcpy-implementation.asm`, `04-memcpy-loop.asm`.
