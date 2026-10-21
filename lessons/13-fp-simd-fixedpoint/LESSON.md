@@ -176,7 +176,7 @@ The same pattern wraps a heading: 350° + 20° = 10°.
 
 **Divide.** Naive `idiv` of two Q16.16 values cancels the scales and leaves an integer quotient (`6.0/2.0` → 3 with zero fraction bits; `1.0/2.0` → 0). Widen the dividend first: sign-extend, `shl rax, 16`, `cqo`, `idiv` the divisor. The quotient is Q16.16. Use `sar` if you then convert a signed quotient to an integer.
 
-Listing `06-q16-divide` does that for 6.0 / 2.0: `eax = 6 SHL 16`, `ebx = 2 SHL 16`, `movsxd` both, `shl rax, 16`, `cqo` / `idiv rbx`. The quotient is `3 SHL 16`. One `shr rax, 16` drops the fraction so ECX is the integer 3. Expected exit: **3**.
+Listing `06-q16-divide` does that for 6.0 / 2.0: `eax = 6 SHL 16`, `ebx = 2 SHL 16`, `movsxd` both, `shl rax, 16`, `cqo` / `idiv rbx`. The quotient is `3 SHL 16`. One `shr rax, 16` drops the fraction so ECX is the integer 3. Expected exit: **3**. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 06: Q16.16 divide 6.0 / 2.0 with widened dividend
@@ -187,7 +187,8 @@ Listing `06-q16-divide` does that for 6.0 / 2.0: `eax = 6 SHL 16`, `ebx = 2 SHL 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     eax, 6
     shl     eax, 16
     mov     ebx, 2

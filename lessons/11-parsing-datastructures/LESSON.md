@@ -82,7 +82,7 @@ END
 
 RSI is **nonvolatile** on Windows. This listing is `main` and then `ExitProcess`, so the clobber is not observed. A returning `expect` that writes RSI must save and restore it.
 
-Skipping spaces is the same cursor walk: while the byte is 32, increment. Listing `19-skip-whitespace` starts at `"  7"` (two spaces, then `'7'`). The loop loads `[rsi]`, compares to 32, and increments twice. `at_digit` then has AL = `'7'` (55). `sub ecx, '0'` yields 7. Expected exit: **7**.
+Skipping spaces is the same cursor walk: while the byte is 32, increment. Listing `19-skip-whitespace` starts at `"  7"` (two spaces, then `'7'`). The loop loads `[rsi]`, compares to 32, and increments twice. `at_digit` then has AL = `'7'` (55). `sub ecx, '0'` yields 7. Expected exit: **7**. RSI is saved: `push rsi` / `sub rsp, 32` (one push plus 32).
 
 ```asm
 ; Listing 19: Skip ASCII spaces, parse digit (LESSON.md)
@@ -96,7 +96,8 @@ src BYTE "  ", "7", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rsi
+    sub     rsp, 32
     lea     rsi, src
 skip:
     movzx   eax, BYTE PTR [rsi]
@@ -113,7 +114,7 @@ main ENDP
 END
 ```
 
-Copying a lexeme is a counted or NUL-terminated store plus a length that does **not** include a terminator you happened to write. Listing `20-copy-lexeme` copies `"let"` into `dst` until the 0, stores the count in `lex_len`, and exits that DWORD. Three bytes copied; the 0 is the stop test, not a stored payload. Expected exit: **3**.
+Copying a lexeme is a counted or NUL-terminated store plus a length that does **not** include a terminator you happened to write. Listing `20-copy-lexeme` copies `"let"` into `dst` until the 0, stores the count in `lex_len`, and exits that DWORD. Three bytes copied; the 0 is the stop test, not a stored payload. Expected exit: **3**. RSI and RDI are saved: `push rsi` / `push rdi` / `sub rsp, 40`.
 
 ```asm
 ; Listing 20: Copy lexeme bytes and exit length (LESSON.md)
@@ -131,7 +132,9 @@ lex_len QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rsi
+    push    rdi
+    sub     rsp, 40
     lea     rsi, src
     lea     rdi, dst
     xor     rcx, rcx

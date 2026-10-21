@@ -104,7 +104,7 @@ A digit after the first letter (`foo2`) would stop the scan at the digit with th
 
 A keyword such as `let` must match every letter **and** the boundary after it. Comparing only the first byte to `'l'` accepts `"lxxx"`. `"letter"` must not become `let` plus `ter`.
 
-Listing `07-keyword-let-match` compares `src` to `kw` with `repe cmpsb` for 3 bytes (`cld` first). Both sides are `"let"`, so the compare matches. Then it checks `src[3] == 0` — the byte after the three letters is the terminator, so this run is a whole-word match. Expected exit: **1**. A mismatch, or a following letter (`"letter"` would fail the `cmp BYTE PTR [src + 3], 0`), takes `no_match` and exits 0.
+Listing `07-keyword-let-match` compares `src` to `kw` with `repe cmpsb` for 3 bytes (`cld` first). Both sides are `"let"`, so the compare matches. Then it checks `src[3] == 0` — the byte after the three letters is the terminator, so this run is a whole-word match. Expected exit: **1**. A mismatch, or a following letter (`"letter"` would fail the `cmp BYTE PTR [src + 3], 0`), takes `no_match` and exits 0. RSI and RDI are saved: `push rsi` / `push rdi` / `sub rsp, 40`.
 
 ```asm
 ; Listing 07: Whole-word keyword match for "let"
@@ -119,7 +119,9 @@ src BYTE "let", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rsi
+    push    rdi
+    sub     rsp, 40
     lea     rsi, src
     lea     rdi, kw
     mov     rcx, 3

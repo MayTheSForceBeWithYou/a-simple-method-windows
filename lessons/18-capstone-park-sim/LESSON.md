@@ -23,7 +23,7 @@ The Jack listings isolate those primitives. They are not the whole binary.
 
 ### Track connect, 100 ticks, and a 2×2 P6 map
 
-Listing `13-track-piece-connect` encodes a four-way direction wrap. Directions are 0..3. The opposite of a facing is `(facing + 2) AND 3`. Here the piece heading is 1 and the neighbor facing is 3: `(3 + 2) AND 3 = 1`, which matches. Expected exit: **1**. A mismatch would exit 0.
+Listing `13-track-piece-connect` encodes a four-way direction wrap. Directions are 0..3. The opposite of a facing is `(facing + 2) AND 3`. Here the piece heading is 1 and the neighbor facing is 3: `(3 + 2) AND 3 = 1`, which matches. Expected exit: **1**. A mismatch would exit 0. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 13: Track piece direction connect rule
@@ -34,7 +34,8 @@ Listing `13-track-piece-connect` encodes a four-way direction wrap. Directions a
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     rax, 1
     mov     rbx, 3
     mov     rcx, rbx

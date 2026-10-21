@@ -33,7 +33,7 @@ offset = y * pitch + x * bytes_per_pixel
 
 **Packing.** `(R SHL 16) OR (G SHL 8) OR B` in a register is `00RRGGBBh`. x86-64 is little-endian, so a `mov DWORD PTR` stores B, G, R, 0 in memory. Dumping that dword into a P6 file writes the channels backwards plus a pad byte. Write R, G, B as three bytes.
 
-Listing `06-pitch-pixel-offset` computes the formula with `y = 1`, `pitch = 32`, `x = 2`, `bpp = 4` (`shl rbx, 2`). `1 * 32 + 2 * 4 = 40`. Expected exit: **40**. There is still no listing that pads pitch to an alignment boundary.
+Listing `06-pitch-pixel-offset` computes the formula with `y = 1`, `pitch = 32`, `x = 2`, `bpp = 4` (`shl rbx, 2`). `1 * 32 + 2 * 4 = 40`. Expected exit: **40**. RBX is saved: `push rbx` / `sub rsp, 32`. There is still no listing that pads pitch to an alignment boundary.
 
 ```asm
 ; Listing 06: y*pitch + x*bpp pixel offset
@@ -44,7 +44,8 @@ Listing `06-pitch-pixel-offset` computes the formula with `y = 1`, `pitch = 32`,
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     rax, 1
     mov     rbx, 32
     imul    rax, rbx
@@ -346,14 +347,14 @@ main ENDP
 END
 ```
 
-Listing `09-vsync-ready-flag` is **not** a display vsync. It paces with `QueryPerformanceCounter`: seed `frame_target = start + 1`, then a loop that increments EBX, returns when EBX is `>= 3`, and otherwise spins until `qpc_now >= frame_target` before adding 1 tick to the target. EBX goes 1, 2, then 3 and exits. Expected exit: **3**. The wait body runs twice (EBX = 1 and 2); the third increment hits the exit check without a third spin. This is QPC tick pacing, not a vertical-blank interrupt or `DwmFlush`.
+Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32`. It seeds `frame_target = start + 1`, then a loop that **waits first** (`QueryPerformanceCounter` until `qpc_now >= frame_target`), then increments EBX, and only then checks `ebx >= 3`. After a completed wait it bumps the target by 1 tick and loops. EBX is 1, 2, then 3 — **three waits**. Expected exit: **3**. This is QPC tick pacing, not a vertical-blank interrupt or `DwmFlush`.
 
 ```asm
 ; Listing 09: Frame pacing with QueryPerformanceCounter (spin until tick delta)
 ; Expected exit: 3
 ; Expected stdout: (none)
 ;
-; Runs three frames; each frame spins until QPC advances by at least 1 tick.
+; Completes three QPC wait loops; exit code equals the number of waits.
 
 .DATA?
 qpc_start QWORD ?
@@ -365,8 +366,10 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     lea     rcx, qpc_start
@@ -377,22 +380,22 @@ main PROC FRAME
 
     xor     ebx, ebx
 
-frame_loop:
+frame_wait_loop:
+    lea     rcx, qpc_now
+wait_spin:
+    call    QueryPerformanceCounter
+    mov     rax, QWORD PTR qpc_now
+    cmp     rax, QWORD PTR frame_target
+    jl      wait_spin
+
     inc     ebx
     cmp     ebx, 3
     jge     frames_done
 
-wait_tick:
-    lea     rcx, qpc_now
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_now
-    cmp     rax, QWORD PTR frame_target
-    jl      wait_tick
-
     mov     rax, QWORD PTR qpc_now
     add     rax, 1
     mov     frame_target, rax
-    jmp     frame_loop
+    jmp     frame_wait_loop
 
 frames_done:
     mov     ecx, ebx
@@ -401,7 +404,7 @@ main ENDP
 END
 ```
 
-Listing `10-bresenham-pixel-count` walks from (0, 0) to (3, 2). `dx = 3`, `dy = 2`, `err = 2*dy - dx = 1`. Each loop iteration increments `count`, then stops when `x == dx`. That plots x in `x >= 0 && x <= 3` — four columns. The y-step happens when `err > 0` (`test` / `jle no_y_step`). Expected exit: **4**.
+Listing `10-bresenham-pixel-count` walks from (0, 0) to (3, 2). `dx = 3`, `dy = 2`, `err = 2*dy - dx = 1`. Each loop iteration increments `count`, then stops when `x == dx`. That plots x in `x >= 0 && x <= 3` — four columns. The y-step happens when `err > 0` (`test` / `jle no_y_step`). Expected exit: **4**. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 10: Bresenham line from (0,0) to (3,2); count plotted points
@@ -422,7 +425,8 @@ count QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     x, 0
     mov     y, 0
     mov     dx, 3
@@ -502,7 +506,7 @@ END
 - P6 is an 11-byte header plus 3-byte RGB. Listing 05 uses Win32 file calls and exits 0 on success, 1 if `CreateFileA` returns −1.
 - Little-endian dword stores are not P6 channel order.
 - Half-open clip is `x >= lo && x < hi`. Listing `08-clip-half-open` tests only `x < 4` for x=5 and exits **1** (outside).
-- Listing `09-vsync-ready-flag` exits **3** after QPC tick pacing — not a display vsync.
+- Listing `09-vsync-ready-flag` exits **3** after three QPC wait loops — not a display vsync.
 - Listing `10-bresenham-pixel-count` plots four columns from (0,0) to (3,2) and exits **4**.
 
 ## Lookup

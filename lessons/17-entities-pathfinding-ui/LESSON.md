@@ -178,7 +178,7 @@ END
 
 The sign test is the same rule as lesson 15’s mouse delta. Reverse the operands (`5 - 10`) and `neg` runs. A full `h` still needs `|x2 - x1| + |y2 - y1|`.
 
-Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the sum is 10. `abs_rax` tests the sign and `neg`s when needed. Expected exit: **10**.
+Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the sum is 10. `abs_rax` tests the sign and `neg`s when needed. Expected exit: **10**. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 10: Two-axis Manhattan |dx|+|dy|
@@ -189,7 +189,8 @@ Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the s
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     rax, 10
     mov     rbx, 5
     sub     rax, rbx
@@ -215,7 +216,7 @@ abs_rax ENDP
 END
 ```
 
-Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 2|` = 2 + 2 = 4. Then `g = 3` is added: `f = 7`. Expected exit: **7**. Same `abs_rax` helper.
+Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 2|` = 2 + 2 = 4. Then `g = 3` is added: `f = 7`. Expected exit: **7**. Same `abs_rax` helper. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 09: A* score f = g + h
@@ -226,7 +227,8 @@ Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     rax, 3
     mov     rbx, 1
     sub     rax, rbx
@@ -254,7 +256,7 @@ abs_rax ENDP
 END
 ```
 
-Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0, marks `visited[0]`, and starts `rbx = 1`. Each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store.
+Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0, marks `visited[0]`, and starts `rbx = 1`. Each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store. RDI and RBX are saved: `push rdi` / `push rbx` / `sub rsp, 40`.
 
 ```asm
 ; Listing 08: BFS on a 5-node line; visit count
@@ -273,7 +275,9 @@ visited BYTE NODE_COUNT DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rdi
+    push    rbx
+    sub     rsp, 40
     mov     head, 0
     mov     tail, 0
     lea     rdi, visited
@@ -368,7 +372,7 @@ END
 
 `inc` then `mod`, not `mod` then `inc`. If focus is already 2, `(2 + 1) mod 3 = 0` wraps to the first widget. `(2 mod 3) + 1 = 3` is past the last valid index (0..2). Zero RDX before the `div` (lesson 15). The remainder is the wrapped index; the quotient is how many times you wrapped, which this listing discards.
 
-Listing `11-ui-hit-test` is a four-compare panel test. The panel is `x >= 0 && x < 10 && y >= 0 && y < 10`. The point is (5, 5). All four compares pass (`jl` / `jge` to `miss` fail), so ECX becomes 1. Expected exit: **1**. There is still no panel y-cursor stack listing.
+Listing `11-ui-hit-test` is a four-compare panel test. The panel is `x >= 0 && x < 10 && y >= 0 && y < 10`. The point is (5, 5). All four compares pass (`jl` / `jge` to `miss` fail), so ECX becomes 1. Expected exit: **1**. RBX is saved: `push rbx` / `sub rsp, 32`. There is still no panel y-cursor stack listing.
 
 ```asm
 ; Listing 11: Four-compare panel hit test (half-open)
@@ -379,7 +383,8 @@ Listing `11-ui-hit-test` is a four-compare panel test. The panel is `x >= 0 && x
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     ; panel x=0 y=0 w=10 h=10; point px=5 py=5
     mov     rax, 5
     mov     rbx, 5

@@ -396,9 +396,9 @@ END
 
 A full frame after this listing still needs a render path and a wait. Windows waits with `Sleep` (milliseconds in RCX), not `nanosleep`.
 
-Listing `13-sleep-frame-pad` is the clamp path of that pad. `FRAME_BUDGET_MS` is 10; `WORK_TARGET_MS` is 12. It stamps `t0` with `GetTickCount64`, then busy-waits until elapsed is `>= 12`. Remaining time is `10 - elapsed`, which is negative, so `jns sleep_positive` fails. The clamp arm zeros RAX, sets `ecx = 1`, and jumps to `do_sleep`.
+Listing `13-sleep-frame-pad` is the clamp path of that pad. The prologue is `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32`. `FRAME_BUDGET_MS` is 10; `WORK_TARGET_MS` is 12. It stamps `t0` with `GetTickCount64`, then busy-waits until elapsed is `>= 12`. Remaining time is `10 - elapsed` (elapsed lives in R8), which is negative, so `jns sleep_has_budget` fails.
 
-`do_sleep` then does `mov r8d, edx` / `call Sleep` / `mov ecx, r8d`. On this path EDX was never set (it is a leftover after `GetTickCount64`), and `Sleep` may clobber R8. The header comments Expected exit: **1**, matching the `mov ecx, 1` on the clamp arm, but that 1 is not what `ExitProcess` receives after `do_sleep`. The positive arm would zero EDX and Sleep the remaining milliseconds. This listing has not been assembled with ml64.
+The clamp arm puts **0** in ECX (`Sleep` milliseconds) and **1** in EBX (the process status), calls `Sleep`, then `mov ecx, ebx`. Expected exit: **1**. The budget-left arm puts 0 in EBX and the remaining milliseconds in RCX, then the same `Sleep` / `mov ecx, ebx` pair would exit 0. EBX is nonvolatile, so the status survives the call.
 
 ```asm
 ; Listing 13: Sleep frame-budget padding after measured work
@@ -420,8 +420,10 @@ EXTRN Sleep:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     call    GetTickCount64
@@ -434,23 +436,22 @@ work_wait:
     cmp     rax, WORK_TARGET_MS
     jl      work_wait
 
-    mov     rbx, rax
+    mov     r8, rax
     mov     rax, FRAME_BUDGET_MS
-    sub     rax, rbx
-    jns     sleep_positive
-    xor     rax, rax
-    mov     ecx, 1
-    jmp     do_sleep
+    sub     rax, r8
+    jns     sleep_has_budget
 
-sleep_positive:
-    mov     ecx, eax
-    xor     edx, edx
-    jmp     do_sleep
-
-do_sleep:
-    mov     r8d, edx
+    xor     ecx, ecx
+    mov     ebx, 1
     call    Sleep
-    mov     ecx, r8d
+    mov     ecx, ebx
+    call    ExitProcess
+
+sleep_has_budget:
+    mov     ebx, 0
+    mov     rcx, rax
+    call    Sleep
+    mov     ecx, ebx
     call    ExitProcess
 main ENDP
 END
@@ -507,7 +508,7 @@ END
 - Hold-repeat fires when a counter reaches a threshold while the key byte stays down (listing `03-hold-repeat`, exit **1**). A rising edge is `prev == 0 && cur == 1` (listing `11-rising-edge`, exit **1**). A chord is two key bytes ANDed (listing `12-two-key-chord`, exit **1**). Mouse Manhattan is `|dx| + |dy|` after a sign test (listing `04-mouse-delta-sum`, exit **7**).
 - `GetStdHandle(-10)` is `STD_INPUT_HANDLE`. `PeekConsoleInputA` is the non-blocking peek; listing `05-peek-console-input` declares it and exits **0** without calling it.
 - Fixed steps: `xor rdx, rdx` then `div` (listing `06-fixed-step-div` exits **3** from 50 / 16), clamp the quotient (listing `07-timestep-clamp` cuts 6 to **3**), convert units before the step `div` (listings 08 and 10 exit **1**).
-- Bank leftover time in an accumulator and spend whole 16 ms steps under a clamp. Listing `09-frame-accum-loop` spends 32 ms as two steps and exits **2**. Listing `13-sleep-frame-pad` is the over-budget clamp (work 12 ms, budget 10 ms); the header says exit **1**, but `do_sleep` passes EDX/`R8` to `ExitProcess` after `Sleep`.
+- Bank leftover time in an accumulator and spend whole 16 ms steps under a clamp. Listing `09-frame-accum-loop` spends 32 ms as two steps and exits **2**. Listing `13-sleep-frame-pad` is the over-budget clamp (work 12 ms, budget 10 ms): `Sleep(0)` and EBX = 1, then `mov ecx, ebx` exits **1**.
 
 ## Lookup
 

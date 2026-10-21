@@ -1011,11 +1011,9 @@ Windows has no `brk`. Page-sized scratch still goes through `VirtualAlloc` (list
 
 ### CreatePipe: write three bytes, read them back
 
-Listing `15-create-pipe` creates an anonymous pipe (`CreatePipe` with NULL security and 0 size), writes the three bytes `"ABC"` to `hWrite`, and reads three bytes into `readBuf`. `bytesRead` is stored, then both HANDLEs are closed. The header comments Expected exit: **3** (the byte count). Failure of `CreatePipe` / `WriteFile` / `ReadFile` is meant to exit **1**.
+Listing `15-create-pipe` creates an anonymous pipe (`CreatePipe` with NULL security and 0 size), writes the three bytes `"ABC"` to `hWrite`, and reads three bytes into `readBuf`. Success copies `bytesRead` into **EBX**, closes both HANDLEs, then `mov ecx, ebx`. CloseHandle clobbers RCX; EBX is nonvolatile and holds the count across those calls. Expected exit: **3**. Failure of `CreatePipe` / `WriteFile` / `ReadFile` sets `ecx = 1` after the closes (or immediately if `CreatePipe` failed) and exits **1**.
 
-The success path does `mov ecx, DWORD PTR bytesRead` and then jumps to `cleanup`. Cleanup calls `CloseHandle` on `hRead` and `hWrite`. Each of those calls takes the HANDLE in RCX, so RCX is no longer 3 when `ExitProcess` runs. After `CloseHandle`, RCX is a volatile leftover — typically the BOOL in RAX is 1 on success, but the process status is **not** `bytesRead`. The fail-close path sets `ecx = 1` *after* the two closes, so that path really can exit 1. This listing has not been assembled with ml64; do not treat 3 as a measured status.
-
-The frame is `push rbx` / `sub rsp, 64` / `.allocstack 64` so `[rsp+32]` can hold the NULL overlapped pointer for `WriteFile` and `ReadFile`.
+The frame is `push rbx` / `.pushreg rbx` / `sub rsp, 64` / `.allocstack 64` so `[rsp+32]` can hold the NULL overlapped pointer for `WriteFile` and `ReadFile`. One push plus 64 keeps RSP ≡ 8 (mod 16) at each `call` and covers the extra stack argument.
 
 ```asm
 ; Listing 15: CreatePipe, WriteFile, ReadFile round trip
@@ -1072,7 +1070,7 @@ main PROC FRAME
     test    rax, rax
     jz      fail_close
 
-    mov     ecx, DWORD PTR bytesRead
+    mov     ebx, DWORD PTR bytesRead
     jmp     cleanup
 
 fail_close:
@@ -1088,12 +1086,13 @@ cleanup:
     call    CloseHandle
     mov     rcx, hWrite
     call    CloseHandle
-    jmp     exit_proc
+    mov     ecx, ebx
+
+exit_proc:
+    call    ExitProcess
 
 fail:
     mov     ecx, 1
-
-exit_proc:
     call    ExitProcess
 main ENDP
 END
@@ -1101,7 +1100,7 @@ END
 
 ### HeapAlloc: sixteen 1-bytes, then the sum
 
-Listing `16-heap-alloc-sum` calls `GetProcessHeap`, then `HeapAlloc` for 16 bytes with flags 0 (the `HEAP_ZERO_MEMORY EQU 8` at the top is unused). It fills the block with `rep stosb` of 1 (`cld` first), sums those 16 bytes into EAX (each `movzx` / `add` is 1), saves the sum in RBX, `HeapFree`s the block, and exits EBX. Expected exit: **16**. Failure of `GetProcessHeap` or `HeapAlloc` exits **1**. RDI, RSI, and RBX are used without a save; `main` then `ExitProcess` never returns to a caller.
+Listing `16-heap-alloc-sum` calls `GetProcessHeap`, then `HeapAlloc` for 16 bytes with flags 0 (the `HEAP_ZERO_MEMORY EQU 8` at the top is unused). It fills the block with `rep stosb` of 1 (`cld` first), sums those 16 bytes into EAX (each `movzx` / `add` is 1), saves the sum in EBX, `HeapFree`s the block, and `mov ecx, ebx`. Expected exit: **16**. Failure of `GetProcessHeap` or `HeapAlloc` exits **1**. The prologue is `push rdi` / `push rsi` / `push rbx` with matching `.pushreg` directives, then `sub rsp, 32` / `.allocstack 32` — three pushes plus 32 keeps RSP ≡ 8 (mod 16) at each `call`.
 
 ```asm
 ; Listing 16: GetProcessHeap, HeapAlloc, HeapFree (LESSON.md)
@@ -1121,8 +1120,14 @@ EXTRN HeapFree:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rdi
+    .pushreg rdi
+    push    rsi
+    .pushreg rsi
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     call    GetProcessHeap
@@ -1153,7 +1158,7 @@ sum_loop:
     inc     rsi
     loop    sum_loop
 
-    mov     rbx, eax
+    mov     ebx, eax
 
     mov     rcx, hHeap
     xor     edx, edx
@@ -1276,7 +1281,7 @@ Expected exit: **2** (`ERROR_FILE_NOT_FOUND`).
 - `SetFilePointer` is the 32-bit-distance API; `SetFilePointerEx` is the 64-bit BOOL API. `FILE_BEGIN` = 0, `FILE_CURRENT` = 1, `FILE_END` = 2.
 - `VirtualAlloc` with `3000h` / `PAGE_READWRITE` returns zeroed pages; `VirtualFree` with size 0 and `8000h` releases them. Listings `04-virtual-alloc` and `10-virtual-alloc-free` exit 42 after storing that byte.
 - File-backed mapping is `CreateFileA` → `CreateFileMappingA` → `MapViewOfFile`, then `UnmapViewOfFile` and two `CloseHandle` calls (listing `05-file-mapping`).
-- `CreatePipe` plus `WriteFile` / `ReadFile` of `"ABC"` is listing `15-create-pipe`. The header says exit **3**; cleanup `CloseHandle`s clobber RCX before `ExitProcess`. Listing `16-heap-alloc-sum` fills 16 heap bytes with 1 and exits **16**.
+- `CreatePipe` plus `WriteFile` / `ReadFile` of `"ABC"` is listing `15-create-pipe`. EBX holds `bytesRead` across the `CloseHandle`s; then `mov ecx, ebx` exits **3**. Listing `16-heap-alloc-sum` saves RDI/RSI/RBX, fills 16 heap bytes with 1, and exits **16**.
 - There is no user-mode `syscall` for these services. You `EXTRN` the import and link `kernel32.lib`.
 
 ## Lookup

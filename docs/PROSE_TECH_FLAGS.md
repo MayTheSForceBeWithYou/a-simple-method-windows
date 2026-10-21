@@ -1,10 +1,10 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through `cc1b9c9` (includes `c59a87b` / `3530e13`). **Do not rebase** onto harness PR #6 until asked.
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through `ec4d05c` (includes `cc1b9c9` / `c59a87b` / `3530e13`). **Do not rebase** onto harness PR #6 until asked.
 
 Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LISTING-PENDING markers in LESSON.md.
 
-**ml64:** The `cc1b9c9` listings that filled the last pending topics have **not** been assembled with ml64. Exits below are hand traces against the source. Headers that disagree with the trace are flagged; prose quotes the files as written and does not invent a matching status.
+**ml64:** Nothing on this Jack tip has been assembled with ml64. Exits below are hand traces against the source.
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -15,7 +15,7 @@ Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LIS
 | L07 `17-rgb-extract-no-mask` harness | Header `Expected exit: 171`; comment documents full code `0xFFAB` (65451). |
 | L07 `ror` | `18-ror-rotate.asm`: `ror al, 1` on 1 → 128. Quoted; exit **128**. |
 | L08 block 7 | `14-set-file-pointer-begin.asm` added. |
-| L08 pipe / heap | `15-create-pipe.asm` and `16-heap-alloc-sum.asm` added. Heap sum traces to **16**. Pipe header says **3**; see mismatch below. |
+| L08 pipe / heap | `15-create-pipe.asm`: `bytesRead` kept in EBX across `CloseHandle`, then `mov ecx, ebx` — exit **3**. `16-heap-alloc-sum.asm`: three `.pushreg` (RDI/RSI/RBX) + `sub rsp, 32`; sum **16**. |
 | L09+ stack alignment (Bruce, `c59a87b`) | Entry RSP≡8 (mod 16): 0 pushes → `sub rsp,40`; 1 push → `sub rsp,32`; 2 pushes → `sub rsp,40`; `.allocstack` matches `sub`; extra stack args bump minimum. |
 | L09 missing `01-*` / `12-*` / `TEXTEQU` / `=` in `REPT` / NMake | `21-status-equ-zero` (0), `22-exit-code-include` + `22-exit-code.inc` (0), `23-textequ-exit` (42), `24-rept-counter-assign` (4), `25-nmake-driver` + `Makefile.mak` (0). |
 | L10 `12-gap-move-left` exit | Byte load uses `r8`/`movzx edx`; exit **2** matches `gap_start`; shadow added. |
@@ -25,8 +25,8 @@ Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LIS
 | L12 `05-bytecode-stack` | Header **9** (push 4, push 5, add). |
 | L12 keyword / if-while / PE size | `07-keyword-let-match` (1), `08-if-while-codegen` (3), `09-pe-header-size` (64). |
 | L13 Q16 divide / lerp / SIMD | `06-q16-divide` (3), `07-lerp-fixed` (5), `08-simd-lane-sum` (`pshufd`/`paddd`, 10). No length-squared / Q8.8 listing. |
-| L14 pitch / pack / clip / QPC pace / Bresenham | `06-pitch-pixel-offset` (40), `07-rgb-pack-low-byte` (3), `08-clip-half-open` (1), `09-vsync-ready-flag` (3, QPC not vsync), `10-bresenham-pixel-count` (4). |
-| L15 rising-edge / chord / Sleep pad | `11-rising-edge` (1), `12-two-key-chord` (1). `13-sleep-frame-pad` header says 1; see mismatch below. |
+| L14 pitch / pack / clip / QPC pace / Bresenham | `06-pitch-pixel-offset` (40), `07-rgb-pack-low-byte` (3), `08-clip-half-open` (1), `09-vsync-ready-flag` (3 waits then exit **3**, QPC not vsync), `10-bresenham-pixel-count` (4). |
+| L15 rising-edge / chord / Sleep pad | `11-rising-edge` (1), `12-two-key-chord` (1). `13-sleep-frame-pad`: clamp keeps status in EBX, Sleep ms in ECX, then `mov ecx, ebx` — exit **1**. |
 | L16 listing exits | `01` → 1; `02` → 53; `07` → 160; `09` → 2. |
 | L16 `10-sprite-clip-margin` | Real clip (sx=6, sw=8, view=10 → `sw = view_w - sx` = **4**). Quoted; marker dropped. |
 | L17 BFS / A* / 2-axis / hit-test | `08-bfs-visit-count` (5), `09-astar-f-score` (7), `10-manhattan-2axis` (10), `11-ui-hit-test` (1). |
@@ -37,19 +37,16 @@ Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LIS
 | L04 frame-pointer forms | `07-frame-pointer.asm` form 1 uses `lea rbp,[rsp+40]` + `.setframe rbp, 40`; `08-rbp-pushreg-only.asm` is `.pushreg rbp` only. |
 | L06 `04-memcpy-loop` shadow | Now `sub rsp, 40` before the copy / `ExitProcess`. |
 
-## Exit mismatches (hand-traced; not assembled)
+## Exit traces resolved at `ec4d05c` (still not assembled)
 
-### Lesson 08 — `15-create-pipe.asm` (header 3)
+### Lesson 08 — `15-create-pipe.asm` (exit 3)
+Success stores `bytesRead` in EBX, closes both HANDLEs, then `mov ecx, ebx`. CloseHandle clobbers RCX; EBX survives. Fail-close still sets `ecx = 1` after the closes.
 
-Write 3 / read 3 is the intended round trip. After `mov ecx, DWORD PTR bytesRead` the success path jumps to `cleanup`, which calls `CloseHandle` twice. Each call takes the HANDLE in RCX (volatile). `ExitProcess` therefore does **not** receive `bytesRead`. The fail-close path sets `ecx = 1` *after* those closes, so 1 is reachable on failure. Do not treat 3 as a measured process status.
+### Lesson 15 — `13-sleep-frame-pad.asm` (exit 1)
+Clamp: `xor ecx, ecx` (Sleep 0 ms) / `mov ebx, 1` / `call Sleep` / `mov ecx, ebx`. Budget-left: EBX = 0 and remaining ms in RCX. Status lives in EBX across the call.
 
-### Lesson 15 — `13-sleep-frame-pad.asm` (header 1)
-
-Clamp arm (elapsed ≥ 12, budget 10) does `xor rax, rax` / `mov ecx, 1` / `jmp do_sleep`. `do_sleep` then `mov r8d, edx` / `call Sleep` / `mov ecx, r8d`. On that path EDX is never written (leftover after `GetTickCount64`), and `Sleep` may clobber R8. The `ecx = 1` is the Sleep argument, not a preserved status. Header/user expect 1; a hand trace cannot confirm 1.
-
-### Lesson 14 — `09-vsync-ready-flag.asm` (header 3, not a vsync)
-
-EBX is incremented at the top of the loop and the wait runs only while EBX `< 3`. Exit is EBX = **3**, which matches the header. The wait body runs **twice**, not three times. This is `QueryPerformanceCounter` spinning until the counter advances by 1 tick — not a display vsync.
+### Lesson 14 — `09-vsync-ready-flag.asm` (exit 3)
+Wait first, then `inc ebx`, then `cmp ebx, 3`. Three completed waits leave EBX = 3. Still QPC tick pacing, not a display vsync. Prologue is `push rbx` / `sub rsp, 32`.
 
 ### Lesson 14 — `08-clip-half-open.asm` (header 1)
 
@@ -82,7 +79,7 @@ x = 5 vs 4. Only `cmp rax, 4` / `jl in_range` (`x < 4`). The outside path exits 
 **Why unchanged:** Never-returns `main`.
 
 ### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
-**Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RSI/RDI/RBX unsaved (`ExitProcess`).
+**Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are now saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
 ### Lesson 09 — `18-offset-equ.asm` exit vs `OFFSET msg`
 **Why unchanged:** PE `.data` offset is often 0 at link time for the first symbol, but not guaranteed; listing documents low-byte expectation.
@@ -99,8 +96,8 @@ x = 5 vs 4. Only `cmp rax, 4` / `jl in_range` (`x < 4`). The outside path exits 
 ### Lesson 10 — `17-save-length-prefix.asm` partial write
 **Why unchanged:** Writes magic+length only (12 bytes); side-effect demo, exit 0.
 
-### Lesson 11 — RSI/RDI scratch in listings
-**Why unchanged:** `main` + `ExitProcess`; shadow space added in the alignment pass; nonvolatile discipline omitted for brevity in never-returning mains.
+### Lesson 11 — RSI/RDI scratch in older listings
+**Why unchanged:** Several `main` + `ExitProcess` listings still omit nonvolatile saves. `19-skip-whitespace` now `push rsi` / `sub rsp, 32`; `20-copy-lexeme` now `push rsi` / `push rdi` / `sub rsp, 40`. Same Bruce alignment rule on the `ec4d05c` saves in L08 16, L10 21, L12 07, L13 06, L14 06/09/10, L17 08–11, L18 13.
 
 ### Lesson 11 — `13-stack-push-pop.asm` label name `sp`
 **Why unchanged:** **Do not copy `sp` as RSP** — verify ml64 binds to the `.DATA?` symbol in your build.

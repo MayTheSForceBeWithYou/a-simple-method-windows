@@ -660,7 +660,7 @@ END
 
 **Kill-line** deletes from the cursor through the last character before the newline and **leaves the newline**.
 
-Listing `21-kill-line` uses the same `"ab", 10, "cd"` bytes as listing 14, with `len = 5` and `cur = 0` (the cursor field is written and never read). The scan starts at index 0 and walks forward until `buf[rcx] == 10`. That newline is at index 2. Then it copies `buf[2..5)` down to `buf[0..)`: the three bytes `10`, `'c'`, `'d'`. `len` becomes the destination count 3. Expected exit: **3**. After the copy the buffer is `"\ncd"` plus the leftover terminator; the newline stayed.
+Listing `21-kill-line` uses the same `"ab", 10, "cd"` bytes as listing 14, with `len = 5` and `cur = 0` (the cursor field is written and never read). The scan starts at index 0 and walks forward until `buf[rcx] == 10`. That newline is at index 2. Then it copies `buf[2..5)` down to `buf[0..)`: the three bytes `10`, `'c'`, `'d'`. `len` becomes the destination count 3. Expected exit: **3**. After the copy the buffer is `"\ncd"` plus the leftover terminator; the newline stayed. The prologue is `push rdi` / `push rsi` / `sub rsp, 40` (two nonvolatile saves plus a 40-byte frame; RSP ≡ 8 at the `call`).
 
 The drill `exercises/24-from-scratch-kill-line.asm` is still the from-scratch version.
 
@@ -680,7 +680,9 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rdi
+    push    rsi
+    sub     rsp, 40
     mov     len, 5
     mov     cur, 0
 
