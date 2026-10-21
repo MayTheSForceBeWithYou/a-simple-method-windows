@@ -1,445 +1,720 @@
-# 09 — Macros, Multi-file, NMake
+# Lesson 09 — Macros, Multi-file, NMake
 
-Every Win32 API call you've written so far spelled out `mov rcx, STATUS` and `call ExitProcess` by hand. This lesson shows you how to collapse that repetition into reusable macros, how to split a program across multiple files that share symbols, and how to automate rebuilds with NMake or PowerShell so you only reassemble what changed. By the end you'll see that assembly—even without a standard library—can still be factored into maintainable, composable units.
+Every Win32 call you have written so far spelled `mov rcx, …` and `call ExitProcess` by hand. This lesson collapses that repetition into `EQU` constants and `MACRO` text, splits a program across object files that share `PUBLIC` / `EXTRN` symbols, and rebuilds only what changed with NMake or a PowerShell script. The assembler still emits the same instructions. You stop typing them twice.
+
+Listings in this lesson declare imports with `EXTRN Name:PROC`. MASM also accepts `EXTERN`. Assemble and link from an x64 Native Tools prompt:
+
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
+```
+
+Multi-file programs assemble each `.asm` separately, then pass every `.obj` to `link`. Helper objects in this lesson have no `main` and are not executables on their own.
 
 ## What this lesson asks of you
 
-- Replace repeated magic numbers with `EQU` constants and collapse repetitive instruction sequences into `MACRO` definitions.
-- Use `REPEAT` (or manual unrolling) to generate code at assembly time without runtime loops.
-- Mark macro-internal labels with `LOCAL` to avoid name collisions across multiple macro invocations.
-- Export a symbol with `PUBLIC` (or implicitly via `PROC`) in one file and reference it with `EXTERN` in another, declaring the symbol's type (`:PROC`, `:QWORD`, etc.), then link the two objects into one executable.
-- Write NMake pattern rules or PowerShell build scripts that rebuild only changed sources, using inference rules and automatic variables.
+You replace repeated immediates with `EQU` and repeated instruction sequences with `MACRO`. You generate straight-line copies with `REPT` / `REPEAT` at assembly time, not with a runtime loop. You mark labels inside a macro `LOCAL` so a second expansion does not redefine the first. You export a procedure or a data label with `PUBLIC` in one file, import it with `EXTRN symbol:type` in another, and link the objects. You write NMake inference rules (or a PowerShell timestamp check) so a changed `.asm` rebuilds its `.obj` and the executable without reassembling everything else.
 
 ## Text substitution with EQU, TEXTEQU, and MACRO
 
-MASM's macro processor runs before the assembler proper. It sees `EQU`, `TEXTEQU`, `MACRO`, `INCLUDE`, and other directives and transforms the source text before any instruction encoding happens.
+MASM's macro processor runs before instruction encoding. It sees `EQU`, `TEXTEQU`, `MACRO`, `INCLUDE`, `REPT`, `IFDEF`, and their relatives, and it rewrites the source text. The CPU never executes a `MACRO` line. It executes whatever that line expanded into.
 
 ### Constants with EQU
 
-`EQU` defines a symbol whose value is computed at assembly time. It cannot be redefined later (unlike `=`, which allows reassignment).
+`EQU` binds a symbol to a value computed at assembly time. You cannot redefine it later (unlike `=`, which allows reassignment). There is no `01-*.asm` listing on this tree; `EQU` appears in `constants.inc`, in listing `07-debug-equ-exit` (`DEBUG EQU 1`), and in listing `18-offset-equ` (`MY_ADDR EQU OFFSET msg`).
+
+<!-- LISTING-PENDING: no 01-*.asm on the Jack listings tree (first numbered file is 02-macro-with-local.asm). EQU is shown via constants.inc, 07-debug-equ-exit.asm, and 18-offset-equ.asm -->
+
+`IFDEF` tests whether a symbol exists, not what it equals. Listing `07-debug-equ-exit` defines `DEBUG EQU 1`, then keeps the `IFDEF DEBUG` branch. That branch loads `1` into ECX. The `ELSE` branch (`xor ecx, ecx`) is discarded before encoding. The procedure is `main PROC FRAME` with `sub rsp, 32` / `.allocstack 32` / `.endprolog` — 32 bytes of shadow space before `call ExitProcess`. Expected exit: **1**.
 
 ```asm
-EXTERN ExitProcess:PROC
+; Listing 07: DEBUG EQU and IFDEF exit branch (LESSON.md block 7)
+;
+; Purpose: Conditional assembly picks exit code when DEBUG is defined.
+; Expected exit: 1
+; Expected stdout: (none)
 
-STATUS_OK EQU 0
-STATUS_ERROR EQU 1
+DEBUG EQU 1
 
-.code
-main PROC
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
     sub rsp, 32
-    mov rcx, STATUS_OK      ; becomes mov rcx, 0
+    .allocstack 32
+    .endprolog
+    IFDEF DEBUG
+        mov ecx, 1
+    ELSE
+        xor ecx, ecx
+    ENDIF
     call ExitProcess
 main ENDP
-END
-```
 
-`EQU` is similar to NASM's `equ`, but with case-insensitive names by default (MASM convention). Use it for numeric constants, addresses, and expressions.
+END
+
+```
 
 ### Text substitution with TEXTEQU
 
-`TEXTEQU` is token-level text replacement (analogous to NASM's `%define`). The right-hand side must be enclosed in angle brackets `<...>` for multi-token substitution.
+`TEXTEQU` is token-level text replacement. The right-hand side uses angle brackets `<...>` when you substitute more than one token. It is the wrong tool for a numeric constant (`EQU` is clearer) and the right tool for pasting a fragment of syntax. No listing on this tree uses `TEXTEQU`.
 
-```asm
-EXIT_OK TEXTEQU <mov rcx, 0>
-EXIT_OK TEXTEQU <call ExitProcess>
-
-main PROC
-    sub rsp, 32
-    EXIT_OK                 ; expands to: mov rcx, 0; call ExitProcess
-main ENDP
-```
-
-`TEXTEQU` is rarely used for simple constants (where `EQU` is clearer), but it's useful for complex substitutions or conditional assembly.
+<!-- LISTING-PENDING: no Jack listing uses TEXTEQU -->
 
 ### Parameterized text with MACRO
 
-A macro is a template for one or more instructions. You declare it with named parameters (or no parameters), and MASM will expand it with the supplied arguments.
+A macro is a named template. You declare named parameters (not NASM-style `%1`). At each invocation MASM pastes the argument text into the body and assembles the result. Arguments are not evaluated as expressions before substitution.
+
+Listing `19-exit-with-macro` defines `EXIT_WITH` with one parameter `code`. The expansion is `mov rcx, code` then `call ExitProcess`. Invoking `EXIT_WITH rax` therefore exits with whatever RAX holds. That file is a driver: it calls `add_two_numbers` from a second object (listing `20-add-two-numbers`) and is quoted in the worked example below.
+
+Listing `04-multi-param-macro` defines `Add3` with four named parameters: destination register, then three values. `Add3 rax, 10, 20, 12` pastes into `mov rax, 10` / `add rax, 20` / `add rax, 12`, so RAX is 42. `mov ecx, eax` then `call ExitProcess` makes the process status 42. This listing does not allocate shadow space. Expected exit: **42**.
 
 ```asm
-EXTERN ExitProcess:PROC
+; 04-multi-param-macro.asm
+;
+; Purpose: Demonstrate macro with multiple parameters
+; Expected exit code: 42
+; Expected stdout: (none)
+;
+; MASM macros can have multiple named parameters.
 
-exit_with MACRO code        ; one parameter: code
-    mov rcx, code
-    call ExitProcess
+.CODE
+
+EXTRN ExitProcess:PROC
+
+; Macro to add three values
+Add3 MACRO reg, val1, val2, val3
+    mov     reg, val1
+    add     reg, val2
+    add     reg, val3
 ENDM
 
-.code
 main PROC
-    sub rsp, 32
-    exit_with 7             ; expands to: mov rcx, 7; call ExitProcess
+    Add3 rax, 10, 20, 12    ; RAX = 10 + 20 + 12 = 42
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Exit with 42
 main ENDP
+
 END
+
 ```
-
-The macro name `exit_with` is followed by the parameter name `code`. Inside the macro body, `code` is replaced by the argument text. Unlike NASM, MASM uses **named parameters**, not `%1`, `%2`, etc.
-
-**Multi-parameter macros:**
-
-```asm
-ADD3 MACRO dest, a, b, c
-    mov dest, a
-    add dest, b
-    add dest, c
-ENDM
-
-; invocation:
-main PROC
-    ADD3 rdi, 10, 20, 12    ; rdi = 10 + 20 + 12 = 42
-    ; ...
-main ENDP
-```
-
-Each parameter name is replaced by the corresponding argument text. Arguments are **not evaluated** before substitution—they are pasted as text.
 
 ## Assembly-time loops and conditionals
 
-### REPEAT (REPT) for code generation
+### REPT / REPEAT for code generation
 
-`REPEAT N` (or `REPT N`) repeats its body `N` times at assembly time. The repetition happens in the MASM macro processor, so the output object contains `N` copies of the instructions, not a loop at runtime.
+`REPT N` (also spelled `REPEAT N`) copies its body `N` times at assembly time and closes with `ENDM`. The object file contains `N` separate instructions. The CPU does not see a loop, a counter, or a branch.
+
+Listing `03-rept-repetition` clears EAX, then `REPT 3` / `inc eax` / `ENDM`. Three `inc eax` instructions run. EAX is 3. `mov ecx, eax` / `call ExitProcess` exits 3. No `FRAME`, no `sub rsp`. Expected exit: **3**.
 
 ```asm
-EXTERN ExitProcess:PROC
+; 03-rept-repetition.asm
+;
+; Purpose: Demonstrate REPT for compile-time repetition
+; Expected exit code: 3
+; Expected stdout: (none)
+;
+; REPT (equivalent to NASM %rep) generates code at assembly time.
+; The CPU executes N separate instructions, not a runtime loop.
 
-.code
+.CODE
+
+EXTRN ExitProcess:PROC
+
 main PROC
-    sub rsp, 32
-    xor rdi, rdi
-    REPEAT 3
-        inc rdi             ; this line appears three times in the output
+    xor     eax, eax
+    
+    ; Generate three INC instructions at assembly time
+    REPT 3
+    inc     eax
     ENDM
-    mov rcx, rdi            ; rcx = 3
-    call ExitProcess
+    
+    ; EAX = 3
+    mov     ecx, eax
+    call    ExitProcess     ; Exit with 3
 main ENDP
+
 END
+
 ```
 
-The code above is equivalent to writing `inc rdi` three times by hand. The CPU executes three separate `inc` instructions—there's no branch, no jump, no loop counter.
+### Preprocessor variables with `=`
 
-**Note:** MASM's `REPEAT` ends with `ENDM`, not `ENDREP`. This is consistent with MASM's use of `ENDM` to close macros, procedures (`ENDP`), and segments (`.code`, `.data` are implicit segments without `ENDS`).
+`=` defines a reassignable assemble-time symbol. MASM does not give you NASM's `%assign` iterator inside `REPT`. For numbered labels, use `LOCAL` or write the copies out. No listing on this tree reassigns a symbol inside `REPT`.
 
-### Preprocessor variables with = (assignment)
-
-MASM has no direct equivalent to NASM's `%assign`. For simple assembly-time iteration, use `=` (reassignable symbol) inside `REPEAT`, but MASM does not support iteration variables inside `REPEAT` the way NASM does. Most code generation is better handled with macros or explicit unrolling.
-
-```asm
-i = 0
-REPEAT 4
-    inc rdi
-    i = i + 1               ; MASM may not support this inside REPEAT
-ENDM
-; i is now 4 (if supported)
-```
-
-In practice, `REPEAT` is used for simple repetition, not complex iteration. For numbered label generation, use macro parameters or explicit unrolling.
+<!-- LISTING-PENDING: no Jack listing uses = reassignment inside REPT/REPEAT -->
 
 ### IFDEF and ELSE
 
-`IFDEF SYMBOL` checks whether a symbol is defined at assembly time. This is useful for debug switches and conditional compilation.
+`IFDEF SYMBOL` keeps a block only when `SYMBOL` is already defined. `IFNDEF`, `IF`, `ELSEIF`, `IFB`, `IFNB`, `ELSE`, and `ENDIF` are the rest of the family. The inactive branch is deleted before encoding; the CPU sees one path.
+
+Listing `06-conditional-assembly` has `DEBUG = 1` commented out. `IFDEF DEBUG` is false, so the listing keeps `xor ecx, ecx` and discards `mov ecx, 1`. Expected exit: **0**. Uncomment `DEBUG = 1` and the same source exits 1 — that is what listing `07-debug-equ-exit` already does with `DEBUG EQU 1`.
 
 ```asm
-DEBUG EQU 1                 ; define DEBUG
+; 06-conditional-assembly.asm
+;
+; Purpose: Demonstrate conditional assembly with IF/IFDEF
+; Expected exit code: 1 (DEBUG defined) or 0 (DEBUG not defined)
+; Expected stdout: (none)
+;
+; MASM uses IF, IFDEF, IFNDEF, ELSE, ENDIF for conditional assembly.
+; To enable DEBUG, uncomment the DEBUG = 1 line.
 
-.code
+; Uncomment to enable debug mode:
+; DEBUG = 1
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
 main PROC
-    sub rsp, 32
-IFDEF DEBUG
-    mov rcx, 1              ; debug exit
-ELSE
-    mov rcx, 0              ; release exit
-ENDIF
-    call ExitProcess
+    IFDEF DEBUG
+        mov     ecx, 1      ; Debug exit code
+    ELSE
+        xor     ecx, ecx    ; Release exit code
+    ENDIF
+    
+    call    ExitProcess
 main ENDP
+
+END
+
 ```
-
-If you remove the `DEBUG EQU 1` line (or comment it out), the `ELSE` branch is kept. The CPU sees only one of the two paths—the other is discarded before assembly.
-
-**Note:** MASM uses `IFDEF` (not `%ifdef`), and `ENDIF` (not `%endif`). MASM also supports `IF`, `ELSEIF`, `IFB` (if blank), `IFNB` (if not blank), and other conditional directives.
 
 ## Macro-local labels with LOCAL
 
-A label declared with `LOCAL` inside a macro is **macro-local**. MASM generates a unique name for it on every macro expansion, so you can safely use the same label name in multiple invocations without collision.
+A label declared `LOCAL` inside a macro is rewritten to a unique name on every expansion (`??0000`, `??0001`, …). Without `LOCAL`, a second invocation in the same module redefines the label and `ml64` reports A2005.
 
-Without `LOCAL`, a macro containing a label would break if invoked twice in the same function:
+`LOCAL` must appear at the start of the macro body, before instructions. Several names can share one `LOCAL` line, separated by commas.
+
+### A label without LOCAL
+
+Listing `08-macro-label-redefine` defines `TWICE` with a bare `skip_label:` and invokes it **once**. One expansion assembles. A second `TWICE` in the same `main` would fail `ml64` with A2005. The body does `inc rdi` after `xor rdi, rdi`, then `mov ecx, edi` / `call ExitProcess`. The procedure is `FRAME` with `sub rsp, 32`. Expected exit: **1**.
 
 ```asm
-; BAD: second invocation redefines skip_label
+; Listing 08: Macro without LOCAL reuses label (LESSON.md block 8)
+;
+; Purpose: One expansion works; a second TWICE in the same file would fail ml64 (A2005).
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
 TWICE MACRO
-skip_label:                 ; ERROR: second invocation redefines skip_label
+skip_label:
     inc rdi
 ENDM
 
-main PROC
-    TWICE                   ; expands skip_label
-    TWICE                   ; ERROR: skip_label already defined
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    xor rdi, rdi
+    TWICE
+    mov ecx, edi
+    call ExitProcess
 main ENDP
+
+END
+
 ```
 
-With `LOCAL`, each invocation gets a unique label:
+### The same macro with LOCAL, invoked twice
+
+Listing `09-twice-macro-local` adds `LOCAL skip_label` and invokes `TWICE` twice. Each expansion gets its own label. RDI increments twice. Expected exit: **2**.
+
+RDI is nonvolatile in the Microsoft x64 ABI. This `main` is a process entry that calls `ExitProcess` instead of returning, so it never has to restore RDI for a caller.
 
 ```asm
+; Listing 09: TWICE macro with LOCAL labels (LESSON.md block 9)
+;
+; Purpose: Each macro expansion gets a unique label; two calls increment rdi twice.
+; Expected exit: 2
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
 TWICE MACRO
     LOCAL skip_label
 skip_label:
     inc rdi
 ENDM
 
-main PROC
-    TWICE                   ; expands to ??0000 (or similar)
-    TWICE                   ; expands to ??0001
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    xor rdi, rdi
+    TWICE
+    TWICE
+    mov ecx, edi
+    call ExitProcess
 main ENDP
+
+END
+
 ```
 
-**Example: absolute value macro**
+### Absolute value: two expansions, two unique branch targets
+
+Listing `02-macro-with-local` defines `AbsValue` with `LOCAL skip_neg`. The body is `cmp reg, 0` / `jge skip_neg` / `neg reg` / `skip_neg:`. `main` does `AbsValue rax` on −9, then `AbsValue rbx` on −5. The process status is the absolute value of −9: `mov ecx, eax` after the first register is already non-negative. No `FRAME`. Expected exit: **9**.
 
 ```asm
-EXTERN ExitProcess:PROC
+; 02-macro-with-local.asm
+;
+; Purpose: Demonstrate LOCAL directive for macro-local labels
+; Expected exit code: 9
+; Expected stdout: (none)
+;
+; LOCAL creates unique labels for each macro invocation,
+; equivalent to NASM's %%label.
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+; Macro to compute absolute value
+AbsValue MACRO reg
+    LOCAL skip_neg
+    cmp     reg, 0
+    jge     skip_neg
+    neg     reg
+skip_neg:
+ENDM
+
+main PROC
+    mov     rax, -9
+    AbsValue rax            ; First invocation uses unique skip_neg
+    mov     rbx, -5
+    AbsValue rbx            ; Second invocation uses different skip_neg
+    
+    ; Exit with absolute value of -9 (= 9)
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END
+
+```
+
+Listing `10-abs-macro-local` is the same algorithm under the name `ABS` with `LOCAL ok_label`, applied once to RDI = −9. `FRAME`, `sub rsp, 32`. `mov ecx, edi` / `call ExitProcess`. Expected exit: **9**.
+
+```asm
+; Listing 10: ABS macro with LOCAL ok_label (LESSON.md block 10)
+;
+; Purpose: Absolute value via compare/neg with a unique branch label per expansion.
+; Expected exit: 9
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
 
 ABS MACRO reg
     LOCAL ok_label
     cmp reg, 0
-    jge ok_label            ; unique label for this expansion
+    jge ok_label
     neg reg
 ok_label:
 ENDM
 
-.code
-main PROC
+main PROC FRAME
     sub rsp, 32
+    .allocstack 32
+    .endprolog
     mov rdi, -9
-    ABS rdi                 ; rdi = 9
-    mov rcx, rdi
+    ABS rdi
+    mov ecx, edi
     call ExitProcess
 main ENDP
+
 END
+
 ```
 
-The `ok_label` is rewritten to something like `??0000` internally, so multiple `ABS` invocations don't collide.
+### Several LOCAL names on one line
 
-**Important:** The `LOCAL` directive must appear **at the start of the macro body**, before any instructions. You can declare multiple local labels in one `LOCAL` statement, separated by commas:
+Listing `11-macro-local-list` declares `LOCAL label1, label2, label3` and never references those names. The body is `inc rcx`. Two invocations would leave RCX = 2, but the listing then executes `mov ecx, 2` and exits with that immediate. The LOCAL list is the point; the increments do not determine the status. `FRAME`, `sub rsp, 32`. Expected exit: **2**.
 
 ```asm
+; Listing 11: LOCAL label list in a macro (LESSON.md block 11)
+;
+; Purpose: Declare multiple LOCAL symbols; body increments a register once per expansion.
+; Expected exit: 2
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
 MACRO_NAME MACRO
     LOCAL label1, label2, label3
-    ; macro body
+    inc rcx
 ENDM
+
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    xor rcx, rcx
+    MACRO_NAME
+    MACRO_NAME
+    mov ecx, 2
+    call ExitProcess
+main ENDP
+
+END
+
 ```
 
 ## INCLUDE for shared headers
 
-`INCLUDE file.inc` (no quotes required, though they are accepted) inserts the contents of `file.inc` at that line. Header files typically contain `EQU` constants, `MACRO` definitions, and structure definitions.
+`INCLUDE file.inc` (quotes optional) pastes that file at the current line. Headers hold `EQU` values, macros, and structures. The include-guard idiom is `IFNDEF` / `EQU` / `ENDIF`: a second inclusion sees the guard symbol and skips the body, so you do not get duplicate definitions.
 
-**Header guard idiom:**
+There is no `12-*.asm` listing. The shared header is `constants.inc`, and listing `13-stdio-constants-include` is the consumer.
+
+<!-- LISTING-PENDING: no 12-*.asm on the Jack listings tree. Shared-header material is constants.inc, consumed by 13-stdio-constants-include.asm -->
+
+`constants.inc` guards on `CONSTANTS_INC`, then defines `STD_OUTPUT_HANDLE EQU -11`, `STD_INPUT_HANDLE EQU -10`, `GENERIC_READ EQU 80000000h`, and `GENERIC_WRITE EQU 40000000h`.
 
 ```asm
-; constants.inc
+; Shared Win32 constants for macro/include listings (LESSON.md block 12)
 IFNDEF CONSTANTS_INC
 CONSTANTS_INC EQU 1
 
-; Win32 constants
 STD_OUTPUT_HANDLE EQU -11
 STD_INPUT_HANDLE EQU -10
 GENERIC_READ EQU 80000000h
 GENERIC_WRITE EQU 40000000h
 
 ENDIF
+
 ```
 
-If two files both `INCLUDE constants.inc`, the second inclusion sees `CONSTANTS_INC` already defined and skips the body, preventing duplicate definitions.
+Listing `13-stdio-constants-include` starts with `INCLUDE constants.inc`. It writes `"ok"` plus CR LF (`13, 10`) to standard output: `GetStdHandle` with `STD_OUTPUT_HANDLE` in ECX, HANDLE saved in RBX, then `WriteFile` with `lea rdx, line`, `mov r8d, line_len`, `lea r9, written`, and a NULL overlapped pointer at `QWORD PTR [rsp+32]`. The frame is `push rbx` / `.pushreg rbx` / `sub rsp, 48` / `.allocstack 48`. Expected exit: **0**. Expected stdout: `ok` and a CRLF.
 
-**Usage in a source file:**
+Build it from the listings directory so `INCLUDE constants.inc` resolves:
+
+```bat
+ml64 /c /Fo13-stdio-constants-include.obj 13-stdio-constants-include.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:13-stdio-constants-include.exe 13-stdio-constants-include.obj kernel32.lib
+```
 
 ```asm
+; Listing 13: INCLUDE constants.inc for STD_OUTPUT_HANDLE (LESSON.md block 13)
+;
+; Purpose: Shared constants in an include file; write "ok" to stdout.
+; Expected exit: 0
+; Expected stdout: "ok\n"
+;
+; Build from listings dir:
+; ml64 /c /Fo13-stdio-constants-include.obj 13-stdio-constants-include.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:13-stdio-constants-include.exe 13-stdio-constants-include.obj kernel32.lib
+
 INCLUDE constants.inc
 
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
+.DATA
+line BYTE "ok", 13, 10
+line_len EQU $ - line
 
-.code
-main PROC
-    sub rsp, 32
-    mov rcx, STD_OUTPUT_HANDLE  ; -11 from constants.inc
+.DATA?
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 48
+    .allocstack 48
+    .endprolog
+
+    mov ecx, STD_OUTPUT_HANDLE
     call GetStdHandle
-    ; ...
+    mov rbx, rax
+
+    mov rcx, rbx
+    lea rdx, line
+    mov r8d, line_len
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+
+    xor ecx, ecx
+    call ExitProcess
 main ENDP
+
 END
+
 ```
 
 ## Splitting across multiple files
 
-When a program grows, you want to split it into logical units: one file for the entry point, another for helper routines, another for data structures. To share symbols across files, you must **export** them from the defining file and **import** them in the using file.
+When a program grows, you put the entry point in one file, helpers in another, data in a third. The defining file **exports** with `PUBLIC` (procedures you write with `PROC` are typically exported as well). The using file **imports** with `EXTRN symbol:type`. You must write the type: `:PROC` for a procedure, `:QWORD` for an 8-byte datum, `:BYTE` for a byte array. Assemble each file with `ml64 /c`, then pass every `.obj` to `link`.
 
-### Exporting with PUBLIC (or PROC)
+A missing definition is a link error ("unresolved external symbol"), not a runtime NULL. `EXTRN` in the file that **defines** the symbol is wrong: that file already has the `PROC` or the `PUBLIC` label.
 
-`PUBLIC symbol` marks a symbol (label, function, or data) as visible to other object files. However, functions defined with `PROC` are implicitly public when referenced by `EXTERN` in another file, so explicit `PUBLIC` is often unnecessary for procedures.
+### Object-only helper and its driver
+
+Listing `05-multifile-helper` is not an executable. It has no `main` and no `ExitProcess`. It exports `add_two_numbers` with `PUBLIC add_two_numbers`. The procedure reads the first two Microsoft x64 arguments from RCX and RDX, writes RCX+RDX into RAX, and `ret`s.
 
 ```asm
-; helper.asm
-.code
-helper_add PROC             ; implicitly public when used with EXTERN
+; 05-multifile-helper.asm
+;
+; Purpose: Helper file for multi-file project demo
+;
+; Exports add_two_numbers function.
+; This file is linked with 05-multifile-main.asm.
+
+.CODE
+
+; Export (PUBLIC in MASM, equivalent to NASM global)
+PUBLIC add_two_numbers
+
+add_two_numbers PROC
+    ; MS x64 calling convention: RCX, RDX are first two args
+    mov     rax, rcx
+    add     rax, rdx
+    ret
+add_two_numbers ENDP
+
+END
+
+```
+
+Listing `05-multifile-main` is the driver. It imports `add_two_numbers:PROC` and `ExitProcess:PROC`, loads RCX = 20 and RDX = 22, calls the helper, and exits with EAX. No `FRAME`. Expected exit: **42**.
+
+```bat
+ml64 /c /Fo05-multifile-main.obj 05-multifile-main.asm
+ml64 /c /Fo05-multifile-helper.obj 05-multifile-helper.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-multifile.exe 05-multifile-main.obj 05-multifile-helper.obj kernel32.lib
+```
+
+```asm
+; 05-multifile-main.asm
+;
+; Purpose: Demonstrate multi-file project (main file)
+; Expected exit code: 42
+; Expected stdout: (none)
+;
+; This file calls a helper function defined in another file.
+; Build:
+;   ml64 /c /Fo05-multifile-main.obj 05-multifile-main.asm
+;   ml64 /c /Fo05-multifile-helper.obj 05-multifile-helper.asm
+;   link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-multifile.exe ^
+;        05-multifile-main.obj 05-multifile-helper.obj kernel32.lib
+
+.CODE
+
+EXTRN add_two_numbers:PROC
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rcx, 20         ; First argument (MS x64 ABI)
+    mov     rdx, 22         ; Second argument
+    call    add_two_numbers ; Returns result in RAX
+    
+    mov     ecx, eax
+    call    ExitProcess     ; Exit with 42
+main ENDP
+
+END
+
+```
+
+### helper_add as a link object
+
+Listing `14-helper-add` is another object-only module: `PUBLIC helper_add`, `mov rax, rcx` / `add rax, rdx` / `ret`. Link it with listing `16-main-call-helper`; do not run it alone.
+
+```asm
+; Listing 14: helper_add procedure object (LESSON.md block 14)
+;
+; Link with 16-main-call-helper.asm (same as 05-multifile pattern).
+
+.CODE
+PUBLIC helper_add
+
+helper_add PROC
     mov rax, rcx
     add rax, rdx
     ret
 helper_add ENDP
+
 END
+
 ```
 
-For data symbols or labels, use explicit `PUBLIC`:
-
-```asm
-; data.asm
-PUBLIC message
-
-.data
-message BYTE "Hello from data.asm", 0
-END
-```
-
-### Importing with EXTERN
-
-`EXTERN symbol:type` tells MASM that the symbol is defined in another object file. MASM emits a relocation for it; the linker resolves it. **You must specify the type**: `:PROC` for functions, `:QWORD` for 8-byte data, `:BYTE` for byte arrays, etc.
-
-```asm
-; main.asm
-EXTERN helper_add:PROC      ; import the function (type is :PROC)
-EXTERN ExitProcess:PROC
-
-.code
-main PROC
-    sub rsp, 32
-    
-    mov rcx, 20
-    mov rdx, 22
-    call helper_add         ; rax = 42
-    
-    mov rcx, rax            ; exit with result
-    call ExitProcess
-main ENDP
-END
-```
-
-### Linking multiple objects
-
-Assemble each file separately, then link all objects together (from x64 Native Tools Command Prompt):
+Listing `16-main-call-helper` imports `helper_add:PROC`, uses a `FRAME` with `sub rsp, 32`, calls with 20 and 22, and exits with EAX. Expected exit: **42**.
 
 ```bat
-ml64 /c main.asm
-ml64 /c helper.asm
-link /ENTRY:main /SUBSYSTEM:CONSOLE main.obj helper.obj kernel32.lib
-main.exe
-echo %ERRORLEVEL%           # 42
+ml64 /c 14-helper-add.asm
+ml64 /c 16-main-call-helper.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE 16-main-call-helper.obj 14-helper-add.obj kernel32.lib
 ```
 
-The linker combines the `.text` (from `.code`), `.data`, and `.rdata` (from `.const`) sections from both objects, resolves `EXTERN` references, and produces a single executable. The entry point is specified by `/ENTRY:main`.
+```asm
+; Listing 16: main calls helper_add (LESSON.md block 16)
+;
+; Expected exit: 42
+; Expected stdout: (none)
+;
+; ml64 /c 14-helper-add.asm && ml64 /c 16-main-call-helper.asm && link ...
 
-**What if EXTERN has no definition?** The linker will error with "unresolved external symbol `symbol`" at link time, not at assemble time or runtime. This is not a silent null—it's a build failure.
+.CODE
+EXTRN helper_add:PROC
+EXTRN ExitProcess:PROC
 
-**Important:** Always declare the type of an `EXTERN` symbol. If you omit it, MASM will error: "error A2006: undefined symbol : symbol".
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    mov rcx, 20
+    mov rdx, 22
+    call helper_add
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+
+END
+
+```
+
+### PUBLIC data as a link object
+
+Listing `15-data-message` has no `main` and no `.CODE`. It is a data object: `PUBLIC message` and `message BYTE "Hello from data.asm", 0`. A driver would `EXTRN message:BYTE` (or a typed pointer to it) and link this `.obj`. No listing on this tree is that driver.
+
+```asm
+; Listing 15: PUBLIC message in data module (LESSON.md block 15)
+;
+; Link with a main that reads message if needed; exported for multifile demos.
+
+.DATA
+PUBLIC message
+message BYTE "Hello from data.asm", 0
+
+END
+
+```
+
+### add_two_numbers as a link object
+
+Listing `20-add-two-numbers` is the object-only `add_two_numbers` used by listing `19-exit-with-macro` (and the same symbol listing `05-multifile-helper` already exported). Quote is in the worked example.
 
 ## Automatic RIP-relative addressing in MASM x64
 
-In 64-bit MASM (`ml64`), all references to data symbols are **automatically RIP-relative** by default. You do not need a directive like NASM's `default rel`—MASM assumes RIP-relative addressing for all `[symbol]` references.
+`ml64` encodes a data label in a memory operand as RIP-relative. You do not write NASM's `default rel` or `[rel symbol]`. `lea rdx, msg` is the usual way to put that address in a register.
+
+Listing `17-writefile-rip-relative` writes `"hi"` plus a single LF (`10`, not CR LF) to standard output. `GetStdHandle` is called with ECX = −11 (`STD_OUTPUT_HANDLE`). The HANDLE goes in RBX. `WriteFile` uses `lea rdx, msg`, `mov r8, msg_len` (64-bit, not `r8d`), `lea r9, written`, and a NULL overlapped QWORD at `[rsp+32]`. Frame: `push rbx` / `sub rsp, 48`. Expected exit: **0**. Expected stdout: `hi` and a line feed.
+
+The listing places `EXTRN` under `.CODE`, then switches to `.DATA` / `.DATA?`, then defines `main PROC` without a second `.CODE`. That is the source as written.
 
 ```asm
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
+; Listing 17: WriteFile with RIP-relative msg (LESSON.md block 17)
+;
+; Expected exit: 0
+; Expected stdout: "hi\n"
 
-.data
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+.DATA
 msg BYTE "hi", 10
 msg_len EQU $ - msg
 
-.data?
+.DATA?
 written DWORD ?
 
-.code
-main PROC
-    sub rsp, 56             ; shadow space + alignment
-    
-    mov rcx, -11            ; STD_OUTPUT_HANDLE
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 48
+    .allocstack 48
+    .endprolog
+
+    mov ecx, -11
     call GetStdHandle
-    
-    mov rcx, rax            ; hFile
-    lea rdx, msg            ; RIP-relative (automatic)
+    mov rbx, rax
+
+    mov rcx, rbx
+    lea rdx, msg
     mov r8, msg_len
     lea r9, written
     mov QWORD PTR [rsp+32], 0
     call WriteFile
-    
-    add rsp, 56
-    mov rcx, 0
+
+    xor ecx, ecx
     call ExitProcess
 main ENDP
+
 END
+
 ```
 
-The `lea rdx, msg` instruction is automatically encoded as RIP-relative: `lea rdx, [rip + offset msg]`. You do **not** write `[rel msg]` (NASM syntax)—MASM does it implicitly.
-
-**When to use OFFSET:** If you want to compute the address at assembly time (not load it into a register), use `OFFSET`:
+`OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` sets `MY_ADDR EQU OFFSET msg` for a one-byte `"Z"` in `.DATA`, then `mov ecx, MY_ADDR` / `call ExitProcess`. The comment in that file claims exit 0 for a flat `.data` at the start of a segment. The process status is the low 32 bits of `OFFSET msg` as MASM emits it for that PE — not a hardcoded 0 in the source. `FRAME`, `sub rsp, 32`.
 
 ```asm
-MY_ADDR EQU OFFSET msg      ; assembly-time constant
-```
+; Listing 18: MY_ADDR EQU OFFSET msg (LESSON.md block 18)
+;
+; Purpose: Assembly-time offset of a data label equals distance from segment base.
+; Expected exit: 0 (low byte of OFFSET msg for flat .data at start)
+; Expected stdout: (none)
 
-In practice, `lea` is preferred for loading addresses into registers, and MASM's automatic RIP-relative addressing makes position-independent code the default.
+.DATA
+msg BYTE "Z", 0
+
+MY_ADDR EQU OFFSET msg
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+    mov ecx, MY_ADDR
+    call ExitProcess
+main ENDP
+
+END
+
+```
 
 ## NMake: rebuilding only what changed
 
-A Makefile (or `Makefile.mak` for NMake) automates the build: it declares dependencies (which sources produce which objects, which objects link into which binary) and recipes (the shell commands to run). NMake compares file timestamps and rebuilds only what's out of date.
+A Makefile (often `Makefile.mak` for NMake) names targets, prerequisites, and recipes. NMake compares timestamps and rebuilds only what is out of date. NMake ships with Visual Studio. No Jack `.asm` listing is a Makefile.
 
-**NMake** is Microsoft's implementation of Make, bundled with Visual Studio. It uses similar syntax to GNU Make but with some differences in built-in rules and macros.
+<!-- LISTING-PENDING: no Jack .asm listing for NMake, inference rules, or a Makefile; recipes below are makefile/PowerShell teaching text, not Jack programs -->
 
-### Basic structure
+A recipe line must start with a hard tab, not spaces.
 
-```makefile
-# target: prerequisites
-# <tab>recipe
-```
-
-The recipe line **must** start with a hard tab, not spaces (same as GNU Make). NMake will error on spaces.
-
-### Inference rules
-
-An inference rule describes how to build any `.obj` from a `.asm`:
+An inference rule builds any `.obj` from a `.asm`:
 
 ```makefile
 .asm.obj:
 	ml64 /c $<
 ```
 
-- `$<` is the source file (`file.asm`).
-- The target is inferred (`file.obj`).
+`$<` is the source (`file.asm`). The target is the matching `.obj`. NMake writes `.source_ext.target_ext:` rather than GNU Make's `%.obj: %.asm`.
 
-NMake's inference rules use a different syntax than GNU Make's `%.o: %.asm` pattern rules: `.source_ext.target_ext:` instead of `%.target: %.source`.
-
-### Linking rule
+A link rule:
 
 ```makefile
 prog.exe: main.obj helper.obj
 	link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:$@ $** kernel32.lib
 ```
 
-- `$**` is all prerequisites (`main.obj helper.obj`).
-- `$@` is the target (`prog.exe`).
+`$**` is every prerequisite. `$@` is the target. `$<` is only the **first** prerequisite — using `$<` on the link line drops `helper.obj` and you get unresolved externals.
 
-### Phony targets
-
-NMake does not have `.PHONY`, but you can simulate it by using targets that don't produce files:
+NMake has no `.PHONY`. `all` and `clean` work as long as no file has that name:
 
 ```makefile
-all: prog.exe
-
-clean:
-	del /Q *.obj prog.exe 2>nul
-```
-
-If a file named `clean` exists, `nmake clean` would see it as up-to-date and do nothing (same as GNU Make). In practice, `clean` and `all` are rarely created as files, so this is not a problem.
-
-### Complete example
-
-```makefile
-# Makefile.mak for NMake
-# Build with: nmake /f Makefile.mak
+# Makefile.mak
+# nmake /f Makefile.mak
 
 all: prog.exe
 
@@ -453,11 +728,9 @@ clean:
 	del /Q *.obj prog.exe 2>nul
 ```
 
-Run `nmake /f Makefile.mak` to build `prog.exe`. Run `nmake /f Makefile.mak clean` to remove build artifacts. If `main.asm` changes, NMake recompiles `main.obj` and relinks `prog.exe`. If `helper.asm` is unchanged, `helper.obj` is not rebuilt.
+If `main.asm` changes, NMake reassembles `main.obj` and relinks `prog.exe`. Unchanged `helper.asm` keeps its `.obj`.
 
-**Alternative: PowerShell build script**
-
-For simple projects, a PowerShell script may be clearer than NMake:
+A PowerShell script can do the same timestamp check without NMake:
 
 ```powershell
 # build.ps1
@@ -478,136 +751,140 @@ Write-Host "Linking prog.exe..."
 link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:prog.exe $objects kernel32.lib
 ```
 
-Run with `powershell -ExecutionPolicy Bypass -File build.ps1`.
+```powershell
+powershell -ExecutionPolicy Bypass -File build.ps1
+```
 
-## Worked example: two-file addition program with macro
+## Worked example: two-file add with EXIT_WITH
 
-**Task:** Write a program split into `main.asm` and `add.asm`. `main.asm` defines `main`, which calls a function `add_two_numbers` exported from `add.asm`. The function adds the first two arguments (`rcx` and `rdx`), returns the result in `rax`. Use a macro `EXIT_WITH` to wrap the `ExitProcess` call. Exit with the sum of 20 and 22.
+**Task:** Split the program across `19-exit-with-macro.asm` and `20-add-two-numbers.asm`. The driver calls `add_two_numbers` with 20 and 22. A macro `EXIT_WITH` wraps `ExitProcess`. Exit with the sum.
 
-**Step-by-step reasoning:**
+**Reasoning:**
 
-1. **Macro for exit:** Define `EXIT_WITH` with one parameter (status), which allocates shadow space, moves the status to `rcx`, and calls `ExitProcess`.
-2. **main.asm:**
-   - Define the macro inline (or include it from a header).
-   - `EXTERN add_two_numbers:PROC` to import the function.
-   - `main PROC`: allocate shadow space, load `rcx = 20`, `rdx = 22`, call `add_two_numbers`, `EXIT_WITH rax`.
-3. **add.asm:**
-   - Define `add_two_numbers PROC` (implicitly public).
-   - `add_two_numbers`: add `rcx, rdx`, move result to `rax`, `ret`.
-4. **Build:** `ml64 /c main.asm && ml64 /c add.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE main.obj add.obj kernel32.lib`
+1. The helper object exports `PUBLIC add_two_numbers`. It is not an executable: no `main`, no `ExitProcess`. RCX and RDX are the first two arguments; RAX is the return.
+2. The driver imports `add_two_numbers:PROC` and `ExitProcess:PROC`. `EXIT_WITH code` expands to `mov rcx, code` / `call ExitProcess`.
+3. `main PROC FRAME` allocates 32 bytes of shadow space and never restores RSP — `ExitProcess` terminates the process. There is no `add rsp, 32` before the macro.
+4. `call add_two_numbers` leaves 42 in RAX. `EXIT_WITH rax` pastes `mov rcx, rax`, so the status is 42.
+5. Build with two `ml64 /c` lines and one `link` of both objects plus `kernel32.lib`.
 
-**main.asm:**
+```bat
+ml64 /c 20-add-two-numbers.asm
+ml64 /c 19-exit-with-macro.asm
+link /ENTRY:main /SUBSYSTEM:CONSOLE 19-exit-with-macro.obj 20-add-two-numbers.obj kernel32.lib
+```
 
 ```asm
-EXTERN add_two_numbers:PROC
-EXTERN ExitProcess:PROC
+; Listing 19: EXIT_WITH macro after add_two_numbers (LESSON.md block 19)
+;
+; Expected exit: 42
+; Expected stdout: (none)
+;
+; ml64 /c 20-add-two-numbers.asm && ml64 /c 19-exit-with-macro.asm && link ...
+
+.CODE
+EXTRN add_two_numbers:PROC
+EXTRN ExitProcess:PROC
 
 EXIT_WITH MACRO code
     mov rcx, code
     call ExitProcess
 ENDM
 
-.code
-main PROC
-    sub rsp, 32             ; shadow space
-    
+main PROC FRAME
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
     mov rcx, 20
     mov rdx, 22
-    call add_two_numbers    ; rax = 42
-    
-    add rsp, 32
+    call add_two_numbers
     EXIT_WITH rax
 main ENDP
+
 END
+
 ```
 
-**add.asm:**
-
 ```asm
-.code
+; Listing 20: add_two_numbers procedure (LESSON.md block 20)
+;
+; Link with 19-exit-with-macro.asm or 05-multifile-main.asm.
+
+.CODE
+PUBLIC add_two_numbers
+
 add_two_numbers PROC
     mov rax, rcx
     add rax, rdx
     ret
 add_two_numbers ENDP
+
 END
+
 ```
 
-**Expected output:** Exit status 42 (check with `echo %ERRORLEVEL%` on Windows).
+Expected exit: **42** (`echo %ERRORLEVEL%`).
 
-**Plausible wrong reading and why it fails:**
+### A plausible wrong reading (and why it fails)
 
-*"I can put `EXTERN add_two_numbers:PROC` in `add.asm` too, so both files know about the function."*
+*"I should put `EXTRN add_two_numbers:PROC` in the helper file too, so both objects agree on the name."*
 
-**Why it's wrong:** `EXTERN` means "this symbol is defined elsewhere, resolve it at link time." If you put `EXTERN add_two_numbers:PROC` in `add.asm`, you're telling the assembler that `add_two_numbers` is external to `add.asm`. But `add.asm` is the file that **defines** it with `PROC`. The definition and the `EXTERN` declaration are mutually exclusive: you either define a symbol (`PROC` or `PUBLIC`) or reference it (`EXTERN`), not both. If you mistakenly mark it `EXTERN` in the file that defines it, the linker will fail with "unresolved external symbol `add_two_numbers`."
+`EXTRN` means "defined in another object; emit a relocation." Listing `20-add-two-numbers` **defines** the procedure. The definition (`PROC` / `PUBLIC`) and an `EXTRN` for the same name in that file are mutually exclusive. Mark it `EXTRN` where it is defined and the linker reports an unresolved external. Import in the driver (listing `19-exit-with-macro`). Export in the helper.
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| `TEXTEQU` is the same as `EQU` | `TEXTEQU` is text substitution; `EQU` defines a numeric or address constant |
-| A macro parameter is evaluated as an expression | Macro parameters are replaced by the exact text of the argument, then assembled as an instruction |
-| `REPEAT 3` generates a runtime loop | `REPEAT 3` duplicates the body three times in the source; the CPU sees three straight-line instructions |
-| Macro labels can use descriptive names without `LOCAL` | Without `LOCAL`, multiple macro invocations will redefine the label and cause errors |
-| `EXTERN` declares a symbol for export | `EXTERN` **imports** a symbol; `PUBLIC` (or `PROC`) exports it |
-| You can pass multiple `.asm` files to `ml64` | `ml64` assembles one file per invocation; you pass multiple `.obj` files to `link`, not multiple `.asm` to `ml64` |
-| NMake recipes can use spaces for indentation | NMake recipes **must** start with a hard tab; spaces cause syntax errors |
-| `EXTERN symbol` works without a type | `EXTERN` requires a type declaration (`:PROC`, `:QWORD`, `:BYTE`, etc.) or MASM will error |
+| `TEXTEQU` is `EQU` | `TEXTEQU` pastes tokens. `EQU` binds a numeric or address constant. No listing here uses `TEXTEQU`; `DEBUG EQU 1` and `STD_OUTPUT_HANDLE EQU -11` are `EQU` |
+| A macro argument is evaluated, then substituted | The argument text is pasted, then assembled. `EXIT_WITH rax` becomes `mov rcx, rax`, not `mov rcx, 42` computed by the macro processor |
+| `REPT 3` is a runtime loop | Listing `03-rept-repetition` emits three `inc eax` instructions. EAX ends at 3 with no branch |
+| A descriptive label inside a macro is enough | Without `LOCAL`, a second expansion is A2005. Listing `08-macro-label-redefine` invokes `TWICE` once so it still assembles; listing `09-twice-macro-local` invokes it twice with `LOCAL` |
+| `EXTRN` exports a symbol | `EXTRN` **imports**. `PUBLIC` (and the `PROC` in the defining file) exports. Listings `05-multifile-helper`, `14-helper-add`, and `20-add-two-numbers` are the export side |
+| `ml64` accepts several `.asm` files at once | One `ml64 /c` per source. Several `.obj` files go to `link` |
+| `$<` on the link line is "all objects" | `$<` is the first prerequisite. Use `$**` for every `.obj` |
+| `EXTRN symbol` without a type | The type (`:PROC`, `:QWORD`, `:BYTE`, …) is required |
+| NASM `%1` / `%%label` / `%rep` | MASM uses named macro parameters, `LOCAL`, and `REPT`/`ENDM` |
+| Linux `syscall` / `nasm -f elf64` | These programs are `ml64` / `link /ENTRY:main /SUBSYSTEM:CONSOLE` and `call ExitProcess` |
 
 ## Check yourself
 
-1. You define `ABS MACRO reg` with a `cmp` and `neg` inside, using a label `done_label`. You invoke `ABS` twice in the same function. What happens at assembly time? How do you fix it?
-
-2. You have `main.asm` with `EXTERN helper:PROC` and `call helper`, and `helper.asm` with a procedure `helper PROC ... ENDP` but no explicit `PUBLIC helper`. Does the linker resolve the symbol, or does it error? Why?
-
-3. Your NMake Makefile has `prog.exe: main.obj helper.obj` with the recipe `link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:$@ $< kernel32.lib`. You run `nmake` and the linker complains about unresolved externals. What does `$<` expand to, and what should you use instead?
-
-4. You write `STATUS_OK EQU 0` and later `mov rcx, STATUS_OK + 1`. Does MASM compute `1`, or does it error?
-
-5. You have `REPEAT 5` with `inc rdi` inside, ending with `ENDM`. After the `ENDM`, how many `inc rdi` instructions are in the assembled object? How many times does `rdi` increment at runtime?
+1. Listing `08-macro-label-redefine` invokes `TWICE` once and exits 1. What does `ml64` report if you add a second `TWICE` in the same `main` without `LOCAL`? What does listing `09-twice-macro-local` change, and what is its exit status?
+2. Listing `05-multifile-helper` has `PUBLIC add_two_numbers` and no `main`. Can you `link /ENTRY:main` that object by itself? What second object do you have to pass, and which file contains the `EXTRN`?
+3. An NMake rule is `prog.exe: main.obj helper.obj` with recipe `link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:$@ $< kernel32.lib`. What does `$<` expand to, and which automatic variable lists both objects?
+4. Listing `07-debug-equ-exit` defines `DEBUG EQU 1` and listing `06-conditional-assembly` leaves `DEBUG = 1` commented out. What process status does each program produce, and which assemble-time branch is kept?
+5. After `REPT 3` / `inc eax` / `ENDM` in listing `03-rept-repetition`, how many `inc eax` instructions are in the object, and how many times does EAX increment when the program runs?
 
 ## Key takeaways
 
-- `EQU` defines numeric/address constants; `TEXTEQU` pastes text; `MACRO` pastes parameterized instruction sequences; all happen at assembly time, before encoding.
-- `REPEAT` generates code at assembly time; it is not a runtime loop. MASM has no direct equivalent to NASM's `%assign` inside `REPEAT`.
-- Macro labels must use `LOCAL` to avoid collisions across multiple invocations; declare `LOCAL` at the start of the macro body.
-- `PUBLIC` (or `PROC`) exports a symbol for other files to reference with `EXTERN`; `EXTERN` requires a type declaration (`:PROC`, `:QWORD`, etc.); link multiple `.obj` files with `link`.
-- NMake uses inference rules (`.asm.obj:`) and automatic variables (`$@`, `$<`, `$**`) to rebuild only changed files. Alternatively, use PowerShell scripts for more control.
-- Recipes must start with a hard tab, not spaces (same as GNU Make).
-- MASM automatically uses RIP-relative addressing for data symbols in 64-bit mode; no `default rel` directive needed.
+- `EQU` binds a constant; `MACRO` pastes parameterized instructions; `REPT` duplicates a body at assembly time. None of those directives exist at run time.
+- A label inside a macro needs `LOCAL` or a second expansion is A2005. Listing `09-twice-macro-local` exits 2; listing `02-macro-with-local` applies `AbsValue` twice and exits 9.
+- `PUBLIC` / `PROC` export; `EXTRN name:type` imports. Helper listings `05-multifile-helper`, `14-helper-add`, `15-data-message`, and `20-add-two-numbers` have no `main` — you link them with a driver.
+- `ml64 /c` builds one object; `link /ENTRY:main /SUBSYSTEM:CONSOLE` combines objects and `kernel32.lib`. A missing `EXTRN` definition is a link error.
+- `INCLUDE` pastes a header. `constants.inc` supplies `STD_OUTPUT_HANDLE EQU -11`; listing `13-stdio-constants-include` uses it and writes `ok` plus CRLF.
+- `lea rdx, msg` is RIP-relative in `ml64` without a `default rel` directive (listing `17-writefile-rip-relative`).
+- NMake inference rules rebuild a stale `.obj`; `$**` is all prerequisites, `$<` is only the first.
 
 ## Lookup
 
 - MASM reference: [Microsoft Macro Assembler Reference](https://learn.microsoft.com/en-us/cpp/assembler/masm/microsoft-macro-assembler-reference)
-- MASM macros: [MACRO directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/macro), [LOCAL directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/local-masm)
-- MASM symbols: [PUBLIC directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/public-masm), [EXTERN directive](https://learn.microsoft.com/en-us/cpp/assembler/masm/extern-masm)
+- Macros: [MACRO](https://learn.microsoft.com/en-us/cpp/assembler/masm/macro), [LOCAL](https://learn.microsoft.com/en-us/cpp/assembler/masm/local-masm)
+- Symbols: [PUBLIC](https://learn.microsoft.com/en-us/cpp/assembler/masm/public-masm), [EXTERN](https://learn.microsoft.com/en-us/cpp/assembler/masm/extern-masm)
 - NMake: [NMake Reference](https://learn.microsoft.com/en-us/cpp/build/reference/nmake-reference), [Macros and NMake](https://learn.microsoft.com/en-us/cpp/build/reference/macros-and-nmake)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/02-macro-with-local.asm -->
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/03-rept-repetition.asm -->
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/04-multi-param-macro.asm -->
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/05-multifile-helper.asm -->
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/05-multifile-main.asm -->
-<!-- LISTING-PENDING: lessons/09-macros-multifile-make/listings/06-conditional-assembly.asm -->
+- RIP-relative `lea` and the Microsoft x64 ABI: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
 ```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-The exercises and solutions are written by a separate author and use MASM syntax covered in this lesson. They are organized by category:
+Multi-file drills still assemble one source per `ml64 /c` and pass every `.obj` to `link`.
 
-**Macros:** Define `STATUS_OK EQU 0`, exit 0. `exit_with 7` macro, exit 7. Macro writes `M\r\n` (CRLF), exit 0. `IFNDEF` / `define` guard, exit 42. `REPEAT 3` with `inc rdi`, exit 3. `ADD_IMM rdi, 2` after `mov rdi, 40`, exit 42. Push `rbx`, `r12`; pop in reverse order, exit 5. Zero-argument `CALL_EXIT` macro, exit 0. `REPEAT 4` with four `inc rdi`, exit 4 (no macro variable). `TWICE` macro with two `inc rdi`, `LOCAL` label, exit 2. `IFDEF DEBUG` keeps `mov rcx, 1`, exit 1. `VERSION EQU 3`, no `INCLUDE` call, exit 3. Stores string `"Q\r\n"`, exit 0 (no stringification). Automatic RIP-relative addressing (no directive needed), exit 0. `ADD3 rdi, 10, 20, 12`, exit 42. Fix: `EXIT_STATUS 4` (supply missing argument).
-- `22-stretch-units-header.asm` — `%define SYS_WRITE 1` and `SYS_EXIT 60`, print `U\n`, exit 0
-- `24-from-scratch-macro-abs.asm` — `ABS` macro with `%%ok` label, exit 9
+The exercises use the MASM directives this lesson quotes.
 
-**Multi-file and NMake:** Comment mentions multi-file; solution is one file, exit 0. Single file with `EXTERN` simulation, exit 5. Single-file simulation of `PUBLIC`, return 42. Comment about NMake phony targets, exit 0. Single file with `EXTERN` declaration (no external definition), exit 9. Exit 3 (object count as immediate, not NMake graph).
+**Macros:** `STATUS_OK EQU 0`, exit 0. `exit_with 7`, exit 7. A write macro that prints `M` plus CRLF, exit 0. `IFNDEF` guard, exit 42. `REPEAT 3` with `inc rdi`, exit 3. `ADD_IMM rdi, 2` after `mov rdi, 40`, exit 42. Push `rbx` and `r12`, pop in reverse, exit 5. Zero-argument `CALL_EXIT`, exit 0. Four `inc rdi` from `REPEAT 4`, exit 4. `TWICE` with `LOCAL`, two increments, exit 2. `IFDEF DEBUG` keeps `mov ecx, 1`, exit 1. `VERSION EQU 3`, exit 3. Store `"Q"` plus CRLF, exit 0. RIP-relative `lea`, exit 0. `ADD3` 10+20+12, exit 42. Supply the missing argument to `EXIT_STATUS`. Stretch: `STD_OUTPUT_HANDLE EQU -11`, `WriteFile` of `U` plus CRLF, exit 0. From scratch: `AbsVal` with `LOCAL`, exit 9.
 
-Refer to `exercises/09-macros-multifile-make/README.md` for detailed descriptions and expected exit codes.
+**Multi-file and NMake:** Comment-only multi-file note in a single file, exit 0. Single-file `EXTRN` simulation, exit 5. `PUBLIC` simulation, return 42. NMake phony-target comment, exit 0. `EXTRN` declaration without a second object, exit 9. Object count as an immediate, exit 3.
+
+Refer to `exercises/09-macros-multifile-make/README.md` for expected exit codes.
