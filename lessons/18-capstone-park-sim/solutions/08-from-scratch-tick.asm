@@ -14,7 +14,7 @@ tick QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
 tick_loop:
     cmp QWORD PTR [tick], 5
     jge tick_done

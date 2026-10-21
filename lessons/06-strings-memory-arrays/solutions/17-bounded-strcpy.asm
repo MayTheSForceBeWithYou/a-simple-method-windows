@@ -2,47 +2,58 @@
 ;
 ; Copy at most 3 chars + NUL from "abcdef" into 4-byte dst; strlen dst=3.
 ;
-; Build: nasm -f elf64 17-bounded-strcpy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db "abcdef",0
-section .bss
-    dst resb 4
-section .text
-    global _start
-_start:
-    lea rdi, [dst]
-    lea rsi, [src]
-    mov rdx, 3
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE "abcdef", 0
+
+.data?
+dst BYTE 4 DUP(?)
+
+.code
+main PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    lea rcx, dst
+    lea rdx, src
+    mov r8, 3
     call strncpy_term
-    lea rdi, [dst]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strncpy_term:
-    xor rcx, rcx
-.l:
-    cmp rcx, rdx
-    jge .nul
-    mov al, [rsi+rcx]
-    mov [rdi+rcx], al
+    lea rcx, dst
+    call strlen_fn
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+strncpy_term PROC
+    xor r9, r9
+cpy_loop:
+    cmp r9, r8
+    jge cpy_nul
+    mov al, BYTE PTR [rdx+r9]
+    mov BYTE PTR [rcx+r9], al
     test al, al
-    jz .done
-    inc rcx
-    jmp .l
-.nul:
-    mov byte [rdi+rdx], 0
-.done:
+    jz cpy_done
+    inc r9
+    jmp cpy_loop
+cpy_nul:
+    mov BYTE PTR [rcx+r8], 0
+cpy_done:
     ret
-strlen:
-    mov rax, rdi
-.s:
-    cmp byte [rax], 0
-    je .d
+strncpy_term ENDP
+
+strlen_fn PROC
+    mov rax, rcx
+len_loop:
+    cmp BYTE PTR [rax], 0
+    je len_done
     inc rax
-    jmp .s
-.d:
-    sub rax, rdi
+    jmp len_loop
+len_done:
+    sub rax, rcx
     ret
+strlen_fn ENDP
+END

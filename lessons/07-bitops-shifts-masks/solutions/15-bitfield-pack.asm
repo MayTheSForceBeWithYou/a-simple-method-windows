@@ -1,10 +1,10 @@
-; Expected exit: 0
+; Expected exit: 85
 
 EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 5
     and rax, 7
     mov rbx, 2

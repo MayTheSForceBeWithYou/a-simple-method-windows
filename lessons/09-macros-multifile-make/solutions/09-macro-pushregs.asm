@@ -21,7 +21,7 @@ ENDM
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rbx, 5
     PUSH_CALLEE

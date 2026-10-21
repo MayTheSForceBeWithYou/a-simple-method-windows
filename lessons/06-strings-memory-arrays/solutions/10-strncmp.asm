@@ -1,16 +1,16 @@
 ; Exercise 10: strncmp
-; strncmp first 2 of "axy","abz" -> 0 (equal for n=2).
+; strncmp first 2 of "abx","abz" -> 0 (equal for n=2).
 ; Expected exit: 0
 
 EXTERN ExitProcess:PROC
 
 .data
-a BYTE "axy", 0
+a BYTE "abx", 0
 b BYTE "abz", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, a
     lea rdx, b
     mov r8, 2

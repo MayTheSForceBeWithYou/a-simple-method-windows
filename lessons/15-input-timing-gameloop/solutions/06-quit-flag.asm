@@ -14,7 +14,7 @@ quit QWORD 1
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [quit]
     call ExitProcess
 main ENDP

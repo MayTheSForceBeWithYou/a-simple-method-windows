@@ -10,7 +10,7 @@ v DWORD 1,2,3,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov eax, DWORD PTR [v]
     add eax, DWORD PTR [v+4]
     add eax, DWORD PTR [v+8]

@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 5
     cmp rax, 4
     jl in_range

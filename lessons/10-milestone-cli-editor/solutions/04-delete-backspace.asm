@@ -13,14 +13,14 @@ len QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov QWORD PTR [len], 2
     cmp QWORD PTR [len], 0
-    je .o
+    je L_o
     dec QWORD PTR [len]
     
-.o:
+L_o:
     mov rcx, [len]
     call ExitProcess
 main ENDP

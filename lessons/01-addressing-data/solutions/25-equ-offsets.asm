@@ -15,7 +15,7 @@ vals QWORD 3, 9
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, QWORD PTR [vals+OFF_B]
     call ExitProcess
 main ENDP

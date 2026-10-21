@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 41
     call inc_local
     mov rcx, rax
@@ -20,7 +20,7 @@ main ENDP
 inc_local PROC
     push rbp
     mov rbp, rsp
-    sub rsp, 32        ; locals + alignment
+    sub rsp, 40 ; locals + alignment
     mov rax, rcx
     add rax, 1
     mov QWORD PTR [rbp-8], rax

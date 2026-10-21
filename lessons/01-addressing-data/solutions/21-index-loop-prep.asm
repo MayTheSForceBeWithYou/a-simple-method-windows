@@ -13,7 +13,7 @@ arr BYTE 7, 8, 9
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     movzx rax, BYTE PTR [arr]
     add rcx, rax

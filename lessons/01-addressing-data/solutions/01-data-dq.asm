@@ -13,7 +13,7 @@ count QWORD 41
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [count]
     add rcx, 1
     call ExitProcess

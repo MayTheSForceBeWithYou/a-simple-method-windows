@@ -35,17 +35,17 @@ main PROC
     
     ; Check if 2 bytes were written
     cmp written, 2
-    jne .bad
+    jne L_bad
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

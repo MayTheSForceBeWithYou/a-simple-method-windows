@@ -4,9 +4,9 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
-    mov rax, 0xFF
-    and rax, 0x0F
+    sub rsp, 40
+    mov rax, 0FFh
+    and rax, 0Fh
     mov rcx, rax
     call ExitProcess
 main ENDP

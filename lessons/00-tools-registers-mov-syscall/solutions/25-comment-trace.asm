@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32         ; allocate shadow space for call
+    sub rsp, 40 ; allocate shadow space for call
     mov rcx, 9          ; set exit code parameter
     call ExitProcess    ; exit process with status
 main ENDP

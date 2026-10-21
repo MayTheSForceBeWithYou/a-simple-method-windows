@@ -14,7 +14,7 @@ h BYTE "P6",10
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 3
     call ExitProcess
 main ENDP

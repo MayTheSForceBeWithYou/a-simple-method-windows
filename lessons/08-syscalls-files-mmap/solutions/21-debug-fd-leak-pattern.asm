@@ -29,7 +29,7 @@ main PROC
     
     ; Check for failure
     cmp rax, -1
-    je .e
+    je L_e
     
     ; Close handle
     mov rcx, rax
@@ -37,13 +37,13 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.e:
+L_e:
     ; Exit 1 on error
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

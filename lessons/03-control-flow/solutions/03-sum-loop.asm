@@ -1,11 +1,12 @@
 ; Exercise 03: sum loop (Win32 port) - SOLUTION
+; Expected exit: 55
 
 .CODE
 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax
     mov rcx, 10

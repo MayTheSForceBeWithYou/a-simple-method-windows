@@ -14,13 +14,14 @@ n EQU 6
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     xor r8, r8
 loop_start:
     cmp r8, n
     jge done
-    movzx rax, BYTE PTR [arr+r8]
+    lea r11, [arr]
+    movzx rax, BYTE PTR [r11+r8]
     test rax, 1
     jnz odd
     inc rcx

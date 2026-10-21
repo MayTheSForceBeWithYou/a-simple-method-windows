@@ -10,7 +10,7 @@ s BYTE "3", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rcx, BYTE PTR [s]
     sub rcx, '0'
     call ExitProcess

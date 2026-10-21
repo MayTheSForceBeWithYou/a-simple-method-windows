@@ -28,17 +28,17 @@ main PROC
     
     ; Check if INVALID_HANDLE_VALUE (-1)
     cmp rax, -1
-    je .bad
+    je L_bad
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .out
+    jmp L_out
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.out:
+L_out:
     call ExitProcess
 main ENDP
 END

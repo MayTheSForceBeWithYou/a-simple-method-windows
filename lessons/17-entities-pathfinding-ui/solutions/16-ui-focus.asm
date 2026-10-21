@@ -2,24 +2,25 @@
 ;
 ; Tab cycles focus index mod 3; from 2 -> 0; exit 0.
 ;
-; Build: ml64 /c 16-ui-focus.asm && link /OUT:16-ui-focus.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-ui-focus.obj kernel32.lib
-;
+; Expected exit: 0
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
+.data
+focus QWORD 0
+
 .code
-    
 main PROC
-    sub rsp, 32
-    mov qword [focus],2
-    inc qword [focus]
-    mov rax,[focus]
-    xor rdx,rdx
-    mov rbx,3
-    div rbx
-    mov [focus],rdx
+    sub rsp, 40
+    mov QWORD PTR [focus], 2
+    inc QWORD PTR [focus]
+    mov rax, QWORD PTR [focus]
+    xor rdx, rdx
+    mov r8, 3
+    div r8
+    mov QWORD PTR [focus], rdx
     mov rcx, rdx
     call ExitProcess
-
 main ENDP
 END

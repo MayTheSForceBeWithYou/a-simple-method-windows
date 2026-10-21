@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 64
+    sub rsp, 72
     mov rcx, 3
     mov QWORD PTR [rsp+32], 5
     mov QWORD PTR [rsp+40], 1
@@ -17,12 +17,12 @@ main PROC
 main ENDP
 
 max_n PROC
-    mov rax, QWORD PTR [rsp+8]
+    mov rax, QWORD PTR [rsp+40]
     mov r8, 1
 loop_max:
     cmp r8, rcx
     jge done_max
-    mov rdx, QWORD PTR [rsp+8+r8*8]
+    mov rdx, QWORD PTR [rsp+40+r8*8]
     cmp rdx, rax
     cmovg rax, rdx
     inc r8

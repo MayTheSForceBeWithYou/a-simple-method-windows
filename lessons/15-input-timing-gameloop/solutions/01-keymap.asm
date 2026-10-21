@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov al, 'W'
     cmp al, 'W'
     jne not_match

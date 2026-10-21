@@ -13,7 +13,7 @@ x QWORD 55
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [x]
     call ExitProcess
 main ENDP

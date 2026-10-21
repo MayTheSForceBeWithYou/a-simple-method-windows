@@ -1,17 +1,17 @@
 ; Exercise 05: errno neg
 ;
-; On failed CreateFileA, call GetLastError, negate and clip to 127; exit with that code.
+; On failed CreateFileA, exit with GetLastError (ERROR_FILE_NOT_FOUND=2).
 ;
 ; Build: ml64 /c 05-errno-neg.asm && link /OUT:05-errno-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-errno-neg.obj kernel32.lib
 ;
-; Expected exit: (varies, typically 2 for ERROR_FILE_NOT_FOUND)
+; Expected exit: 2
 
 EXTERN CreateFileA:PROC
 EXTERN GetLastError:PROC
 EXTERN ExitProcess:PROC
 
 .data
-path BYTE "/nope", 0
+path BYTE "C:\this_file_should_not_exist_asm_course_xyzzy.txt", 0
 
 .code
 main PROC
@@ -27,13 +27,9 @@ main PROC
     mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
     call CreateFileA
     
-    ; Get last error
+    ; GetLastError is the Windows-native error; Linux used -errno.
     call GetLastError
-    
-    ; Negate and clip to 127 (simulate errno semantics)
     mov rcx, rax
-    neg rcx
-    and rcx, 127
     
     call ExitProcess
 main ENDP

@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 01111222233334444h
     mov ax, 0ABCDh
     movzx rcx, al

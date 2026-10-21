@@ -1,13 +1,13 @@
-; Expected exit: 0
+; Expected exit: 171
 
 EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
-    mov rax, 0xA
+    sub rsp, 40
+    mov rax, 0Ah
     shl rax, 4
-    or rax, 0xB
+    or rax, 0Bh
     mov rcx, rax
     mov rax,60
     call ExitProcess

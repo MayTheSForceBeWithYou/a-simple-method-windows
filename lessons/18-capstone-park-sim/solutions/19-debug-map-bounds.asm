@@ -2,24 +2,22 @@
 ;
 ; BUG: no bounds check. Clamp x=99 to w-1=7; exit 7.
 ;
-; Build: ml64 /c 19-debug-map-bounds.asm && link /OUT:19-debug-map-bounds.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-map-bounds.obj kernel32.lib
-;
+; Expected exit: 7
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
 .code
-    
 main PROC
-    sub rsp, 32
-    mov rax,99
-    mov rbx,8
-    cmp rax,rbx
-    jl .ok
-    mov rax,rbx
+    sub rsp, 40
+    mov rax, 99
+    mov r8, 8
+    cmp rax, r8
+    jl bounds_ok
+    mov rax, r8
     dec rax
-.ok:
+bounds_ok:
     mov rcx, rax
     call ExitProcess
-
 main ENDP
 END

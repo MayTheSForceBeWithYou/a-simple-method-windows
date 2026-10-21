@@ -13,7 +13,7 @@ arr QWORD 4 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [arr], 1
     mov QWORD PTR [arr+8], 2
     mov QWORD PTR [arr+16], 3

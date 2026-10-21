@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 1
     mov rdx, 1
     call ack
@@ -20,10 +20,10 @@ ack PROC
     cmp rdx, 0
     je n_zero
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rdx
     call ack
-    add rsp, 32
+    add rsp, 40
     mov rdx, rax
     pop rcx
     dec rcx

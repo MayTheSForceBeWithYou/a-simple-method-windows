@@ -14,7 +14,7 @@ held QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [held], 3
     cmp QWORD PTR [held], 3
     jl not_fire

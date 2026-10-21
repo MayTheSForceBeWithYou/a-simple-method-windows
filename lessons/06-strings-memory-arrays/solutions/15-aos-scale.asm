@@ -9,7 +9,7 @@ ent QWORD 3,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     shl ent, 1
     shl ent[8], 1
     mov rcx, ent

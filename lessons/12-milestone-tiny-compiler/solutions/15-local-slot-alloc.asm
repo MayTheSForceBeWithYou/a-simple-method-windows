@@ -10,7 +10,7 @@ next_slot QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [next_slot], 0
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]

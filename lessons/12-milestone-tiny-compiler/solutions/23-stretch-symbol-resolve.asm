@@ -10,7 +10,7 @@ sym QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [sym], 32
     mov rcx, QWORD PTR [sym]
     call ExitProcess

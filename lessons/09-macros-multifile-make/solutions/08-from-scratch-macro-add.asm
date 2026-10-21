@@ -15,7 +15,7 @@ ENDM
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 40
     ADD_IMM rcx, 2

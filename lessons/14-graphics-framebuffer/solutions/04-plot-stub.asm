@@ -14,7 +14,7 @@ fb BYTE 16 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [fb], 7
     movzx rcx, BYTE PTR [fb]
     call ExitProcess

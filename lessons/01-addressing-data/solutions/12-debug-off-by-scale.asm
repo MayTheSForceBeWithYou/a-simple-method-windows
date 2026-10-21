@@ -13,9 +13,10 @@ arr QWORD 10, 20, 30
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov r8, 1
-    mov rcx, QWORD PTR [arr+r8*8]
+    lea r11, [arr]
+    mov rcx, QWORD PTR [r11+r8*8]
     call ExitProcess
 main ENDP
 END

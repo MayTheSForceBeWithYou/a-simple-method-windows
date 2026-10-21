@@ -14,7 +14,7 @@ gap_e QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov QWORD PTR [gap_s], 3
     mov QWORD PTR [gap_e], 5

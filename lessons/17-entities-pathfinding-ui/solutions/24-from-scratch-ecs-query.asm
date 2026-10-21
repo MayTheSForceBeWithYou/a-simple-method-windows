@@ -2,30 +2,32 @@
 ;
 ; FROM SCRATCH: count entities with mask POS; 3 of 4; exit 3.
 ;
-; Build: ml64 /c 24-from-scratch-ecs-query.asm && link /OUT:24-from-scratch-ecs-query.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-ecs-query.obj kernel32.lib
-;
+; Expected exit: 3
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    xor rdi,rdi
-    xor rcx,rcx
-.l:
-    cmp rcx,4
-    jge .d
-    movzx rax,byte [masks+rcx]
-    test rax,1
-    jz .n
-    inc rdi
-.n:
-    inc rcx
-    jmp .l
-.d:
-    mov rax,60
-    syscall
+.data
+masks BYTE 1,1,1,0
 
+.code
+main PROC
+    sub rsp, 40
+    xor r8, r8
+    xor r9, r9
+query_loop:
+    cmp r9, 4
+    jge query_done
+    lea r11, [masks]
+    movzx rax, BYTE PTR [r11+r9]
+    test rax, 1
+    jz query_next
+    inc r8
+query_next:
+    inc r9
+    jmp query_loop
+query_done:
+    mov rcx, r8
+    call ExitProcess
 main ENDP
 END

@@ -14,7 +14,7 @@ idx QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [idx], 0
     xor QWORD PTR [idx], 1
     xor QWORD PTR [idx], 1

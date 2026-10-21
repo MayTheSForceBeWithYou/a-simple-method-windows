@@ -1,11 +1,11 @@
-; Expected exit: 0
+; Expected exit: 128
 
 EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
-    mov al, 0x01
+    sub rsp, 40
+    mov al, 01h
     ror al, 1
     movzx rcx, al
     mov rax,60

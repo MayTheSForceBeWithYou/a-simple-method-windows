@@ -2,18 +2,19 @@
 ;
 ; Peep follows path; steps remaining 4; exit 4.
 ;
-; Build: ml64 /c 13-peep-pathfind-step.asm && link /OUT:13-peep-pathfind-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-peep-pathfind-step.obj kernel32.lib
-;
+; Expected exit: 4
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov qword [steps],4
-    mov rcx, [steps]
-    call ExitProcess
+.data
+steps QWORD 0
 
+.code
+main PROC
+    sub rsp, 40
+    mov QWORD PTR [steps], 4
+    mov rcx, QWORD PTR [steps]
+    call ExitProcess
 main ENDP
 END

@@ -10,7 +10,7 @@ outv QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [outv], 42
     mov rcx, QWORD PTR [outv]
     call ExitProcess

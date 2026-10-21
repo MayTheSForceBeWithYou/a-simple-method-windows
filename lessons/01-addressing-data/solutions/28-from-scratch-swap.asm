@@ -14,7 +14,7 @@ b QWORD 2
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, [a]
     mov rdx, [b]
     mov [a], rdx

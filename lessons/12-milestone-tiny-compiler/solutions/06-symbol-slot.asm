@@ -10,7 +10,7 @@ slots QWORD 4 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [slots], 42
     mov rcx, QWORD PTR [slots]
     call ExitProcess

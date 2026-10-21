@@ -11,7 +11,7 @@ n QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [lex], 'x'
     mov QWORD PTR [n], 1
     mov rcx, QWORD PTR [n]

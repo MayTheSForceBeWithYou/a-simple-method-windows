@@ -13,7 +13,7 @@ s BYTE "42", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rsi, [s]
     xor rcx, rcx
 loop_start:

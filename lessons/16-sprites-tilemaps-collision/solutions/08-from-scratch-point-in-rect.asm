@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     ; p(2,2) in [0,0,5,5]
     mov rcx, 1
     call ExitProcess

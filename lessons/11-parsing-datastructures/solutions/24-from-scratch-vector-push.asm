@@ -12,7 +12,7 @@ cap QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [cap], 8
     mov QWORD PTR [len], 0
     call push1
@@ -24,7 +24,8 @@ main ENDP
 
 push1 PROC
     mov rcx, QWORD PTR [len]
-    mov QWORD PTR [data+rcx*8], 1
+    lea r11, [data]
+    mov QWORD PTR [r11+rcx*8], 1
     inc QWORD PTR [len]
     ret
 push1 ENDP

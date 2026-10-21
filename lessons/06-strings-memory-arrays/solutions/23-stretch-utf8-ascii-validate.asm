@@ -2,28 +2,32 @@
 ;
 ; STRETCH: validate all bytes <128 in "OK\n"; exit 1 if valid.
 ;
-; Build: nasm -f elf64 23-stretch-utf8-ascii-validate.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    s db "OK",10,0
-section .text
-    global _start
-_start:
-    lea rsi, [s]
-.l:
-    movzx rax, byte [rsi]
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+s BYTE "OK", 10, 0
+
+.code
+main PROC
+    sub rsp, 40
+    lea rdx, s
+val_loop:
+    movzx rax, BYTE PTR [rdx]
     test rax, rax
-    jz .ok
-    test rax, 0x80
-    jnz .bad
-    inc rsi
-    jmp .l
-.ok:
-    mov rdi, 1
-    jmp .o
-.bad:
-    xor rdi, rdi
-.o:
-    mov rax, 60
-    syscall
+    jz val_ok
+    test rax, 80h
+    jnz val_bad
+    inc rdx
+    jmp val_loop
+val_ok:
+    mov rcx, 1
+    jmp val_done
+val_bad:
+    xor ecx, ecx
+val_done:
+    call ExitProcess
+main ENDP
+END

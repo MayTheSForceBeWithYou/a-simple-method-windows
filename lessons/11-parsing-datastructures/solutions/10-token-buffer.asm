@@ -14,7 +14,7 @@ n QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rsi, src
     lea rdi, tok
     xor rcx, rcx

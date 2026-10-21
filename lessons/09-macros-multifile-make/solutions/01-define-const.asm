@@ -13,7 +13,7 @@ SYS_EXIT EQU 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, SYS_EXIT
     call ExitProcess
 main ENDP

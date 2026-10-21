@@ -16,12 +16,14 @@ t QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [t]
-    mov QWORD PTR [q+rcx*8], 9
+    lea r11, [q]
+    mov QWORD PTR [r11+rcx*8], 9
     inc QWORD PTR [t]
     mov rcx, [h]
-    mov rcx, [q+rcx*8]
+    lea r11, [q]
+    mov rcx, [r11+rcx*8]
     inc QWORD PTR [h]
     call ExitProcess
 main ENDP

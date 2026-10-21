@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -22,7 +22,7 @@ main PROC
     
     ; Check for NULL (failure)
     test rax, rax
-    jz .f
+    jz L_f
     
     ; Write 99 at offset +100
     mov rbx, rax
@@ -32,7 +32,7 @@ main PROC
     movzx rcx, BYTE PTR [rbx+100]
     call ExitProcess
     
-.f:
+L_f:
     ; Exit 2 on allocation failure
     mov rcx, 2
     call ExitProcess

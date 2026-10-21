@@ -14,7 +14,7 @@ magic BYTE "PK01"
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rcx, BYTE PTR [magic]
     call ExitProcess
 main ENDP

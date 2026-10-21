@@ -15,7 +15,7 @@ hWritePipe QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
     lea rcx, hReadPipe
@@ -26,17 +26,17 @@ main PROC
     
     ; Returns nonzero on success
     test rax, rax
-    jz .fail
+    jz L_fail
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.fail:
+L_fail:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

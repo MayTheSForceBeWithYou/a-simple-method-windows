@@ -14,12 +14,13 @@ n EQU 5
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor r8, r8
 loop_start:
     cmp r8, n
     jge missing
-    movzx rax, BYTE PTR [arr+r8]
+    lea r11, [arr]
+    movzx rax, BYTE PTR [r11+r8]
     cmp rax, 4
     je found
     inc r8

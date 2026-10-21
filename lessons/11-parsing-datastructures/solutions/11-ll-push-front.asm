@@ -12,7 +12,7 @@ head QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [n1], 1
     mov QWORD PTR [n1+8], 0
     lea rax, n1

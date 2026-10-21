@@ -11,7 +11,7 @@ v2 QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [v1], 10
     mov QWORD PTR [v2], 32
     mov rax, QWORD PTR [v1]

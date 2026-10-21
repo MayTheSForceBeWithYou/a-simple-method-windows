@@ -10,15 +10,15 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 1
     mov rdx, 0
     mov rbx, 0FFFFFFFFFFFFFFFFh
     mov r8, 0
     add rax, rbx
     adc rdx, r8
-    setc al
-    movzx rcx, al
+    ; High word is 1 after the incoming carry from add.
+    mov rcx, rdx
     call ExitProcess
 main ENDP
 END

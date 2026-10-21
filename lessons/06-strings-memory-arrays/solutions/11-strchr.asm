@@ -9,7 +9,7 @@ s BYTE "hello", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, s
     mov rdx, 'l'
     call strchr_idx

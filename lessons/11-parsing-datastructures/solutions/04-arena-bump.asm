@@ -10,7 +10,7 @@ bump QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [bump], 0
     add QWORD PTR [bump], 16
     add QWORD PTR [bump], 16

@@ -10,17 +10,17 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 7
     cmp rax, 0
     jle no
     cmp rax, 10
     jge no
     mov rcx, 1
-    jmp out
+    jmp L_done
 no:
     xor rcx, rcx
-out:
+L_done:
     call ExitProcess
 main ENDP
 END

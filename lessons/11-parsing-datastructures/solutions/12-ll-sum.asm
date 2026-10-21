@@ -12,7 +12,7 @@ n1 QWORD 3, 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rax, n3
     mov QWORD PTR [n2+8], rax
     lea rax, n2

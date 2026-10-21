@@ -11,17 +11,20 @@ sp_ QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [sp_], 0
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [stk+rcx*8], 1
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], 1
     inc QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [stk+rcx*8], 2
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], 2
     inc QWORD PTR [sp_]
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov rcx, QWORD PTR [stk+rcx*8]
+    lea r11, [stk]
+    mov rcx, QWORD PTR [r11+rcx*8]
     call ExitProcess
 main ENDP
 END

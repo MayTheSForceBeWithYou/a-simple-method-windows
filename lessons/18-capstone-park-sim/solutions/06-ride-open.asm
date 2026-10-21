@@ -14,7 +14,7 @@ open BYTE ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [open], 1
     movzx rcx, BYTE PTR [open]
     call ExitProcess

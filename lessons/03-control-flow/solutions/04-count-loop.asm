@@ -1,11 +1,12 @@
 ; Exercise 04: count loop (Win32 port) - SOLUTION
+; Expected exit: 5
 
 .CODE
 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rcx, rcx
     xor rax, rax

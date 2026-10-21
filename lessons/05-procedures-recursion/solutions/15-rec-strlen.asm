@@ -9,7 +9,7 @@ s BYTE "abcd", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, s
     call rstrlen
     mov rcx, rax
@@ -20,9 +20,9 @@ rstrlen PROC
     cmp BYTE PTR [rcx], 0
     je zero_len
     inc rcx
-    sub rsp, 32
+    sub rsp, 40
     call rstrlen
-    add rsp, 32
+    add rsp, 40
     inc rax
     ret
 zero_len:

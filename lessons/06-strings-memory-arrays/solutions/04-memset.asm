@@ -9,7 +9,7 @@ buf BYTE 4 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, buf
     mov rdx, 7
     mov r8, 4

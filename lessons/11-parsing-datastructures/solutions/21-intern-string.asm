@@ -13,7 +13,7 @@ table QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rax, a
     mov QWORD PTR [table], rax
     mov rbx, QWORD PTR [table]

@@ -9,7 +9,7 @@ rec QWORD 1,2, 3,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     add rcx, rec[0]
     add rcx, rec[8]

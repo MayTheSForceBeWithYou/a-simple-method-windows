@@ -13,14 +13,14 @@ cur QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov QWORD PTR [cur], 0
     mov rcx, 5
     
-.l:
+L_l:
     inc QWORD PTR [cur]
-    loop .l
+    loop L_l
     
     mov rcx, [cur]
     call ExitProcess

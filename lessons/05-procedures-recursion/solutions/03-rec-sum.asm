@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 5
     call sum_to
     mov rcx, rax
@@ -17,10 +17,10 @@ sum_to PROC
     cmp rcx, 0
     jle zero_sum
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rcx
     call sum_to
-    add rsp, 32
+    add rsp, 40
     pop rcx
     add rax, rcx
     ret

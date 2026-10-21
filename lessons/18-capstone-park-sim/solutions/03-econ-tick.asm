@@ -14,7 +14,7 @@ cash QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     add QWORD PTR [cash], 5
     mov rcx, [cash]
     call ExitProcess

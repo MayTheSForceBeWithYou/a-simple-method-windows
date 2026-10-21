@@ -1,22 +1,30 @@
+; Exercise 23: stretch bit reverse 8
+;
+; Reverse bits of 0x80 -> 0x01; exit 1.
+;
 ; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
+.data
+v BYTE 80h
+
 .code
 main PROC
-    sub rsp, 32
-    movzx eax, byte [v]
-    xor ebx, ebx
-    mov ecx, 8
-.l:
-    shl ebx, 1
+    sub rsp, 40
+    movzx eax, BYTE PTR [v]
+    xor r8d, r8d
+    mov r9d, 8
+rev_loop:
+    shl r8d, 1
     mov edx, eax
     and edx, 1
-    or ebx, edx
+    or r8d, edx
     shr eax, 1
-    loop .l
-    mov edi, ebx
-    mov rax,60
+    dec r9d
+    jnz rev_loop
+    mov ecx, r8d
     call ExitProcess
 main ENDP
 END

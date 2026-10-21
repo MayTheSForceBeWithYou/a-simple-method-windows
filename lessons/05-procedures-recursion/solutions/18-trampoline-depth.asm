@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 8
     call bump
     mov rcx, rax
@@ -17,10 +17,10 @@ bump PROC
     test rcx, rcx
     jz zero_bump
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rcx
     call bump
-    add rsp, 32
+    add rsp, 40
     pop rcx
     inc rax
     ret

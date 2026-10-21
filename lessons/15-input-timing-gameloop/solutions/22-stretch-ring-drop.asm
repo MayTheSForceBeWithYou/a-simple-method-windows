@@ -14,7 +14,7 @@ dropped QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [dropped], 1
     mov rcx, [dropped]
     call ExitProcess

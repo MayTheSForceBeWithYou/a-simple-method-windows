@@ -13,7 +13,7 @@ DEBUG EQU 1
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; MASM conditional assembly
     IFDEF DEBUG

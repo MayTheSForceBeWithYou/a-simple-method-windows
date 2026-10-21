@@ -15,7 +15,7 @@ ys QWORD 0,6,0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [xs+8]
     add rcx, [ys+8]
     call ExitProcess

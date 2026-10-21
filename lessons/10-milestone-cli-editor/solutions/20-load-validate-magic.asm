@@ -13,18 +13,18 @@ magic BYTE "ED01"
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     cmp WORD PTR [magic], 4445h  ; "ED" in little-endian
-    jne .n
+    jne L_n
     
     mov rcx, 1
-    jmp .o
+    jmp L_o
     
-.n:
+L_n:
     xor rcx, rcx
     
-.o:
+L_o:
     call ExitProcess
 main ENDP
 END

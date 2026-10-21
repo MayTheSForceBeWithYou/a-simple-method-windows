@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -33,15 +33,15 @@ main PROC
     xor rcx, rcx
     xor rdi, rdi
     
-.s:
+L_s:
     cmp rcx, 16
-    jge .o
+    jge L_o
     movzx rax, BYTE PTR [rbx+rcx]
     add rdi, rax
     inc rcx
-    jmp .s
+    jmp L_s
     
-.o:
+L_o:
     ; Exit with sum (16)
     mov rcx, rdi
     call ExitProcess

@@ -13,7 +13,7 @@ cursor QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov QWORD PTR [cursor], 0
     inc QWORD PTR [cursor]

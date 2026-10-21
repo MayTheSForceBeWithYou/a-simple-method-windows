@@ -14,7 +14,7 @@ flags BYTE 3
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rcx, BYTE PTR [flags]
     and rcx, 1
     call ExitProcess

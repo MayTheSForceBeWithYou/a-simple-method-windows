@@ -2,34 +2,40 @@
 ;
 ; Fill every other byte in 8-byte buf with 1; sum=4.
 ;
-; Build: nasm -f elf64 21-sparse-fill.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .bss
-    buf resb 8
-section .text
-    global _start
-_start:
+; Expected exit: 4
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data?
+buf BYTE 8 DUP(0)
+
+.code
+main PROC
+    sub rsp, 40
+    xor r8, r8
+fill_loop:
+    cmp r8, 8
+    jge do_sum
+    test r8, 1
+    jnz fill_odd
+    lea r11, [buf]
+    mov BYTE PTR [r11+r8], 1
+fill_odd:
+    inc r8
+    jmp fill_loop
+do_sum:
     xor rcx, rcx
-.l:
-    cmp rcx, 8
-    jge .sum
-    test rcx, 1
-    jnz .nz
-    mov byte [buf+rcx], 1
-.nz:
-    inc rcx
-    jmp .l
-.sum:
-    xor rdi, rdi
-    xor rcx, rcx
-.s:
-    cmp rcx, 8
-    jge .o
-    movzx rax, byte [buf+rcx]
-    add rdi, rax
-    inc rcx
-    jmp .s
-.o:
-    mov rax, 60
-    syscall
+    xor r8, r8
+sum_loop:
+    cmp r8, 8
+    jge sum_done
+    lea r11, [buf]
+    movzx rax, BYTE PTR [r11+r8]
+    add rcx, rax
+    inc r8
+    jmp sum_loop
+sum_done:
+    call ExitProcess
+main ENDP
+END

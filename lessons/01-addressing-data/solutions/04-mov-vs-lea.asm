@@ -13,7 +13,7 @@ x QWORD 99
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rbx, [x]        ; rbx = address of x
     mov rcx, [rbx]      ; rcx = contents at address in rbx (99)
     call ExitProcess
