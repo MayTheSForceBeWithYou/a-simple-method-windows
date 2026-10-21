@@ -12,7 +12,7 @@ msg DB "Error message", 13, 10
 msg_len EQU $ - msg
 
 .DATA?
-bytes_written DQ ?
+bytes_written DWORD ?
 
 .CODE
 
@@ -20,18 +20,13 @@ EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 48
-    .allocstack 48
-    .endprolog
+main PROC
+    sub     rsp, 56
 
-    mov     ecx, -12
+    mov     rcx, -12
     call    GetStdHandle
-    mov     rbx, rax
 
-    mov     rcx, rbx
+    mov     rcx, rax
     lea     rdx, msg
     mov     r8d, msg_len
     lea     r9, bytes_written
