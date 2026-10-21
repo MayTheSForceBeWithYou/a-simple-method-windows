@@ -16,21 +16,16 @@ function Test-NonEmptyPath {
     }
 }
 
-function Write-NativeOutput {
-    param($Chunks)
-    if ($null -eq $Chunks) {
-        return
+function Read-NativeLog {
+    param([string]$Path)
+    if ([string]::IsNullOrWhiteSpace($Path) -or -not (Test-Path -LiteralPath $Path)) {
+        return ""
     }
-    foreach ($chunk in @($Chunks)) {
-        if ($null -eq $chunk) {
-            continue
-        }
-        if ($chunk -is [System.Management.Automation.ErrorRecord]) {
-            [void]($chunk.ToString() | Out-Host)
-        } else {
-            [void]([string]$chunk | Out-Host)
-        }
+    $raw = Get-Content -LiteralPath $Path -Raw -ErrorAction SilentlyContinue
+    if ($null -eq $raw) {
+        return ""
     }
+    return [string]$raw
 }
 
 function Find-MSVC {
@@ -87,17 +82,41 @@ function Invoke-NativeTool {
     param(
         [Parameter(Mandatory = $true)][string]$FilePath,
         [Parameter(Mandatory = $true)][string[]]$Arguments,
-        [Parameter(Mandatory = $true)][string]$Label
+        [Parameter(Mandatory = $true)][string]$Label,
+        [Parameter(Mandatory = $true)][string]$WorkDir
     )
 
     Test-NonEmptyPath -Value $FilePath -Name $Label
-    $output = & $FilePath @Arguments 2>&1
-    $code = $LASTEXITCODE
-    Write-NativeOutput $output
-    if ($null -eq $code) {
-        throw "$Label did not produce an exit code"
+    Test-NonEmptyPath -Value $WorkDir -Name "WorkDir"
+
+    $resolved = $FilePath
+    $cmd = Get-Command $FilePath -ErrorAction SilentlyContinue
+    if ($cmd -and -not [string]::IsNullOrWhiteSpace($cmd.Source)) {
+        $resolved = [string]$cmd.Source
     }
-    return [int]$code
+
+    $stdoutFile = Join-Path $WorkDir "_$Label.stdout.txt"
+    $stderrFile = Join-Path $WorkDir "_$Label.stderr.txt"
+    Test-NonEmptyPath -Value $stdoutFile -Name "native stdout"
+    Test-NonEmptyPath -Value $stderrFile -Name "native stderr"
+
+    $process = Start-Process -FilePath $resolved -ArgumentList $Arguments `
+        -WorkingDirectory $WorkDir -NoNewWindow -Wait -PassThru `
+        -RedirectStandardOutput $stdoutFile `
+        -RedirectStandardError $stderrFile
+
+    $text = ((Read-NativeLog $stdoutFile) + "`n" + (Read-NativeLog $stderrFile)).Trim()
+    if (-not [string]::IsNullOrWhiteSpace($text)) {
+        [void]($text | Out-Host)
+    }
+
+    Remove-Item -LiteralPath $stdoutFile -ErrorAction SilentlyContinue
+    Remove-Item -LiteralPath $stderrFile -ErrorAction SilentlyContinue
+
+    return @{
+        Code   = [int]$process.ExitCode
+        Output = $text
+    }
 }
 
 function Build-Asm {
@@ -122,40 +141,43 @@ function Build-Asm {
         New-Item -ItemType Directory -Path $OutputDir | Out-Null
     }
 
-    $objPath = Join-Path $OutputDir "$name.obj"
-    $exePath = Join-Path $OutputDir "$name.exe"
+    $objName = "$name.obj"
+    $exeName = "$name.exe"
+    $objPath = Join-Path $OutputDir $objName
+    $exePath = Join-Path $OutputDir $exeName
     Test-NonEmptyPath -Value $objPath -Name "objPath"
     Test-NonEmptyPath -Value $exePath -Name "exePath"
 
-    $mlArgs = @("/c", "/nologo", "/Zi", $AsmPath, "/Fo$objPath")
+    # /Fo must be a bare filename. /FoD:\... is parsed as option FoD plus a drive path.
+    $mlArgs = @("/c", "/nologo", "/Zi", "/Fo$objName", $AsmPath)
     Write-Host "ml64 $($mlArgs -join ' ')"
-    $mlCode = Invoke-NativeTool -FilePath "ml64.exe" -Arguments $mlArgs -Label "ml64"
-    if ($mlCode -ne 0) {
-        throw "ml64 failed for $AsmPath (exit code $mlCode)"
+    $ml = Invoke-NativeTool -FilePath "ml64.exe" -Arguments $mlArgs -Label "ml64" -WorkDir $OutputDir
+    if ($ml.Code -ne 0) {
+        throw "ml64 failed for $AsmPath (exit code $($ml.Code)): $($ml.Output)"
     }
     if (-not (Test-Path -LiteralPath $objPath)) {
-        throw "ml64 reported success but did not create $objPath"
+        throw "ml64 reported success but did not create $objPath : $($ml.Output)"
     }
 
     $linkArgs = @(
         "/nologo",
-        "/OUT:$exePath",
+        "/OUT:$exeName",
         "/ENTRY:main",
         "/SUBSYSTEM:CONSOLE",
         "/DEBUG",
-        $objPath,
+        $objName,
         "kernel32.lib"
     )
     Write-Host "link $($linkArgs -join ' ')"
-    $linkCode = Invoke-NativeTool -FilePath "link.exe" -Arguments $linkArgs -Label "link"
-    if ($linkCode -ne 0) {
-        throw "link failed for $name (exit code $linkCode)"
+    $link = Invoke-NativeTool -FilePath "link.exe" -Arguments $linkArgs -Label "link" -WorkDir $OutputDir
+    if ($link.Code -ne 0) {
+        throw "link failed for $name (exit code $($link.Code)): $($link.Output)"
     }
     if ([string]::IsNullOrWhiteSpace($exePath)) {
         throw "Build-Asm produced an empty exe path for $AsmPath"
     }
     if (-not (Test-Path -LiteralPath $exePath)) {
-        throw "link reported success but did not create $exePath"
+        throw "link reported success but did not create $exePath : $($link.Output)"
     }
 
     return [string]$exePath
