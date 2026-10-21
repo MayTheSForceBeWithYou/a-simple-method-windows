@@ -17,6 +17,7 @@ Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LIS
 | L11 `18-ring-tail-mask` | Header **3** (`7 AND 3`). |
 | L12 `05-bytecode-stack` | Header **9** (push 4, push 5, add). |
 | L16 listing exits | `01` → 1; `02` → 53; `07` → 160; `09` → 2. |
+| L16 `10-sprite-clip-margin` | Real clip (sx=6, sw=8, view=10 → `sw = view_w - sx` = **4**). Quoted in LESSON.md; LISTING-PENDING marker dropped. |
 | L18 PK01 magic | `cmp`/`mov` use **`31304B50h`** — LE DWORD for bytes `P`,`K`,`0`,`1`. Not `314B5050h` (would be `P`,`P`,`K`,`1`). ZIP `PK\x01\x02` is **`02014B50h`**. |
 | L01 `09` / `10` | **09** is block 9 only (LEA `5+5*2`, exit **15**). **10** is array sum (exit **100**) with listing-10 build line. |
 | L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
@@ -73,10 +74,7 @@ Synced to Jack’s `docs/PROSE_TECH_FLAGS.md` on that branch, plus remaining LIS
 ### Lesson 14 — `rep movsd` and DF
 **Resolved in comments:** Listing comments document ABI DF-at-entry/return and the **cld before rep movs\*/ret** rule; `03-blit-copy.asm` code still has no `cld`.
 
-### Lesson 16 — `10-sprite-clip-margin.asm`
-Jack’s notes mark this **resolved** (right-edge clip; sx=6, sw=8, view=10 → exit **4**). LESSON.md quotes that file and teaches exit 4. Per the re-sync request, the LISTING-PENDING marker on this file is **left in place**.
-
-## Remaining LISTING-PENDING (no matching Jack file, except L16 10 as noted)
+## Remaining LISTING-PENDING (no matching Jack file)
 
 - L07: `ror` (ROL only)
 - L08: `CreatePipe` / `HeapAlloc` / `HeapFree` / `GetProcessHeap`
@@ -87,6 +85,5 @@ Jack’s notes mark this **resolved** (right-edge clip; sx=6, sw=8, view=10 → 
 - L13: Q16 divide / lerp / SIMD
 - L14: pitch/RGB-pack math; clip / vsync / Bresenham
 - L15: rising-edge / chord; `Sleep` frame pad
-- L16: `10-sprite-clip-margin.asm` (marker left; file now clips to 4)
 - L17: BFS/A* / two-axis Manhattan; UI hit-test
 - L18: track pieces / 100-tick loop / P6 map render

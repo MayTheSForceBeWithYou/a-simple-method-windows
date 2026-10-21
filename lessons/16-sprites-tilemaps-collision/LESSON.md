@@ -251,8 +251,6 @@ END
 
 ```
 
-<!-- LISTING-PENDING: 10-sprite-clip-margin.asm -->
-
 ## Spatial hash: one shifted coordinate times the stride
 
 A **spatial hash** bins a world position into a grid cell so you test neighbors, not every pair. The usual 2D form is:
