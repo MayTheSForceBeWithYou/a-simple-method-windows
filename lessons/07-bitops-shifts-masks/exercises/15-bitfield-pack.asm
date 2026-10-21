@@ -27,8 +27,6 @@ main PROC FRAME
     ; TODO: Load c=3, mask, shift by 8, OR into rax
     
     mov     ecx, eax
-    pop     r12
-    pop     rbx
     call    ExitProcess     ; Should exit with 857
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

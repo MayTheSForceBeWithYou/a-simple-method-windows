@@ -20,7 +20,6 @@ main PROC FRAME
     
     ; TODO: Mask to low 7 bits, exit with result
     
-    add     rsp, 32
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

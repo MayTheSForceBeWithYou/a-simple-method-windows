@@ -26,7 +26,6 @@ main PROC FRAME
     ; TODO: Exit 0 without closing (leak demonstration)
     
     xor     ecx, ecx
-    add     rsp, 56
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

@@ -25,7 +25,6 @@ main PROC FRAME
     
     movzx   ecx, bl
     and     ecx, 1          ; Keep only parity bit
-    pop     rbx
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

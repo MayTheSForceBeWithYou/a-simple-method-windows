@@ -103,9 +103,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 40
-    pop     r13
-    pop     r12
     call    ExitProcess
 main ENDP
 

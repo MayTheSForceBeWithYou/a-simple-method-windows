@@ -33,7 +33,6 @@ main PROC FRAME
     ; TODO: WriteFile msg2
     
     xor     ecx, ecx
-    add     rsp, 40
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

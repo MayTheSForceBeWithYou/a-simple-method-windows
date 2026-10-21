@@ -26,7 +26,6 @@ main PROC FRAME
     ; TODO: Check for failure, GetLastError, exit 1
     
     mov     ecx, 1
-    add     rsp, 56
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

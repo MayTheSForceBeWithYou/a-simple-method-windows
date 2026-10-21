@@ -23,7 +23,6 @@ main PROC FRAME
     ; TODO: Implement trailing zero count loop
     
     mov     ecx, eax
-    pop     rbx
     call    ExitProcess     ; Should exit with 3
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

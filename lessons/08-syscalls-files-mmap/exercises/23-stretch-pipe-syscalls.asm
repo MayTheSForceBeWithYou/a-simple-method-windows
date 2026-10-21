@@ -27,7 +27,6 @@ main PROC FRAME
     ; TODO: CloseHandle both handles
     
     xor     ecx, ecx
-    add     rsp, 40
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

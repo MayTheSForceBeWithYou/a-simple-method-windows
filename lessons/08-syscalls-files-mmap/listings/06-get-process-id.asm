@@ -24,7 +24,6 @@ main PROC FRAME
     and     eax, 7Fh
     
     mov     ecx, eax
-    add     rsp, 32
     call    ExitProcess
 main ENDP
 

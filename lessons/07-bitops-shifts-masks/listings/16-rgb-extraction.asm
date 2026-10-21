@@ -45,9 +45,6 @@ main PROC FRAME
     
     ; Exit with blue component
     mov     ecx, r13d
-    pop     r13
-    pop     r12
-    pop     rbx
     call    ExitProcess     ; Exit with 239
 main ENDP
 

@@ -41,8 +41,6 @@ main PROC FRAME
     call WriteFile
 
     xor ecx, ecx               ; Exit status 0
-    add rsp, 48
-    pop rbx
     call ExitProcess
 main ENDP
 

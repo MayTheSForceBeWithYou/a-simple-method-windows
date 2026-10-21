@@ -33,7 +33,6 @@ clz_loop:
 done:
     ; rbx = count of leading zeros = 8
     mov     ecx, ebx
-    pop     rbx
     call    ExitProcess     ; Exit with 8
 main ENDP
 

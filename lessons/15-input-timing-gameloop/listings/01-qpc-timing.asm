@@ -15,7 +15,6 @@ main PROC FRAME
     lea rcx, counter
     call QueryPerformanceCounter
     xor ecx, ecx
-    add rsp, 32
     call ExitProcess
 main ENDP
 END

@@ -25,8 +25,7 @@ sum_to PROC FRAME
 recursive:
     dec rcx
     call sum_to
-    pop rcx                    ; Restore original n
-    add rax, rcx               ; Add n to sum(n-1)
+    add rax, [rsp+32]          ; Add saved n (still on stack below shadow)
     jmp done
     
 done:

@@ -36,7 +36,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 56
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

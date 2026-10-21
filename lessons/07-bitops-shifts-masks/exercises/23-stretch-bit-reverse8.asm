@@ -27,8 +27,6 @@ main PROC FRAME
     ; TODO: Reverse bits of AL into BL
     
     movzx   ecx, bl
-    pop     r12
-    pop     rbx
     call    ExitProcess     ; Should exit with 45
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

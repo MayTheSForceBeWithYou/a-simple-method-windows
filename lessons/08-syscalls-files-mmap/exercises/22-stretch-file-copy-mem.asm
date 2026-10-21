@@ -35,10 +35,6 @@ main PROC FRAME
     
     ; TODO: VirtualFree, exit with sum (should be 10)
     
-    add     rsp, 32
-    pop     rdi
-    pop     rsi
-    pop     rbx
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

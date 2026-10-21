@@ -27,9 +27,6 @@ main PROC FRAME
     
     ; TODO: VirtualFree, exit 16
     
-    add     rsp, 32
-    pop     r12
-    pop     rbx
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

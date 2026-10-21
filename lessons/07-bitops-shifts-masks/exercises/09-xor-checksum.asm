@@ -31,8 +31,6 @@ main PROC FRAME
     
     mov     ecx, eax
     and     ecx, 0FFh       ; Low byte only
-    pop     r12
-    pop     rbx
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

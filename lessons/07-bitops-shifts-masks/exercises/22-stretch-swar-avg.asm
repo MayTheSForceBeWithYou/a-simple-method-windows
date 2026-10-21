@@ -26,8 +26,6 @@ main PROC FRAME
     ; TODO: Compute (a & b) + ((a ^ b) >> 1)
     
     movzx   ecx, al
-    pop     r12
-    pop     rbx
     call    ExitProcess     ; Should exit with 190
 
     ; TODO: complete exercise (scaffold uses wrong exit code)

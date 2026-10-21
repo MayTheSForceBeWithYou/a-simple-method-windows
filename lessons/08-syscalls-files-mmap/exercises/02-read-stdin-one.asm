@@ -29,7 +29,6 @@ main PROC FRAME
     
     ; TODO: Check if bytesRead == 0 (EOF), exit 0; else exit with buffer byte
     
-    add     rsp, 40
     call    ExitProcess
 
     ; TODO: complete exercise (scaffold uses wrong exit code)
