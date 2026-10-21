@@ -1,15 +1,20 @@
-; Listing 09: PE/COFF header size constant (bookkeeping stub)
+; Listing 09: Sum IMAGE_DOS_HEADER field sizes (PE bookkeeping)
 ; Expected exit: 64
 ; Expected stdout: (none)
-
-PE_HEADER_SIZE EQU 64
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     ecx, PE_HEADER_SIZE
+    xor     ecx, ecx
+    mov     eax, 14
+    shl     eax, 1
+    add     ecx, eax
+    add     ecx, 8
+    add     ecx, 4
+    add     ecx, 20
+    add     ecx, 4
     call    ExitProcess
 main ENDP
 END

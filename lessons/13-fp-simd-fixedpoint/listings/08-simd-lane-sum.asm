@@ -1,24 +1,24 @@
-; Listing 08: Scalar lane sum (SIMD-style 4-byte vector)
+; Listing 08: SSE2 horizontal sum of four 32-bit lanes
 ; Expected exit: 10
 ; Expected stdout: (none)
 
 .DATA
-v BYTE 1, 2, 3, 4
+ALIGN 16
+v DWORD 1, 2, 3, 4
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    xor     ecx, ecx
-    movzx   eax, BYTE PTR v[0]
-    add     ecx, eax
-    movzx   eax, BYTE PTR v[1]
-    add     ecx, eax
-    movzx   eax, BYTE PTR v[2]
-    add     ecx, eax
-    movzx   eax, BYTE PTR v[3]
-    add     ecx, eax
+    movdqu  xmm0, XMMWORD PTR v
+    movdqa  xmm1, xmm0
+    pshufd  xmm1, xmm1, 0E5h
+    paddd   xmm0, xmm1
+    movdqa  xmm1, xmm0
+    pshufd  xmm1, xmm1, 1
+    paddd   xmm0, xmm1
+    movd    ecx, xmm0
     call    ExitProcess
 main ENDP
 END
