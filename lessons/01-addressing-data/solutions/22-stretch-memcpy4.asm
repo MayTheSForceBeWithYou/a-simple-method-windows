@@ -16,7 +16,7 @@ dst BYTE 4 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov al, BYTE PTR [src]
     mov BYTE PTR [dst], al
     mov al, BYTE PTR [src+1]

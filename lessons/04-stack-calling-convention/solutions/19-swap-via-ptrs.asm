@@ -10,7 +10,7 @@ b QWORD 2
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, a
     lea rdx, b
     call swap_ptrs

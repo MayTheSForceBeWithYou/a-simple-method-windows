@@ -13,7 +13,7 @@ slot QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rdx, [slot]
     mov QWORD PTR [rdx], 77
     mov rcx, [slot]

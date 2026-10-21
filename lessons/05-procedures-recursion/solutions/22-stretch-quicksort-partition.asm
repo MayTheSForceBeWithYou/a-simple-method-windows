@@ -9,7 +9,7 @@ arr QWORD 1,5,2,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, arr
     xor rdx, rdx
     mov r8, 3

@@ -7,7 +7,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 1
     add rax, 2
     imul rax, 3

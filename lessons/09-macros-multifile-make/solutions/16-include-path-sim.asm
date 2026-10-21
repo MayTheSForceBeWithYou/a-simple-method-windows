@@ -13,7 +13,7 @@ VERSION EQU 3
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, VERSION
     call ExitProcess
 main ENDP

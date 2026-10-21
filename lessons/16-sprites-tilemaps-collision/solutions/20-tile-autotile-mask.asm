@@ -14,7 +14,7 @@ E EQU 4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, N
     or rcx, E
     call ExitProcess

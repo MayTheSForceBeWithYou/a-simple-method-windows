@@ -13,7 +13,7 @@ table QWORD 0, 0, 42, 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rbx, [table]
     mov r8, 2
     mov rcx, QWORD PTR [rbx+r8*8]

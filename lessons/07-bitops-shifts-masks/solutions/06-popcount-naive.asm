@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 101101b
     xor rcx, rcx
 loop_pop:

@@ -14,7 +14,7 @@ map BYTE 0,1,2,3, 4,5,6,7
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 1
     imul rax, 4
     add rax, 1

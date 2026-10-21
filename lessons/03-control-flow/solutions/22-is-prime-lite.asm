@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov r8, 11
     mov r9, 2
 loop_start:

@@ -14,7 +14,7 @@ d DWORD 033445566h
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rcx, BYTE PTR [w]
     call ExitProcess
 main ENDP

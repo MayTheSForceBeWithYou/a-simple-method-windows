@@ -14,7 +14,7 @@ solid BYTE 0,0,1,0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rcx, BYTE PTR [solid+2]
     call ExitProcess
 main ENDP

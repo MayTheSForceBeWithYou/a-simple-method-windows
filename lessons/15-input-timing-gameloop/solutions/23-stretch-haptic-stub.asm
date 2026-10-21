@@ -14,7 +14,7 @@ rumble QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [rumble], 2
     mov rcx, [rumble]
     call ExitProcess

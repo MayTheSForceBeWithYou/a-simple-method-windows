@@ -4,7 +4,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 0Ah
     shl rax, 4
     or rax, 0Bh

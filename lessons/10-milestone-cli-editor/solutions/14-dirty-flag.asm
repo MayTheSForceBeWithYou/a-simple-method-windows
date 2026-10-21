@@ -13,7 +13,7 @@ dirty BYTE ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Edit sets dirty
     mov BYTE PTR [dirty], 1

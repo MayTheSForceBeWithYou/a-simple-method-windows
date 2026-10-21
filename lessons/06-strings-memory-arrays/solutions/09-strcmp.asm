@@ -10,7 +10,7 @@ b BYTE "abd", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, a
     lea rdx, b
     call strcmp_fn

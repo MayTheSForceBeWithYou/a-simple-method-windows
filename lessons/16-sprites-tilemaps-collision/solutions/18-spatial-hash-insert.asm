@@ -14,7 +14,7 @@ count QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     inc QWORD PTR [count]
     mov rcx, [count]
     call ExitProcess

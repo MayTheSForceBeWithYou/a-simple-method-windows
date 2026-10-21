@@ -9,7 +9,7 @@ memo QWORD 16 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 16
     lea r8, [memo]
 clear_loop:
@@ -30,16 +30,16 @@ fibm PROC
     jne hit_fibm
     push rbx
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rcx
     call fibm
-    add rsp, 32
+    add rsp, 40
     mov rbx, rax
     mov rcx, QWORD PTR [rsp+32]
     sub rcx, 2
-    sub rsp, 32
+    sub rsp, 40
     call fibm
-    add rsp, 32
+    add rsp, 40
     add rax, rbx
     pop rcx
     pop rbx

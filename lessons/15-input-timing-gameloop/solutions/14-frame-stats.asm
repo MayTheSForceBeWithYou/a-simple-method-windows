@@ -14,7 +14,7 @@ frames QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [frames], 60
     mov rcx, [frames]
     call ExitProcess

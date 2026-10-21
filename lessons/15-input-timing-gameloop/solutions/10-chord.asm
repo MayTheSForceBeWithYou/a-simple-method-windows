@@ -15,7 +15,7 @@ shift BYTE ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [w], 1
     mov BYTE PTR [shift], 1
     movzx eax, BYTE PTR [w]

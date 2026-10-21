@@ -15,7 +15,7 @@ hWritePipe QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
     lea rcx, hReadPipe

@@ -16,7 +16,7 @@ ENDM
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     EXIT_STATUS 4
 main ENDP
 END

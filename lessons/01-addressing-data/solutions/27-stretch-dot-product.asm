@@ -14,7 +14,7 @@ v QWORD 5, 6, 7
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, [u]
     imul rax, [v]
     mov rcx, rax

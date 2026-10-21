@@ -14,7 +14,7 @@ row BYTE 3 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [row], 9
     mov BYTE PTR [row+1], 9
     mov BYTE PTR [row+2], 9

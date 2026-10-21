@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 2
     mov rdx, 5
     call pow_fn
@@ -18,10 +18,10 @@ pow_fn PROC
     cmp rdx, 0
     je one_pow
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rdx
     call pow_fn
-    add rsp, 32
+    add rsp, 40
     pop rcx
     imul rax, rcx
     ret

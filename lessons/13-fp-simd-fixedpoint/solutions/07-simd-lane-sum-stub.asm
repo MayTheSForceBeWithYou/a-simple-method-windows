@@ -10,7 +10,7 @@ v BYTE 1,2,3,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     movzx rax, BYTE PTR [v]
     add rcx, rax

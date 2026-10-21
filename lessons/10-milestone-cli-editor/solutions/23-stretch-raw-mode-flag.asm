@@ -13,7 +13,7 @@ raw BYTE ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov BYTE PTR [raw], 1
     mov BYTE PTR [raw], 0

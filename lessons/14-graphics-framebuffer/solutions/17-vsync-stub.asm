@@ -14,7 +14,7 @@ ready BYTE ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [ready], 0
     movzx rcx, BYTE PTR [ready]
     call ExitProcess

@@ -21,7 +21,7 @@ main PROC
     call sum7
     add rsp, 56
     mov rcx, rax
-    sub rsp, 32
+    sub rsp, 40
     call ExitProcess
 main ENDP
 

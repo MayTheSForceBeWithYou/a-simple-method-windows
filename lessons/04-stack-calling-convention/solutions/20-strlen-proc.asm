@@ -9,7 +9,7 @@ s BYTE "assembly", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, s
     call strlen_fn
     mov rcx, rax

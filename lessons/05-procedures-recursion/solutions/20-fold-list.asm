@@ -9,7 +9,7 @@ lst QWORD 3,4,5,0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, lst
     call fold_add
     mov rcx, rax

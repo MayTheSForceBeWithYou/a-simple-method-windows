@@ -15,7 +15,7 @@ updates QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [paused], 1
     cmp BYTE PTR [paused], 0
     jne skip_update

@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 48
     mov rdx, 18
     call gcd
@@ -19,14 +19,14 @@ gcd PROC
     je base_gcd
     push rcx
     push rdx
-    sub rsp, 32
+    sub rsp, 40
     mov rax, rcx
     xor rdx, rdx
     mov r8, QWORD PTR [rsp+32]
     div r8
     mov rcx, QWORD PTR [rsp+32]
     call gcd
-    add rsp, 32
+    add rsp, 40
     add rsp, 16
     ret
 base_gcd:

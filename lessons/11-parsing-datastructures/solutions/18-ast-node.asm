@@ -10,7 +10,7 @@ node QWORD 3 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [node], 1
     mov QWORD PTR [node+8], 2
     mov QWORD PTR [node+16], 3

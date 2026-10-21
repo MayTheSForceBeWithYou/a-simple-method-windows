@@ -14,7 +14,7 @@ fb BYTE 8 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov BYTE PTR [fb], 1
     mov BYTE PTR [fb+1], 1
     mov BYTE PTR [fb+2], 1

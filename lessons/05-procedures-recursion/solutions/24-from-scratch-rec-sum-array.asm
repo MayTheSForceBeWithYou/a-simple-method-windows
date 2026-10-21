@@ -25,8 +25,8 @@ main ENDP
 rec_sum PROC FRAME
     push rbx
     .PUSHREG rbx
-    sub rsp, 32
-    .ALLOCSTACK 32
+    sub rsp, 40
+    .ALLOCSTACK 40
     .ENDPROLOG
     test rdx, rdx
     jz rec_zero
@@ -39,7 +39,7 @@ rec_sum PROC FRAME
 rec_zero:
     xor rax, rax
 rec_done:
-    add rsp, 32
+    add rsp, 40
     pop rbx
     ret
 rec_sum ENDP

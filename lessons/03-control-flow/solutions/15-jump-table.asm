@@ -10,21 +10,20 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 1
     lea rdx, [jt]
     jmp QWORD PTR [rdx+rax*8]
-case0:
+case0::
     mov rcx, 10
     jmp done
-case1:
+case1::
     mov rcx, 20
     jmp done
-case2:
+case2::
     mov rcx, 30
 done:
     call ExitProcess
-main ENDP
-
 jt QWORD case0, case1, case2
+main ENDP
 END

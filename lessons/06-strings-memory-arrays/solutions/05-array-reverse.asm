@@ -9,7 +9,7 @@ arr QWORD 1,2,3,4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, arr
     mov rdx, 4
     call rev_array

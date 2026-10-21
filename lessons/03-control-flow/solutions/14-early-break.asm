@@ -13,7 +13,7 @@ arr QWORD 5, 5, 5, 5
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     xor r8, r8
 loop_start:

@@ -10,7 +10,7 @@ b BYTE 1,2,3
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, a
     lea rdx, b
     mov r8, 3

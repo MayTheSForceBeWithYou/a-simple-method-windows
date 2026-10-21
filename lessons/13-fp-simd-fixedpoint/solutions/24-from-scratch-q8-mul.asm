@@ -7,7 +7,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov eax, (2 SHL 8)+(1 SHL 7)
     mov ebx, 2 SHL 8
     imul eax, ebx

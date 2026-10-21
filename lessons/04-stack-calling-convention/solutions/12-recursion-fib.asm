@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 7
     call fib
     mov rcx, rax
@@ -17,16 +17,16 @@ fib PROC
     cmp rcx, 1
     jle base_case
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rcx
     call fib
-    add rsp, 32
+    add rsp, 40
     pop rcx
     push rax
-    sub rsp, 32
+    sub rsp, 40
     sub rcx, 2
     call fib
-    add rsp, 32
+    add rsp, 40
     pop rdx
     add rax, rdx
     ret

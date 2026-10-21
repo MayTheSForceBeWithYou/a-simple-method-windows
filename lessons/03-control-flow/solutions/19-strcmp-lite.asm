@@ -14,7 +14,7 @@ b BYTE "ab", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rsi, [a]
     lea rdi, [b]
 loop_start:

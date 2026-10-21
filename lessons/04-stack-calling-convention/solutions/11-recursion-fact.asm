@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 4
     call fact
     mov rcx, rax
@@ -17,10 +17,10 @@ fact PROC
     cmp rcx, 1
     jle base_case
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rcx
     call fact
-    add rsp, 32
+    add rsp, 40
     pop rcx
     imul rax, rcx
     ret

@@ -13,7 +13,7 @@ s QWORD 3 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [s], 1
     mov QWORD PTR [s+8], 2
     mov BYTE PTR [s+16], 3

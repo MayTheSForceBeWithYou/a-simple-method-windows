@@ -17,7 +17,7 @@ ENDM
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ADD3 10, 20, 12
     

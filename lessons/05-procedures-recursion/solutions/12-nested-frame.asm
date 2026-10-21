@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 10
     mov rdx, 20
     call outer
@@ -17,7 +17,7 @@ main ENDP
 outer PROC
     push rbp
     mov rbp, rsp
-    sub rsp, 32
+    sub rsp, 40
     call inner
     inc rax
     leave

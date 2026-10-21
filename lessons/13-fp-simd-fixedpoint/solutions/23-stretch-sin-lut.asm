@@ -10,7 +10,7 @@ lut QWORD 0,1,0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, QWORD PTR [lut+8]
     call ExitProcess
 main ENDP

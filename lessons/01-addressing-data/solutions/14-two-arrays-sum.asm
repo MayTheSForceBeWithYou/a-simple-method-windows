@@ -14,7 +14,7 @@ b QWORD 5, 6
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [a]
     add rcx, [a+8]
     add rcx, [b]

@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 48        ; 32 shadow + 16 for args 5-6
+    sub rsp, 56 ; 32 shadow + 16 for args 5-6
     mov rcx, 1
     mov rdx, 2
     mov r8, 3
@@ -18,9 +18,9 @@ main PROC
     mov QWORD PTR [rsp+32], 5
     mov QWORD PTR [rsp+40], 6
     call sum6
-    add rsp, 48
+    add rsp, 56
     mov rcx, rax
-    sub rsp, 32
+    sub rsp, 40
     call ExitProcess
 main ENDP
 

@@ -14,7 +14,7 @@ ax_ QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     inc QWORD PTR [ax_]
     mov rcx, [ax_]
     call ExitProcess

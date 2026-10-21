@@ -13,7 +13,7 @@ bytes BYTE 1, 2, 3, 4
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rsi, [bytes]
     xor rcx, rcx
     movzx rax, BYTE PTR [rsi]

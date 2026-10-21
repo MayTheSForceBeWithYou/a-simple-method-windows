@@ -9,7 +9,7 @@ val WORD 00F0h
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     movzx rax, val
     xor rcx, rcx
     mov r8, 16

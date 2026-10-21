@@ -10,7 +10,7 @@ err_off QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [err_off], 4
     mov rcx, QWORD PTR [err_off]
     call ExitProcess

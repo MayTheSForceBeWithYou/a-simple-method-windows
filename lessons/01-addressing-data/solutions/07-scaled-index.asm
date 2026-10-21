@@ -13,7 +13,7 @@ arr QWORD 5, 10, 15, 20
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov r8, 2
     lea r11, [arr]
     mov rcx, QWORD PTR [r11+r8*8]

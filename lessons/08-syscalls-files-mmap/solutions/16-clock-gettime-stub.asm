@@ -14,7 +14,7 @@ counter QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; QueryPerformanceCounter(&counter)
     lea rcx, counter

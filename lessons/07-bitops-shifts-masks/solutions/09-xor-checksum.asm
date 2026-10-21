@@ -9,7 +9,7 @@ b BYTE 1,2,4,8
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor eax, eax
     xor al, b[0]
     xor al, b[1]

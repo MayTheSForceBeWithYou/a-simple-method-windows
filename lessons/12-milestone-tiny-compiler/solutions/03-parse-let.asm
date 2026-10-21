@@ -10,7 +10,7 @@ kw BYTE "let", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     cmp BYTE PTR [kw], 'l'
     jne not_l
     mov rcx, 1

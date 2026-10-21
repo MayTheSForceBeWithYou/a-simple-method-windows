@@ -13,7 +13,7 @@ buf BYTE "ab", 10, "cd", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 4
     lea rdx, buf

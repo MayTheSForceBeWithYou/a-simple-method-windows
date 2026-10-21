@@ -10,7 +10,7 @@ s BYTE "  7", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rsi, s
 loop_skip:
     cmp BYTE PTR [rsi], ' '

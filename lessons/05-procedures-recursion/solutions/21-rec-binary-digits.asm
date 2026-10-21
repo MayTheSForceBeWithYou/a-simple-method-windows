@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 1101b
     call poprec
     mov rcx, rax
@@ -17,12 +17,12 @@ poprec PROC
     test rcx, rcx
     jz zero_pop
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     mov rax, rcx
     dec rax
     and rcx, rax
     call poprec
-    add rsp, 32
+    add rsp, 40
     pop rcx
     inc rax
     ret

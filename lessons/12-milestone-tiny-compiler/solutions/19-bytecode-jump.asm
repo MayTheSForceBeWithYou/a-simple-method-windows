@@ -14,7 +14,7 @@ sp_ QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov QWORD PTR [sp_], 0
     lea rsi, [vmcode]
 loop_vm:

@@ -21,8 +21,8 @@ main ENDP
 bump PROC FRAME
     push rbx
     .PUSHREG rbx
-    sub rsp, 32
-    .ALLOCSTACK 32
+    sub rsp, 40
+    .ALLOCSTACK 40
     .ENDPROLOG
     cmp rcx, 0
     je bump_zero
@@ -33,7 +33,7 @@ bump PROC FRAME
 bump_zero:
     xor rax, rax
 bump_done:
-    add rsp, 32
+    add rsp, 40
     pop rbx
     ret
 bump ENDP

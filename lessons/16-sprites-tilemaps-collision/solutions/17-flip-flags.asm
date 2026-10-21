@@ -14,7 +14,7 @@ VFLIP EQU 2
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, HFLIP
     or rcx, VFLIP
     call ExitProcess

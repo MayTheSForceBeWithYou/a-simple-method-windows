@@ -14,7 +14,7 @@ fb BYTE 32 DUP(?)
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rax, 1
     imul rax, 8
     add rax, 2

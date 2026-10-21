@@ -16,7 +16,7 @@ t QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, [t]
     lea r11, [q]
     mov QWORD PTR [r11+rcx*8], 9

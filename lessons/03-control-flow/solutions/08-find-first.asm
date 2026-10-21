@@ -14,7 +14,7 @@ n EQU 5
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor r8, r8
 loop_start:
     cmp r8, n

@@ -9,7 +9,7 @@ TY_INT EQU 1
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, TY_INT
     call ExitProcess
 main ENDP

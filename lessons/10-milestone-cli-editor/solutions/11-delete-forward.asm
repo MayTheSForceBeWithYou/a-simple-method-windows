@@ -17,7 +17,7 @@ cur QWORD ?
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov QWORD PTR [len], 4
     mov QWORD PTR [cur], 1

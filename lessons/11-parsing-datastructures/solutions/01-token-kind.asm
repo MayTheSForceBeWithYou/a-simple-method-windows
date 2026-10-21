@@ -10,7 +10,7 @@ TK_NUM EQU 1
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, TK_NUM
     call ExitProcess
 main ENDP

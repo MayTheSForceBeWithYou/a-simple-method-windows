@@ -10,7 +10,7 @@ heap_n EQU 5
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     xor rcx, rcx
     call heap_sum
     mov rcx, rax
@@ -22,7 +22,7 @@ heap_sum PROC
     jge zero_sum
     push rbx
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     lea r11, [heap]
     mov rax, QWORD PTR [r11+rcx*8]
     mov rbx, rax
@@ -37,7 +37,7 @@ heap_sum PROC
     add rcx, 2
     call heap_sum
     add rax, rbx
-    add rsp, 32
+    add rsp, 40
     pop rcx
     pop rbx
     ret

@@ -13,7 +13,7 @@ magic BYTE "ED01"
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     cmp WORD PTR [magic], 4445h  ; "ED" in little-endian
     jne L_n

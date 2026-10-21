@@ -10,7 +10,7 @@ s BYTE "(1)", 0
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     cmp BYTE PTR [s], '('
     jne not_found
     mov rcx, 1

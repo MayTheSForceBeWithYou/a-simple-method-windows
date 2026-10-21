@@ -6,7 +6,7 @@ EXTERN ExitProcess:PROC
 
 .code
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 10
     call sum_locals
     mov rcx, rax
@@ -16,7 +16,7 @@ main ENDP
 sum_locals PROC
     push rbp
     mov rbp, rsp
-    sub rsp, 48
+    sub rsp, 56
     mov QWORD PTR [rbp-8], rcx
     mov rax, rcx
     inc rax
