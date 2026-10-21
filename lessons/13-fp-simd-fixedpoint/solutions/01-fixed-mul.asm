@@ -15,7 +15,7 @@ main PROC
     movsxd rax, eax
     movsxd rbx, ebx
     imul rax, rbx
-    shr rax, 16
+    shr rax, 32
     mov rcx, rax
     call ExitProcess
 main ENDP

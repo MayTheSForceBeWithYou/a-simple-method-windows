@@ -32,7 +32,7 @@ heap_sum PROC
     mov rcx, rax
     call heap_sum
     add rbx, rax
-    mov rcx, QWORD PTR [rsp+32]
+    mov rcx, QWORD PTR [rsp+40]
     imul rcx, 2
     add rcx, 2
     call heap_sum

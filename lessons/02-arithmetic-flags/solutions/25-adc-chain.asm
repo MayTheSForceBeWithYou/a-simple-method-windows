@@ -17,8 +17,8 @@ main PROC
     mov r8, 0
     add rax, rbx
     adc rdx, r8
-    setc al
-    movzx rcx, al
+    ; High word is 1 after the incoming carry from add.
+    mov rcx, rdx
     call ExitProcess
 main ENDP
 END

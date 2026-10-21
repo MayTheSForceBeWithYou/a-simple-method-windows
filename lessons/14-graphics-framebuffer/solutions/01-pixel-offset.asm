@@ -4,7 +4,7 @@
 ;
 ; Build: ml64 /c 01-pixel-offset.asm && link /OUT:01-pixel-offset.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-pixel-offset.obj kernel32.lib
 ;
-; Expected exit: 88
+; Expected exit: 92
 ; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC

@@ -35,7 +35,7 @@ fibm PROC
     call fibm
     add rsp, 40
     mov rbx, rax
-    mov rcx, QWORD PTR [rsp+32]
+    mov rcx, QWORD PTR [rsp+40]
     sub rcx, 2
     sub rsp, 40
     call fibm

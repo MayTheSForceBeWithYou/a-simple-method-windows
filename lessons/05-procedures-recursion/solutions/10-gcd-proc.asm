@@ -20,11 +20,10 @@ gcd PROC
     push rcx
     push rdx
     sub rsp, 40
-    mov rax, rcx
+    mov rax, QWORD PTR [rsp+48]
     xor rdx, rdx
-    mov r8, QWORD PTR [rsp+32]
-    div r8
-    mov rcx, QWORD PTR [rsp+32]
+    div QWORD PTR [rsp+40]
+    mov rcx, QWORD PTR [rsp+40]
     call gcd
     add rsp, 40
     add rsp, 16

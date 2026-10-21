@@ -12,8 +12,7 @@ main PROC
     xor eax, ebx
     shr eax, 1
     add eax, ecx
-    mov edi, eax
-    mov rax,60
+    movzx rcx, ax
     call ExitProcess
 main ENDP
 END

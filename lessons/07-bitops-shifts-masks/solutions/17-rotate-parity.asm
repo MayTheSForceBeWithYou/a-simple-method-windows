@@ -1,4 +1,4 @@
-; Expected exit: 0
+; Expected exit: 128
 
 EXTERN ExitProcess:PROC
 

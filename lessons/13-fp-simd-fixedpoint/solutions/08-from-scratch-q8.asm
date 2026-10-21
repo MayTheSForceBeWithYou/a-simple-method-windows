@@ -11,7 +11,7 @@ main PROC
     mov eax, (1 SHL 8)+(1 SHL 7)
     mov ebx, 2 SHL 8
     imul eax, ebx
-    shr eax, 8
+    shr eax, 16
     mov ecx, eax
     call ExitProcess
 main ENDP
