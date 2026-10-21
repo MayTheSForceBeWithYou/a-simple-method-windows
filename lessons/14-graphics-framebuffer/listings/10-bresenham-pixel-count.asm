@@ -52,7 +52,9 @@ no_y_step:
 bres_done:
     add     rsp, 40
     pop     rbx
-    mov     ecx, DWORD PTR count
+    sub     rsp, 40
+    mov     rcx, count
+    mov     ecx, ecx
     call    ExitProcess
 main ENDP
 END

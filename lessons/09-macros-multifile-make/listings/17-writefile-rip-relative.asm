@@ -35,6 +35,7 @@ main PROC FRAME
 
     add     rsp, 40
     pop     rbx
+    sub     rsp, 40
     xor     ecx, ecx
     call    ExitProcess
 main ENDP
