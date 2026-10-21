@@ -21,6 +21,7 @@ main PROC
     mov     head, 0
     mov     tail, 0
     lea     rdi, visited
+    lea     r11, visited
     mov     ecx, NODE_COUNT
     xor     eax, eax
     cld
@@ -30,7 +31,7 @@ main PROC
     mov     rcx, tail
     mov     QWORD PTR [r10+rcx*8], rax
     inc     tail
-    mov     BYTE PTR visited[0], 1
+    mov     BYTE PTR [r11], 1
 
     mov     rbx, 1
 
@@ -47,9 +48,9 @@ bfs_loop:
     jns     try_left
     jmp     try_right
 try_left:
-    cmp     BYTE PTR visited[rcx], 0
+    cmp     BYTE PTR [r11+rcx], 0
     jne     try_right
-    mov     BYTE PTR visited[rcx], 1
+    mov     BYTE PTR [r11+rcx], 1
     inc     rbx
     mov     rdx, tail
     mov     QWORD PTR [r10+rdx*8], rcx
@@ -59,9 +60,9 @@ try_right:
     inc     rcx
     cmp     rcx, NODE_COUNT
     jge     bfs_loop
-    cmp     BYTE PTR visited[rcx], 0
+    cmp     BYTE PTR [r11+rcx], 0
     jne     bfs_loop
-    mov     BYTE PTR visited[rcx], 1
+    mov     BYTE PTR [r11+rcx], 1
     inc     rbx
     mov     rdx, tail
     mov     QWORD PTR [r10+rdx*8], rcx

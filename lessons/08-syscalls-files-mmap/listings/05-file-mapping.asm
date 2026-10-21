@@ -1,7 +1,7 @@
 ; 05-file-mapping.asm
 ;
 ; Purpose: Map a file into memory (file-backed mmap equivalent)
-; Expected exit code: 1
+; Expected exit code: 72
 ; Expected stdout: (none)
 ;
 ; Demonstrates:

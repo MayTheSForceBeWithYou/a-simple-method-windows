@@ -33,8 +33,10 @@ main PROC FRAME
     mov QWORD PTR [rsp+32], 0
     call WriteFile
 
-    xor ecx, ecx
-    call ExitProcess
+    add     rsp, 40
+    pop     rbx
+    xor     ecx, ecx
+    call    ExitProcess
 main ENDP
 
 END

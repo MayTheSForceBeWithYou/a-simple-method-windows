@@ -47,6 +47,8 @@ wait_spin:
 
 frames_done:
     mov     ecx, ebx
+    add     rsp, 40
+    pop     rbx
     call    ExitProcess
 main ENDP
 END

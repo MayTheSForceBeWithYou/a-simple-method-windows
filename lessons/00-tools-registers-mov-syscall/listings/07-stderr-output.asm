@@ -2,7 +2,7 @@
 ;
 ; Purpose: Demonstrates using GetStdHandle with STD_ERROR_HANDLE.
 ; Expected exit: 0
-; Expected stdout: (to stderr) "Error message\r\n"
+; Expected stdout: (to stderr) "Error message\n"
 ;
 ; Build: ml64 /c /Fo07-stderr-output.obj 07-stderr-output.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-stderr-output.exe 07-stderr-output.obj kernel32.lib
 ; Run: 07-stderr-output.exe 2>&1
@@ -40,8 +40,10 @@ main PROC FRAME
     mov qword ptr [rsp+32], 0
     call WriteFile
 
-    xor ecx, ecx
-    call ExitProcess
+    add     rsp, 48
+    pop     rbx
+    xor     ecx, ecx
+    call    ExitProcess
 main ENDP
 
 END
