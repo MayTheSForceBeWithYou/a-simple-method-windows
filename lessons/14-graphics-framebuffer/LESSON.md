@@ -1,388 +1,330 @@
-# 14 — Graphics: Framebuffer & PPM Output
+# Lesson 14 — Graphics: Framebuffer and PPM Output
 
-Lesson 13 gave you fixed-point arithmetic for smooth motion. This lesson gives you **pixels**: a flat byte buffer (framebuffer), offset math to address any pixel, color packing, pitch (row stride with alignment), and P6 PPM file output so you can see your work. No device mapping, no GUI libraries, no C runtime—just Win32 API calls `CreateFileA`, `WriteFile`, and `CloseHandle` writing RGB bytes to a file your image viewer can open. By the end you'll see that graphics is not magic—it's pointer arithmetic, row-major layout, and knowing when to write three bytes instead of four.
+Lesson 13 gave you Q16.16 for smooth motion. This lesson gives you **pixels**: a flat byte buffer, a store at an address, a fill loop, a block copy, a color-key copy that skips zeros, and a P6 PPM file written with `CreateFileA`, `WriteFile`, and `CloseHandle`. No device mapping, no GUI toolkit, no C runtime.
+
+Every listing is a complete MASM program. Status is ECX to `ExitProcess`. Build from an x64 Native Tools prompt:
+
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
+```
+
+Listing `05-write-ppm-p6` is the one that allocates shadow space and emits unwind codes (`PROC FRAME`, `.pushreg`, `.allocstack`, `.endprolog`). The first four listings call `ExitProcess` without that prologue.
 
 ## What this lesson asks of you
 
-- Compute a pixel's byte offset as `y * pitch + x * bytes_per_pixel`.
-- Pack red, green, blue into a 32-bit value (`(R<<16) | (G<<8) | B`), and state the little-endian byte order when stored to memory.
-- Define **pitch** (also called stride): the byte distance from one row to the next, including padding for alignment.
-- Write a P6 PPM file using only `open`, `write`, and `close` (no libc, no `mmap`).
-- Clip a blit rectangle to the framebuffer using **half-open intervals** `[0, width)`.
+Treat a framebuffer as `width * height * bytes_per_pixel` bytes (listing `01-pixel-plot` reserves `640*480*4`). Store a color at an address you compute — the plot listing writes the first dword and exits 0; the general formula is still `y * pitch + x * bytes_per_pixel`. Fill a run of pixels. Copy a sprite with `rep movsd` (DF must be 0). Skip key-color source bytes so the destination keeps what it had. Write a P6 header and 3-byte RGB triples through Win32, not through a raw `syscall`.
 
 ## Why a framebuffer for the game milestone
 
-Lesson 16's sprite blitting, lesson 17's tilemaps, and lesson 18's park simulation all draw into a framebuffer and write it to a file (or, in a stretch goal, push it to `/dev/fb0` or an X window). The drills in this lesson isolate each primitive—offset math, pitch alignment, color packing, P6 output—so you can verify them before integrating into a full rendering pipeline.
+Lessons 16–18 draw into a buffer and write a file (or, later, a window). The Jack listings isolate four stores and one file write so you can see each contract: a single dword, a counted fill, a string-move blit, a keyed blit that sums what landed, and a PPM that exits 0 on success.
 
-## Pixel offset and bytes per pixel
+## Pixel offset, pitch, and packing (formula, then the plot listing)
 
-A framebuffer is a flat `resb` buffer. To address pixel `(x, y)`, compute:
-
-```
-offset = y * pitch + x * bytes_per_pixel
-```
-
-**Bytes per pixel:**
-- **RGBA8888** (32-bit color with alpha): 4 bytes per pixel
-- **RGB888** (24-bit color): 3 bytes per pixel
-- **Indexed/palette** (8-bit): 1 byte per pixel
-
-For these drills, assume **4 bytes per pixel** unless otherwise stated.
-
-**Drill:** `01-pixel-offset.asm` computes `y=2, pitch=40, x=3` → `2*40 + 3*4` = 92, exits 92.
-
-**Drill:** `19-debug-offset-bpp.asm` has a bug: it multiplies `x` by 3 instead of 4. The fix is `imul rbx, 4`. For `x=2`, the correct offset contribution is 8, and the drill exits 8.
-
-### Buffer size
-
-A 320×200 buffer at 4 bytes per pixel is `320 * 200 * 4` = 256000 bytes. That doesn't fit in an 8-bit exit status.
-
-**Drill:** `24-from-scratch-fb-size.asm` computes 256000, shifts right by 16 (divide by 65536), exits 3 (the high bits).
-
-## Color packing: register vs. memory byte order
-
-To pack R, G, B into a 32-bit value:
-
-```asm
-mov rax, R
-shl rax, 16             ; R in bits 16..23
-mov rbx, G
-shl rbx, 8              ; G in bits 8..15
-or rax, rbx
-or rax, B               ; B in bits 0..7
-; rax = 0x00RRGGBB
-```
-
-**Example:** `R=1, G=2, B=3` → `0x00010203`.
-
-**Drill:** `02-pack-rgb.asm` packs `(1, 2, 3)` into `0x010203`. The low byte (`al`) is B = 3, so the exit is 3.
-
-### Little-endian byte order in memory
-
-x86-64 is **little-endian**: the least significant byte is stored first. When you store the packed dword `0x00010203`, memory holds:
-
-```
-Address:  [0]  [1]  [2]  [3]
-Value:    0x03 0x02 0x01 0x00
-          B    G    R    (pad)
-```
-
-**Critical for file output:** P6 PPM expects RGB byte order (R first, then G, then B). If you dump the packed dword directly, you'd write B, G, R, 0—backwards and with an extra byte. Instead, extract and write R, G, B individually, or write them directly as three bytes.
-
-## Pitch (stride) and alignment
-
-**Pitch** is the byte distance from the start of one row to the start of the next. It's **at least** `width * bytes_per_pixel`, but hardware often pads rows to align each row start to a power-of-two boundary (e.g., 16, 32, or 64 bytes).
-
-**Alignment formula:**
-
-```
-aligned = (unaligned + (align - 1)) & ~(align - 1)
-```
-
-This rounds `unaligned` **up** to the next multiple of `align`.
-
-**Example:** Width 5, 4 bytes per pixel → 20 bytes. Align to 16:
-
-```
-(20 + 15) & ~15 = 35 & 0xFFFFFFF0 = 32
-```
-
-**Drill:** `16-pitch-bytes.asm` — the lesson text describes aligning 20 up to 16 → 32. However, the **solution as shipped** only computes `5 * 4 = 20` and exits **20** (no alignment). The header comment says "aligned up to 16: width=5 -> 20 align 32? 20; exit 20". This is a known mismatch: the lesson describes the alignment math, but the drill exits 20.
-
-**Drill:** `08-from-scratch-stride.asm` computes `width=16, bpp=4` → pitch = 64, exits 64 (no padding needed because 64 is already aligned).
-
-**In the offset formula, use pitch, not width:**
+A framebuffer is a flat `DB` array. Pixel `(x, y)` lives at:
 
 ```
 offset = y * pitch + x * bytes_per_pixel
 ```
 
-## Plotting and filling
+**Pitch** (stride) is the byte distance from one row to the next. It is at least `width * bytes_per_pixel`, and hardware often pads it up to a power-of-two boundary: `aligned = (raw + align - 1) AND (NOT (align - 1))`.
 
-### Plot a single pixel
+**Bytes per pixel.** These listings use 4 (a DWORD per pixel) except the keyed blit and the PPM payload (1 and 3). P6 files are always 3 bytes per pixel, R then G then B, no padding.
 
-Store a color value at the computed offset:
+**Packing.** `(R SHL 16) OR (G SHL 8) OR B` in a register is `00RRGGBBh`. x86-64 is little-endian, so a `mov DWORD PTR` stores B, G, R, 0 in memory. Dumping that dword into a P6 file writes the channels backwards plus a pad byte. Write R, G, B as three bytes.
 
-```asm
-; plot(x, y, color)
-mov rax, y
-imul rax, pitch
-mov rbx, x
-imul rbx, 4
-add rax, rbx            ; offset
-mov dword [fb + rax], color
-```
+<!-- LISTING-PENDING: no Jack listing for y*pitch+x*bpp offset math, RGB pack, or pitch alignment; plot/fill/blit/ppm are listed below -->
 
-**Drill:** `04-plot-stub.asm` plots through the offset math (the name "-stub" is historical; the drill now implements the plot). It stores a byte value and reads it back, exiting 7.
-
-**Drill:** `10-put-pixel.asm` — `put_pixel(x=2, y=1)` with `pitch=8, bpp=1` → offset `1*8 + 2*1 = 10`, stores 9, exits 9.
-
-### Clear the buffer
-
-Fill with zeros using `rep stosb`:
+Listing `01-pixel-plot` does **not** compute that offset. It `lea rax, fb` and writes `0FFFFFFFFh` at `[rax]` — pixel (0, 0), all bits 1. Then it zeros ECX. Status **0**. The reservation is `640*480*4` bytes in `.DATA?` (zeroed at load). The store is the plot; the address is the base.
 
 ```asm
-lea rdi, [fb]
-mov rcx, size_in_bytes
-xor rax, rax
-cld
-rep stosb
+; Plot pixel at (x,y) in framebuffer, exit 0
+.DATA?
+fb DB 640*480*4 DUP(?)
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    lea rax, fb
+    mov DWORD PTR [rax], 0FFFFFFFFh
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `03-clear-buffer.asm` clears 8 bytes, sums them (0), exits 0.
+## Fill a linear run
 
-**Drill:** `09-clear-color.asm` fills 4 bytes with 5, exits 5 (the value summed).
+Listing `02-fill-rect` is named as a rectangle. The body is a 1-D loop: RDI starts at `fb`, ECX = 100, each iteration writes `0FF0000FFh` and adds 4, `loop fill_loop`. One hundred consecutive dwords, not a 2-D `width × height` nest and not a pitch add between rows. Status **0**.
 
-### Horizontal and vertical lines
-
-**Horizontal line:** consecutive bytes.
-
-**Drill:** `07-row-fill.asm` writes three 9s in a row, sums them, exits 9 (the value, not the sum 27—the drill exits the middle byte).
-
-**Drill:** `11-hline.asm` writes three 1s, sums them, exits 3.
-
-**Vertical line:** add pitch between pixels.
-
-**Drill:** `12-vline.asm` — pitch 4, value 2, three pixels at offsets 0, 4, 8, sum 6, exits 6.
-
-### Rectangle fill
-
-Nested loops: for each row, fill a horizontal span.
-
-**Drill:** `13-rect-fill.asm` fills a 2×2 rectangle on pitch 4: offsets 0, 1, 4, 5 with value 3, sum 12, exits 12.
-
-## Blitting: copy with transparency
-
-A **blit** (block transfer) copies a rectangular region from source to destination. A **color-key blit** skips pixels that match a transparent key color (commonly 0).
-
-**Drill:** `05-blit-copy.asm` copies `1, 2, 3, 4` with `rep movsb`, sum 10, exits 10. (Remember `cld` from lesson 06.)
-
-**Drill:** `14-blit-key.asm` copies `0, 5, 0, 5`, skipping zeros (transparent). The destination is `.bss` (starts zeroed), so after the blit it holds `0, 5, 0, 5` (the zeros were **not overwritten**—they were skipped). Sum 10, exits 10.
-
-### Worked example: what `14-blit-key.asm` leaves in the destination
-
-**Task:** Source bytes `0, 5, 0, 5` are copied into a `.bss` destination (initially all zeros), skipping source bytes that equal 0. What is in the destination after the blit, and why is the sum 10?
-
-**Code (simplified):**
+`0FF0000FFh` in memory is bytes `FFh, 00h, 00h, FFh` (little-endian). If you read that as 8-bit B, G, R, A you get blue and opaque alpha; if you read it as A, R, G, B you get alpha `FFh` and blue `FFh`.
 
 ```asm
-.copy_loop:
-    cmp rcx, 4
-    jge .done
-    mov al, [src + rcx]
-    test al, al
-    jz .skip                ; if al == 0, skip the store
-    mov [dst + rcx], al
-.skip:
-    inc rcx
-    jmp .copy_loop
+; Fill rectangle with color, exit 0
+.DATA?
+fb DB 640*480*4 DUP(?)
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    lea rdi, fb
+    mov ecx, 100
+fill_loop:
+    mov DWORD PTR [rdi], 0FF0000FFh
+    add rdi, 4
+    loop fill_loop
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Plausible wrong reading:**
+RDI is nonvolatile. This is `main` plus `ExitProcess`. `loop` uses RCX as the count; after the last iteration RCX is 0, and the listing still does `xor ecx, ecx` before the call.
 
-*"Color key 0 means transparent, so the blit writes 0 into the destination for those pixels, and that is why the sum is 10."*
+## Blit: `rep movsd`
 
-Under this reading, the destination after the blit is `0, 5, 0, 5` because the zeros were explicitly copied.
+A **blit** (block transfer) copies a rectangle from source to destination. Listing `03-blit-copy` copies four dwords `1, 2, 3, 4` from `sprite` into `fb` with `rep movsd`. RSI = source, RDI = dest, ECX = 4. Status **0**. It does not sum the pixels.
 
-**Why it's wrong:** When `al == 0`, `test al, al` sets ZF, and `jz .skip` jumps **past the store**. **Nothing is written** to `dst[0]` or `dst[2]`. Those bytes remain 0 only because `.bss` starts zeroed. The sum of 10 cannot distinguish between "written 0" and "left untouched." That's why the lesson says "`.bss` destination starts at 0."
+`movsd` copies 4 bytes from `[rsi]` to `[rdi]` and steps both by 4 (DF = 0) or −4 (DF = 1). `rep` repeats ECX times. Lesson 06 required `cld` before `rep movsb`. This listing has no `cld`. A Windows process starts with DF = 0 in normal cases; a preceding `std` would make this copy walk backward and smash memory before `fb`. Put `cld` in any blit you reuse.
 
-**The correct reading:** A keyed blit **leaves the destination's existing pixel untouched** wherever the source matches the key. If `dst` had held `9, 9, 9, 9` beforehand, the result would be `9, 5, 9, 5` (sum 28). That "background shows through" behavior is the purpose of the color key—it's how lesson 16's sprite blitting will overlay a character on a background without a black rectangle around it.
-
-## Clipping: half-open intervals
-
-A pixel `(x, y)` is inside the framebuffer when `0 <= x < width` and `0 <= y < height`. This is a **half-open interval**: the upper bound is exclusive.
-
-**Drill:** `15-clip-rect.asm` starts with `x = -1`, clamps to `[0, 10)`:
-1. `cmp rax, 0` / `jge .check_upper` fails for −1.
-2. `xor rax, rax` → `x = 0`.
-3. `cmp rax, 10` / `jl .done` passes (0 < 10).
-4. Exit 0.
-
-For an `x` of 10 or more, the upper clamp would store `width - 1` = 9 (the last inside column). 10 is the **first outside** value.
-
-**Drill:** `06-clip-test.asm` tests `x = 5` against `width = 4`. Since 5 ≥ 4, the pixel is outside, exits 1 (out-of-bounds).
-
-Lesson 17's UI hit testing uses this same half-open convention.
-
-## P6 PPM file output
-
-A **P6 PPM** file is a simple image format:
-
-1. ASCII header: `"P6\n<width> <height>\n255\n"`
-2. Binary pixel data: 3 bytes per pixel (R, G, B), row-major, no padding.
-
-**No library needed:** Use syscalls `open` (2), `write` (1), `close` (3) from lesson 08.
-
-**Header example (4×2 image):**
-
-```
-P6
-4 2
-255
-```
-
-This is 11 bytes: `"P6\n4 2\n255\n"`.
-
-**Full P6 write sequence:**
+RSI and RDI are nonvolatile. Again, this entry point does not return.
 
 ```asm
-section .data
-    path db "out.ppm", 0
-    hdr db "P6", 10, "4 2", 10, "255", 10
-    HLEN equ $ - hdr        ; 11 bytes
-
-section .bss
-    px resb 24             ; 4*2 pixels, 3 bytes each
-
-section .text
-global _start
-_start:
-    ; fill pixels with red (R=255, G=0, B=0)
-    xor rcx, rcx
-.paint:
-    cmp rcx, 24
-    jge .write_file
-    mov byte [px + rcx], 255    ; R
-    ; G and B are 0 (.bss)
-    add rcx, 3
-    jmp .paint
-
-.write_file:
-    ; open
-    mov rax, 2
-    lea rdi, [path]
-    mov rsi, 577            ; O_WRONLY | O_CREAT | O_TRUNC
-    mov rdx, 420            ; 0644
-    syscall
-    mov rbx, rax            ; save fd
-
-    ; write header
-    mov rax, 1
-    mov rdi, rbx
-    lea rsi, [hdr]
-    mov rdx, HLEN
-    syscall
-
-    ; write pixels
-    mov rax, 1
-    mov rdi, rbx            ; fd survived (syscall only clobbers rcx, r11, rax)
-    lea rsi, [px]
-    mov rdx, 24
-    syscall
-
-    ; close
-    mov rax, 3
-    mov rdi, rbx            ; fd still in rbx, or rdi if it survived
-    syscall
-
-    xor rdi, rdi
-    mov rax, 60
-    syscall
+; Copy sprite to framebuffer, exit 0
+.DATA
+sprite DD 1, 2, 3, 4
+.DATA?
+fb DB 640*480*4 DUP(?)
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    lea rsi, sprite
+    lea rdi, fb
+    mov ecx, 4
+    rep movsd
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `23-stretch-ppm-header-len.asm` — the lesson text describes building the 11-byte header and writing it, exiting 11 (the return from `write`). However, the **solution as shipped** defines only `h db "P6",10` (3 bytes), makes no syscalls, and exits **3**. This is a known mismatch: the drill is a placeholder constant, not a full P6 write.
+## Color-key blit: skip zeros, then sum
 
-**Critical:** Write R, G, B as three **separate bytes** per pixel, in that order. Do **not** dump the packed dword `0x00RRGGBB`—little-endian would write B, G, R, 0 (backwards, plus an extra byte per pixel).
+A **color-key blit** skips source pixels that match a transparent key (here, 0). Listing `04-blit-key-copy` walks four bytes of `src DB 0, 5, 0, 5, 0` (the fifth 0 is unused). On a zero it jumps past the store. `dst` is `.DATA?`, so skipped slots stay 0. After the copy, `dst` is `0, 5, 0, 5`. The sum loop adds those four bytes: 10. Status **10**.
 
-## Stubs and placeholders
+```asm
+; Listing 04: Color-key blit copy loop (LESSON.md block 4)
+; Expected exit: 10
+; Expected stdout: (none)
 
-Several drills are stubs or simplified placeholders:
+.DATA
+src DB 0, 5, 0, 5, 0
 
-**Drill:** `17-vsync-stub.asm` clears a byte and exits 0. It does **not** wait for vertical sync (no hardware access).
+.DATA?
+dst DB 4 DUP(?)
 
-**Drill:** `18-double-buffer-index.asm` XORs a buffer index with 1 twice, exits 0 (flipping between 0 and 1). The swap is real, but there's no vsync wait.
+.CODE
+EXTRN ExitProcess:PROC
 
-**Drill:** `20-alpha-stub.asm` exits 7 (a constant). There is no alpha blending.
+main PROC
+    xor     rcx, rcx
+copy_loop:
+    cmp     rcx, 4
+    jge     done
+    mov     al, BYTE PTR src[rcx]
+    test    al, al
+    jz      skip
+    mov     BYTE PTR dst[rcx], al
+skip:
+    inc     rcx
+    jmp     copy_loop
+done:
+    xor     rax, rax
+    mov     rcx, 4
+sum_loop:
+    dec     rcx
+    js      exit_sum
+    movzx   rdx, BYTE PTR dst[rcx]
+    add     rax, rdx
+    jmp     sum_loop
+exit_sum:
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
 
-**Drill:** `21-damage-rect.asm` exits 16 (a constant). There is no union of dirty rectangles.
+The zeros in `dst` are not writes of the key. They are bytes the loop never touched. If `dst` had held `9, 9, 9, 9`, the result would be `9, 5, 9, 5`. That is the point of a key: the background shows through. Lesson 16's sprites depend on it.
 
-**Drill:** `22-stretch-bresenham-count.asm` counts pixels from `x=0` to `x=3` on a flat line (4 pixels), exits 4. It does **not** step a Bresenham error term (that's a stretch goal for later).
+## P6 PPM through Win32
+
+A **P6 PPM** file is:
+
+1. An ASCII header: `P6`, newline, `width height`, newline, `255`, newline.
+2. Binary pixels: 3 bytes each, R then G then B, row-major, no row pad.
+
+Listing `05-write-ppm-p6` builds that file as `out.ppm`.
+
+`hdr DB "P6", 10, "4 2", 10, "255", 10` is 11 bytes. `HLEN EQU $ - hdr` is that 11. `$` is the assembler's current address; `$ - path` would be the distance from the path label, which is the wrong length.
+
+The paint loop writes 255 at offsets 0, 3, 6, …, 21 — the red byte of each of eight pixels (4 × 2). Green and blue stay 0 because `px` is `.DATA?`. The image is solid red.
+
+Then the Win32 sequence (lesson 08):
+
+| Call | RCX | RDX | R8 | R9 | stack |
+|------|-----|-----|----|----|-------|
+| `CreateFileA` | `path` | `40000000h` (`GENERIC_WRITE`) | 0 share | 0 security | disposition `2` (`CREATE_ALWAYS`), attributes `80h` (`FILE_ATTRIBUTE_NORMAL`), template 0 |
+| `WriteFile` | HANDLE | `hdr` | `HLEN` | `&bytesWritten` | overlapped 0 |
+| `WriteFile` | HANDLE | `px` | 24 | `&bytesWritten` | overlapped 0 |
+| `CloseHandle` | HANDLE | | | | |
+| `ExitProcess` | 0 or 1 | | | | |
+
+`CreateFileA` failure is RAX = −1 (`INVALID_HANDLE_VALUE`), not 0. The listing compares to −1 and exits **1** on failure. Success falls through both writes, closes, and exits **0**.
+
+The prologue is `PROC FRAME`, `push rbx` / `.pushreg rbx`, `sub rsp, 64` / `.allocstack 64`, `.endprolog`. RBX holds the HANDLE across calls (RBX is nonvolatile). 64 bytes covers 32 bytes of shadow space plus the three stack arguments to `CreateFileA`. There is no `.setframe`: that directive exists when you set a frame-pointer register (usually RBP). This listing does not.
+
+```asm
+; Listing 05: Write P6 PPM via Win32 (LESSON.md block 5)
+; Expected exit: 0
+; Expected stdout: (none)
+
+.DATA
+path DB "out.ppm", 0
+hdr DB "P6", 10, "4 2", 10, "255", 10
+HLEN EQU $ - hdr
+
+.DATA?
+px DB 24 DUP(?)
+bytesWritten DWORD ?
+hFile QWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    xor     rcx, rcx
+paint:
+    cmp     rcx, 24
+    jge     write_file
+    mov     BYTE PTR px[rcx], 255
+    add     rcx, 3
+    jmp     paint
+
+write_file:
+    lea     rcx, path
+    mov     edx, 40000000h
+    xor     r8d, r8d
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 2
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    je      fail
+    mov     rbx, rax
+
+    mov     rcx, rbx
+    lea     rdx, hdr
+    mov     r8d, HLEN
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    lea     rdx, px
+    mov     r8d, 24
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    call    CloseHandle
+
+    xor     ecx, ecx
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
+```
+
+Write R, G, B as three bytes. Do not `WriteFile` the packed dword `00RRGGBBh` — little-endian would emit B, G, R, 0.
+
+<!-- LISTING-PENDING: no Jack listing for clip/half-open tests, vsync, double-buffer flip, alpha, damage rects, or Bresenham; keyed blit and PPM are listed above -->
+
+Clipping uses half-open intervals `[0, width)` and `[0, height)`. Width is the first outside column. A blit that ignores that writes off the end of `fb`.
+
+## Worked example: what the keyed blit leaves behind
+
+**Task.** Listing `04-blit-key-copy` copies `0, 5, 0, 5` into a `.DATA?` destination, skipping zeros. Why is the status 10, and would writing the zeros have changed that number?
+
+**Loop.** RCX = 0..3. `src[0]` is 0 → skip. `src[1]` is 5 → store. `src[2]` is 0 → skip. `src[3]` is 5 → store. Sum = 0+5+0+5 = 10.
+
+**Plausible wrong reading.** *"Key 0 means 'write transparent,' so the blit stores 0 into those slots, and that is why the sum is 10."*
+
+**Why it fails.** `jz skip` jumps **over** `mov BYTE PTR dst[rcx], al`. Nothing is written on a key hit. The zeros in `dst` are the loader's zeros. A destination that started as `3, 3, 3, 3` would become `3, 5, 3, 5` (sum 16). The status 10 cannot tell "wrote 0" from "left 0." The comment in the listing says exit 10; that 10 is the sum of the two stored fives.
+
+**The correct reading.** A keyed blit leaves the destination pixel untouched where the source matches the key.
 
 ## Distinctions worth keeping straight
 
-| Confusion | Reality |
-|-----------|---------|
-| Pitch is the same as width | Pitch is `width * bytes_per_pixel`, possibly **plus padding** for alignment |
-| The packed color `0x00RRGGBB` is stored in memory as R, G, B | Little-endian stores the **low byte first**: memory holds B, G, R, 0 |
-| P6 PPM accepts 4 bytes per pixel | P6 expects exactly **3 bytes per pixel** (R, G, B), no alpha, no padding |
-| Aligning 20 to 16 gives 16 | Alignment rounds **up**: `(20 + 15) & ~15` = 32 |
-| Color-key blit writes 0 for transparent pixels | Keyed blit **skips** the store, leaving the destination pixel untouched |
-| Clipping uses inclusive bounds `[0, width]` | Use **half-open** `[0, width)`: width is the first outside value |
+| Confusion | What actually separates them |
+|-----------|------------------------------|
+| Pitch equals width | Pitch is `width * bytes_per_pixel`, plus optional pad. Offset uses pitch, not width. |
+| Listing 01 computes `y * pitch + x * 4` | It stores at `[fb+0]`. Status 0. |
+| Listing 02 fills a 2-D rectangle | It writes 100 consecutive dwords. Status 0. |
+| Packed `00RRGGBBh` is R,G,B in memory | Little-endian stores B, G, R, 0. P6 wants R, G, B as three bytes. |
+| Color-key blit writes 0 | It skips the store. Listing 04 exits 10. |
+| P6 accepts 4 bytes per pixel | P6 is 3 bytes, no alpha, no row pad. Listing 05 writes 24 bytes for 4×2. |
+| File I/O is `mov rax, 1` / `syscall` | Listing 05 calls `CreateFileA` / `WriteFile` / `CloseHandle` with RCX, RDX, R8, R9, and `[rsp+32]`. |
+| `.setframe` is required on every `FRAME` proc | `.setframe` records a frame-pointer register. Listing 05 has FRAME and no RBP frame; `.pushreg` + `.allocstack` are enough. |
 
 ## Check yourself
 
-1. `15-clip-rect.asm` starts with `mov rax, -1`. Trace both compares (`cmp rax, 0` and `cmp rax, 10`) and say why the upper clamp stores 9, not 10.
-
-2. The P6 listing writes the header with `mov rdx, HLEN`, where `HLEN equ $ - hdr`. What is HLEN, and why would `$ - path` be wrong?
-
-3. A packed pixel `0x00010203` (R=1, G=2, B=3) is stored with one `mov dword`. List the four bytes in memory order, and say why that order is wrong for a P6 file.
-
-4. You blit source `0, 7, 0, 7` (color key 0) into destination `3, 3, 3, 3`. What is in the destination after the blit?
-
-5. A framebuffer is 100 pixels wide, 4 bytes per pixel, aligned to 128 bytes per row. What is the pitch?
+1. Listing `01-pixel-plot` writes `0FFFFFFFFh` at the base of a 640×480×4 buffer. What `(x, y)` is that, and what status does the process return?
+2. You store packed `00010203h` (R=1, G=2, B=3) with one `mov DWORD PTR`. List the four memory bytes. Why is that sequence wrong for P6?
+3. Listing `04-blit-key-copy`: blit `0, 7, 0, 7` into destination `3, 3, 3, 3` with key 0. What four bytes remain?
+4. Listing `05-write-ppm-p6`: what is `HLEN`, and why is `$ - path` the wrong length?
+5. A 100-pixel-wide buffer, 4 bytes per pixel, rows aligned to 128 bytes: what is the pitch?
 
 ## Key takeaways
 
-- Pixel offset is `y * pitch + x * bytes_per_pixel`; pitch includes alignment padding.
-- Packing `(R<<16) | (G<<8) | B` produces register value `0x00RRGGBB`; storing it writes memory as B, G, R, 0 (little-endian).
-- P6 PPM files need exactly 3 bytes per pixel (R, G, B) with an ASCII header; write them separately, never dump the packed dword.
-- Pitch alignment rounds up: `(unpadded + align - 1) & ~(align - 1)`.
-- Color-key blitting skips stores where source equals the key, leaving the destination pixel unchanged.
-- Clip with half-open intervals `[0, width)`: width is the first outside value.
+- Offset is `y * pitch + x * bpp`. Listing 01 plots at the base and exits 0.
+- Listing 02 fills 100 dwords with `0FF0000FFh` and exits 0. It is a linear run, not a pitched rectangle.
+- `rep movsd` copies dwords; DF must be 0. Listing 03 exits 0 and does not sum.
+- A keyed blit skips the key. Listing 04 exits 10, the sum of the two stored fives.
+- P6 is an 11-byte header plus 3-byte RGB. Listing 05 uses Win32 file calls and exits 0 on success, 1 if `CreateFileA` returns −1.
+- Little-endian dword stores are not P6 channel order.
 
 ## Lookup
 
-- PPM format: [Netpbm PPM specification](http://netpbm.sourceforge.net/doc/ppm.html)
-- Little-endian byte order: [Wikipedia: Endianness](https://en.wikipedia.org/wiki/Endianness)
-- Pitch and stride: [Wikipedia: Stride of an array](https://en.wikipedia.org/wiki/Stride_of_an_array)
-- Alignment: [Intel SDM Vol. 1, Section 4.1.1](https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-1-manual.html)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/01-pixel-plot.asm -->
-<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/02-fill-rect.asm -->
-<!-- LISTING-PENDING: lessons/14-graphics-framebuffer/listings/03-blit-copy.asm -->
+- PPM: [Netpbm PPM specification](http://netpbm.sourceforge.net/doc/ppm.html)
+- Endianness: [Endianness](https://en.wikipedia.org/wiki/Endianness)
+- Stride: [Stride of an array](https://en.wikipedia.org/wiki/Stride_of_an_array)
+- `CreateFileA` / `WriteFile` / `CloseHandle`: lesson 08; [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea)
+- Microsoft x64: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
+- Unwind: `.pushreg`, `.allocstack`, `.setframe`, `.endprolog` — [x64 exception handling](https://learn.microsoft.com/en-us/cpp/build/exception-handling-x64)
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
-```bash
+```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
 ```
 
-**Addressing:**
-- `01-pixel-offset.asm` — `y=2, pitch=40, x=3`, exit 92
-- `02-pack-rgb.asm` — pack `(1, 2, 3)`, exit 3 (low byte B)
-- `08-from-scratch-stride.asm` — `width=16, bpp=4`, pitch 64, exit 64
-- `10-put-pixel.asm` — `put_pixel(2, 1)` on pitch 8, exit 9
-- `16-pitch-bytes.asm` — **exits 20** (placeholder; lesson describes 32)
-- `19-debug-offset-bpp.asm` — fix: `x * 4`, exit 8
-- `24-from-scratch-fb-size.asm` — 320×200×4 >> 16, exit 3
+Addressing: pixel offset, pack RGB (low byte is B), stride, `put_pixel`, framebuffer size shifted for an 8-bit status.
 
-**Fill and copy:**
-- `03-clear-buffer.asm` — clear 8 bytes, exit 0
-- `04-plot-stub.asm` — plot and read back, exit 7
-- `05-blit-copy.asm` — copy `1,2,3,4`, sum 10, exit 10
-- `07-row-fill.asm` — three 9s, exit 9 (middle byte)
-- `09-clear-color.asm` — fill 4 bytes with 5, exit 5
-- `11-hline.asm` — three 1s, sum 3, exit 3
-- `12-vline.asm` — pitch 4, three 2s, sum 6, exit 6
-- `13-rect-fill.asm` — 2×2 rect, four 3s, sum 12, exit 12
-- `14-blit-key.asm` — keyed blit `0,5,0,5`, sum 10, exit 10
+Fill and copy: clear, plot/readback, blit copy, row fill, hline, vline, rect fill, keyed blit.
 
-**Clipping:**
-- `06-clip-test.asm` — `x=5, width=4`, out-of-bounds, exit 1
-- `15-clip-rect.asm` — clamp −1 to [0, 10), exit 0
-
-**P6 output:**
-- `23-stretch-ppm-header-len.asm` — **exits 3** (placeholder; lesson describes 11)
-
-**Stubs:**
-- `17-vsync-stub.asm` — clear byte, exit 0 (no vsync)
-- `18-double-buffer-index.asm` — XOR flip, exit 0
-- `20-alpha-stub.asm` — exit 7 (no blend)
-- `21-damage-rect.asm` — exit 16 (no rect union)
-- `22-stretch-bresenham-count.asm` — flat line 4 pixels, exit 4 (no Bresenham)
+Clip: half-open `[0, width)`. P6 header length. Stubs for vsync, double-buffer index, alpha, damage, Bresenham count.
