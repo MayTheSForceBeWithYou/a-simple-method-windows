@@ -82,9 +82,74 @@ END
 
 RSI is **nonvolatile** on Windows. This listing is `main` and then `ExitProcess`, so the clobber is not observed. A returning `expect` that writes RSI must save and restore it.
 
-<!-- LISTING-PENDING: no Jack listing for whitespace skip or lexeme-buffer copy; digit classify and expect are listed above -->
+Skipping spaces is the same cursor walk: while the byte is 32, increment. Listing `19-skip-whitespace` starts at `"  7"` (two spaces, then `'7'`). The loop loads `[rsi]`, compares to 32, and increments twice. `at_digit` then has AL = `'7'` (55). `sub ecx, '0'` yields 7. Expected exit: **7**.
 
-Skipping spaces is the same cursor walk: while the byte is 32, increment. Copying a lexeme is a counted or NUL-terminated store plus a length that does **not** include a terminator you happened to write.
+```asm
+; Listing 19: Skip ASCII spaces, parse digit (LESSON.md)
+; Expected exit: 7
+; Expected stdout: (none)
+
+.DATA
+src BYTE "  ", "7", 0
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     rsi, src
+skip:
+    movzx   eax, BYTE PTR [rsi]
+    cmp     al, 32
+    jne     at_digit
+    inc     rsi
+    jmp     skip
+
+at_digit:
+    movzx   ecx, al
+    sub     ecx, '0'
+    call    ExitProcess
+main ENDP
+END
+```
+
+Copying a lexeme is a counted or NUL-terminated store plus a length that does **not** include a terminator you happened to write. Listing `20-copy-lexeme` copies `"let"` into `dst` until the 0, stores the count in `lex_len`, and exits that DWORD. Three bytes copied; the 0 is the stop test, not a stored payload. Expected exit: **3**.
+
+```asm
+; Listing 20: Copy lexeme bytes and exit length (LESSON.md)
+; Expected exit: 3
+; Expected stdout: (none)
+
+.DATA
+src BYTE "let", 0
+
+.DATA?
+dst BYTE 8 DUP(?)
+lex_len QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     rsi, src
+    lea     rdi, dst
+    xor     rcx, rcx
+copy:
+    movzx   eax, BYTE PTR [rsi + rcx]
+    test    al, al
+    jz      done_copy
+    mov     BYTE PTR [rdi + rcx], al
+    inc     rcx
+    jmp     copy
+
+done_copy:
+    mov     lex_len, rcx
+    mov     ecx, DWORD PTR lex_len
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Linked-list node layout
 
@@ -302,9 +367,33 @@ main ENDP
 END
 ```
 
-<!-- LISTING-PENDING: no Jack listing for 8-byte alignment; bump add is listed above -->
+Pointers to qwords should be 8-byte aligned. The usual round-up is `aligned = (bump + 7) AND (NOT 7)`. Already-aligned 8 stays 8: `(8 + 7) AND (NOT 7) = 8`. Starting at 1 becomes 8.
 
-Pointers to qwords should be 8-byte aligned. The usual round-up is `aligned = (bump + 7) AND (NOT 7)`. Already-aligned 8 stays 8: `(8 + 7) AND (NOT 7) = 8`. Starting at 1 becomes 8. Listing 09 never aligns; both requests are already multiples of 8 from offset 0.
+Listing `21-arena-align-bump` starts `bump` at 1, adds 7 (8), then `and rax, NOT 7` (clears the low three bits). The result is 8. Expected exit: **8**. Listing 09 never aligns; both of its requests are already multiples of 8 from offset 0.
+
+```asm
+; Listing 21: Round bump pointer up to 8-byte alignment
+; Expected exit: 8
+; Expected stdout: (none)
+
+.DATA?
+bump QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     bump, 1
+    mov     rax, bump
+    add     rax, 7
+    and     rax, NOT 7
+    mov     bump, rax
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Vector: fixed-capacity push
 
@@ -627,9 +716,39 @@ main ENDP
 END
 ```
 
-<!-- LISTING-PENDING: no Jack listing for operator precedence or Pratt binding powers; AST field sum is listed above -->
+`*` binds tighter than `+`, so `2 + 3 * 4` is `2 + (3 * 4) = 14`, not `(2 + 3) * 4 = 20`. Represent binding powers as integers (`+` = 10, `*` = 20) when you write a Pratt parser.
 
-`*` binds tighter than `+`, so `2 + 3 * 4` is `2 + (3 * 4) = 14`, not `(2 + 3) * 4 = 20`. Represent binding powers as integers (`+` = 10, `*` = 20) when you write a Pratt parser. The grammar layering in lesson 12 encodes the same fact.
+Listing `22-pratt-binding-power` defines `BP_ADD EQU 10` and `BP_MUL EQU 20`. It compares them: 20 is not `<=` 10, so it evaluates `3 * 4 + 2` as `imul` then `add` and exits EAX. Expected exit: **14**. The `wrong_order` path (if `*` were not tighter) would exit **20**. The grammar layering in lesson 12 encodes the same fact.
+
+```asm
+; Listing 22: Pratt binding powers: * binds tighter than +
+; Expected exit: 14
+; Expected stdout: (none)
+;
+; BP_MUL > BP_ADD, so 2 + 3 * 4 is evaluated as 2 + (3 * 4).
+
+BP_ADD EQU 10
+BP_MUL EQU 20
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     eax, BP_MUL
+    cmp     eax, BP_ADD
+    jle     wrong_order
+    mov     rax, 3
+    imul    rax, 4
+    add     rax, 2
+    mov     ecx, eax
+    call    ExitProcess
+wrong_order:
+    mov     ecx, 20
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: count, sum, or last value?
 
@@ -651,7 +770,7 @@ END
 | Listing 02 exits 60 or 30 | It increments a count. Status 3. Listing 08 exits the sum 12. |
 | Test the pointer after you load through it | `test` / `jz` belongs *before* `[rax]` or `[rsi]`. A null head faults if you load first. |
 | Listing 03 and listing 09 store the same cursor | 03 stores an absolute pointer and exits the offset 16. 09 stores an integer offset and exits 32 after two adds. |
-| Alignment is `bump AND 7` | That is the misalignment remainder. Round-up is `(bump + 7) AND (NOT 7)`. No Jack listing computes it. |
+| Alignment is `bump AND 7` | That is the misalignment remainder. Round-up is `(bump + 7) AND (NOT 7)`. Listing `21-arena-align-bump` starts at 1 and exits **8**. |
 | `rsp` is your expression stack | `rsp` is the CPU stack. Listings 04 and 13 use an array plus an index. Listing 13's name `sp` collides with the 16-bit stack pointer. |
 | Listings 14 and 17 wrap the ring | They only increment. Wrap is listings 15 (inc then mask → 0) and 18 (mask 7 → 3). |
 | Lexeme length includes a terminator | Length is payload bytes. A stored 0 does not count. |
@@ -667,12 +786,12 @@ END
 
 ## Key takeaways
 
-- A digit test is two unsigned compares (listing 01 exits 1 for `'7'`); `expect` matches one byte and advances (listing 05 exits 1 on `'('`).
+- A digit test is two unsigned compares (listing 01 exits 1 for `'7'`); `expect` matches one byte and advances (listing 05 exits 1 on `'('`). Listing `19-skip-whitespace` skips two spaces and exits the digit **7**. Listing `20-copy-lexeme` copies `"let"` and exits length **3**.
 - A list node is value at offset 0 and `next` at offset 8. Walk only after `test` shows a nonzero pointer. Listing 02 exits the count 3; listing 08 exits the sum 12; listing 07 exits the new head value 2.
-- A bump arena returns the old cursor and adds the size. Listing 03 exits offset 16; listing 09 exits offset 32.
+- A bump arena returns the old cursor and adds the size. Listing 03 exits offset 16; listing 09 exits offset 32. Listing `21-arena-align-bump` rounds 1 up to **8**.
 - Explicit stacks and queues are arrays plus indices, not `rsp`. Push 42 / pop is status 42; push 1 / push 2 / pop is status 2; enqueue 7 / 8 / dequeue is status 7.
 - A ring wraps with `AND (capacity-1)` after the increment. Listing 15 goes 3 → 4 → 0. Listing 18 computes `7 AND 3 = 3`.
-- An AST node is three qwords; listing 16 exits kind+left+right = 6.
+- An AST node is three qwords; listing 16 exits kind+left+right = 6. Listing `22-pratt-binding-power` treats `*` as tighter than `+` and exits **14** for `2 + 3 * 4`.
 
 ## Lookup
 

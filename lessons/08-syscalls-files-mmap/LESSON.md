@@ -1005,13 +1005,170 @@ END
 
 Forget shadow space or alignment and you get an access violation or silent corruption, not a polite assembler diagnostic.
 
-## Other kernel services without a Jack listing
+## Pipes and the process heap
 
-Windows has no `brk`. Small heap blocks go through `HeapAlloc` / `HeapFree` with a heap HANDLE from `GetProcessHeap` or `HeapCreate`. This course uses `VirtualAlloc` for page-sized scratch (listings `04-virtual-alloc` and `10-virtual-alloc-free`).
+Windows has no `brk`. Page-sized scratch still goes through `VirtualAlloc` (listings `04-virtual-alloc` and `10-virtual-alloc-free`). Small blocks go through `HeapAlloc` / `HeapFree` on a heap HANDLE from `GetProcessHeap` (or `HeapCreate`). `CreatePipe` writes two HANDLEs — read end, then write end — and `WriteFile` / `ReadFile` move bytes between them.
 
-`CreatePipe` creates a unidirectional pipe and writes two HANDLEs (read end, write end). There is no pipe listing on this branch.
+### CreatePipe: write three bytes, read them back
 
-<!-- LISTING-PENDING: no Jack listing for CreatePipe, HeapAlloc, HeapFree, or GetProcessHeap; VirtualAlloc, GetCurrentProcessId, and QueryPerformanceCounter are listed above -->
+Listing `15-create-pipe` creates an anonymous pipe (`CreatePipe` with NULL security and 0 size), writes the three bytes `"ABC"` to `hWrite`, and reads three bytes into `readBuf`. `bytesRead` is stored, then both HANDLEs are closed. The header comments Expected exit: **3** (the byte count). Failure of `CreatePipe` / `WriteFile` / `ReadFile` is meant to exit **1**.
+
+The success path does `mov ecx, DWORD PTR bytesRead` and then jumps to `cleanup`. Cleanup calls `CloseHandle` on `hRead` and `hWrite`. Each of those calls takes the HANDLE in RCX, so RCX is no longer 3 when `ExitProcess` runs. After `CloseHandle`, RCX is a volatile leftover — typically the BOOL in RAX is 1 on success, but the process status is **not** `bytesRead`. The fail-close path sets `ecx = 1` *after* the two closes, so that path really can exit 1. This listing has not been assembled with ml64; do not treat 3 as a measured status.
+
+The frame is `push rbx` / `sub rsp, 64` / `.allocstack 64` so `[rsp+32]` can hold the NULL overlapped pointer for `WriteFile` and `ReadFile`.
+
+```asm
+; Listing 15: CreatePipe, WriteFile, ReadFile round trip
+; Expected exit: 3
+; Expected stdout: (none)
+
+.DATA
+payload BYTE "ABC"
+
+.DATA?
+hRead QWORD ?
+hWrite QWORD ?
+readBuf BYTE 8 DUP(?)
+bytesWritten DWORD ?
+bytesRead DWORD ?
+
+.CODE
+EXTRN CreatePipe:PROC
+EXTRN WriteFile:PROC
+EXTRN ReadFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea     rcx, hRead
+    lea     rdx, hWrite
+    xor     r8, r8
+    xor     r9d, r9d
+    call    CreatePipe
+    test    rax, rax
+    jz      fail
+
+    mov     rcx, hWrite
+    lea     rdx, payload
+    mov     r8d, 3
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    rax, rax
+    jz      fail_close
+
+    mov     rcx, hRead
+    lea     rdx, readBuf
+    mov     r8d, 3
+    lea     r9, bytesRead
+    mov     QWORD PTR [rsp+32], 0
+    call    ReadFile
+    test    rax, rax
+    jz      fail_close
+
+    mov     ecx, DWORD PTR bytesRead
+    jmp     cleanup
+
+fail_close:
+    mov     rcx, hRead
+    call    CloseHandle
+    mov     rcx, hWrite
+    call    CloseHandle
+    mov     ecx, 1
+    jmp     exit_proc
+
+cleanup:
+    mov     rcx, hRead
+    call    CloseHandle
+    mov     rcx, hWrite
+    call    CloseHandle
+    jmp     exit_proc
+
+fail:
+    mov     ecx, 1
+
+exit_proc:
+    call    ExitProcess
+main ENDP
+END
+```
+
+### HeapAlloc: sixteen 1-bytes, then the sum
+
+Listing `16-heap-alloc-sum` calls `GetProcessHeap`, then `HeapAlloc` for 16 bytes with flags 0 (the `HEAP_ZERO_MEMORY EQU 8` at the top is unused). It fills the block with `rep stosb` of 1 (`cld` first), sums those 16 bytes into EAX (each `movzx` / `add` is 1), saves the sum in RBX, `HeapFree`s the block, and exits EBX. Expected exit: **16**. Failure of `GetProcessHeap` or `HeapAlloc` exits **1**. RDI, RSI, and RBX are used without a save; `main` then `ExitProcess` never returns to a caller.
+
+```asm
+; Listing 16: GetProcessHeap, HeapAlloc, HeapFree (LESSON.md)
+; Expected exit: 16
+; Expected stdout: (none)
+
+HEAP_ZERO_MEMORY EQU 8
+
+.DATA?
+hHeap QWORD ?
+pBuf QWORD ?
+
+.CODE
+EXTRN GetProcessHeap:PROC
+EXTRN HeapAlloc:PROC
+EXTRN HeapFree:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    call    GetProcessHeap
+    test    rax, rax
+    jz      fail
+    mov     hHeap, rax
+
+    mov     rcx, hHeap
+    xor     edx, edx
+    mov     r8d, 16
+    call    HeapAlloc
+    test    rax, rax
+    jz      fail
+    mov     pBuf, rax
+
+    mov     rdi, rax
+    mov     ecx, 16
+    mov     al, 1
+    cld
+    rep     stosb
+
+    xor     eax, eax
+    mov     rcx, 16
+    mov     rsi, pBuf
+sum_loop:
+    movzx   edx, BYTE PTR [rsi]
+    add     eax, edx
+    inc     rsi
+    loop    sum_loop
+
+    mov     rbx, eax
+
+    mov     rcx, hHeap
+    xor     edx, edx
+    mov     r8, pBuf
+    call    HeapFree
+
+    mov     ecx, ebx
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: opening a missing file and recovering the error
 
@@ -1119,6 +1276,7 @@ Expected exit: **2** (`ERROR_FILE_NOT_FOUND`).
 - `SetFilePointer` is the 32-bit-distance API; `SetFilePointerEx` is the 64-bit BOOL API. `FILE_BEGIN` = 0, `FILE_CURRENT` = 1, `FILE_END` = 2.
 - `VirtualAlloc` with `3000h` / `PAGE_READWRITE` returns zeroed pages; `VirtualFree` with size 0 and `8000h` releases them. Listings `04-virtual-alloc` and `10-virtual-alloc-free` exit 42 after storing that byte.
 - File-backed mapping is `CreateFileA` → `CreateFileMappingA` → `MapViewOfFile`, then `UnmapViewOfFile` and two `CloseHandle` calls (listing `05-file-mapping`).
+- `CreatePipe` plus `WriteFile` / `ReadFile` of `"ABC"` is listing `15-create-pipe`. The header says exit **3**; cleanup `CloseHandle`s clobber RCX before `ExitProcess`. Listing `16-heap-alloc-sum` fills 16 heap bytes with 1 and exits **16**.
 - There is no user-mode `syscall` for these services. You `EXTRN` the import and link `kernel32.lib`.
 
 ## Lookup

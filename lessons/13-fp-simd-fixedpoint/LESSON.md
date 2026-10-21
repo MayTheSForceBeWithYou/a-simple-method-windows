@@ -172,19 +172,105 @@ The compare is `jl done` (signed). 370 − 360 = 10. A value already below 360 w
 
 The same pattern wraps a heading: 350° + 20° = 10°.
 
-<!-- LISTING-PENDING: no Jack listing for Q16 divide, lerp, length-squared, Q8.8, or SSE/SIMD; encode/add/mul/clamp/wrap are listed above -->
-
-## Division, lerp, and SIMD — prose only
+## Q16 divide, lerp, and an SSE2 lane sum
 
 **Divide.** Naive `idiv` of two Q16.16 values cancels the scales and leaves an integer quotient (`6.0/2.0` → 3 with zero fraction bits; `1.0/2.0` → 0). Widen the dividend first: sign-extend, `shl rax, 16`, `cqo`, `idiv` the divisor. The quotient is Q16.16. Use `sar` if you then convert a signed quotient to an integer.
 
-**Lerp.** `result = a + (b - a) * t` with *t* in `[0, 1]`. For `a = 0` this is `b * t`. `t = 1 SHL 15` is 0.5 in Q16.16. The product has 32 fraction bits; one shift of 16 returns Q16.16.
+Listing `06-q16-divide` does that for 6.0 / 2.0: `eax = 6 SHL 16`, `ebx = 2 SHL 16`, `movsxd` both, `shl rax, 16`, `cqo` / `idiv rbx`. The quotient is `3 SHL 16`. One `shr rax, 16` drops the fraction so ECX is the integer 3. Expected exit: **3**.
 
-**Length squared.** Compare `x*x + y*y` to `r*r`. Do not take a square root just to test "inside the circle."
+```asm
+; Listing 06: Q16.16 divide 6.0 / 2.0 with widened dividend
+; Expected exit: 3
+; Expected stdout: (none)
 
-**Q8.8.** Eight fraction bits. Multiply, then shift right 8.
+.CODE
+EXTRN ExitProcess:PROC
 
-Filenames and exercises that say SSE or SIMD in this lesson are scalar integer stubs unless you see an XMM instruction. The five Jack listings use EAX/EBX/RAX/RBX only.
+main PROC
+    sub rsp, 40
+    mov     eax, 6
+    shl     eax, 16
+    mov     ebx, 2
+    shl     ebx, 16
+    movsxd  rax, eax
+    shl     rax, 16
+    movsxd  rbx, ebx
+    cqo
+    idiv    rbx
+    shr     rax, 16
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
+
+**Lerp.** `result = a + (b - a) * t` with *t* such that `t >= 0 && t <= 1` in Q16. For `a = 0` this is `b * t`. `t = 1 SHL 15` is 0.5 in Q16.16. The product has 32 fraction bits; shifts of 16 return toward an integer.
+
+Listing `07-lerp-fixed` loads `a = 0` into EAX and never uses it again. It encodes `b = 10 SHL 16` and `t = 1 SHL 15`, `imul`s those two (`10.0 * 0.5` with 32 fraction bits), then `shr rax, 16` twice. The integer 5 remains. Expected exit: **5**. There is no `(b - a)` subtract because `a` is 0.
+
+```asm
+; Listing 07: Q16 lerp(0, 10, t=0.5) -> 5
+; Expected exit: 5
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     eax, 0
+    mov     ebx, 10
+    shl     ebx, 16
+    mov     ecx, 1
+    shl     ecx, 15
+    movsxd  rax, ebx
+    movsxd  rdx, ecx
+    imul    rax, rdx
+    shr     rax, 16
+    shr     rax, 16
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
+
+**Length squared.** Compare `x*x + y*y` to `r*r`. Do not take a square root just to test "inside the circle." There is still no Jack listing for that, or for Q8.8 (multiply, then shift right 8).
+
+**SSE2 horizontal sum.** Listing `08-simd-lane-sum` loads four DWORDs `[1, 2, 3, 4]` into XMM0 (`movdqu`). `pshufd` with `4Eh` swaps the 64-bit halves to `[3, 4, 1, 2]`; `paddd` yields `[4, 6, 4, 6]`. `pshufd` with `0B1h` swaps adjacent dwords to `[6, 4, 6, 4]`; `paddd` yields `[10, 10, 10, 10]`. `movd ecx, xmm0` takes lane 0. Expected exit: **10**. This is an integer `paddd` reduction, not `addss`.
+
+```asm
+; Listing 08: SSE2 horizontal sum of four 32-bit lanes
+; Expected exit: 10
+; Expected stdout: (none)
+;
+; Lane trace (lane0 .. lane3), v = [1, 2, 3, 4]:
+;   movdqu xmm0 -> [1, 2, 3, 4]
+;   pshufd xmm1, xmm0, 4Eh -> [3, 4, 1, 2]
+;   paddd xmm0, xmm1       -> [4, 6, 4, 6]
+;   pshufd xmm1, xmm0, 0B1h -> [6, 4, 6, 4]
+;   paddd xmm0, xmm1       -> [10, 10, 10, 10]; movd ecx, xmm0 -> 10
+
+.DATA
+ALIGN 16
+v DWORD 1, 2, 3, 4
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    movdqu  xmm0, XMMWORD PTR v
+    movdqa  xmm1, xmm0
+    pshufd  xmm1, xmm1, 4Eh
+    paddd   xmm0, xmm1
+    movdqa  xmm1, xmm0
+    pshufd  xmm1, xmm1, 0B1h
+    paddd   xmm0, xmm1
+    movd    ecx, xmm0
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: why listing 03 shifts twice
 
@@ -210,7 +296,7 @@ Filenames and exercises that say SSE or SIMD in this lesson are scalar integer s
 | `1 SHL 15` has 15 fraction bits | It is 0.5 in Q16.16: 16 fraction bits, high bit set. |
 | Listing 04 clamps `150 SHL 16` | It compares the integers 150 and 100 and exits 100. The algorithm is the clamp; the format is not Q in that file. |
 | `SHL` in `(1 SHL 16)` is the `shl` instruction | That `SHL` is an assemble-time MASM operator. The instruction is `shl eax, 16` in listing 01. |
-| SSE drills in the exercise folder execute `addss` | The Jack listings do not touch XMM. Treat SSE names as scalar stubs unless you see the opcode. |
+| SSE drills in the exercise folder execute `addss` | Listing `08-simd-lane-sum` is SSE2 `pshufd` / `paddd` on `[1,2,3,4]` and exits **10**. Treat other SSE names as scalar stubs unless you see the opcode. |
 
 ## Check yourself
 
@@ -228,6 +314,9 @@ Filenames and exercises that say SSE or SIMD in this lesson are scalar integer s
 - Clamp is `cmp` then a conditional move. Listing 04 exits 100 for integer 150 against 100.
 - Wrap is compare against the period and subtract. Listing 05 exits 10 for 350 + 20 against 360.
 - Decode signed Q values with `sar`, not `shr`.
+- Q16 divide widens the dividend (`shl rax, 16` then `idiv`). Listing `06-q16-divide` is 6.0 / 2.0 and exits **3**.
+- Lerp with `a = 0` is `b * t`. Listing `07-lerp-fixed` is 10.0 × 0.5 and exits **5**.
+- Listing `08-simd-lane-sum` reduces `[1, 2, 3, 4]` with `pshufd` / `paddd` and exits **10**.
 
 ## Lookup
 

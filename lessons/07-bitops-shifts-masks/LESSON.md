@@ -486,9 +486,33 @@ main ENDP
 END
 ```
 
-Use a rotate when every bit must survive (circular buffers, some checksums, bit-reversal building blocks). There is no `ror` listing on this branch; the instruction is the opposite direction of the `rol` you just read.
+Use a rotate when every bit must survive (circular buffers, some checksums, bit-reversal building blocks).
 
-<!-- LISTING-PENDING: no Jack listing for ror; 12-rol-rotate.asm demonstrates ROL only -->
+Listing `18-ror-rotate` is the opposite direction. It loads 1 into AL (`00000001`) and rotates right by 1. Bit 0 wraps into bit 7, so AL becomes `10000000` (128). `movzx ecx, al` then exits. Expected exit: **128**. `sub rsp, 40` is the zero-push alignment frame. A `shr al, 1` on the same byte would produce 0 and set CF; the 1-bit would be gone.
+
+```asm
+; 18-ror-rotate.asm
+;
+; Purpose: Demonstrate ROR (rotate right); opposite of listing 12-rol-rotate.
+; Expected exit: 128
+; Expected stdout: (none)
+;
+; AL = 00000001; ROR by 1 wraps bit 0 into bit 7 -> 10000000 (128).
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     al, 1
+    ror     al, 1
+    movzx   ecx, al
+    call    ExitProcess
+main ENDP
+
+END
+```
 
 ## Bit-counting loops
 
@@ -759,7 +783,7 @@ The mask `and rbx, 0FFh` after the shift is what makes a field extract independe
 | `and` vs `test` | `and` writes `a AND b` to the destination. `test` computes the same AND, updates flags, and discards the result. |
 | `xor reg, reg` vs `mov reg, 0` | Both zero the register. `xor` is the short, idiomatic form. Listing `03-or-setting-bits` starts that way. |
 | XOR-swap vs `xchg` | Three XORs swap two distinct registers (listing `09-xor-swap`, exit 42). XOR a register with itself and you get 0. Prefer `xchg` for a real swap. |
-| Rotate vs shift | `rol` / `ror` wrap bits; `shl` / `shr` / `sar` discard them. Listing `12-rol-rotate` turns `80h` into 1; `shl al, 1` on the same byte would produce 0 and set CF. |
+| Rotate vs shift | `rol` / `ror` wrap bits; `shl` / `shr` / `sar` discard them. Listing `12-rol-rotate` turns `80h` into 1; listing `18-ror-rotate` turns 1 into 128. `shl al, 1` on `80h` would produce 0 and set CF. |
 | Mask before vs after a shift | Pack: mask, then shift, then OR (listing `08-pack-bitfields`). Unpack: shift, then mask (listing `11-unpack-bitfield`). Skip the unpack mask and high bits remain (listing `17-rgb-extract-no-mask`). |
 | `not` vs assemble-time `NOT` | The `not` instruction inverts a register at run time and does not touch flags (listing `10-not-instruction`, exit 240). `NOT` in an operand (`and rax, NOT 8`) is computed by the assembler. |
 | Argument registers | These listings are process entry points. Values live in RAX/RBX/RCX/RDX/R8/R9/R12/R13 as each listing writes them. Win32 arguments, when you call `ExitProcess`, go in RCX — not RDI. |
@@ -777,7 +801,7 @@ The mask `and rbx, 0FFh` after the shift is what makes a field extract independe
 - `and` keeps bits, `or` sets them, `xor` toggles them, `not` inverts all of them and does not update flags.
 - `shl` multiplies by 2^n; `shr` divides unsigned and fills with zeros; `sar` divides signed and copies the sign bit. Listing `07-sar-signed-divide` exits 252 because −4 truncated to a byte is `0FCh`.
 - Pack by masking to width, shifting to position, and OR-ing. Unpack by shifting to bit 0, then masking. A missing unpack mask leaves leftover high bits: listing `17-rgb-extract-no-mask` shifts `0FFABCDEFh` and leaves `0FFABh` (harness low 8 bits = 171).
-- `rol` / `ror` wrap; shifts discard. Shift counts are an immediate or `cl`.
+- `rol` / `ror` wrap; shifts discard. Listing `12-rol-rotate` exits **1**; listing `18-ror-rotate` exits **128**. Shift counts are an immediate or `cl`.
 - `xor reg, reg` is the zero idiom. XOR-swap needs two distinct registers and is fragile; prefer `xchg`.
 - RGB in `0ABCDEFh` is red 171, green 205, blue 239. Listing `16-rgb-extraction` exits 239.
 

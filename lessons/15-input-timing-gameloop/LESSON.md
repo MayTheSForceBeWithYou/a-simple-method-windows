@@ -107,7 +107,59 @@ END
 
 If the key byte were 0, the three increments would be skipped, `hold_count` would stay 0, and the listing would take `no_fire` and exit 0. A live game increments once per frame while the key stays down and resets the counter on release. This listing is the threshold test: fire when the count is at least 3.
 
-<!-- LISTING-PENDING: no Jack listing for a rising-edge (prev==0 && cur==1) or a two-key chord; hold-repeat is the input-state listing -->
+A **rising edge** is the frame where the key goes from up to down: `prev == 0 && cur == 1`. Listing `11-rising-edge` loads EAX = 0 and EBX = 1, checks both, and exits 1 on the match. Expected exit: **1**. Either compare failing would zero ECX.
+
+```asm
+; Listing 11: Rising edge prev==0 && cur==1
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     eax, 0
+    mov     ebx, 1
+    cmp     eax, 0
+    jne     not_rising
+    cmp     ebx, 1
+    jne     not_rising
+    mov     ecx, 1
+    jmp     exit_proc
+not_rising:
+    xor     ecx, ecx
+exit_proc:
+    call    ExitProcess
+main ENDP
+END
+```
+
+A **chord** is two keys down at once. Listing `12-two-key-chord` writes `key_w = 1` and `key_shift = 1`, then `and`s those bytes. 1 AND 1 is 1. Expected exit: **1**. Either key 0 would exit 0.
+
+```asm
+; Listing 12: Two-key chord (W and Shift both down)
+; Expected exit: 1
+; Expected stdout: (none)
+
+.DATA?
+key_w BYTE ?
+key_shift BYTE ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     BYTE PTR key_w, 1
+    mov     BYTE PTR key_shift, 1
+    movzx   eax, BYTE PTR key_w
+    and     al, BYTE PTR key_shift
+    movzx   ecx, al
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Mouse delta as Manhattan distance
 
@@ -342,9 +394,67 @@ END
 
 ```
 
-A full frame after this listing still needs a render path and a wait. Windows waits with `Sleep` (milliseconds in RCX), not `nanosleep`. None of the Jack listings in this lesson call `Sleep`.
+A full frame after this listing still needs a render path and a wait. Windows waits with `Sleep` (milliseconds in RCX), not `nanosleep`.
 
-<!-- LISTING-PENDING: no Jack listing for Sleep / frame-budget padding; accumulator loop is listing 09 -->
+Listing `13-sleep-frame-pad` is the clamp path of that pad. `FRAME_BUDGET_MS` is 10; `WORK_TARGET_MS` is 12. It stamps `t0` with `GetTickCount64`, then busy-waits until elapsed is `>= 12`. Remaining time is `10 - elapsed`, which is negative, so `jns sleep_positive` fails. The clamp arm zeros RAX, sets `ecx = 1`, and jumps to `do_sleep`.
+
+`do_sleep` then does `mov r8d, edx` / `call Sleep` / `mov ecx, r8d`. On this path EDX was never set (it is a leftover after `GetTickCount64`), and `Sleep` may clobber R8. The header comments Expected exit: **1**, matching the `mov ecx, 1` on the clamp arm, but that 1 is not what `ExitProcess` receives after `do_sleep`. The positive arm would zero EDX and Sleep the remaining milliseconds. This listing has not been assembled with ml64.
+
+```asm
+; Listing 13: Sleep frame-budget padding after measured work
+; Expected exit: 1
+; Expected stdout: (none)
+;
+; Budget 10 ms; busy-wait until elapsed >= 12 ms; remaining clamps to 0; exit 1.
+
+FRAME_BUDGET_MS EQU 10
+WORK_TARGET_MS EQU 12
+
+.DATA?
+t0 QWORD ?
+t1 QWORD ?
+
+.CODE
+EXTRN GetTickCount64:PROC
+EXTRN Sleep:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    call    GetTickCount64
+    mov     t0, rax
+
+work_wait:
+    call    GetTickCount64
+    mov     t1, rax
+    sub     rax, QWORD PTR t0
+    cmp     rax, WORK_TARGET_MS
+    jl      work_wait
+
+    mov     rbx, rax
+    mov     rax, FRAME_BUDGET_MS
+    sub     rax, rbx
+    jns     sleep_positive
+    xor     rax, rax
+    mov     ecx, 1
+    jmp     do_sleep
+
+sleep_positive:
+    mov     ecx, eax
+    xor     edx, edx
+    jmp     do_sleep
+
+do_sleep:
+    mov     r8d, edx
+    call    Sleep
+    mov     ecx, r8d
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: why listing 08 zeros RDX twice
 
@@ -373,7 +483,7 @@ A full frame after this listing still needs a render path and a wait. Windows wa
 |-----------|---------|
 | `clock_gettime` is how you time a Win32 frame | `QueryPerformanceCounter` writes a tick; `QueryPerformanceFrequency` writes ticks per second. Listing `01-qpc-timing` calls both and exits 0 without scaling. |
 | dt is a `timespec` (seconds + nanoseconds) | Listing `02-delta-time` is a QWORD subtraction: 142 − 100 = **42**. |
-| A hold-repeat is a rising edge | A rising edge is `prev == 0 && cur == 1`. Listing `03-hold-repeat` fires when a **counter** reaches 3 while the key byte stays 1. |
+| A hold-repeat is a rising edge | A rising edge is `prev == 0 && cur == 1` (listing `11-rising-edge`, exit **1**). Listing `03-hold-repeat` fires when a **counter** reaches 3 while the key byte stays 1. |
 | `neg` the mouse axis unconditionally | Listing `04-mouse-delta-sum` tests `rbx` and only then `neg`. Unconditional `neg` breaks a positive `dy`. |
 | `PeekConsoleInputA` blocks like `ReadFile` | It peeks the record buffer without waiting. Listing `05-peek-console-input` imports it, calls only `GetStdHandle(-10)`, and exits **0**. |
 | `div` reads only RAX | `div` divides `rdx:rax` and writes **both** RAX (quotient) and RDX (remainder). |
@@ -394,10 +504,10 @@ A full frame after this listing still needs a render path and a wait. Windows wa
 
 - `QueryPerformanceCounter` / `QueryPerformanceFrequency` are imported `kernel32` calls (pointer in RCX, BOOL in RAX). Listing `01-qpc-timing` calls both and exits **0** without computing a delta.
 - Delta time is a subtraction of two stamps. Listing `02-delta-time` exits **42** from 142 − 100.
-- Hold-repeat fires when a counter reaches a threshold while the key byte stays down (listing `03-hold-repeat`, exit **1**). Mouse Manhattan is `|dx| + |dy|` after a sign test (listing `04-mouse-delta-sum`, exit **7**).
+- Hold-repeat fires when a counter reaches a threshold while the key byte stays down (listing `03-hold-repeat`, exit **1**). A rising edge is `prev == 0 && cur == 1` (listing `11-rising-edge`, exit **1**). A chord is two key bytes ANDed (listing `12-two-key-chord`, exit **1**). Mouse Manhattan is `|dx| + |dy|` after a sign test (listing `04-mouse-delta-sum`, exit **7**).
 - `GetStdHandle(-10)` is `STD_INPUT_HANDLE`. `PeekConsoleInputA` is the non-blocking peek; listing `05-peek-console-input` declares it and exits **0** without calling it.
 - Fixed steps: `xor rdx, rdx` then `div` (listing `06-fixed-step-div` exits **3** from 50 / 16), clamp the quotient (listing `07-timestep-clamp` cuts 6 to **3**), convert units before the step `div` (listings 08 and 10 exit **1**).
-- Bank leftover time in an accumulator and spend whole 16 ms steps under a clamp. Listing `09-frame-accum-loop` spends 32 ms as two steps and exits **2**.
+- Bank leftover time in an accumulator and spend whole 16 ms steps under a clamp. Listing `09-frame-accum-loop` spends 32 ms as two steps and exits **2**. Listing `13-sleep-frame-pad` is the over-budget clamp (work 12 ms, budget 10 ms); the header says exit **1**, but `do_sleep` passes EDX/`R8` to `ExitProcess` after `Sleep`.
 
 ## Lookup
 

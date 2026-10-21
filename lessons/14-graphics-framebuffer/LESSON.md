@@ -33,7 +33,54 @@ offset = y * pitch + x * bytes_per_pixel
 
 **Packing.** `(R SHL 16) OR (G SHL 8) OR B` in a register is `00RRGGBBh`. x86-64 is little-endian, so a `mov DWORD PTR` stores B, G, R, 0 in memory. Dumping that dword into a P6 file writes the channels backwards plus a pad byte. Write R, G, B as three bytes.
 
-<!-- LISTING-PENDING: no Jack listing for y*pitch+x*bpp offset math, RGB pack, or pitch alignment; plot/fill/blit/ppm are listed below -->
+Listing `06-pitch-pixel-offset` computes the formula with `y = 1`, `pitch = 32`, `x = 2`, `bpp = 4` (`shl rbx, 2`). `1 * 32 + 2 * 4 = 40`. Expected exit: **40**. There is still no listing that pads pitch to an alignment boundary.
+
+```asm
+; Listing 06: y*pitch + x*bpp pixel offset
+; Expected exit: 40
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 1
+    mov     rbx, 32
+    imul    rax, rbx
+    mov     rbx, 2
+    shl     rbx, 2
+    add     rax, rbx
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `07-rgb-pack-low-byte` packs R=1, G=2, B=3: `eax = 1 SHL 16`, `or` in `2 SHL 8`, `or` in 3, then `and eax, 0FFh` so only the blue channel remains. Expected exit: **3**. The packed dword before the mask is `00010203h`.
+
+```asm
+; Listing 07: Pack R,G,B into dword; exit blue channel
+; Expected exit: 3
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     eax, 1
+    shl     eax, 16
+    mov     ebx, 2
+    shl     ebx, 8
+    or      eax, ebx
+    or      eax, 3
+    and     eax, 0FFh
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
 
 Listing `01-pixel-plot` does **not** compute that offset. It `lea rax, fb` and writes `0FFFFFFFFh` at `[rax]` — pixel (0, 0), all bits 1. Then it zeros ECX. Status **0**. The reservation is `640*480*4` bytes in `.DATA?` (zeroed at load). The store is the plot; the address is the base.
 
@@ -270,9 +317,148 @@ END
 
 Write R, G, B as three bytes. Do not `WriteFile` the packed dword `00RRGGBBh` — little-endian would emit B, G, R, 0.
 
-<!-- LISTING-PENDING: no Jack listing for clip/half-open tests, vsync, double-buffer flip, alpha, damage rects, or Bresenham; keyed blit and PPM are listed above -->
+### Clip, QPC pacing, and Bresenham
 
-Clipping uses half-open intervals `[0, width)` and `[0, height)`. Width is the first outside column. A blit that ignores that writes off the end of `fb`.
+Clipping uses half-open tests: a coordinate is inside when `x >= lo && x < hi` (and the same for y). Width is the first outside column. A blit that ignores that writes off the end of `fb`. There is still no listing for double-buffer flip, alpha, or damage rects.
+
+Listing `08-clip-half-open` loads `x = 5` and compares to 4. The in-range label is `jl in_range` — that is `x < 4` only; there is no `x >= 0` check. 5 is not less than 4, so it takes `mov ecx, 1`. Expected exit: **1** (outside). The in-range path would exit 0. The comparison form for a full half-open clip against `[0, 4)` is `x >= 0 && x < 4`.
+
+```asm
+; Listing 08: Half-open clip test x in [0, width)
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 5
+    cmp     rax, 4
+    jl      in_range
+    mov     ecx, 1
+    jmp     done
+in_range:
+    xor     ecx, ecx
+done:
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `09-vsync-ready-flag` is **not** a display vsync. It paces with `QueryPerformanceCounter`: seed `frame_target = start + 1`, then a loop that increments EBX, returns when EBX is `>= 3`, and otherwise spins until `qpc_now >= frame_target` before adding 1 tick to the target. EBX goes 1, 2, then 3 and exits. Expected exit: **3**. The wait body runs twice (EBX = 1 and 2); the third increment hits the exit check without a third spin. This is QPC tick pacing, not a vertical-blank interrupt or `DwmFlush`.
+
+```asm
+; Listing 09: Frame pacing with QueryPerformanceCounter (spin until tick delta)
+; Expected exit: 3
+; Expected stdout: (none)
+;
+; Runs three frames; each frame spins until QPC advances by at least 1 tick.
+
+.DATA?
+qpc_start QWORD ?
+qpc_now QWORD ?
+frame_target QWORD ?
+
+.CODE
+EXTRN QueryPerformanceCounter:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    lea     rcx, qpc_start
+    call    QueryPerformanceCounter
+    mov     rax, QWORD PTR qpc_start
+    add     rax, 1
+    mov     frame_target, rax
+
+    xor     ebx, ebx
+
+frame_loop:
+    inc     ebx
+    cmp     ebx, 3
+    jge     frames_done
+
+wait_tick:
+    lea     rcx, qpc_now
+    call    QueryPerformanceCounter
+    mov     rax, QWORD PTR qpc_now
+    cmp     rax, QWORD PTR frame_target
+    jl      wait_tick
+
+    mov     rax, QWORD PTR qpc_now
+    add     rax, 1
+    mov     frame_target, rax
+    jmp     frame_loop
+
+frames_done:
+    mov     ecx, ebx
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `10-bresenham-pixel-count` walks from (0, 0) to (3, 2). `dx = 3`, `dy = 2`, `err = 2*dy - dx = 1`. Each loop iteration increments `count`, then stops when `x == dx`. That plots x in `x >= 0 && x <= 3` — four columns. The y-step happens when `err > 0` (`test` / `jle no_y_step`). Expected exit: **4**.
+
+```asm
+; Listing 10: Bresenham line from (0,0) to (3,2); count plotted points
+; Expected exit: 4
+; Expected stdout: (none)
+;
+; dx=3 dy=2; err starts at 2*dy-dx=1; plot each x in [0..3] (four columns).
+
+.DATA?
+x QWORD ?
+y QWORD ?
+dx QWORD ?
+dy QWORD ?
+err QWORD ?
+count QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     x, 0
+    mov     y, 0
+    mov     dx, 3
+    mov     dy, 2
+    mov     rax, dy
+    shl     rax, 1
+    sub     rax, dx
+    mov     err, rax
+    mov     count, 0
+
+bres_loop:
+    inc     count
+    cmp     x, dx
+    je      bres_done
+    mov     rax, err
+    mov     rbx, dy
+    shl     rbx, 1
+    add     rax, rbx
+    mov     err, rax
+    test    rax, rax
+    jle     no_y_step
+    inc     y
+    mov     rbx, dx
+    shl     rbx, 1
+    sub     rax, rbx
+    mov     err, rax
+no_y_step:
+    inc     x
+    jmp     bres_loop
+
+bres_done:
+    mov     ecx, DWORD PTR count
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: what the keyed blit leaves behind
 
@@ -291,7 +477,7 @@ Clipping uses half-open intervals `[0, width)` and `[0, height)`. Width is the f
 | Confusion | What actually separates them |
 |-----------|------------------------------|
 | Pitch equals width | Pitch is `width * bytes_per_pixel`, plus optional pad. Offset uses pitch, not width. |
-| Listing 01 computes `y * pitch + x * 4` | It stores at `[fb+0]`. Status 0. |
+| Listing 01 computes `y * pitch + x * 4` | Listing 01 stores at `[fb+0]` and exits 0. Listing `06-pitch-pixel-offset` is `1*32 + 2*4` and exits **40**. |
 | Listing 02 fills a 2-D rectangle | It writes 100 consecutive dwords. Status 0. |
 | Packed `00RRGGBBh` is R,G,B in memory | Little-endian stores B, G, R, 0. P6 wants R, G, B as three bytes. |
 | Color-key blit writes 0 | It skips the store. Listing 04 exits 10. |
@@ -309,12 +495,15 @@ Clipping uses half-open intervals `[0, width)` and `[0, height)`. Width is the f
 
 ## Key takeaways
 
-- Offset is `y * pitch + x * bpp`. Listing 01 plots at the base and exits 0.
+- Offset is `y * pitch + x * bpp`. Listing `06-pitch-pixel-offset` exits **40**. Listing 01 plots at the base and exits 0. Listing `07-rgb-pack-low-byte` packs 1,2,3 and exits blue **3**.
 - Listing 02 fills 100 dwords with `0FF0000FFh` and exits 0. It is a linear run, not a pitched rectangle.
 - `rep movsd` copies dwords; DF must be 0. Listing 03 exits 0 and does not sum.
 - A keyed blit skips the key. Listing 04 exits 10, the sum of the two stored fives.
 - P6 is an 11-byte header plus 3-byte RGB. Listing 05 uses Win32 file calls and exits 0 on success, 1 if `CreateFileA` returns −1.
 - Little-endian dword stores are not P6 channel order.
+- Half-open clip is `x >= lo && x < hi`. Listing `08-clip-half-open` tests only `x < 4` for x=5 and exits **1** (outside).
+- Listing `09-vsync-ready-flag` exits **3** after QPC tick pacing — not a display vsync.
+- Listing `10-bresenham-pixel-count` plots four columns from (0,0) to (3,2) and exits **4**.
 
 ## Lookup
 

@@ -21,7 +21,154 @@ The park binary is done when all of these hold:
 
 The Jack listings isolate those primitives. They are not the whole binary.
 
-<!-- LISTING-PENDING: no Jack listing for track-piece types/connections, a 100-tick loop, or P6 PPM map render; grid/clamp/parent/cash/save-load are the listings below -->
+### Track connect, 100 ticks, and a 2×2 P6 map
+
+Listing `13-track-piece-connect` encodes a four-way direction wrap. Directions are 0..3. The opposite of a facing is `(facing + 2) AND 3`. Here the piece heading is 1 and the neighbor facing is 3: `(3 + 2) AND 3 = 1`, which matches. Expected exit: **1**. A mismatch would exit 0.
+
+```asm
+; Listing 13: Track piece direction connect rule
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 1
+    mov     rbx, 3
+    mov     rcx, rbx
+    add     rcx, 2
+    and     rcx, 3
+    cmp     rax, rcx
+    je      connected
+    xor     ecx, ecx
+    jmp     done
+connected:
+    mov     ecx, 1
+done:
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `14-hundred-tick-loop` zeros `tick` and `accum`, then while `tick < 100` adds 1 to `accum` and increments `tick`. One hundred iterations leave `accum = 100`. Expected exit: **100**. The compare is `tick >= 100` to stop, i.e. the body runs for `tick` in `tick >= 0 && tick < 100`.
+
+```asm
+; Listing 14: Fixed 100-tick simulation loop with per-tick work
+; Expected exit: 100
+; Expected stdout: (none)
+
+.DATA?
+tick QWORD ?
+accum QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     tick, 0
+    mov     accum, 0
+
+tick_loop:
+    cmp     tick, 100
+    jge     tick_done
+    add     accum, 1
+    inc     tick
+    jmp     tick_loop
+
+tick_done:
+    mov     ecx, DWORD PTR accum
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `15-render-map-p6` writes `map.ppm`. The header is `"P6\n2 2\n255\n"` — `HLEN EQU $ - hdr` is 11. The payload is 12 RGB bytes (2×2 pixels). `CreateFileA` uses `GENERIC_WRITE` (`40000000h`) and disposition 2 (`CREATE_ALWAYS`). Two `WriteFile`s add into `totalWritten`. On success that sum is 11 + 12 = 23. Expected exit: **23**. `CreateFileA` or `WriteFile` failure exits **1**.
+
+```asm
+; Listing 15: Write 2x2 map as P6 PPM (LESSON.md)
+; Expected exit: 23
+; Expected stdout: (none)
+; Expected side effect: creates map.ppm (11-byte P6 header + 12 RGB bytes = 23 written)
+
+.DATA
+path DB "map.ppm", 0
+hdr DB "P6", 10, "2 2", 10, "255", 10
+HLEN EQU $ - hdr
+map_cells BYTE 255, 0, 0, 0, 0, 255, 0, 0, 0, 0, 255, 0
+PIXEL_BYTES EQU 12
+TOTAL_BYTES EQU HLEN + PIXEL_BYTES
+
+.DATA?
+bytesWritten DWORD ?
+hFile QWORD ?
+totalWritten DWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    mov     totalWritten, 0
+
+    lea     rcx, path
+    mov     edx, 40000000h
+    xor     r8d, r8d
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 2
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    je      fail
+    mov     rbx, rax
+
+    mov     rcx, rbx
+    lea     rdx, hdr
+    mov     r8d, HLEN
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    rax, rax
+    jz      fail_close
+    add     totalWritten, bytesWritten
+
+    mov     rcx, rbx
+    lea     rdx, map_cells
+    mov     r8d, PIXEL_BYTES
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    rax, rax
+    jz      fail_close
+    add     totalWritten, bytesWritten
+
+    mov     rcx, rbx
+    call    CloseHandle
+
+    mov     ecx, DWORD PTR totalWritten
+    call    ExitProcess
+
+fail_close:
+    mov     rcx, rbx
+    call    CloseHandle
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Spawn a visitor
 
@@ -550,6 +697,7 @@ A second wrong reading lives in the economy listings: *“Listing 08 exits 7, th
 - Unguarded `sub` (listings 08 and 10) exits **7** for 10 − 3 and wraps if cash < upkeep. Listing `09-cash-upkeep-guard` compares unsigned, then subtracts, and exits **7** for the same 10 and 3.
 - `"PK01"` as a little-endian DWORD is **`31304B50h`**. Listing `03-load-header-magic` compares that value and exits **1**.
 - Save is `CreateFileA` (`GENERIC_WRITE`, `CREATE_ALWAYS`) + two `WriteFile`s + `CloseHandle` (listing 11, exit **0** on success). Load pre-seeds or `ReadFile`s 8 bytes and exits **1** when magic and version match the immediate it uses (listing 12).
+- Track connect is `(facing + 2) AND 3` (listing `13-track-piece-connect`, exit **1**). The 100-tick loop exits **100** (listing 14). Listing `15-render-map-p6` writes an 11-byte P6 header plus 12 RGB bytes and exits **23** on success.
 
 ## Lookup
 

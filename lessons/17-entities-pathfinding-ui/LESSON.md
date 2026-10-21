@@ -178,7 +178,157 @@ END
 
 The sign test is the same rule as lesson 15’s mouse delta. Reverse the operands (`5 - 10`) and `neg` runs. A full `h` still needs `|x2 - x1| + |y2 - y1|`.
 
-<!-- LISTING-PENDING: no Jack listing for BFS queue/visited/parent, A* f = g+h, or a two-axis Manhattan add; 02-manhattan-dist.asm is |10-5| only -->
+Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the sum is 10. `abs_rax` tests the sign and `neg`s when needed. Expected exit: **10**.
+
+```asm
+; Listing 10: Two-axis Manhattan |dx|+|dy|
+; Expected exit: 10
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 10
+    mov     rbx, 5
+    sub     rax, rbx
+    call    abs_rax
+    mov     rcx, rax
+    mov     rax, 3
+    mov     rbx, 8
+    sub     rax, rbx
+    call    abs_rax
+    add     rcx, rax
+    mov     ecx, ecx
+    call    ExitProcess
+main ENDP
+
+abs_rax PROC
+    test    rax, rax
+    jns     abs_done
+    neg     rax
+abs_done:
+    ret
+abs_rax ENDP
+
+END
+```
+
+Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 2|` = 2 + 2 = 4. Then `g = 3` is added: `f = 7`. Expected exit: **7**. Same `abs_rax` helper.
+
+```asm
+; Listing 09: A* score f = g + h
+; Expected exit: 7
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 3
+    mov     rbx, 1
+    sub     rax, rbx
+    call    abs_rax
+    mov     rcx, rax
+    mov     rax, 4
+    mov     rbx, 2
+    sub     rax, rbx
+    call    abs_rax
+    add     rcx, rax
+    mov     rax, 3
+    add     rax, rcx
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+abs_rax PROC
+    test    rax, rax
+    jns     abs_done
+    neg     rax
+abs_done:
+    ret
+abs_rax ENDP
+
+END
+```
+
+Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0, marks `visited[0]`, and starts `rbx = 1`. Each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store.
+
+```asm
+; Listing 08: BFS on a 5-node line; visit count
+; Expected exit: 5
+; Expected stdout: (none)
+
+NODE_COUNT EQU 5
+
+.DATA?
+queue QWORD 16 DUP(?)
+head QWORD ?
+tail QWORD ?
+visited BYTE NODE_COUNT DUP(?)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     head, 0
+    mov     tail, 0
+    lea     rdi, visited
+    mov     ecx, NODE_COUNT
+    xor     eax, eax
+    cld
+    rep     stosb
+
+    mov     rax, 0
+    mov     rcx, tail
+    mov     QWORD PTR queue[rcx*8], rax
+    inc     tail
+    mov     BYTE PTR visited[0], 1
+
+    mov     rbx, 1
+
+bfs_loop:
+    cmp     head, tail
+    jge     bfs_done
+    mov     rcx, head
+    mov     rax, QWORD PTR queue[rcx*8]
+    inc     head
+
+    mov     rcx, rax
+    dec     rcx
+    jns     try_left
+    jmp     try_right
+try_left:
+    cmp     BYTE PTR visited[rcx], 0
+    jne     try_right
+    mov     BYTE PTR visited[rcx], 1
+    inc     rbx
+    mov     rdx, tail
+    mov     QWORD PTR queue[rdx*8], rcx
+    inc     tail
+try_right:
+    mov     rcx, rax
+    inc     rcx
+    cmp     rcx, NODE_COUNT
+    jge     bfs_loop
+    cmp     BYTE PTR visited[rcx], 0
+    jne     bfs_loop
+    mov     BYTE PTR visited[rcx], 1
+    inc     rbx
+    mov     rdx, tail
+    mov     QWORD PTR queue[rdx*8], rcx
+    inc     tail
+    jmp     bfs_loop
+
+bfs_done:
+    mov     ecx, ebx
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Focus wrap: increment, then remainder
 
@@ -218,7 +368,38 @@ END
 
 `inc` then `mod`, not `mod` then `inc`. If focus is already 2, `(2 + 1) mod 3 = 0` wraps to the first widget. `(2 mod 3) + 1 = 3` is past the last valid index (0..2). Zero RDX before the `div` (lesson 15). The remainder is the wrapped index; the quotient is how many times you wrapped, which this listing discards.
 
-<!-- LISTING-PENDING: no Jack listing for a four-compare UI hit test or panel y-cursor stack; focus wrap is listing 06 -->
+Listing `11-ui-hit-test` is a four-compare panel test. The panel is `x >= 0 && x < 10 && y >= 0 && y < 10`. The point is (5, 5). All four compares pass (`jl` / `jge` to `miss` fail), so ECX becomes 1. Expected exit: **1**. There is still no panel y-cursor stack listing.
+
+```asm
+; Listing 11: Four-compare panel hit test (half-open)
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    ; panel x=0 y=0 w=10 h=10; point px=5 py=5
+    mov     rax, 5
+    mov     rbx, 5
+    cmp     rax, 0
+    jl      miss
+    cmp     rax, 10
+    jge     miss
+    cmp     rbx, 0
+    jl      miss
+    cmp     rbx, 10
+    jge     miss
+    mov     ecx, 1
+    jmp     done
+miss:
+    xor     ecx, ecx
+done:
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Worked example: clamp happiness after the add
 
@@ -272,7 +453,7 @@ END
 | Every slot updates | Listing `05-entity-update-soa` skips `alive == 0`. Dead slot 1 does not add 2. Checksum **4**, not 6. |
 | `xs[rcx]` is the QWORD at entity `rcx` | QWORD elements need `xs[rcx*8]`. Bytes use `alive[rcx]`. |
 | `cmp mask, POS` tests bit 0 | `cmp` against 1 rejects mask 3. Use `test`. Listing `04-component-flag-bits` ORs bits to **7**. |
-| Manhattan needs a square root | Manhattan is `|dx| + |dy|`. Listing `02-manhattan-dist` is `|10 - 5|` = **5**, one axis. |
+| Manhattan needs a square root | Manhattan is `|dx| + |dy|`. Listing `02-manhattan-dist` is `|10 - 5|` = **5**, one axis. Listing `10-manhattan-2axis` adds `|3 - 8|` and exits **10**. |
 | Focus is `mod` then `inc` | Listing `06-focus-wrap-div` increments 2 to 3, then exits RDX = **0**. |
 | Clamp the operand, then add | Listing `07-happiness-clamp` adds first (110), then writes 100. Exit **100**. |
 | Entity update exits a flag | Listing `01-entity-update` exits the new **x** (105). |
@@ -290,8 +471,8 @@ END
 - One entity integrates with `x += vx`. Listing `01-entity-update` exits the new x, **105**.
 - SoA is parallel arrays. Listing `03-soa-field-decl` declares them and exits **0**. Listing `05-entity-update-soa` updates live slots only and exits checksum **4**.
 - Component bits OR together. Listing `04-component-flag-bits` exits `POS | VEL | HP` = **7**.
-- Listing `02-manhattan-dist` is a signed absolute difference of 10 and 5, exit **5** — one axis of `h`, not `|dx| + |dy|`.
-- Focus wraps with increment then remainder: listing `06-focus-wrap-div` turns 2 into **0** via `div` by 3 and `mov ecx, edx`.
+- Listing `02-manhattan-dist` is a signed absolute difference of 10 and 5, exit **5** — one axis of `h`. Listing `10-manhattan-2axis` is `|10-5| + |3-8|` and exits **10**. Listing `09-astar-f-score` is `g + h` = 3 + 4 and exits **7**. Listing `08-bfs-visit-count` visits five nodes on a line and exits **5**.
+- Focus wraps with increment then remainder: listing `06-focus-wrap-div` turns 2 into **0** via `div` by 3 and `mov ecx, edx`. Listing `11-ui-hit-test` is `px >= 0 && px < 10 && py >= 0 && py < 10` for (5, 5) and exits **1**.
 - Clamp after arithmetic. Listing `07-happiness-clamp` turns 90 + 20 into **100**.
 
 ## Lookup

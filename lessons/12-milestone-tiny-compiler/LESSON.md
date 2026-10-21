@@ -102,9 +102,41 @@ END
 
 A digit after the first letter (`foo2`) would stop the scan at the digit with this listing's range. A full language also accepts `'A'..'Z'`, `'_'`, and digits *after* the first character.
 
-<!-- LISTING-PENDING: no Jack listing for whole-word keyword matching; ident length is listed above -->
-
 A keyword such as `let` must match every letter **and** the boundary after it. Comparing only the first byte to `'l'` accepts `"lxxx"`. `"letter"` must not become `let` plus `ter`.
+
+Listing `07-keyword-let-match` compares `src` to `kw` with `repe cmpsb` for 3 bytes (`cld` first). Both sides are `"let"`, so the compare matches. Then it checks `src[3] == 0` — the byte after the three letters is the terminator, so this run is a whole-word match. Expected exit: **1**. A mismatch, or a following letter (`"letter"` would fail the `cmp BYTE PTR [src + 3], 0`), takes `no_match` and exits 0.
+
+```asm
+; Listing 07: Whole-word keyword match for "let"
+; Expected exit: 1
+; Expected stdout: (none)
+
+.DATA
+kw BYTE "let", 0
+src BYTE "let", 0
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     rsi, src
+    lea     rdi, kw
+    mov     rcx, 3
+    cld
+    repe    cmpsb
+    jne     no_match
+    cmp     BYTE PTR [src + 3], 0
+    jne     no_match
+    mov     ecx, 1
+    jmp     done
+no_match:
+    xor     ecx, ecx
+done:
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Constant folding and parentheses
 
@@ -146,7 +178,71 @@ call       := ident "(" [expr ("," expr)*] ")"
 
 `term` consumes `*`. `expr` consumes `+`. So `2*3+4` is `(2*3)+4 = 10`. Parentheses restart at `expr`, so `(1+2)*3` is 9 — the fold listing.
 
-<!-- LISTING-PENDING: no Jack listing for if/while codegen, local-slot allocation, or PE header size; fold and bytecode are listed above -->
+### if / while shapes and the DOS header size
+
+Listing `08-if-while-codegen` is two control-flow shapes in one `main`, not a compiler that emits them.
+
+The **if**: `rax = 1`, `test rax, rax` is nonzero, so it takes the then-arm `mov rax, 7` and skips `else_branch` (`mov rax, 9`). After `after_if`, RAX is 7. That 7 is then discarded.
+
+The **while**: RCX starts at 0. `cmp rcx, 3` / `jge while_done` fails three times; each body is `inc rcx`. When RCX is 3 the compare is `>=` and the loop stops. `mov ecx, ecx` / `ExitProcess` exits the trip count. Expected exit: **3**. The if-result 7 is not the status.
+
+There is still no listing that allocates local slots.
+
+```asm
+; Listing 08: if-then-else and while loop codegen shapes
+; Expected exit: 3
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 1
+    test    rax, rax
+    jz      else_branch
+    mov     rax, 7
+    jmp     after_if
+else_branch:
+    mov     rax, 9
+after_if:
+    xor     rcx, rcx
+while_test:
+    cmp     rcx, 3
+    jge     while_done
+    inc     rcx
+    jmp     while_test
+while_done:
+    mov     ecx, ecx
+    call    ExitProcess
+main ENDP
+END
+```
+
+Listing `09-pe-header-size` adds the `IMAGE_DOS_HEADER` field sizes: 14 WORDs (`14 SHL 1` = 28), plus `e_res[4]` (8), `e_oemid`+`e_oeminfo` (4), `e_res2[10]` (20), and `e_lfanew` (4). 28+8+4+20+4 = 64. Expected exit: **64**. It does not open a PE file.
+
+```asm
+; Listing 09: Sum IMAGE_DOS_HEADER field sizes (PE bookkeeping)
+; Expected exit: 64
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    xor     ecx, ecx
+    mov     eax, 14
+    shl     eax, 1
+    add     ecx, eax
+    add     ecx, 8
+    add     ecx, 4
+    add     ecx, 20
+    add     ecx, 4
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Accumulator bytecode: load, load, add-immediate, halt
 
@@ -347,7 +443,7 @@ A real relative jump consumes the opcode, then the displacement, then adds the d
 
 | Confusion | What actually separates them |
 |-----------|------------------------------|
-| Keyword test is the first letter | Must match every letter and the next byte must not be alphanumeric. No Jack listing implements that. |
+| Keyword test is the first letter | Must match every letter and the next byte must not continue the ident. Listing `07-keyword-let-match` uses `repe cmpsb` on `"let"` plus `src[3] == 0` and exits **1**. |
 | `(1+2)*3` is `1+(2*3)` | Parentheses reset to `expr`. Listing 03 adds first, then multiplies, and exits 9. |
 | Listing 04 ADD pops two loads | It adds the constant 10 to the current `acc`. Status 30 is `20+10`. |
 | Halt is always opcode 0 | Listing 04 uses 3. Listing 05 uses 0. Read the table in front of you. |
@@ -367,8 +463,8 @@ A real relative jump consumes the opcode, then the displacement, then adds the d
 ## Key takeaways
 
 - Multi-digit scan is `value * 10 + digit` until a terminator; listing `01-scan-number` exits 42.
-- Identifier length here is a run of `'a'..'z'`; listing `02-scan-ident` exits 3 for `"foo"`.
-- `(1+2)*3` folds to 9 when you add first; `*` still binds tighter than `+` when there are no parentheses.
+- Identifier length here is a run of `'a'..'z'`; listing `02-scan-ident` exits 3 for `"foo"`. Listing `07-keyword-let-match` matches whole-word `"let"` and exits **1**.
+- `(1+2)*3` folds to 9 when you add first; `*` still binds tighter than `+` when there are no parentheses. Listing `08-if-while-codegen` takes the then-arm then a while that exits trip count **3**. Listing `09-pe-header-size` adds DOS-header field sizes to **64**.
 - Listing 04's ADD is `acc += 10`. Status 30 is not a two-operand stack add.
 - Listing 05's ADD pops 5 and 4 and pushes 9. Halt opcode 0 pops that sum.
 - Listing 06 exits 0 after adding the first byte (3) to RSI; it is not a full jump interpreter.
@@ -382,7 +478,7 @@ A real relative jump consumes the opcode, then the displacement, then adds the d
 
 ## Acceptance criteria
 
-The six Jack listings are complete when:
+The nine Jack listings are complete when:
 
 1. **Scan number:** `"42"` exits 42.
 2. **Scan ident:** `"foo"` exits 3.
@@ -390,8 +486,11 @@ The six Jack listings are complete when:
 4. **Accumulator interp:** `1,10, 1,20, 2, 3` exits 30 (`acc = 20 + 10`).
 5. **Stack interp:** `1,4, 1,5, 2, 0` adds 4 and 5. The comment says 5; the add produces 9.
 6. **Jump listing:** exits 0. The add uses the first byte, not a fetched `rel8`.
+7. **Keyword:** `"let"` vs `"let"` plus a 0 boundary exits 1.
+8. **if / while shapes:** then-arm then a 3-trip while; status 3.
+9. **DOS header size:** field-size sum 64.
 
-Exercises add keyword boundaries, `if` / `while`, locals, and PE size stubs. Floating-point is lesson 13.
+Exercises still add locals. Floating-point is lesson 13.
 
 ## Exercises
 

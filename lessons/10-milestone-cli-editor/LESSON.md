@@ -658,9 +658,61 @@ END
 
 ```
 
-**Kill-line** deletes from the cursor through the last character before the newline and **leaves the newline**. In `"ab\ncd"` (length 5), kill from cursor 0 yields `"\ncd"` (length 3): copy `buf[2..5)` down to `buf[0..3)`. No Jack listing implements kill-line; the drill is `exercises/24-from-scratch-kill-line.asm`.
+**Kill-line** deletes from the cursor through the last character before the newline and **leaves the newline**.
 
-<!-- LISTING-PENDING: no Jack listing implements kill-line; exercises/24-from-scratch-kill-line.asm is the drill -->
+Listing `21-kill-line` uses the same `"ab", 10, "cd"` bytes as listing 14, with `len = 5` and `cur = 0` (the cursor field is written and never read). The scan starts at index 0 and walks forward until `buf[rcx] == 10`. That newline is at index 2. Then it copies `buf[2..5)` down to `buf[0..)`: the three bytes `10`, `'c'`, `'d'`. `len` becomes the destination count 3. Expected exit: **3**. After the copy the buffer is `"\ncd"` plus the leftover terminator; the newline stayed.
+
+The drill `exercises/24-from-scratch-kill-line.asm` is still the from-scratch version.
+
+```asm
+; Listing 21: Kill-line deletes to newline, keeps newline (LESSON.md)
+; Expected exit: 3
+; Expected stdout: (none)
+
+.DATA
+buf BYTE "ab", 10, "cd", 0
+
+.DATA?
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     len, 5
+    mov     cur, 0
+
+    mov     rcx, 0
+    lea     rdx, buf
+find_nl:
+    cmp     BYTE PTR [rdx + rcx], 10
+    je      found_nl
+    inc     rcx
+    jmp     find_nl
+
+found_nl:
+    mov     r8, rcx
+    mov     r9, len
+    mov     rdi, 0
+    mov     rsi, r8
+copy_rest:
+    cmp     rsi, r9
+    jge     copy_done
+    movzx   eax, BYTE PTR [rdx + rsi]
+    mov     BYTE PTR [rdx + rdi], al
+    inc     rsi
+    inc     rdi
+    jmp     copy_rest
+
+copy_done:
+    mov     len, rdi
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
+main ENDP
+END
+```
 
 ## Rendering the buffer
 
@@ -1061,7 +1113,7 @@ The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It st
 - Insert in the middle copies the tail rightward, then stores. `jle` stops at the cursor (listings `02`, `07`, exit 66). `jl` copies one extra slot (listing `20`, exit 3).
 - Delete-forward copies the tail left. Listings `03` and `08` turn `"ABC"` into `"AC"` and exit 2.
 - A gap buffer stores at `gap_start` (listing `11` writes `'X'` and exits 3 remaining). Moving the gap copies one byte (listings `12`, `13`). Listing `10` computes 4096 free bytes; a low-8-bit harness reports 0.
-- Line start is a backward scan for `10` (listing `14` exits 3 on `"ab", 10, "cd"` at cursor 4). Kill-line leaves the newline; there is no Jack listing for it.
+- Line start is a backward scan for `10` (listing `14` exits 3 on `"ab", 10, "cd"` at cursor 4). Kill-line leaves the newline: listing `21-kill-line` copies `"\ncd"` down and exits **3**.
 - Save is `CreateFileA` + `WriteFile` of `"ED01"` and an 8-byte length (listing `17` exits 0). Load checks `WORD PTR magic` against `4445h` (listing `18` exits 1 on a match).
 - Raw mode is `GetConsoleMode`, `and eax, NOT 6`, `SetConsoleMode`, then a restore (listing `19` exits 0).
 

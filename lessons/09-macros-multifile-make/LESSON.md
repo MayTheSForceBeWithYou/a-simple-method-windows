@@ -21,9 +21,33 @@ MASM's macro processor runs before instruction encoding. It sees `EQU`, `TEXTEQU
 
 ### Constants with EQU
 
-`EQU` binds a symbol to a value computed at assembly time. You cannot redefine it later (unlike `=`, which allows reassignment). There is no `01-*.asm` listing on this tree; `EQU` appears in `constants.inc`, in listing `07-debug-equ-exit` (`DEBUG EQU 1`), and in listing `18-offset-equ` (`MY_ADDR EQU OFFSET msg`).
+`EQU` binds a symbol to a value computed at assembly time. You cannot redefine it later (unlike `=`, which allows reassignment). There is still no `01-*.asm`. Listing `21-status-equ-zero` stands in: `STATUS_OK EQU 0` and `STATUS_ERR EQU 1`. It loads `STATUS_OK` into EAX, compares to `STATUS_ERR`, and because 0 is not 1 it keeps `mov ecx, STATUS_OK`. Expected exit: **0**. `EQU` also appears in `constants.inc`, in listing `07-debug-equ-exit` (`DEBUG EQU 1`), and in listing `18-offset-equ` (`MY_ADDR EQU OFFSET msg`).
 
-<!-- LISTING-PENDING: no 01-*.asm on the Jack listings tree (first numbered file is 02-macro-with-local.asm). EQU is shown via constants.inc, 07-debug-equ-exit.asm, and 18-offset-equ.asm -->
+```asm
+; Listing 21: EQU constants choose process status (01-* topic)
+; Expected exit: 0
+; Expected stdout: (none)
+
+STATUS_OK EQU 0
+STATUS_ERR EQU 1
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     eax, STATUS_OK
+    cmp     eax, STATUS_ERR
+    je      use_err
+    mov     ecx, STATUS_OK
+    jmp     done
+use_err:
+    mov     ecx, STATUS_ERR
+done:
+    call    ExitProcess
+main ENDP
+END
+```
 
 `IFDEF` tests whether a symbol exists, not what it equals. Listing `07-debug-equ-exit` defines `DEBUG EQU 1`, then keeps the `IFDEF DEBUG` branch. That branch loads `1` into ECX. The `ELSE` branch (`xor ecx, ecx`) is discarded before encoding. The procedure is `main PROC FRAME` with `sub rsp, 32` / `.allocstack 32` / `.endprolog` — 32 bytes of shadow space before `call ExitProcess`. Expected exit: **1**.
 
@@ -57,9 +81,27 @@ END
 
 ### Text substitution with TEXTEQU
 
-`TEXTEQU` is token-level text replacement. The right-hand side uses angle brackets `<...>` when you substitute more than one token. It is the wrong tool for a numeric constant (`EQU` is clearer) and the right tool for pasting a fragment of syntax. No listing on this tree uses `TEXTEQU`.
+`TEXTEQU` is token-level text replacement. The right-hand side uses angle brackets `<...>` when you substitute more than one token. It is the wrong tool for a numeric constant (`EQU` is clearer) and the right tool for pasting a fragment of syntax.
 
-<!-- LISTING-PENDING: no Jack listing uses TEXTEQU -->
+Listing `23-textequ-exit` binds `EXIT_WITH_42` to the tokens `mov rcx, 42`. Invoking the name pastes that instruction, then `call ExitProcess`. Expected exit: **42**. This is not `EQU 42` followed by `mov ecx, EXIT_WITH_42` — `TEXTEQU` pastes the whole `mov`.
+
+```asm
+; Listing 23: TEXTEQU token paste for exit sequence
+; Expected exit: 42
+; Expected stdout: (none)
+
+EXIT_WITH_42 TEXTEQU <mov rcx, 42>
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    EXIT_WITH_42
+    call    ExitProcess
+main ENDP
+END
+```
 
 ### Parameterized text with MACRO
 
@@ -141,9 +183,30 @@ END
 
 ### Preprocessor variables with `=`
 
-`=` defines a reassignable assemble-time symbol. MASM does not give you NASM's `%assign` iterator inside `REPT`. For numbered labels, use `LOCAL` or write the copies out. No listing on this tree reassigns a symbol inside `REPT`.
+`=` defines a reassignable assemble-time symbol. MASM does not give you NASM's `%assign` iterator inside `REPT`. For numbered labels, use `LOCAL` or write the copies out.
 
-<!-- LISTING-PENDING: no Jack listing uses = reassignment inside REPT/REPEAT -->
+Listing `24-rept-counter-assign` zeros RCX, sets `i = 0`, then `REPT 4` expands `inc rcx` and `i = i + 1` four times. The four `inc rcx` instructions run; RCX is 4 when `ExitProcess` is called (RCX is already the status). `i` lives only at assemble time — it is not a register and does not appear in the object. Expected exit: **4**.
+
+```asm
+; Listing 24: = reassignment inside REPT (LESSON.md)
+; Expected exit: 4
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    xor     rcx, rcx
+    i = 0
+    REPT 4
+        inc     rcx
+        i = i + 1
+    ENDM
+    call    ExitProcess
+main ENDP
+END
+```
 
 ### IFDEF and ELSE
 
@@ -372,9 +435,32 @@ END
 
 `INCLUDE file.inc` (quotes optional) pastes that file at the current line. Headers hold `EQU` values, macros, and structures. The include-guard idiom is `IFNDEF` / `EQU` / `ENDIF`: a second inclusion sees the guard symbol and skips the body, so you do not get duplicate definitions.
 
-There is no `12-*.asm` listing. The shared header is `constants.inc`, and listing `13-stdio-constants-include` is the consumer.
+There is still no `12-*.asm`. Listing `22-exit-code-include` plus `22-exit-code.inc` stand in. The header guards on `EXIT_CODE_INC` and defines `EXIT_OK EQU 0`. The `.asm` starts with `INCLUDE 22-exit-code.inc` and exits `EXIT_OK`. Expected exit: **0**. Assemble from the listings directory so the `INCLUDE` path resolves. `constants.inc` (consumed by listing `13-stdio-constants-include`) is the other shared header.
 
-<!-- LISTING-PENDING: no 12-*.asm on the Jack listings tree. Shared-header material is constants.inc, consumed by 13-stdio-constants-include.asm -->
+```asm
+IFNDEF EXIT_CODE_INC
+EXIT_CODE_INC EQU 1
+EXIT_OK EQU 0
+ENDIF
+```
+
+```asm
+; Listing 22: INCLUDE shared header (12-* topic; pairs with 22-exit-code.inc)
+; Expected exit: 0
+; Expected stdout: (none)
+
+INCLUDE 22-exit-code.inc
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     ecx, EXIT_OK
+    call    ExitProcess
+main ENDP
+END
+```
 
 `constants.inc` guards on `CONSTANTS_INC`, then defines `STD_OUTPUT_HANDLE EQU -11`, `STD_INPUT_HANDLE EQU -10`, `GENERIC_READ EQU 80000000h`, and `GENERIC_WRITE EQU 40000000h`.
 
@@ -682,9 +768,38 @@ END
 
 ## NMake: rebuilding only what changed
 
-A Makefile (often `Makefile.mak` for NMake) names targets, prerequisites, and recipes. NMake compares timestamps and rebuilds only what is out of date. NMake ships with Visual Studio. No Jack `.asm` listing is a Makefile.
+A Makefile (often `Makefile.mak` for NMake) names targets, prerequisites, and recipes. NMake compares timestamps and rebuilds only what is out of date. NMake ships with Visual Studio.
 
-<!-- LISTING-PENDING: no Jack .asm listing for NMake, inference rules, or a Makefile; recipes below are makefile/PowerShell teaching text, not Jack programs -->
+Listing `25-nmake-driver` is the program the sample makefile builds: `xor ecx, ecx` / `call ExitProcess`. Expected exit: **0**. `Makefile.mak` in the same listings directory is the NMake file: target `25-nmake-driver.exe` depends on `25-nmake-driver.obj`; an inference rule `.asm.obj:` runs `ml64 /c $<`; the link line uses `$**` and `$@`.
+
+```asm
+; Listing 25: Program built via NMake (see Makefile.mak in this directory)
+; Expected exit: 0
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+END
+```
+
+```makefile
+# Sample NMake file for listing 25-nmake-driver.asm
+# nmake /f Makefile.mak
+
+all: 25-nmake-driver.exe
+
+25-nmake-driver.exe: 25-nmake-driver.obj
+	link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:$@ $** kernel32.lib
+
+.asm.obj:
+	ml64 /c $<
+```
 
 A recipe line must start with a hard tab, not spaces.
 
@@ -828,7 +943,7 @@ Expected exit: **42** (`echo %ERRORLEVEL%`).
 
 | Confusion | Reality |
 |-----------|---------|
-| `TEXTEQU` is `EQU` | `TEXTEQU` pastes tokens. `EQU` binds a numeric or address constant. No listing here uses `TEXTEQU`; `DEBUG EQU 1` and `STD_OUTPUT_HANDLE EQU -11` are `EQU` |
+| `TEXTEQU` is `EQU` | `TEXTEQU` pastes tokens. `EQU` binds a numeric or address constant. Listing `23-textequ-exit` pastes `mov rcx, 42` and exits **42**. `DEBUG EQU 1` and `STD_OUTPUT_HANDLE EQU -11` are `EQU` |
 | A macro argument is evaluated, then substituted | The argument text is pasted, then assembled. `EXIT_WITH rax` becomes `mov rcx, rax`, not `mov rcx, 42` computed by the macro processor |
 | `REPT 3` is a runtime loop | Listing `03-rept-repetition` emits three `inc eax` instructions. EAX ends at 3 with no branch |
 | A descriptive label inside a macro is enough | Without `LOCAL`, a second expansion is A2005. Listing `08-macro-label-redefine` invokes `TWICE` once so it still assembles; listing `09-twice-macro-local` invokes it twice with `LOCAL` |
@@ -849,13 +964,13 @@ Expected exit: **42** (`echo %ERRORLEVEL%`).
 
 ## Key takeaways
 
-- `EQU` binds a constant; `MACRO` pastes parameterized instructions; `REPT` duplicates a body at assembly time. None of those directives exist at run time.
+- `EQU` binds a constant; `MACRO` pastes parameterized instructions; `REPT` duplicates a body at assembly time. None of those directives exist at run time. Listing `21-status-equ-zero` exits **0** from `STATUS_OK`. Listing `24-rept-counter-assign` increments RCX four times (`i = i + 1` is assemble-time only) and exits **4**. Listing `23-textequ-exit` pastes `mov rcx, 42` and exits **42**.
 - A label inside a macro needs `LOCAL` or a second expansion is A2005. Listing `09-twice-macro-local` exits 2; listing `02-macro-with-local` applies `AbsValue` twice and exits 9.
 - `PUBLIC` / `PROC` export; `EXTRN name:type` imports. Helper listings `05-multifile-helper`, `14-helper-add`, `15-data-message`, and `20-add-two-numbers` have no `main` — you link them with a driver.
 - `ml64 /c` builds one object; `link /ENTRY:main /SUBSYSTEM:CONSOLE` combines objects and `kernel32.lib`. A missing `EXTRN` definition is a link error.
-- `INCLUDE` pastes a header. `constants.inc` supplies `STD_OUTPUT_HANDLE EQU -11`; listing `13-stdio-constants-include` uses it and writes `ok` plus CRLF.
+- `INCLUDE` pastes a header. Listing `22-exit-code-include` pulls `EXIT_OK EQU 0` from `22-exit-code.inc` and exits **0**. `constants.inc` supplies `STD_OUTPUT_HANDLE EQU -11`; listing `13-stdio-constants-include` uses it and writes `ok` plus CRLF.
 - `lea rdx, msg` is RIP-relative in `ml64` without a `default rel` directive (listing `17-writefile-rip-relative`).
-- NMake inference rules rebuild a stale `.obj`; `$**` is all prerequisites, `$<` is only the first.
+- NMake inference rules rebuild a stale `.obj`; `$**` is all prerequisites, `$<` is only the first. Listing `25-nmake-driver` exits **0**; `Makefile.mak` links it with `$**` / `$@`.
 
 ## Lookup
 
