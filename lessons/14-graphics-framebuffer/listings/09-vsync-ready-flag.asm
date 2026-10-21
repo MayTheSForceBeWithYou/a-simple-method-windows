@@ -13,12 +13,9 @@ frame_target QWORD ?
 EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
 
-main PROC FRAME
+main PROC
     push    rbx
-    .pushreg rbx
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
 
     lea     rcx, qpc_start
     call    QueryPerformanceCounter

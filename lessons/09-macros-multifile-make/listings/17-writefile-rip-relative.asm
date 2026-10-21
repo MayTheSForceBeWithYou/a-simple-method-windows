@@ -15,23 +15,20 @@ msg_len EQU $ - msg
 .DATA?
 written DWORD ?
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
+main PROC
+    push    rbx
+    sub     rsp, 40
 
-    mov ecx, -11
-    call GetStdHandle
-    mov rbx, rax
+    mov     ecx, -11
+    call    GetStdHandle
+    mov     rbx, rax
 
-    mov rcx, rbx
-    lea rdx, msg
-    mov r8, msg_len
-    lea r9, written
-    mov QWORD PTR [rsp+32], 0
-    call WriteFile
+    mov     rcx, rbx
+    lea     rdx, msg
+    mov     r8d, msg_len
+    lea     r9, written
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
 
     add     rsp, 40
     pop     rbx
