@@ -173,8 +173,8 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 ; Listing 04: Recursive sum_to (lines 70-94 of LESSON.md)
 ;
 ; Purpose: sum_to(n) = n + sum_to(n-1), base case 0.
-; Expected exit code: 15 (1+2+3+4+5)
-; Expected output: (none)
+; Expected exit: 15
+; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo04-recursive-sum.obj 04-recursive-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-recursive-sum.exe 04-recursive-sum.obj kernel32.lib
 
@@ -183,7 +183,7 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 EXTRN ExitProcess:PROC
 
 sum_to PROC FRAME
-    push rcx                   ; Save RCX (nonvolatile preservation)
+    push rcx                   ; Save n on stack across recursive call (rcx is volatile)
     .pushreg rcx
     sub rsp, 32
     .allocstack 32
@@ -197,9 +197,8 @@ sum_to PROC FRAME
 recursive:
     dec rcx
     call sum_to
-    pop rcx                    ; Restore original n
-    add rax, rcx               ; Add n to sum(n-1)
-    ret
+    add rax, [rsp+32]          ; Add saved n (still on stack below shadow)
+    jmp done
     
 done:
     add rsp, 32
@@ -218,9 +217,9 @@ main ENDP
 END
 ```
 
-Header comment says "Save RCX (nonvolatile preservation)". RCX is **volatile**. Pushing it is a way to keep `n` across the call, not ABI preservation of a callee-saved register.
+The push comment is explicit: RCX is **volatile**. Saving `n` on the stack is not ABI preservation of a callee-saved register; it is how this listing keeps the argument across the recursive `call`. `.pushreg rcx` still describes that push to the unwinder.
 
-The **recursive** path does `pop rcx` / `ret` without `add rsp, 32`. After `sub rsp, 32`, that `pop` reads the shadow space, not the saved RCX. The **base** path does `add rsp, 32` then `pop rcx`. Treat listing 04 as a contrast with listing 01's shared epilogue. Flagged in `docs/PROSE_TECH_FLAGS.md`. Do not "fix" the listing in prose by rewriting it.
+Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 32` / `pop rcx` / `ret`. After `push rcx` then `sub rsp, 32`, the saved `n` lives at `[rsp+32]`, so the recursive path adds it with `add rax, [rsp+32]` *before* tearing the frame down. That is the same shared-epilogue shape as listing `01-factorial`.
 
 ## Tail recursion (concept)
 
@@ -232,7 +231,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 |-----------|---------|
 | RCX survives `call` | It does not. Stash in RBX/R12 or a local. |
 | Pushing RCX = ABI preserve | RCX is volatile; the push is your private save. |
-| Shared epilogue vs split `ret` | Factorial shares `done`. `sum_to` splits paths; the recursive path omits `add rsp, 32`. |
+| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `done` always `add rsp, 32` / `pop` / `ret`. |
 | `leave` | `mov rsp, rbp` / `pop rbp`. |
 | Linux RDI argument | Windows RCX. |
 
@@ -241,7 +240,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 1. In listing `01-factorial`, why `mov rbx, rcx` before `dec rcx`?
 2. `sum_locals(10)`: what is at `[rbp-16]` after the three stores?
 3. After `call wipe` in listing 03, what is in R12?
-4. Does the recursive path of listing 04 deallocate the 32-byte frame before `pop rcx`?
+4. In listing 04, where is saved `n` after `sub rsp, 32`, and which instruction adds it on the recursive path?
 5. Is `factorial` tail recursive?
 
 ## Key takeaways
