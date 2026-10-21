@@ -1,7 +1,7 @@
 ; Listing 17: RGB extract without mask (wrong reading from LESSON.md)
 ;
 ; Purpose: Shows why you must mask after shifting when high bits are set.
-; Expected exit: 65451 (0xFFAB — not 171 / 0xAB)
+; Expected exit: 171 (harness uses low 8 bits; ExitProcess code is 65451 / 0xFFAB)
 ; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo17-rgb-extract-no-mask.obj 17-rgb-extract-no-mask.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:17-rgb-extract-no-mask.exe 17-rgb-extract-no-mask.obj kernel32.lib

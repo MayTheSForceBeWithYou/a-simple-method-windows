@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 sum_to PROC FRAME
-    push rcx                   ; Save RCX (nonvolatile preservation)
+    push rcx                   ; Save n on stack across recursive call (rcx is volatile)
     .pushreg rcx
     sub rsp, 32
     .allocstack 32
