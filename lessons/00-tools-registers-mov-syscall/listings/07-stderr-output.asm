@@ -8,7 +8,7 @@
 ; Run: 07-stderr-output.exe 2>&1
 
 .DATA
-msg DB "Error message", 13, 10
+msg DB "Error message"
 msg_len EQU $ - msg
 
 .DATA?
