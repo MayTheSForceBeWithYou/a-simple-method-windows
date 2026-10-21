@@ -1,394 +1,306 @@
-# 17 — Entities, Pathfinding, UI
+# Lesson 17 — Entities, Pathfinding, UI
 
-Lesson 16 gave you sprites and collision. This lesson gives you **entities** (structure-of-arrays component storage), **breadth-first search** (BFS) for grid pathfinding with parent tracking, **A\*** heuristics (Manhattan distance `h`, cost-so-far `g`, score `f = g + h`), and **UI panels** (hit testing, focus cycling, layout stacking). By the end you'll see that an entity-component system is not magic—it's parallel arrays indexed by entity ID, and that pathfinding is a FIFO queue plus a `visited` bit array plus a `parent[]` backpointer array.
+Lesson 16 gave you tiles and boxes. This lesson gives you **entities** as parallel arrays (structure-of-arrays), a one-axis absolute difference for A*’s heuristic, component bit flags, a focus index that wraps with `inc` then `div`, and a stat clamp that runs **after** the add. By the end you treat an entity-component table as indexed arrays, not as objects, and you refuse to store a happiness of 110.
 
 ## What this lesson asks of you
 
-- Read one entity's position from parallel `xs` and `ys` arrays (structure-of-arrays, or SoA).
-- Test a component bit in a mask byte, spawn an entity by incrementing an ID counter, and push a freed ID onto a free-list stack.
-- Compute A\* score `f = g + h` from path cost `g` (distance from start) and Manhattan-distance heuristic `h` (estimate to goal).
-- Advance UI focus with `inc` then `mod` (wrapping), and stack panel rows by adding `height + padding` to the y cursor.
-- Clamp a guest stat (e.g., happiness ≤ 100) **after** adding a bonus, not before.
+You integrate velocity into position for one entity and for a live subset of a SoA table, skipping dead slots. You declare `xs`, `ys`, `vxs`, and `alive` as parallel storage and you exit 0 from a declaration-only program. You OR component bits (`POS | VEL | HP`) into a mask. You take an absolute difference with a sign test (the one-axis half of Manhattan). You wrap a focus index with `(focus + 1) mod count` by incrementing first, then using the **remainder** in RDX. You clamp a guest stat after arithmetic, not before.
 
-## Why ECS, pathfinding, and UI for the park milestone
+## One entity: x += vx
 
-Lesson 18's park simulation needs:
-- **Entities:** Guests, trees, buildings, paths—all stored in parallel component arrays.
-- **Pathfinding:** Guests walk from ride to ride; BFS finds the shortest path on the tile grid.
-- **UI:** Click a guest to see stats, click a building to open a menu.
-
-The drills below isolate each primitive. Many search and UI drills are **placeholder constants** (the course will expand them in future updates). Where the solution computes a real value (e.g., entity-update checksum, focus wraparound), the lesson shows the full listing.
-
-## Entity-component system (ECS): structure of arrays
-
-An **entity** is an integer ID. Each entity's components (position, velocity, health, etc.) are stored in **parallel arrays**:
+An **entity** is an integer id. Its position and velocity are QWORDs you update each tick: `x = x + vx`. Listing `01-entity-update` stores `entity_x = 100`, `entity_vx = 5`, adds them in RAX, writes the sum back, and exits the low 32 bits. 100 + 5 = 105. Expected exit: **105** (the new x).
 
 ```asm
-section .data
-    xs:  dq 0, 5, 0     ; x positions
-    ys:  dq 0, 6, 0     ; y positions
-    vxs: dq 1, 2, 3     ; x velocities
-    alive: db 1, 0, 1   ; alive flags
+; Update entity position, exit new x
+.DATA?
+entity_x QWORD ?
+entity_vx QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov entity_x, 100
+    mov entity_vx, 5
+    mov rax, entity_x
+    add rax, entity_vx
+    mov entity_x, rax
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
+
 ```
 
-Entity 1's position is `(xs[1], ys[1])` = `([xs+8], [ys+8])` = `(5, 6)`.
+There is no `y`, no alive flag, and no loop. The next listings add those.
 
-**Drill:** `01-soa-pos.asm` reads entity 1's position: `xs[1] = 5`, `ys[1] = 6`, sum = 11, exits 11.
+## Structure of arrays: declare, then update the live slots
 
-### Why SoA instead of AoS?
+**Array-of-structures** (AoS, lesson 06) stores one entity as a contiguous record: `x, y, vx, …` then the next entity. **Structure-of-arrays** (SoA) stores one field across all entities:
 
-**Array-of-structures (AoS)** from lesson 06 would store each entity as a contiguous record:
+```
+xs:    x0, x1, x2, …
+ys:    y0, y1, y2, …
+vxs:   vx0, vx1, vx2, …
+alive: a0, a1, a2, …
+```
+
+A system that only touches `xs` and `vxs` streams two arrays. AoS would skip `y` and the rest on every iteration.
+
+Listing `03-soa-field-decl` is that layout: `xs` = 0, 5, 0; `ys` = 0, 6, 0; `vxs` = 1, 2, 3; `alive` = 1, 0, 1. Entity 1’s position would be `(xs[1], ys[1])` = (5, 6) at byte offsets +8. The body does not read those arrays. It zeros ECX and exits. Expected exit: **0**.
 
 ```asm
-entity_0: dq x, y, vx, vy, ...
-entity_1: dq x, y, vx, vy, ...
+; Listing 03: Structure-of-arrays field declarations (LESSON.md block 3)
+; Expected exit: 0
+; Expected stdout: (none)
+
+.DATA
+xs DQ 0, 5, 0
+ys DQ 0, 6, 0
+vxs DQ 1, 2, 3
+alive DB 1, 0, 1
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-**Structure-of-arrays (SoA)** stores each field contiguously across all entities:
+Listing `05-entity-update-soa` runs the per-tick loop on three slots:
+
+- `rcx` is the index, 0..2.
+- `alive` is bytes: `cmp BYTE PTR alive[rcx], 0` / `je next` skips the dead.
+- `xs` and `vxs` are QWORDs: `vxs[rcx*8]` and `xs[rcx*8]` scale by 8.
+- Live slots add velocity into position.
+
+Slot 0 is alive: `xs[0] += 1` → 1.  
+Slot 1 is dead: skipped.  
+Slot 2 is alive: `xs[2] += 3` → 3.
+
+The checksum is `xs` (slot 0) + `xs[16]` (slot 2, +16 bytes). 1 + 3 = 4. Expected exit: **4**.
 
 ```asm
-xs:  dq x0, x1, x2, ...
-ys:  dq y0, y1, y2, ...
+; Listing 05: SoA entity update loop (LESSON.md block 5)
+; Expected exit: 4
+; Expected stdout: (none)
+
+.DATA
+xs DQ 0, 0, 0
+vxs DQ 1, 2, 3
+alive DB 1, 0, 1
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    xor     rcx, rcx
+loop_start:
+    cmp     rcx, 3
+    jge     done
+    cmp     BYTE PTR alive[rcx], 0
+    je      next
+    mov     rax, vxs[rcx*8]
+    add     xs[rcx*8], rax
+next:
+    inc     rcx
+    jmp     loop_start
+done:
+    mov     rax, xs
+    add     rax, xs[16]
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-**Advantage:** A system that only touches `xs` and `vxs` (e.g., `xs[i] += vxs[i]`) streams two arrays sequentially, using cache efficiently. With AoS, you'd skip over unused fields (`y`, `vy`, ...) on every iteration, polluting cache.
+The scale factor follows the element size. `alive[rcx]` is one byte per entity; `xs[rcx*8]` is eight. Mixing those scales reads the wrong slot.
 
-### Component masks
+## Component flags as an OR of bits
 
-A **component mask** is a byte where each bit represents a component:
+A **component mask** is a byte (or dword) where each bit is a component. Listing `04-component-flag-bits` defines `POS EQU 1`, `VEL EQU 2`, `HP EQU 4` and executes `mov eax, POS OR VEL OR HP`. MASM `OR` here is the assemble-time operator, not the `or` instruction. 1 | 2 | 4 = 7. Expected exit: **7**.
 
 ```asm
-POS  = 0b0001   ; bit 0
-VEL  = 0b0010   ; bit 1
-HP   = 0b0100   ; bit 2
+; Listing 04: ECS component flag bits (LESSON.md block 4)
+; Expected exit: 7
+; Expected stdout: (none)
+
+POS EQU 1
+VEL EQU 2
+HP  EQU 4
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     eax, POS OR VEL OR HP
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-An entity with position and velocity has mask `0b0011` = 3.
+An entity that has position and velocity and not health would store 3. Test a single bit with `test mask, POS`, not `cmp mask, POS` — `cmp` against 1 rejects a mask of 3 even though bit 0 is set.
 
-**Drill:** `11-component-mask.asm` ORs `POS` (1) with `VEL` (2), exits 3.
+## Manhattan as an absolute difference (one axis)
 
-**Drill:** `05-entity-alive.asm` tests byte value 1 with `test al, 1` (bit 0), exits 1 (alive).
+A*’s heuristic `h` on a 4-neighbor grid is **Manhattan** distance `|dx| + |dy|`. It is admissible for unit cost (never overestimates), so the first time A* expands the goal the path is optimal. `f = g + h` where `g` is cost already paid.
 
-**Drill:** `24-from-scratch-ecs-query.asm` counts how many of four masks `1, 3, 1, 2` have bit 0 set. Values 1 and 3 have bit 0 set (count 3 total, since 1 appears twice). Value 2 is `VEL` only (bit 1), so it doesn't count. Exits 3.
-
-### Spawning and despawning
-
-**Spawn:** Allocate the next entity ID by incrementing a counter.
-
-**Drill:** `09-spawn-entity.asm` increments a zero ID counter to 1, exits 1.
-
-**Despawn:** Free an entity ID by pushing it onto a free-list stack for reuse.
-
-**Drill:** `10-despawn-freelist.asm` — the lesson describes "stores 3 at the free-list top and bumps the top, exiting 3." The **solution as shipped** is `mov qword [free_top], 3` and exits 3. No array, no bump. This is a placeholder.
-
-### Entity update loop (checksum example)
-
-A typical per-tick loop: for each alive entity, integrate velocity into position.
+Listing `02-manhattan-dist` computes **one** absolute difference: `rax = 10`, `rbx = 5`, `sub rax, rbx` → 5, `test rax, rax` / `jns pos1` skips `neg` because 5 is non-negative, then `mov ecx, eax`. Expected exit: **5**. There is no second axis and no add of `|dy|`.
 
 ```asm
-section .data
-    xs:  dq 0, 0, 0
-    vxs: dq 1, 2, 3
-    alive: db 1, 0, 1
-
-section .text
-global _start
-_start:
-    xor rcx, rcx            ; i = 0
-.loop:
-    cmp rcx, 3
-    jge .done
-    cmp byte [alive + rcx], 0
-    je .next
-    mov rax, [vxs + rcx*8]
-    add [xs + rcx*8], rax   ; xs[i] += vxs[i]
-.next:
-    inc rcx
-    jmp .loop
-.done:
-    mov rdi, [xs]           ; xs[0] = 0 + 1 = 1
-    add rdi, [xs + 16]      ; xs[2] = 0 + 3 = 3
-    mov rax, 60             ; checksum 1 + 3 = 4
-    syscall
-```
-
-Entity 0 moves `0 + 1 = 1`. Entity 1 is dead (skipped). Entity 2 moves `0 + 3 = 3`. Checksum 4. Exits 4.
-
-**Note:** This listing is not attached to a drill in the current course; it demonstrates the pattern.
-
-## Pathfinding: BFS and A\*
-
-### Manhattan distance (A\* heuristic `h`)
-
-Manhattan distance from `(x1, y1)` to `(x2, y2)`:
+; Manhattan distance for A*, exit dist
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov rax, 10
+    mov rbx, 5
+    sub rax, rbx
+    test rax, rax
+    jns pos1
+    neg rax
+pos1:
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 
 ```
-h = |x2 - x1| + |y2 - y1|
-```
 
-**Drill:** `03-astar-h.asm` computes `|(3 - 1)| + |(4 - 2)|` = `2 + 2` = 4, exits 4.
+The sign test is the same rule as lesson 15’s mouse delta. Reverse the operands (`5 - 10`) and `neg` runs. A full `h` still needs `|x2 - x1| + |y2 - y1|`.
 
-**Note:** Both subtractions in the solution are ordered so the result is positive. If a delta can be negative, test the sign before negating (same rule as lesson 15's mouse delta).
+<!-- LISTING-PENDING: no Jack listing for BFS queue/visited/parent, A* f = g+h, or a two-axis Manhattan add; 02-manhattan-dist.asm is |10-5| only -->
 
-### A\* score `f = g + h`
+## Focus wrap: increment, then remainder
 
-- **`g`:** Cost already paid from start to this tile.
-- **`h`:** Heuristic estimate of remaining cost to goal (Manhattan distance for a 4-neighbor grid).
-- **`f`:** Total estimated cost = `g + h`.
-
-A\* expands tiles in order of `f`, using `g` to break ties. Manhattan distance is **admissible** for 4-neighbor movement with unit cost (never overestimates), so the first path A\* finds is optimal.
-
-**Drill:** `13-astar-fscore.asm` computes `f = 3 + 4` = 7, exits 7.
-
-### Breadth-first search (BFS)
-
-BFS explores the grid in **rings** (distance layers). Tiles leave the queue in order of distance from the start, so **the first time the goal is dequeued, the path is shortest**.
-
-**Algorithm:**
-
-1. **Data structures:**
-   - FIFO queue (lesson 11 ring buffer): enqueue at `tail`, dequeue at `head`, sized for the tile count.
-   - `visited[]`: one byte per tile (0 = unvisited, 1 = visited).
-   - `parent[]`: one index per tile (stores the tile that enqueued this one).
-   - Solid flags (lesson 16): skip walls.
-
-2. **Loop:**
-   ```
-   enqueue(start)
-   visited[start] = 1
-   while queue not empty:
-       current = dequeue()
-       if current == goal:
-           return reconstruct_path(parent, goal)
-       for each neighbor in {north, south, east, west}:
-           if solid[neighbor] or visited[neighbor]:
-               continue
-           visited[neighbor] = 1
-           parent[neighbor] = current
-           enqueue(neighbor)
-   return NO_PATH
-   ```
-
-3. **Mark visited at enqueue time** (not dequeue time) so each tile is enqueued exactly once.
-
-4. **Path reconstruction:** Walk `parent[]` backward from goal to start, counting steps.
-
-**Drills:**
-
-- `02-bfs-dist.asm` — the lesson describes "runs the full loop on a small map and exits the distance." The **solution** is `mov rdi, 1` (placeholder constant).
-- `12-bfs-queue.asm` — the lesson describes "the head/tail FIFO the search runs on." The **solution** is `mov rdi, 5` (placeholder constant).
-- `14-path-reconstruct.asm` — the lesson describes "walks `parent[]` from the goal back to the start and counts steps." The **solution** is `mov rdi, 4` (placeholder constant).
-- `19-debug-parent-index.asm` — the lesson describes a bug: "the exercise file's BFS is missing the `parent[next] = current` store, so it exits 0 (reconstruction fails)." The **solution (fixed)** is `mov rdi, 2` (placeholder constant). The lesson says the fix adds the missing store.
-
-**Note:** The current drills are placeholders. Future updates will implement full BFS.
-
-### Path step
-
-Move an entity one tile along the reconstructed path per tick.
-
-**Drill:** `06-path-step.asm` — exits 1 (placeholder constant).
-
-### Flow field
-
-A **flow field** runs BFS outward from the goal, writing one distance byte per tile. Every agent can then walk downhill (toward lower distance) without per-agent search.
-
-**Drill:** `22-stretch-flow-field.asm` — exits 4 (placeholder constant).
-
-### Steering: seek
-
-Desired velocity for **seek** steering: `target - position`.
-
-**Drill:** `20-steering-seek.asm` — `10 - 3` = 7, exits 7.
-
-## UI panels: hit testing, focus, layout
-
-### Hit test (point in rectangle)
-
-A cursor `(cx, cy)` is inside rectangle `[x0, y0, x1, y1)` (half-open) when:
-
-```
-(x0 <= cx < x1) and (y0 <= cy < y1)
-```
-
-Four inequalities, same as AABB overlap (lesson 16).
-
-**Drill:** `04-ui-hit.asm` — the lesson describes "exits 1 for a cursor inside." The **solution** is `mov rdi, 1` (placeholder constant).
-
-### Button press
-
-A **button** is a hit-test result AND a pressed bit (e.g., left mouse button down).
-
-**Drill:** `15-ui-button-press.asm` — exits 1 (placeholder constant).
-
-### Focus cycling
-
-UI focus (which widget is selected) wraps with modulo. To advance focus:
+UI **focus** is the selected widget index. It wraps:
 
 ```
 focus = (focus + 1) mod widget_count
 ```
 
-**Drill:** `16-ui-focus.asm` — focus starts at 2, widget count 3:
+Listing `06-focus-wrap-div` starts `focus = 2`, increments to 3, loads that into RAX, zeros RDX, divides by 3. 3 / 3 = quotient 1, **remainder 0**. `mov ecx, edx` exits the remainder. Expected exit: **0**.
 
 ```asm
-inc qword [focus]       ; 2 → 3
-mov rax, [focus]
-xor rdx, rdx
-mov rbx, 3
-div rbx                 ; 3 / 3 → quotient 1, remainder 0
-mov rdi, rdx            ; focus wraps to 0
+; Listing 06: Focus index wrap with div (LESSON.md block 6)
+; Expected exit: 0
+; Expected stdout: (none)
+
+.DATA?
+focus QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     focus, 2
+    inc     focus
+    mov     rax, focus
+    xor     rdx, rdx
+    mov     rbx, 3
+    div     rbx
+    mov     ecx, edx
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-Exits 0 (first widget).
+`inc` then `mod`, not `mod` then `inc`. If focus is already 2, `(2 + 1) mod 3 = 0` wraps to the first widget. `(2 mod 3) + 1 = 3` is past the last valid index (0..2). Zero RDX before the `div` (lesson 15). The remainder is the wrapped index; the quotient is how many times you wrapped, which this listing discards.
 
-**Why `inc` then `mod`, not `mod` then `inc`?** If focus is at the last widget (index 2), `(2 + 1) mod 3` = 0 wraps to the first. But `(2 mod 3) + 1` = 3 would point past the last widget (valid indices are 0–2).
+<!-- LISTING-PENDING: no Jack listing for a four-compare UI hit test or panel y-cursor stack; focus wrap is listing 06 -->
 
-### Panel layout: stacking rows
+## Worked example: clamp happiness after the add
 
-Each row advances the y cursor by `row_height + padding`.
-
-**Drill:** `17-panel-layout.asm` — row height 10, padding 2 → `10 + 2` = 12 per row. Starting from `y = 0`, two rows → `y = 24`, exits 24.
-
-### Panel rendering
-
-A panel draws rows into a framebuffer (lesson 14) at offset `y * stride + x * bytes_per_pixel`.
-
-**Drill:** `07-panel-draw-stub.asm` — exits 3 (placeholder constant).
-
-### Modal depth
-
-A **modal dialog** grabs all input until dismissed. Stack depth tracks how many modals are active.
-
-**Drill:** `23-stretch-ui-modal.asm` — increment depth from 0 to 1, exits 1.
-
-## Guest stats: clamping after arithmetic
-
-A guest's happiness is capped at 100. When adding a bonus, **clamp after the add**:
-
-**Drill:** `18-guest-happiness.asm` — happiness 90, bonus 20:
+**Task:** Happiness starts at 90. A bonus of 20 must not leave a stored value above 100. Listing `07-happiness-clamp` is that clamp.
 
 ```asm
-mov rax, 90
-add rax, 20             ; 110
-cmp rax, 100
-jle .ok
-mov rax, 100            ; clamp to 100
-.ok:
+; Listing 07: Clamp happiness after bonus (LESSON.md block 7)
+; Expected exit: 100
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     rax, 90
+    add     rax, 20
+    cmp     rax, 100
+    jle     ok
+    mov     rax, 100
+ok:
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-Exits 100.
+**What the instructions do:**
+
+1. `mov rax, 90` / `add rax, 20` → 110.
+2. `cmp rax, 100` / `jle ok` — 110 is **not** ≤ 100, so the jump is not taken.
+3. `mov rax, 100`.
+4. `mov ecx, eax` / `call ExitProcess`. Expected exit: **100**.
 
 **Plausible wrong reading:**
 
-*"Clamping is about keeping the stored stat valid, so clamp the current value first (90 is already ≤ 100), then add the bonus."*
+*"Clamping keeps the stored stat valid, so clamp 90 first (already ≤ 100), then add the bonus."*
 
-**Why it's wrong:** If you clamp 90 first, nothing changes (90 ≤ 100 passes). Then `add rax, 20` produces 110, which is stored unchecked. The invariant "happiness ≤ 100" is broken after every bonus.
+**Why it's wrong:** Clamping 90 does nothing. `add rax, 20` then stores 110. The invariant “happiness ≤ 100” is broken after every bonus that crosses the cap.
 
-**The correct reading:** Clamp the **result of the arithmetic**, right before it's stored or used. The same rule applies to lesson 18's cash (clamp after subtracting cost, not before).
+**The correct reading:** Clamp the **result** of the arithmetic, immediately before you store or exit. Lesson 18’s cash uses the same order: compare, then subtract, not subtract and hope.
 
-## Placeholder drills (future expansion)
-
-Several drills are **constants** rather than full implementations:
-
-**Entities:**
-- `08-from-scratch-guest-target.asm` — exits 7 (placeholder)
-- `21-formation-slot.asm` — exits 2 (placeholder)
-
-**Search:**
-- `02-bfs-dist.asm` — exits 1 (placeholder)
-- `12-bfs-queue.asm` — exits 5 (placeholder)
-- `14-path-reconstruct.asm` — exits 4 (placeholder)
-- `19-debug-parent-index.asm` — exits 2 (placeholder fix)
-- `06-path-step.asm` — exits 1 (placeholder)
-- `22-stretch-flow-field.asm` — exits 4 (placeholder)
-
-**UI:**
-- `04-ui-hit.asm` — exits 1 (placeholder)
-- `07-panel-draw-stub.asm` — exits 3 (placeholder)
-- `15-ui-button-press.asm` — exits 1 (placeholder)
-
-Future course updates will expand these into full implementations.
+`jle` is signed. 110 compared to 100 as signed values is greater, so the clamp writes 100. An unsigned `jbe` would make the same decision for these two positive numbers.
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| SoA and AoS are equivalent | SoA (parallel arrays) streams one field efficiently; AoS (records) keeps one entity's data contiguous |
-| Component mask test is `cmp` | Use `test mask, bit` to check a single bit; `cmp` checks the whole byte |
-| Manhattan distance needs square root | Manhattan is `\|dx\| + \|dy\|` (no square root); Euclidean distance needs `sqrt(dx² + dy²)` |
-| A\* `f = h` | `f = g + h` (cost-so-far + heuristic) |
-| BFS marks visited at dequeue | Mark visited at **enqueue** to prevent duplicate enqueues |
-| Focus advance is `mod` then `inc` | `inc` then `mod` to wrap correctly: `(focus + 1) mod count` |
-| Clamp before arithmetic | Clamp **after** arithmetic (clamp the result, not the operand) |
+| SoA and AoS are the same layout | SoA is parallel arrays (listing `03-soa-field-decl`). AoS is one record per entity. |
+| Every slot updates | Listing `05-entity-update-soa` skips `alive == 0`. Dead slot 1 does not add 2. Checksum **4**, not 6. |
+| `xs[rcx]` is the QWORD at entity `rcx` | QWORD elements need `xs[rcx*8]`. Bytes use `alive[rcx]`. |
+| `cmp mask, POS` tests bit 0 | `cmp` against 1 rejects mask 3. Use `test`. Listing `04-component-flag-bits` ORs bits to **7**. |
+| Manhattan needs a square root | Manhattan is `|dx| + |dy|`. Listing `02-manhattan-dist` is `|10 - 5|` = **5**, one axis. |
+| Focus is `mod` then `inc` | Listing `06-focus-wrap-div` increments 2 to 3, then exits RDX = **0**. |
+| Clamp the operand, then add | Listing `07-happiness-clamp` adds first (110), then writes 100. Exit **100**. |
+| Entity update exits a flag | Listing `01-entity-update` exits the new **x** (105). |
 
 ## Check yourself
 
-1. In the entity-update listing (`xs`, `vxs`, `alive db 1,0,1`), why is the index scaled by 8 for `xs`/`vxs` but not for `alive`?
-
-2. `24-from-scratch-ecs-query.asm` counts masks `1, 3, 1, 2` with `test rax, 1`. Why does 3 count but 2 does not?
-
-3. `16-ui-focus.asm` exits 0 for focus 2 with 3 widgets. Why `inc` then `div` rather than `div` then `inc`?
-
-4. You compute A\* `h` from `(5, 10)` to `(2, 8)`. What is the Manhattan distance? Which coordinate contributes more to `h`?
-
-5. You clamp happiness at 100, but you test `cmp rax, 100` / `jle .ok` **before** adding the +20 bonus. What is the final value if happiness starts at 85?
+1. In listing `05-entity-update-soa`, why is the index scaled by 8 for `xs` / `vxs` and not for `alive`? What checksum would you get if you forgot the `alive` skip?
+2. Listing `06-focus-wrap-div` starts at 2 with a divisor of 3. What is in RAX and RDX after `div`, and why would `div` then `inc` produce an illegal index?
+3. Listing `07-happiness-clamp` uses `cmp rax, 100` / `jle ok` **after** `add rax, 20`. What is stored if you move that compare-and-branch above the add, starting from 90?
+4. Listing `02-manhattan-dist` subtracts 5 from 10. What extra instructions would a second axis `dy = 3 - 8` need, and what would `|dx| + |dy|` be?
+5. Listing `03-soa-field-decl` exits 0. What is entity 1’s `(x, y)` in that `.DATA`, and why is that pair not the process status?
 
 ## Key takeaways
 
-- ECS uses structure-of-arrays (parallel `xs[]`, `ys[]`, etc.) for cache-efficient iteration over one component across all entities.
-- Component masks use bit flags; test with `test mask, bit`, not `cmp`.
-- BFS explores the grid in distance layers; mark `visited` at enqueue (not dequeue) to prevent duplicate work.
-- A\* score `f = g + h` where `g` is cost from start, `h` is Manhattan heuristic; A\* expands tiles in `f` order.
-- UI focus wraps with `(focus + 1) mod count`; the `mod` must come after the `inc`.
-- Clamp stats **after** arithmetic (clamp the result, not the operands).
+- One entity integrates with `x += vx`. Listing `01-entity-update` exits the new x, **105**.
+- SoA is parallel arrays. Listing `03-soa-field-decl` declares them and exits **0**. Listing `05-entity-update-soa` updates live slots only and exits checksum **4**.
+- Component bits OR together. Listing `04-component-flag-bits` exits `POS | VEL | HP` = **7**.
+- Listing `02-manhattan-dist` is a signed absolute difference of 10 and 5, exit **5** — one axis of `h`, not `|dx| + |dy|`.
+- Focus wraps with increment then remainder: listing `06-focus-wrap-div` turns 2 into **0** via `div` by 3 and `mov ecx, edx`.
+- Clamp after arithmetic. Listing `07-happiness-clamp` turns 90 + 20 into **100**.
 
 ## Lookup
 
-- Entity-component systems: [Data-Oriented Design (Fabian Giesen)](https://fgiesen.wordpress.com/2018/02/19/reading-bits-of-a-data-structure-the-cache/)
-- BFS and A\*: [Red Blob Games: Introduction to A\*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
-- Manhattan distance admissibility: [Wikipedia: Taxicab geometry](https://en.wikipedia.org/wiki/Taxicab_geometry)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/17-entities-pathfinding-ui/listings/01-entity-update.asm -->
-<!-- LISTING-PENDING: lessons/17-entities-pathfinding-ui/listings/02-manhattan-dist.asm -->
+- Data-oriented layout: [Reading bits of a data structure (the cache)](https://fgiesen.wordpress.com/2018/02/19/reading-bits-of-a-data-structure-the-cache/)
+- A* and grids: [Red Blob Games: Introduction to A*](https://www.redblobgames.com/pathfinding/a-star/introduction.html)
+- Manhattan / taxicab geometry: [Taxicab geometry](https://en.wikipedia.org/wiki/Taxicab_geometry)
+- Microsoft x64 calling convention: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
-```bash
+```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
 ```
 
-**Entities:**
-- `01-soa-pos.asm` — entity 1 position sum, exit 11
-- `05-entity-alive.asm` — test bit 0, exit 1
-- `08-from-scratch-guest-target.asm` — **placeholder: exits 7**
-- `09-spawn-entity.asm` — increment ID, exit 1
-- `10-despawn-freelist.asm` — **placeholder: exits 3**
-- `11-component-mask.asm` — `POS | VEL`, exit 3
-- `18-guest-happiness.asm` — clamp 90+20 to 100, exit 100
-- `21-formation-slot.asm` — **placeholder: exits 2**
-- `24-from-scratch-ecs-query.asm` — count bit 0 in `1,3,1,2`, exit 3
-
-**Pathfinding:**
-- `02-bfs-dist.asm` — **placeholder: exits 1**
-- `03-astar-h.asm` — Manhattan `(1,2)` to `(3,4)`, exit 4
-- `06-path-step.asm` — **placeholder: exits 1**
-- `12-bfs-queue.asm` — **placeholder: exits 5**
-- `13-astar-fscore.asm` — `f = 3 + 4`, exit 7
-- `14-path-reconstruct.asm` — **placeholder: exits 4**
-- `19-debug-parent-index.asm` — **placeholder fix: exits 2**
-- `20-steering-seek.asm` — `10 - 3`, exit 7
-- `22-stretch-flow-field.asm` — **placeholder: exits 4**
-
-**UI:**
-- `04-ui-hit.asm` — **placeholder: exits 1**
-- `07-panel-draw-stub.asm` — **placeholder: exits 3**
-- `15-ui-button-press.asm` — **placeholder: exits 1**
-- `16-ui-focus.asm` — `(2+1) mod 3`, exit 0
-- `17-panel-layout.asm` — stack 2 rows of 12 each, exit 24
-- `23-stretch-ui-modal.asm` — increment depth, exit 1
+The Jack listings above are the teaching programs. The drill names under `exercises/` (SoA position, BFS distance, UI hit, guest happiness, and the rest) are separate student stubs.
