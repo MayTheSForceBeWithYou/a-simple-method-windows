@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .data?
-s BYTE 17 DUP(?)
+s QWORD 3 DUP(?)
 
 .code
 main PROC

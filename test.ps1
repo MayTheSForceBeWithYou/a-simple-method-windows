@@ -259,9 +259,9 @@ function Invoke-BuiltExe {
         -RedirectStandardOutput $stdoutFile `
         -RedirectStandardError $stderrFile
 
-    if (-not $process.WaitForExit(30000)) {
+    if (-not $process.WaitForExit(8000)) {
         try { $process.Kill() } catch { }
-        throw "timed out after 30s"
+        throw "timed out after 8s"
     }
 
     $exitCode = $process.ExitCode -band 0xFF

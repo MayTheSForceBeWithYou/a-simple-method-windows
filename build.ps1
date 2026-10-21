@@ -78,6 +78,17 @@ function Find-MSVC {
     Write-Host "link: $($link.Source)"
 }
 
+function Quote-CmdArg {
+    param([string]$Value)
+    if ([string]::IsNullOrEmpty($Value)) {
+        return '""'
+    }
+    if ($Value -match '[\s"&<>|^()]') {
+        return '"' + ($Value -replace '"', '""') + '"'
+    }
+    return $Value
+}
+
 function Invoke-NativeTool {
     param(
         [Parameter(Mandatory = $true)][string]$FilePath,
@@ -90,20 +101,39 @@ function Invoke-NativeTool {
     Test-NonEmptyPath -Value $WorkDir -Name "WorkDir"
 
     $resolved = $FilePath
-    $cmd = Get-Command $FilePath -ErrorAction SilentlyContinue
-    if ($cmd -and -not [string]::IsNullOrWhiteSpace($cmd.Source)) {
-        $resolved = [string]$cmd.Source
+    $found = Get-Command $FilePath -ErrorAction SilentlyContinue
+    if ($found -and -not [string]::IsNullOrWhiteSpace($found.Source)) {
+        $resolved = [string]$found.Source
     }
 
-    $stdoutFile = Join-Path $WorkDir "_$Label.stdout.txt"
-    $stderrFile = Join-Path $WorkDir "_$Label.stderr.txt"
+    $stdoutName = "_$Label.stdout.txt"
+    $stderrName = "_$Label.stderr.txt"
+    $stdoutFile = Join-Path $WorkDir $stdoutName
+    $stderrFile = Join-Path $WorkDir $stderrName
     Test-NonEmptyPath -Value $stdoutFile -Name "native stdout"
     Test-NonEmptyPath -Value $stderrFile -Name "native stderr"
 
-    $process = Start-Process -FilePath $resolved -ArgumentList $Arguments `
-        -WorkingDirectory $WorkDir -NoNewWindow -Wait -PassThru `
-        -RedirectStandardOutput $stdoutFile `
-        -RedirectStandardError $stderrFile
+    $quoted = foreach ($arg in $Arguments) { Quote-CmdArg $arg }
+    $line = "$(Quote-CmdArg $resolved) $($quoted -join ' ')"
+    $batch = "$line > $(Quote-CmdArg $stdoutName) 2> $(Quote-CmdArg $stderrName) < nul"
+
+    $prevEap = $ErrorActionPreference
+    $ErrorActionPreference = "Continue"
+    try {
+        Push-Location -LiteralPath $WorkDir
+        try {
+            & cmd.exe /c $batch
+            $code = $LASTEXITCODE
+        } finally {
+            Pop-Location
+        }
+    } finally {
+        $ErrorActionPreference = $prevEap
+    }
+
+    if ($null -eq $code) {
+        throw "$Label did not produce an exit code"
+    }
 
     $text = ((Read-NativeLog $stdoutFile) + "`n" + (Read-NativeLog $stderrFile)).Trim()
     if (-not [string]::IsNullOrWhiteSpace($text)) {
@@ -114,7 +144,7 @@ function Invoke-NativeTool {
     Remove-Item -LiteralPath $stderrFile -ErrorAction SilentlyContinue
 
     return @{
-        Code   = [int]$process.ExitCode
+        Code   = [int]$code
         Output = $text
     }
 }
@@ -150,7 +180,6 @@ function Build-Asm {
 
     # /Fo must be a bare filename. /FoD:\... is parsed as option FoD plus a drive path.
     $mlArgs = @("/c", "/nologo", "/Zi", "/Fo$objName", $AsmPath)
-    Write-Host "ml64 $($mlArgs -join ' ')"
     $ml = Invoke-NativeTool -FilePath "ml64.exe" -Arguments $mlArgs -Label "ml64" -WorkDir $OutputDir
     if ($ml.Code -ne 0) {
         throw "ml64 failed for $AsmPath (exit code $($ml.Code)): $($ml.Output)"
@@ -168,7 +197,6 @@ function Build-Asm {
         $objName,
         "kernel32.lib"
     )
-    Write-Host "link $($linkArgs -join ' ')"
     $link = Invoke-NativeTool -FilePath "link.exe" -Arguments $linkArgs -Label "link" -WorkDir $OutputDir
     if ($link.Code -ne 0) {
         throw "link failed for $name (exit code $($link.Code)): $($link.Output)"
