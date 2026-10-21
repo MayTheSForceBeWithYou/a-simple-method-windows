@@ -51,7 +51,8 @@ main PROC FRAME
     call    WriteFile
     test    rax, rax
     jz      fail_close
-    add     totalWritten, bytesWritten
+    mov     eax, bytesWritten
+    add     totalWritten, eax
 
     mov     rcx, rbx
     lea     rdx, map_cells
@@ -61,7 +62,8 @@ main PROC FRAME
     call    WriteFile
     test    rax, rax
     jz      fail_close
-    add     totalWritten, bytesWritten
+    mov     eax, bytesWritten
+    add     totalWritten, eax
 
     mov     rcx, rbx
     call    CloseHandle

@@ -3,14 +3,14 @@
 ; Expected stdout: (none)
 
 .DATA
-code DB 3, 2, 0
+bytecode DB 3, 2, 0
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    lea     rsi, code
+    lea     rsi, bytecode
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
     add     rsi, rax

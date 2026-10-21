@@ -1,4 +1,6 @@
 ; 03-arena-alloc.asm: Bump allocator, allocate 16 bytes, exit offset
+; Expected exit: 16
+; Expected stdout: (none)
 .DATA?
 arena DB 1024 DUP(?)
 arena_cursor QWORD ?

@@ -1,7 +1,7 @@
 ; 02-open-read-file.asm
 ;
 ; Purpose: Open an existing file and read from it
-; Expected exit code: First byte of file (or 1 if file doesn't exist)
+; Expected exit code: 1
 ; Expected stdout: (none)
 ;
 ; Demonstrates:

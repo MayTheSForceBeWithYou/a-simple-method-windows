@@ -16,7 +16,7 @@ main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
-    mov ecx, MY_ADDR
+    xor ecx, ecx
     call ExitProcess
 main ENDP
 

@@ -10,6 +10,7 @@ main PROC
     mov rax, 40
     ; TODO: ADD_IMM rax, 2
     mov ecx, eax
+    mov ecx, 1
     call ExitProcess
 main ENDP
 END

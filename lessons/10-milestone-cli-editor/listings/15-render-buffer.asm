@@ -2,7 +2,7 @@
 ;
 ; Purpose: Write live buffer bytes with WriteFile to stdout.
 ; Expected exit code: 0
-; Expected stdout: "ed" + CRLF
+; Expected stdout: "ed\r\n"
 
 .DATA
 buf BYTE "ed", 13, 10

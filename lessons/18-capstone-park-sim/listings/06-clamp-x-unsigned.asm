@@ -2,7 +2,7 @@
 ; Expected exit: 7
 ; Expected stdout: (none)
 
-width EQU 8
+grid_w EQU 8
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -10,9 +10,9 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
     mov     rax, 99
-    cmp     rax, width
+    cmp     rax, grid_w
     jb      ok
-    mov     rax, width
+    mov     rax, grid_w
     dec     rax
 ok:
     mov     ecx, eax

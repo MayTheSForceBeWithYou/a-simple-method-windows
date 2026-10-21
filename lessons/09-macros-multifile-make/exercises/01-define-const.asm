@@ -9,5 +9,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     ; TODO: mov ecx, STATUS_OK; call ExitProcess
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

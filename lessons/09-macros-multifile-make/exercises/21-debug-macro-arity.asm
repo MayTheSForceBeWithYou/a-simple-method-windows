@@ -12,5 +12,7 @@ ENDM
 
 main PROC
     ; TODO: Fix invocation: ExitStatus 4
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

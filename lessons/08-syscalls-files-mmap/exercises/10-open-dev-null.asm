@@ -26,11 +26,6 @@ main PROC FRAME
     ; TODO: CreateFileA("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
     
     ; TODO: Check and close
-    
-    xor     ecx, ecx
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

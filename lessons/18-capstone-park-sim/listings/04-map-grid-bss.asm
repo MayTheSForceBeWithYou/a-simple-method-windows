@@ -2,11 +2,11 @@
 ; Expected exit: 0
 ; Expected stdout: (none)
 
-width EQU 8
-height EQU 8
+grid_w EQU 8
+grid_h EQU 8
 
 .DATA?
-map DB 64 DUP(?)
+tilemap DB 64 DUP(?)
 
 .CODE
 EXTRN ExitProcess:PROC

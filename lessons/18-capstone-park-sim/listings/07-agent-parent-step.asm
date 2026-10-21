@@ -11,10 +11,11 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, parent
     mov     agent_pos, 5
-    mov     parent[5*8], 2
+    mov     QWORD PTR [r10+5*8], 2
     mov     rax, agent_pos
-    mov     rbx, parent[rax*8]
+    mov     rbx, QWORD PTR [r10+rax*8]
     mov     agent_pos, rbx
     mov     ecx, ebx
     call    ExitProcess

@@ -10,6 +10,7 @@ main PROC
     xor eax, eax
     ; TODO: TWICE
     mov ecx, eax
+    mov ecx, 1
     call ExitProcess
 main ENDP
 END

@@ -26,10 +26,6 @@ main PROC FRAME
     ; TODO: Read back and exit with value
     
     ; TODO: VirtualFree
-    
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

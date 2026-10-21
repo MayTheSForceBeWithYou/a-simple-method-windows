@@ -22,11 +22,6 @@ main PROC FRAME
     ; TODO: VirtualAlloc
     
     ; TODO: Save address, VirtualFree
-    
-    xor     ecx, ecx
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

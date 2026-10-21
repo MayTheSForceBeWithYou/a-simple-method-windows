@@ -12,10 +12,11 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; TODO: Use XOR to zero RCX (not mov rcx, 0), then call ExitProcess
-    
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

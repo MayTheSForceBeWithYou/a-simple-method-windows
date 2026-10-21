@@ -14,13 +14,14 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[5], 'Z'
+    lea     r10, buf
+    mov     BYTE PTR [r10+5], 'Z'
     mov     gap_start, 2
     mov     gap_end, 5
     mov     rax, gap_end
-    mov     al, BYTE PTR buf[rax]
+    mov     al, BYTE PTR [r10+rax]
     mov     rcx, gap_start
-    mov     BYTE PTR buf[rcx], al
+    mov     BYTE PTR [r10+rcx], al
     inc     gap_start
     inc     gap_end
     mov     rax, gap_end

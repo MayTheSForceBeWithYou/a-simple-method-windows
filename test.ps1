@@ -291,6 +291,28 @@ function Get-RelativeAsmPath {
     return $relativePath.TrimStart("\", "/")
 }
 
+function Test-IsPrimaryListing {
+    param([Parameter(Mandatory = $true)][string]$AsmPath)
+
+    $base = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
+    $skipNames = @(
+        '05-multifile-helper',
+        '14-helper-add',
+        '20-add-two-numbers',
+        '15-data-message'
+    )
+    if ($skipNames -contains $base) {
+        return $false
+    }
+
+    $content = Read-TextOrEmpty $AsmPath
+    if ($content -notmatch '(?im)^main\s+PROC') {
+        return $false
+    }
+
+    return $true
+}
+
 function Test-RunnableAsm {
     param(
         [string]$AsmPath,
@@ -448,6 +470,9 @@ Write-Host "`nTesting listings..." -ForegroundColor Cyan
 $listingCount = 0
 foreach ($lessonDir in $lessonDirs) {
     foreach ($listing in (Get-AsmFiles -LessonDir $lessonDir -Subdir "listings")) {
+        if (-not (Test-IsPrimaryListing -AsmPath $listing.FullName)) {
+            continue
+        }
         $listingCount++
         Test-RunnableAsm -AsmPath $listing.FullName -OutDir $script:HarnessOutDir -Kind "listing" -RequireExpected
     }

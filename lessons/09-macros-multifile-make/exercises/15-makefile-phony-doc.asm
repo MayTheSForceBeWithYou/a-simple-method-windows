@@ -7,6 +7,7 @@ EXTRN ExitProcess:PROC
 ; .PHONY in Makefile marks non-file targets like "clean" or "all"
 
 main PROC
-    ; TODO: xor ecx, ecx; call ExitProcess
+    ; TODO: xor ecx, ecx; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

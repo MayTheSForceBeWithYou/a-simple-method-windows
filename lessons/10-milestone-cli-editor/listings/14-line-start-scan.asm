@@ -12,13 +12,14 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buf
     mov     rsi, 4
     mov     rcx, rsi
 scan:
     test    rcx, rcx
     jz      done
     dec     rcx
-    cmp     BYTE PTR buf[rcx], 10
+    cmp     BYTE PTR [r10+rcx], 10
     jne     scan
     inc     rcx
 done:

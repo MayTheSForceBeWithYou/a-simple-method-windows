@@ -14,7 +14,8 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'X'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'X'
     mov     len, 1
     mov     cur, 1
     cmp     cur, 0

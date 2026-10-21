@@ -14,14 +14,16 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, src
+    lea     r11, dst
     xor     rcx, rcx
 copy_loop:
     cmp     rcx, 4
     jge     done
-    mov     al, BYTE PTR src[rcx]
+    mov     al, BYTE PTR [r10+rcx]
     test    al, al
     jz      skip
-    mov     BYTE PTR dst[rcx], al
+    mov     BYTE PTR [r11+rcx], al
 skip:
     inc     rcx
     jmp     copy_loop
@@ -31,7 +33,7 @@ done:
 sum_loop:
     dec     rcx
     js      exit_sum
-    movzx   rdx, BYTE PTR dst[rcx]
+    movzx   rdx, BYTE PTR [r11+rcx]
     add     rax, rdx
     jmp     sum_loop
 exit_sum:

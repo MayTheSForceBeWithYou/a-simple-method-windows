@@ -22,10 +22,6 @@ main PROC FRAME
     
     ; TODO: Implement trailing zero count loop
     
-    mov     ecx, eax
-    call    ExitProcess     ; Should exit with 3
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

@@ -26,11 +26,12 @@ main PROC FRAME
     .allocstack 64
     .endprolog
 
+    lea     r10, px
     xor     rcx, rcx
 paint:
     cmp     rcx, 24
     jge     write_file
-    mov     BYTE PTR px[rcx], 255
+    mov     BYTE PTR [r10+rcx], 255
     add     rcx, 3
     jmp     paint
 

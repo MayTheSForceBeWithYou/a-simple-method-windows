@@ -27,9 +27,6 @@ main PROC FRAME
     ; TODO: Check for error (return 0), exit 1
     
     mov     ecx, 1
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

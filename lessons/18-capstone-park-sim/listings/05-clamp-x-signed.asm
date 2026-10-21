@@ -2,7 +2,7 @@
 ; Expected exit: 7
 ; Expected stdout: (none)
 
-width EQU 8
+grid_w EQU 8
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -14,9 +14,9 @@ main PROC
     jge     x_not_negative
     xor     rax, rax
 x_not_negative:
-    cmp     rax, width
+    cmp     rax, grid_w
     jl      x_ok
-    mov     rax, width
+    mov     rax, grid_w
     dec     rax
 x_ok:
     mov     ecx, eax

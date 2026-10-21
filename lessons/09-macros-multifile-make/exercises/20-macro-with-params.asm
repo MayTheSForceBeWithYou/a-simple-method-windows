@@ -9,6 +9,7 @@ EXTRN ExitProcess:PROC
 main PROC
     ; TODO: ADD3 rax, 10, 20, 12
     mov ecx, eax
+    mov ecx, 1
     call ExitProcess
 main ENDP
 END

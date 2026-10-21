@@ -34,10 +34,6 @@ main PROC FRAME
     ; TODO: Sum the four bytes
     
     ; TODO: VirtualFree, exit with sum (should be 10)
-    
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

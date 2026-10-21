@@ -11,6 +11,7 @@ main PROC
     mov eax, 5
     ; TODO: PushRegs; PopRegs
     mov ecx, eax
+    mov ecx, 1
     call ExitProcess
 main ENDP
 END

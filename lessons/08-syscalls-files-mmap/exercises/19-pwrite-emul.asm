@@ -36,11 +36,6 @@ main PROC FRAME
     ; TODO: WriteFile(handle, message, message_len, &bytesWritten, NULL)
     
     ; TODO: CloseHandle, exit 0
-    
-    xor     ecx, ecx
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

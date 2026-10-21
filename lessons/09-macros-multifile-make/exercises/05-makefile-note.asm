@@ -8,6 +8,7 @@ EXTRN ExitProcess:PROC
 ; Build: ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib
 
 main PROC
-    ; TODO: xor ecx, ecx; call ExitProcess
+    ; TODO: xor ecx, ecx; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

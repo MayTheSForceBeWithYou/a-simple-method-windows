@@ -3,19 +3,20 @@
 ; Expected stdout: (none)
 
 .DATA
-code DB 1, 4, 1, 5, 2, 0
+bytecode DB 1, 4, 1, 5, 2, 0
 
 .DATA?
-st DQ 16 DUP(?)
-sp_ QWORD ?
+stack_mem DQ 16 DUP(?)
+stack_sp QWORD ?
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     sp_, 0
-    lea     rsi, code
+    mov     stack_sp, 0
+    lea     rsi, bytecode
+    lea     rdi, stack_mem
 fetch:
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
@@ -30,25 +31,25 @@ fetch:
 push_op:
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
-    mov     rcx, sp_
-    mov     st[rcx*8], rax
-    inc     sp_
+    mov     rcx, stack_sp
+    mov     QWORD PTR [rdi+rcx*8], rax
+    inc     stack_sp
     jmp     fetch
 add_op:
-    dec     sp_
-    mov     rcx, sp_
-    mov     rax, st[rcx*8]
-    dec     sp_
-    mov     rcx, sp_
-    add     rax, st[rcx*8]
-    mov     rcx, sp_
-    mov     st[rcx*8], rax
-    inc     sp_
+    dec     stack_sp
+    mov     rcx, stack_sp
+    mov     rax, QWORD PTR [rdi+rcx*8]
+    dec     stack_sp
+    mov     rcx, stack_sp
+    add     rax, QWORD PTR [rdi+rcx*8]
+    mov     rcx, stack_sp
+    mov     QWORD PTR [rdi+rcx*8], rax
+    inc     stack_sp
     jmp     fetch
 halt:
-    dec     sp_
-    mov     rcx, sp_
-    mov     rax, st[rcx*8]
+    dec     stack_sp
+    mov     rcx, stack_sp
+    mov     rax, QWORD PTR [rdi+rcx*8]
     mov     ecx, eax
     call    ExitProcess
 main ENDP

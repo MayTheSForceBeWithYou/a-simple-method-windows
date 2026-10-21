@@ -5,6 +5,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    ; TODO: mov ecx, 3; call ExitProcess
+    ; TODO: mov ecx, 3; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

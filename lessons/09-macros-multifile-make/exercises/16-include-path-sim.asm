@@ -7,6 +7,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    ; TODO: mov ecx, VERSION; call ExitProcess
+    ; TODO: mov ecx, VERSION; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

@@ -149,6 +149,29 @@ function Invoke-NativeTool {
     }
 }
 
+function Get-ListingCompanionAsmPaths {
+    param([Parameter(Mandatory = $true)][string]$AsmPath)
+
+    $dir = Split-Path -Parent $AsmPath
+    $name = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
+    $companions = New-Object System.Collections.Generic.List[string]
+
+    switch ($name) {
+        '05-multifile-main' { $companions.Add((Join-Path $dir '05-multifile-helper.asm')) }
+        '16-main-call-helper' { $companions.Add((Join-Path $dir '14-helper-add.asm')) }
+        '19-exit-with-macro' { $companions.Add((Join-Path $dir '20-add-two-numbers.asm')) }
+    }
+
+    if ($name -match '^(.+)-main$') {
+        $helperPath = Join-Path $dir ($matches[1] + '-helper.asm')
+        if (-not $companions.Contains($helperPath)) {
+            $companions.Add($helperPath)
+        }
+    }
+
+    return @($companions | Where-Object { Test-Path -LiteralPath $_ })
+}
+
 function Build-Asm {
     param(
         [Parameter(Mandatory = $true)][string]$AsmPath,
@@ -171,21 +194,30 @@ function Build-Asm {
         New-Item -ItemType Directory -Path $OutputDir | Out-Null
     }
 
-    $objName = "$name.obj"
     $exeName = "$name.exe"
-    $objPath = Join-Path $OutputDir $objName
     $exePath = Join-Path $OutputDir $exeName
-    Test-NonEmptyPath -Value $objPath -Name "objPath"
     Test-NonEmptyPath -Value $exePath -Name "exePath"
 
-    # /Fo must be a bare filename. /FoD:\... is parsed as option FoD plus a drive path.
-    $mlArgs = @("/c", "/nologo", "/Zi", "/Fo$objName", $AsmPath)
-    $ml = Invoke-NativeTool -FilePath "ml64.exe" -Arguments $mlArgs -Label "ml64" -WorkDir $OutputDir
-    if ($ml.Code -ne 0) {
-        throw "ml64 failed for $AsmPath (exit code $($ml.Code)): $($ml.Output)"
-    }
-    if (-not (Test-Path -LiteralPath $objPath)) {
-        throw "ml64 reported success but did not create $objPath : $($ml.Output)"
+    $sourceFiles = @($AsmPath) + @(Get-ListingCompanionAsmPaths -AsmPath $AsmPath)
+    $objNames = New-Object System.Collections.Generic.List[string]
+
+    foreach ($src in $sourceFiles) {
+        $srcName = [System.IO.Path]::GetFileNameWithoutExtension($src)
+        $objName = "$srcName.obj"
+        $objPath = Join-Path $OutputDir $objName
+        Test-NonEmptyPath -Value $objPath -Name "objPath"
+
+        $includeDir = Split-Path -Parent $src
+        # /Fo must be a bare filename. /FoD:\... is parsed as option FoD plus a drive path.
+        $mlArgs = @("/c", "/nologo", "/Zi", "/Fo$objName", "/I$includeDir", $src)
+        $ml = Invoke-NativeTool -FilePath "ml64.exe" -Arguments $mlArgs -Label "ml64" -WorkDir $OutputDir
+        if ($ml.Code -ne 0) {
+            throw "ml64 failed for $src (exit code $($ml.Code)): $($ml.Output)"
+        }
+        if (-not (Test-Path -LiteralPath $objPath)) {
+            throw "ml64 reported success but did not create $objPath : $($ml.Output)"
+        }
+        $objNames.Add($objName)
     }
 
     $linkArgs = @(
@@ -193,10 +225,10 @@ function Build-Asm {
         "/OUT:$exeName",
         "/ENTRY:main",
         "/SUBSYSTEM:CONSOLE",
-        "/DEBUG",
-        $objName,
-        "kernel32.lib"
+        "/DEBUG"
     )
+    $linkArgs += $objNames
+    $linkArgs += "kernel32.lib"
     $link = Invoke-NativeTool -FilePath "link.exe" -Arguments $linkArgs -Label "link" -WorkDir $OutputDir
     if ($link.Code -ne 0) {
         throw "link failed for $name (exit code $($link.Code)): $($link.Output)"

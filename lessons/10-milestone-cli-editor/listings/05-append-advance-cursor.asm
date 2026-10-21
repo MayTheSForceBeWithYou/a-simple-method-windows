@@ -14,10 +14,11 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buf
     mov     len, 0
     mov     cur, 0
     mov     rax, len
-    mov     BYTE PTR buf[rax], 'A'
+    mov     BYTE PTR [r10+rax], 'A'
     inc     len
     inc     cur
     mov     ecx, DWORD PTR len

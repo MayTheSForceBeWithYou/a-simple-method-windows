@@ -25,12 +25,8 @@ main PROC FRAME
     
     ; TODO: Implement popcount loop
     
-    mov     ecx, eax
-    call    ExitProcess     ; Should exit with 6
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    mov     ecx, 1
+    call    ExitProcess
 main ENDP
 
 END

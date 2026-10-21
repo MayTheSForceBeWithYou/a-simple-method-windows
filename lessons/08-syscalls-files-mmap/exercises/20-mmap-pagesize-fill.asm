@@ -26,10 +26,6 @@ main PROC FRAME
     ; TODO: Fill first 16 bytes with 1
     
     ; TODO: VirtualFree, exit 16
-    
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

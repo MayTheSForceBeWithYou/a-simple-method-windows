@@ -21,7 +21,7 @@ main PROC
     
 
     ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
+    mov ecx, 1
     call ExitProcess
 main ENDP
 

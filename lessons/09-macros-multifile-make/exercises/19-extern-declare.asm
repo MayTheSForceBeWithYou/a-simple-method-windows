@@ -7,6 +7,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Define helper returning 9
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; call ExitProcess
+    ; TODO: call helper; mov ecx, eax; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

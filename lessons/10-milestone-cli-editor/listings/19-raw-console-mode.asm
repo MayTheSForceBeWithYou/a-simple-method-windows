@@ -28,7 +28,7 @@ main PROC FRAME
     lea     rdx, original_mode
     call    GetConsoleMode
     test    rax, rax
-    jz      error_exit
+    jz      no_console
 
     mov     eax, original_mode
     and     eax, NOT 6
@@ -44,6 +44,10 @@ main PROC FRAME
     mov     edx, original_mode
     call    SetConsoleMode
 
+    xor     ecx, ecx
+    call    ExitProcess
+
+no_console:
     xor     ecx, ecx
     call    ExitProcess
 

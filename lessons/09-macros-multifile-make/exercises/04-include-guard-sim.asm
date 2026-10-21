@@ -11,6 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    ; TODO: mov ecx, MYVAL; call ExitProcess
+    ; TODO: mov ecx, MYVAL; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

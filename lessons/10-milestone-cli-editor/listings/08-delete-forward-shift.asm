@@ -1,6 +1,6 @@
 ; Listing 08: Delete-forward tail shift (LESSON.md block 8)
 ;
-; Purpose: Shift buf[cur+1..len) left and decrement len.
+; Purpose: Shift [r10+cur+1..len) left and decrement len.
 ; Expected exit code: 2
 ; Expected stdout: (none)
 
@@ -14,9 +14,10 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'A'
-    mov     BYTE PTR buf[1], 'B'
-    mov     BYTE PTR buf[2], 'C'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
     mov     len, 3
     mov     cur, 1
     mov     rcx, cur
@@ -24,8 +25,8 @@ shift:
     inc     rcx
     cmp     rcx, len
     jge     done_shift
-    mov     al, BYTE PTR buf[rcx]
-    mov     BYTE PTR buf[rcx-1], al
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
     jmp     shift
 done_shift:
     dec     len

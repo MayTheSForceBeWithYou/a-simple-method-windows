@@ -2,13 +2,13 @@
 ; Expected exit: 4
 ; Expected stdout: (none)
 ;
-; dx=3 dy=2; err starts at 2*dy-dx=1; plot each x in [0..3] (four columns).
+; delta_x=3 delta_y=2; err starts at 2*delta_y-delta_x=1; plot each x in [0..3] (four columns).
 
 .DATA?
 x QWORD ?
 y QWORD ?
-dx QWORD ?
-dy QWORD ?
+delta_x QWORD ?
+delta_y QWORD ?
 err QWORD ?
 count QWORD ?
 
@@ -17,30 +17,31 @@ EXTRN ExitProcess:PROC
 
 main PROC
     push    rbx
-    sub     rsp, 32
+    sub     rsp, 40
     mov     x, 0
     mov     y, 0
-    mov     dx, 3
-    mov     dy, 2
-    mov     rax, dy
+    mov     delta_x, 3
+    mov     delta_y, 2
+    mov     rax, delta_y
     shl     rax, 1
-    sub     rax, dx
+    sub     rax, delta_x
     mov     err, rax
     mov     count, 0
 
 bres_loop:
     inc     count
-    cmp     x, dx
+    mov     rax, x
+    cmp     rax, delta_x
     je      bres_done
     mov     rax, err
-    mov     rbx, dy
+    mov     rbx, delta_y
     shl     rbx, 1
     add     rax, rbx
     mov     err, rax
     test    rax, rax
     jle     no_y_step
     inc     y
-    mov     rbx, dx
+    mov     rbx, delta_x
     shl     rbx, 1
     sub     rax, rbx
     mov     err, rax
@@ -49,6 +50,8 @@ no_y_step:
     jmp     bres_loop
 
 bres_done:
+    add     rsp, 40
+    pop     rbx
     mov     ecx, DWORD PTR count
     call    ExitProcess
 main ENDP

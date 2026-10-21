@@ -9,6 +9,7 @@ main PROC
     xor eax, eax
     ; TODO: REPT 3; inc eax; ENDM
     mov ecx, eax
+    mov ecx, 1
     call ExitProcess
 main ENDP
 END

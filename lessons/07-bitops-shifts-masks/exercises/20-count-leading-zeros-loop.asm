@@ -23,12 +23,8 @@ main PROC FRAME
     
     ; TODO: Implement leading zero count loop
     
-    mov     ecx, ebx
-    call    ExitProcess     ; Should exit with 10
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    mov     ecx, 1
+    call    ExitProcess
 main ENDP
 
 END

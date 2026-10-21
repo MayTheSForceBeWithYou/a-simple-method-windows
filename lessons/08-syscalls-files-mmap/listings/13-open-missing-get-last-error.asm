@@ -1,7 +1,7 @@
 ; Listing 13: Open missing file; exit with GetLastError code (LESSON.md)
 ;
 ; Purpose: CreateFileA failure returns INVALID_HANDLE_VALUE; error via GetLastError.
-; Expected exit: 2 (ERROR_FILE_NOT_FOUND)
+; Expected exit: 3 (ERROR_PATH_NOT_FOUND for missing path components)
 ; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo13-open-missing-get-last-error.obj 13-open-missing-get-last-error.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:13-open-missing-get-last-error.exe 13-open-missing-get-last-error.obj kernel32.lib

@@ -12,6 +12,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, vec_data
     mov     vec_cap, 8
     mov     vec_len, 0
     mov     rdi, 10
@@ -19,21 +20,21 @@ main PROC
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
     mov     rdi, 20
     mov     rax, vec_len
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
     mov     rdi, 30
     mov     rax, vec_len
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
 done:
     mov     ecx, DWORD PTR vec_len

@@ -12,18 +12,19 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, q
     mov     head, 0
     mov     tail, 0
     mov     rdi, 7
     mov     rcx, tail
-    mov     q[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     tail
     mov     rdi, 8
     mov     rcx, tail
-    mov     q[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     tail
     mov     rcx, head
-    mov     rax, q[rcx*8]
+    mov     rax, QWORD PTR [r10+rcx*8]
     inc     head
     mov     ecx, eax
     call    ExitProcess

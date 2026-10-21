@@ -8,6 +8,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Define helper PROC that returns 5 in RAX
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; call ExitProcess
+    ; TODO: call helper; mov ecx, eax; mov ecx, 1
+    call ExitProcess
 main ENDP
 END

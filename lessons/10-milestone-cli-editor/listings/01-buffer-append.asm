@@ -8,7 +8,7 @@
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
@@ -16,27 +16,28 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buffer
     ; Initialize empty buffer
-    mov     length, 0
+    mov     buf_len, 0
     mov     cursor, 0
     
     ; Append 'A'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'A'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'A'
+    inc     buf_len
     
     ; Append 'B'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'B'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     buf_len
     
     ; Append 'C'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'C'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'C'
+    inc     buf_len
     
-    ; Exit with length (3)
-    mov     ecx, DWORD PTR length
+    ; Exit with buf_len (3)
+    mov     ecx, DWORD PTR buf_len
     call    ExitProcess
 main ENDP
 

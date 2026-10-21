@@ -24,11 +24,6 @@ main PROC FRAME
     
     ; BUG: Should call CloseHandle here, but intentionally skip it
     ; TODO: Exit 0 without closing (leak demonstration)
-    
-    xor     ecx, ecx
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

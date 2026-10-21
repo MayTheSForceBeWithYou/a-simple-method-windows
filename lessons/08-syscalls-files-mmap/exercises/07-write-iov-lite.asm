@@ -31,11 +31,6 @@ main PROC FRAME
     ; TODO: WriteFile buf1
     
     ; TODO: WriteFile buf2
-    
-    xor     ecx, ecx
-    call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
     mov ecx, 1
     call ExitProcess
 main ENDP

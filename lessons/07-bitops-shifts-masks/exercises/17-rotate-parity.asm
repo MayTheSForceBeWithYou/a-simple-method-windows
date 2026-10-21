@@ -23,13 +23,8 @@ main PROC FRAME
     
     ; TODO: Loop 8 times, rotating and XORing bit 0 into accumulator
     
-    movzx   ecx, bl
-    and     ecx, 1          ; Keep only parity bit
+    mov     ecx, 1
     call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
 main ENDP
 
 END

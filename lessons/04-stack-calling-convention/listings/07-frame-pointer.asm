@@ -15,15 +15,15 @@ EXTRN ExitProcess:PROC
 compute_setframe PROC FRAME
     push rbp
     .pushreg rbp
-    sub rsp, 40
-    lea rbp, [rsp+40]          ; N = 40 (multiple of 16, <= 240)
-    .setframe rbp, 40
-    .allocstack 40
+    sub rsp, 48
+    lea rbp, [rsp+48]          ; N = 48 (multiple of 16, <= 240)
+    .setframe rbp, 48
+    .allocstack 48
     .endprolog
 
     mov rax, 42
 
-    add rsp, 40
+    add rsp, 48
     pop rbp
     ret
 compute_setframe ENDP
@@ -32,14 +32,14 @@ compute_setframe ENDP
 compute_rbp_saved PROC FRAME
     push rbp
     .pushreg rbp
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov rbp, 42                ; use RBP as a general preserved slot
     mov rax, rbp
 
-    add rsp, 32
+    add rsp, 40
     pop rbp
     ret
 compute_rbp_saved ENDP

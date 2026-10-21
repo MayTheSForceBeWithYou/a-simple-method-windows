@@ -13,8 +13,8 @@ EXTRN ExitProcess:PROC
 sum_to PROC FRAME
     push rcx                   ; Save n on stack across recursive call (rcx is volatile)
     .pushreg rcx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     cmp rcx, 0
@@ -25,11 +25,11 @@ sum_to PROC FRAME
 recursive:
     dec rcx
     call sum_to
-    add rax, [rsp+32]          ; Add saved n (still on stack below shadow)
+    add rax, [rsp+40]          ; Add saved n (still on stack below shadow)
     jmp done
     
 done:
-    add rsp, 32
+    add rsp, 40
     pop rcx
     ret
 sum_to ENDP

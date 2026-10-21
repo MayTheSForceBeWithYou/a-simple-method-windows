@@ -5,7 +5,7 @@
 NODE_COUNT EQU 5
 
 .DATA?
-queue QWORD 16 DUP(?)
+bfs_queue QWORD 16 DUP(?)
 head QWORD ?
 tail QWORD ?
 visited BYTE NODE_COUNT DUP(?)
@@ -17,6 +17,7 @@ main PROC
     push    rdi
     push    rbx
     sub     rsp, 40
+    lea     r10, bfs_queue
     mov     head, 0
     mov     tail, 0
     lea     rdi, visited
@@ -27,17 +28,18 @@ main PROC
 
     mov     rax, 0
     mov     rcx, tail
-    mov     QWORD PTR queue[rcx*8], rax
+    mov     QWORD PTR [r10+rcx*8], rax
     inc     tail
     mov     BYTE PTR visited[0], 1
 
     mov     rbx, 1
 
 bfs_loop:
-    cmp     head, tail
+    mov     rax, QWORD PTR head
+    cmp     rax, QWORD PTR tail
     jge     bfs_done
     mov     rcx, head
-    mov     rax, QWORD PTR queue[rcx*8]
+    mov     rax, QWORD PTR [r10+rcx*8]
     inc     head
 
     mov     rcx, rax
@@ -50,7 +52,7 @@ try_left:
     mov     BYTE PTR visited[rcx], 1
     inc     rbx
     mov     rdx, tail
-    mov     QWORD PTR queue[rdx*8], rcx
+    mov     QWORD PTR [r10+rdx*8], rcx
     inc     tail
 try_right:
     mov     rcx, rax
@@ -62,11 +64,14 @@ try_right:
     mov     BYTE PTR visited[rcx], 1
     inc     rbx
     mov     rdx, tail
-    mov     QWORD PTR queue[rdx*8], rcx
+    mov     QWORD PTR [r10+rdx*8], rcx
     inc     tail
     jmp     bfs_loop
 
 bfs_done:
+    add     rsp, 40
+    pop     rbx
+    pop     rdi
     mov     ecx, ebx
     call    ExitProcess
 main ENDP

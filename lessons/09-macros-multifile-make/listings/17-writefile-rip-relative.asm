@@ -18,8 +18,8 @@ written DWORD ?
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov ecx, -11

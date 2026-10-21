@@ -12,20 +12,23 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, xs
+    lea     r11, vxs
+    lea     r12, alive
     xor     rcx, rcx
 loop_start:
     cmp     rcx, 3
     jge     done
-    cmp     BYTE PTR alive[rcx], 0
+    cmp     BYTE PTR [r12+rcx], 0
     je      next
-    mov     rax, vxs[rcx*8]
-    add     xs[rcx*8], rax
+    mov     rax, QWORD PTR [r11+rcx*8]
+    add     QWORD PTR [r10+rcx*8], rax
 next:
     inc     rcx
     jmp     loop_start
 done:
-    mov     rax, xs
-    add     rax, xs[16]
+    mov     rax, QWORD PTR [r10]
+    add     rax, QWORD PTR [r10+16]
     mov     ecx, eax
     call    ExitProcess
 main ENDP
