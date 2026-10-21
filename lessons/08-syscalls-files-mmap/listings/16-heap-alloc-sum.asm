@@ -15,8 +15,14 @@ EXTRN HeapFree:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rdi
+    .pushreg rdi
+    push    rsi
+    .pushreg rsi
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     call    GetProcessHeap
@@ -47,7 +53,7 @@ sum_loop:
     inc     rsi
     loop    sum_loop
 
-    mov     rbx, eax
+    mov     ebx, eax
 
     mov     rcx, hHeap
     xor     edx, edx

@@ -14,7 +14,9 @@ visited BYTE NODE_COUNT DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rdi
+    push    rbx
+    sub     rsp, 40
     mov     head, 0
     mov     tail, 0
     lea     rdi, visited

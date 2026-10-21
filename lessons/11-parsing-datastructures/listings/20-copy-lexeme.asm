@@ -13,7 +13,9 @@ lex_len QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rsi
+    push    rdi
+    sub     rsp, 40
     lea     rsi, src
     lea     rdi, dst
     xor     rcx, rcx

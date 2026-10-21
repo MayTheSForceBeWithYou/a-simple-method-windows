@@ -6,7 +6,8 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     ; panel x=0 y=0 w=10 h=10; point px=5 py=5
     mov     rax, 5
     mov     rbx, 5

@@ -6,7 +6,8 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     rax, 10
     mov     rbx, 5
     sub     rax, rbx

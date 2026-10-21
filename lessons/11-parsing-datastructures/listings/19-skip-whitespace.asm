@@ -9,7 +9,8 @@ src BYTE "  ", "7", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rsi
+    sub     rsp, 32
     lea     rsi, src
 skip:
     movzx   eax, BYTE PTR [rsi]

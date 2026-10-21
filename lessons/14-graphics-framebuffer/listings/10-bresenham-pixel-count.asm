@@ -16,7 +16,8 @@ count QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 40
+    push    rbx
+    sub     rsp, 32
     mov     x, 0
     mov     y, 0
     mov     dx, 3

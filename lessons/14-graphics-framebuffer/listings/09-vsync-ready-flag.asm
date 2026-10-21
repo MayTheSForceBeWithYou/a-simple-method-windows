@@ -14,8 +14,10 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     lea     rcx, qpc_start
