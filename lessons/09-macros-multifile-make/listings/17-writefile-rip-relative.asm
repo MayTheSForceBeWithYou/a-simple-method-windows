@@ -9,19 +9,24 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 .DATA
-msg BYTE "hi", 10
+msg BYTE "hi", 13, 10
 msg_len EQU $ - msg
 
 .DATA?
 written DWORD ?
 
-main PROC
-    sub     rsp, 40
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 48
+    .allocstack 48
+    .endprolog
 
     mov     ecx, -11
     call    GetStdHandle
+    mov     rbx, rax
 
-    mov     rcx, rax
+    mov     rcx, rbx
     lea     rdx, msg
     mov     r8d, msg_len
     lea     r9, written

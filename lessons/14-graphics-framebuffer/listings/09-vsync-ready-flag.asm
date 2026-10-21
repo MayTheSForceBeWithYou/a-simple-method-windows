@@ -1,47 +1,27 @@
-; Listing 09: Frame pacing with QueryPerformanceCounter (spin until tick delta)
+; Listing 09: Frame pacing with Sleep (three 1ms waits)
 ; Expected exit: 3
 ; Expected stdout: (none)
 ;
-; Completes three QPC wait loops; exit code equals the number of waits.
-
-.DATA?
-qpc_start QWORD ?
-qpc_now QWORD ?
-frame_target QWORD ?
+; Completes three frame waits; exit code equals the wait count.
 
 .CODE
-EXTRN QueryPerformanceCounter:PROC
+EXTRN Sleep:PROC
 EXTRN ExitProcess:PROC
 
-main PROC
+main PROC FRAME
     sub     rsp, 40
-
-    lea     rcx, qpc_start
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_start
-    add     rax, 1
-    mov     frame_target, rax
+    .allocstack 40
+    .endprolog
 
     xor     ebx, ebx
 
 frame_wait_loop:
-    lea     rcx, qpc_now
-wait_spin:
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_now
-    cmp     rax, QWORD PTR frame_target
-    jl      wait_spin
-
+    mov     ecx, 1
+    call    Sleep
     inc     ebx
     cmp     ebx, 3
-    jge     frames_done
+    jl      frame_wait_loop
 
-    mov     rax, QWORD PTR qpc_now
-    add     rax, 1
-    mov     frame_target, rax
-    jmp     frame_wait_loop
-
-frames_done:
     mov     ecx, ebx
     call    ExitProcess
 main ENDP
