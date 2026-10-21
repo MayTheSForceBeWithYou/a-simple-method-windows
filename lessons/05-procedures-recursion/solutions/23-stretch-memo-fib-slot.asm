@@ -33,14 +33,12 @@ fibm PROC
     sub rsp, 40
     dec rcx
     call fibm
-    add rsp, 40
     mov rbx, rax
     mov rcx, QWORD PTR [rsp+40]
     sub rcx, 2
-    sub rsp, 40
     call fibm
-    add rsp, 40
     add rax, rbx
+    add rsp, 40
     pop rcx
     pop rbx
     lea r11, [memo]
