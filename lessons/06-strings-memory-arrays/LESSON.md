@@ -43,7 +43,7 @@ loop_done:
 my_strlen ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     lea rcx, test_str
     call my_strlen             ; RAX = 11
@@ -89,7 +89,7 @@ done:
 my_strlen ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, test_str
     call my_strlen
     mov rcx, rax
@@ -139,7 +139,7 @@ copy_loop:
 my_strcpy ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, dst
     lea rdx, src
     call my_strcpy
@@ -177,6 +177,7 @@ dst DB 16 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     lea     rcx, dst
     lea     rdx, src
     mov     r8, 4
@@ -195,7 +196,7 @@ main ENDP
 END
 ```
 
-There is no `sub rsp` before `call ExitProcess`. `ExitProcess` never returns; the listing still relies on the process dying rather than a balanced frame. Flagged in `docs/PROSE_TECH_FLAGS.md`.
+`main` allocates 40 bytes before the loop (`sub rsp, 40`) so the later `call ExitProcess` has shadow space and 16-byte alignment. The listing still does not tear that frame down: `ExitProcess` never returns.
 
 ## `rep movsb` and Windows RSI/RDI
 

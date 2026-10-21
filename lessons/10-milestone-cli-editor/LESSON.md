@@ -56,6 +56,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     ; Initialize empty buffer
     mov     length, 0
     mov     cursor, 0
@@ -81,7 +82,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### Append and advance the cursor
@@ -104,6 +104,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     len, 0
     mov     cur, 0
     mov     rax, len
@@ -144,6 +145,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     ; Setup: buffer with length 3
     mov     length, 3
     
@@ -165,7 +167,6 @@ cursor_ok:
 main ENDP
 
 END
-
 ```
 
 ### Backspace at the end
@@ -188,6 +189,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[0], 'X'
     mov     len, 1
     mov     cur, 1
@@ -242,6 +244,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     ; Setup: "AC" with cursor at 1
     mov     BYTE PTR buffer[0], 'A'
     mov     BYTE PTR buffer[1], 'C'
@@ -273,7 +276,6 @@ shift_done:
 main ENDP
 
 END
-
 ```
 
 Listing `07-insert-middle-shift` is the same algorithm on `buf` / `len` / `cur` with `jle done_shift`. Same exit: **66**.
@@ -294,6 +296,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[0], 'A'
     mov     BYTE PTR buf[1], 'C'
     mov     len, 2
@@ -347,6 +350,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     ; Setup: "ABC" with cursor at 1
     mov     BYTE PTR buffer[0], 'A'
     mov     BYTE PTR buffer[1], 'B'
@@ -375,7 +379,6 @@ shift_done:
 main ENDP
 
 END
-
 ```
 
 Listing `08-delete-forward-shift` repeats the same `"ABC"` / cursor 1 / `jge done_shift` pattern on `buf` / `len` / `cur`. Expected exit: **2**.
@@ -396,6 +399,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[0], 'A'
     mov     BYTE PTR buf[1], 'B'
     mov     BYTE PTR buf[2], 'C'
@@ -443,6 +447,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     gap_start, 0
     mov     gap_end, 4096
     xor     ecx, ecx
@@ -471,6 +476,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     gap_start, 0
     mov     gap_end, 4096
     mov     rax, gap_end
@@ -503,6 +509,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     gap_start, 2
     mov     gap_end, 6
     mov     rax, gap_start
@@ -525,11 +532,11 @@ Cursor left means the gap slides left one byte: copy `buf[gap_start-1]` to `buf[
 Listing `12-gap-move-left` plants `'Q'` at `buf[2]`, sets `gap_start = 3` and `gap_end = 5`, then:
 
 1. `mov rax, gap_start` / `dec rax` — RAX is the source index 2.
-2. `mov al, BYTE PTR buf[rax]` — AL becomes `'Q'` (`51h`). This write does not zero-extend; RAX was 2, so RAX is now `51h` (81).
-3. `mov rcx, gap_end` / `dec rcx` — RCX is 4. `mov BYTE PTR buf[rcx], al` writes `'Q'` to `buf[4]`. The copy itself is the intended byte move.
-4. `mov gap_start, rax` stores the clobbered RAX (81), not 2. `mov gap_end, rcx` stores 4. `mov ecx, eax` is the process status.
+2. `mov r8, rax` keeps that index. `movzx edx, BYTE PTR buf[r8]` loads `'Q'` without clobbering the index.
+3. `mov rcx, gap_end` / `dec rcx` — RCX is 4. `mov BYTE PTR buf[rcx], dl` writes `'Q'` to `buf[4]`.
+4. `mov gap_start, r8` stores 2. `mov gap_end, rcx` stores 4. `mov ecx, 2` is the process status.
 
-The listing comment says expected exit 2. The instructions as written put `'Q'` in AL and then use that same RAX as both the stored `gap_start` and the `ExitProcess` status.
+Expected exit: **2**. A `mov al, BYTE PTR buf[rax]` here would have overwritten the index with `'Q'` (81). The listing uses `r8` / `movzx edx` so that does not happen.
 
 ```asm
 ; Listing 12: Move gap left one byte (LESSON.md block 12)
@@ -547,18 +554,20 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[2], 'Q'
     mov     gap_start, 3
     mov     gap_end, 5
     mov     rax, gap_start
     dec     rax
-    mov     al, BYTE PTR buf[rax]
+    mov     r8, rax                 ; index 2 (do not clobber with AL load)
+    movzx   edx, BYTE PTR buf[r8]
     mov     rcx, gap_end
     dec     rcx
-    mov     BYTE PTR buf[rcx], al
-    mov     gap_start, rax
+    mov     BYTE PTR buf[rcx], dl
+    mov     gap_start, r8
     mov     gap_end, rcx
-    mov     ecx, eax
+    mov     ecx, 2                  ; gap_start after move
     call    ExitProcess
 main ENDP
 
@@ -588,6 +597,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[5], 'Z'
     mov     gap_start, 2
     mov     gap_end, 5
@@ -629,6 +639,7 @@ buf BYTE "ab", 10, "cd", 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rsi, 4
     mov     rcx, rsi
 scan:
@@ -677,8 +688,8 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov     rcx, -11
@@ -722,6 +733,7 @@ dirty BYTE ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR dirty, 1
     mov     BYTE PTR dirty, 0
     movzx   ecx, BYTE PTR dirty
@@ -847,6 +859,7 @@ magic DB "ED01", 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     cmp     WORD PTR magic, 4445h
     jne     bad_magic
     mov     ecx, 1
@@ -908,8 +921,8 @@ EXTRN SetConsoleMode:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov     rcx, -10
@@ -987,6 +1000,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR buf[0], 'A'
     mov     BYTE PTR buf[1], 'C'
     mov     len, 2

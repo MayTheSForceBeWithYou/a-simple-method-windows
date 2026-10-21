@@ -34,6 +34,7 @@ visitor_count QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov visitor_count, 0
     inc visitor_count
     mov rax, visitor_count
@@ -58,6 +59,7 @@ closed_list QWORD 16 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     xor ecx, ecx
     call ExitProcess
 main ENDP
@@ -86,6 +88,7 @@ map DB 64 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     xor     ecx, ecx
     call    ExitProcess
 main ENDP
@@ -110,6 +113,7 @@ width EQU 8
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 99
     cmp     rax, 0
     jge     x_not_negative
@@ -142,6 +146,7 @@ width EQU 8
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 99
     cmp     rax, width
     jb      ok
@@ -176,6 +181,7 @@ parent DQ 8 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     agent_pos, 5
     mov     parent[5*8], 2
     mov     rax, agent_pos
@@ -208,6 +214,7 @@ cash QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     cash, 10
     sub     cash, 3
     mov     ecx, DWORD PTR cash
@@ -231,6 +238,7 @@ cash QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     cash, 10
     sub     cash, 3
     mov     ecx, DWORD PTR cash
@@ -255,6 +263,7 @@ upkeep QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     cash, 10
     mov     upkeep, 3
     mov     rax, cash
@@ -282,9 +291,9 @@ The on-disk header is 8 bytes: four ASCII magic bytes, then a little-endian vers
 header_buf DB "PK01", 1, 0, 0, 0
 ```
 
-That is bytes `50 4B 30 31 01 00 00 00`. The first DWORD, read little-endian, is `31304B50h` (`'P' | 'K'<<8 | '0'<<16 | '1'<<24`). The second DWORD is 1.
+That is bytes `50 4B 30 31 01 00 00 00`. The first DWORD, read little-endian, is **`31304B50h`** (`'P' | 'K'<<8 | '0'<<16 | '1'<<24`). The second DWORD is 1.
 
-The listing compares that first DWORD to `314B5050h` and the second to 1. `314B5050h` in memory is bytes `50 50 4B 31` (`"PPK1"`), **not** `"PK01"`. The first `cmp` does not match, `jne bad` runs, ECX is zeroed. The process status is **0**. The file header comments “Expected exit: 1”; that comment assumes the immediate is `"PK01"` little-endian. It is not.
+The listing compares that first DWORD to **`31304B50h`** and the version DWORD to 1. Both match. ECX is set to 1. Expected exit: **1**. The comment in the listing notes this is **not** the ZIP local-header signature `02014B50h` (`PK\x03\x04` is actually `04034B50h`; `PK\x01\x02` is `02014B50h`). Do not write `314B5050h`: that immediate is bytes `50 50 4B 31` (`P P K 1`).
 
 ```asm
 ; Listing 03: Validate save header magic/version (LESSON.md block 3)
@@ -298,7 +307,9 @@ header_buf DB "PK01", 1, 0, 0, 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    cmp     DWORD PTR header_buf, 314B5050h
+    sub rsp, 40
+    ; LE DWORD for ASCII PK01: 31h,30h,4Bh,50h -> 31304B50h (not ZIP 02014B50h)
+    cmp     DWORD PTR header_buf, 31304B50h
     jne     bad
     cmp     DWORD PTR header_buf[4], 1
     jne     bad
@@ -313,7 +324,7 @@ END
 
 ```
 
-A loader that must accept ASCII `"PK01"` compares against `31304B50h`. Listing 12 below compares against the same `314B5050h` immediate it writes into the buffer, so that file is internally consistent and can still exit 1.
+A loader that must accept ASCII `"PK01"` compares against `31304B50h`. Listing 12 uses that same immediate for both the harness seed and the `cmp`.
 
 ### Write park.sav
 
@@ -403,11 +414,11 @@ END
 
 ```
 
-`header` is again `"PK01"` plus version bytes `1,0,0,0`. That is the on-disk `"PK01"` / version 1 image. Listing 03’s compare immediate does not match those four letters; listing 11’s write does contain them.
+`header` is again `"PK01"` plus version bytes `1,0,0,0`. That is the on-disk `"PK01"` / version 1 image — the same little-endian DWORD listing 03 and listing 12 compare (`31304B50h`).
 
 ### Read park.sav, or trust a pre-seeded header
 
-Listing `12-load-park-file` pre-seeds `header_buf` with `314B5050h` and version 1, then tries `CreateFileA` with `GENERIC_READ` (`80000000h`), `FILE_SHARE_READ` (1), and `OPEN_EXISTING` (3). If the HANDLE is −1, it jumps to `validate` and uses the seed. If the open succeeds, it `ReadFile`s 8 bytes into `header_buf` and `CloseHandle`s. Validation compares the first DWORD to `314B5050h` and the version DWORD to 1. Match → exit **1**. Miss → exit **0**.
+Listing `12-load-park-file` pre-seeds `header_buf` with **`31304B50h`** and version 1, then tries `CreateFileA` with `GENERIC_READ` (`80000000h`), `FILE_SHARE_READ` (1), and `OPEN_EXISTING` (3). If the HANDLE is −1, it jumps to `validate` and uses the seed. If the open succeeds, it `ReadFile`s 8 bytes into `header_buf` and `CloseHandle`s. Validation compares the first DWORD to **`31304B50h`** and the version DWORD to 1. Match → exit **1**. Miss → exit **0**.
 
 ```asm
 ; Listing 12: Load park file header validation (LESSON.md block 12)
@@ -437,7 +448,7 @@ main PROC FRAME
     .endprolog
 
     ; Pre-seed header for harness when file missing
-    mov     DWORD PTR header_buf, 314B5050h
+    mov     DWORD PTR header_buf, 31304B50h   ; LE PK01 (P,K,0,1)
     mov     DWORD PTR header_buf[4], 1
 
     lea     rcx, path
@@ -464,7 +475,7 @@ have_file:
     call    CloseHandle
 
 validate:
-    cmp     DWORD PTR header_buf, 314B5050h
+    cmp     DWORD PTR header_buf, 31304B50h
     jne     bad
     mov     eax, DWORD PTR header_buf[4]
     cmp     eax, 1
@@ -480,11 +491,11 @@ END
 
 ```
 
-On a harness with no `park.sav`, the open fails, the seed remains, the compares succeed, status is **1**. After listing 11 has written a real `"PK01"` file, a successful `ReadFile` overwrites the seed with `31304B50h`, and the compare to `314B5050h` **fails** (status 0). The missing-file path is what the “exit 1” comment describes.
+On a harness with no `park.sav`, the open fails, the seed remains, the compares succeed, status is **1**. After listing 11 has written a real `"PK01"` file, a successful `ReadFile` overwrites the seed with the same `31304B50h` bytes, so the compare still matches (status **1**).
 
-## Worked example: 314B5050h is not PK01 little-endian
+## Worked example: `31304B50h` is PK01 little-endian
 
-**Task:** Listing `03-load-header-magic` comments “Expected exit: 1”. The buffer is `DB "PK01", 1, 0, 0, 0`.
+**Task:** Listing `03-load-header-magic` comments “Expected exit: 1”. The buffer is `DB "PK01", 1, 0, 0, 0`. The compare immediate is `31304B50h`.
 
 **What the bytes are:**
 
@@ -495,16 +506,16 @@ On a harness with no `park.sav`, the open fails, the seed remains, the compares 
 
 **What the compares do:**
 
-1. `cmp DWORD PTR header_buf, 314B5050h` — left side `31304B50h`, right side `314B5050h`. Not equal. `jne bad`.
-2. `xor ecx, ecx` / `call ExitProcess`. Status **0**.
+1. `cmp DWORD PTR header_buf, 31304B50h` — both sides `31304B50h`. Equal. Fall through.
+2. `cmp DWORD PTR header_buf[4], 1` — equal. `mov ecx, 1`. Status **1**.
 
 **Plausible wrong reading:**
 
-*"Little-endian `"PK01"` is `314B5050h`, the version DWORD is 1, both compares pass, the listing exits 1."*
+*"Little-endian `"PK01"` is `314B5050h` (or the ZIP signature `02014B50h`), so I compare that immediate."*
 
-**Why it's wrong:** `'0'` is `30h`, not an implied nibble inside `31h`. The four letters `P K 0 1` pack as `31304B50h`. `314B5050h` unpacks to `50 50 4B 31` (`P P K 1`). The listing as written takes `bad`.
+**Why it's wrong:** `'0'` is `30h`, not an implied nibble inside `31h`. The four letters `P K 0 1` pack as **`31304B50h`**. `314B5050h` unpacks to `50 50 4B 31` (`P P K 1`). ZIP `PK\x01\x02` is `02014B50h`. Either wrong immediate takes `bad` and exits 0. The listing uses `31304B50h` and exits 1.
 
-**The correct reading:** Encode the magic you intend to store, then compare against **that** encoding. Listing 12’s harness seed uses the same immediate it later compares, so the no-file path exits 1 without ever reading `"PK01"` from disk. Listing 11 writes the real ASCII letters. Those two facts do not make listing 03 exit 1.
+**The correct reading:** Store the ASCII letters, then compare the little-endian DWORD those letters form. Listing 12’s harness seed is that same `31304B50h`, so the no-file path and a successful `ReadFile` of listing 11’s file both validate.
 
 A second wrong reading lives in the economy listings: *“Listing 08 exits 7, therefore upkeep is guarded.”* 7 is 10 − 3. The guard is the `cmp` / `jb skip` in listing 09. Delete that branch, set cash to 2, and the unguarded `sub` wraps.
 
@@ -514,20 +525,20 @@ A second wrong reading lives in the economy listings: *“Listing 08 exits 7, th
 |-----------|---------|
 | Spawn writes a SoA slot | Listing `01-visitor-spawn` increments a counter and exits **1**. |
 | Listing 02 runs A* | It reserves two arrays and exits **0**. |
-| `"PK01"` LE is `314B5050h` | `"PK01"` LE is `31304B50h`. Listing 03’s compare fails; status **0**. |
+| `"PK01"` LE is `314B5050h` | `"PK01"` LE is **`31304B50h`**. Listing 03 compares that value and exits **1**. `314B5050h` is `P P K 1`. |
 | The map listing writes a cell | Listing `04-map-grid-bss` reserves 64 bytes and exits **0**. |
 | Signed and unsigned clamp agree on −1 | Signed clamp (listing 05) maps −1 to 0. Unsigned `jb` (listing 06) maps −1 to 7. Both map **99** to **7**. |
 | Parent walk is a BFS loop | Listing `07-agent-parent-step` does one hop, 5 → **2**. |
 | Exit 7 means the cash guard ran | Listings 08 and 10 subtract unconditionally and exit **7**. Listing 09 has the `jb skip` and also exits **7** for these inputs. |
 | Version is a QWORD | The header’s second field is a **DWORD** at offset 4. |
 | `CreateFileA` failure is 0 | Failure is −1. Listing 11 tests `cmp rax, -1`. |
-| Listing 12 always reads `"PK01"` from disk | On a missing file it validates a pre-seeded `314B5050h` and exits **1**. |
+| Listing 12 always reads `"PK01"` from disk | On a missing file it validates a pre-seeded **`31304B50h`** and exits **1**. A successful read of listing 11’s file is the same DWORD. |
 
 ## Check yourself
 
 1. Listing `05-clamp-x-signed` and listing `06-clamp-x-unsigned` both start at 99 and exit 7. What does each do with `rax = -1`, and which one is safe as a map index for that input?
 2. Listing `09-cash-upkeep-guard` uses `cmp rax, upkeep` / `jb skip` before `sub`. What remains in `cash` if you start at 2 with upkeep 3? What would listing `08-cash-subtract` leave for the same inputs?
-3. Write the four bytes of `"PK01"` and the little-endian DWORD they form. Why does `cmp …, 314B5050h` in listing `03-load-header-magic` take `bad`?
+3. Write the four bytes of `"PK01"` and the little-endian DWORD they form. What immediate does listing `03-load-header-magic` compare, and what status does that produce?
 4. Listing `07-agent-parent-step` stores 2 at `parent[5*8]`. Why `*8`, and what is in `agent_pos` after the load/`mov` pair?
 5. Listing `11-save-park-file` passes `40000000h` in EDX and `2` at `[rsp+32]`. Name those two `CreateFileA` parameters. What does listing `12-load-park-file` pass instead for access and disposition?
 
@@ -537,7 +548,7 @@ A second wrong reading lives in the economy listings: *“Listing 08 exits 7, th
 - Clamp x **before** indexing. Signed (listing 05) and unsigned (listing 06) both map 99 to **7** on width 8; they disagree on negatives.
 - One hop is `pos = parent[pos]`. Listing `07-agent-parent-step` walks 5 → **2**.
 - Unguarded `sub` (listings 08 and 10) exits **7** for 10 − 3 and wraps if cash < upkeep. Listing `09-cash-upkeep-guard` compares unsigned, then subtracts, and exits **7** for the same 10 and 3.
-- `"PK01"` as a little-endian DWORD is `31304B50h`. Listing `03-load-header-magic` compares `314B5050h` and exits **0**.
+- `"PK01"` as a little-endian DWORD is **`31304B50h`**. Listing `03-load-header-magic` compares that value and exits **1**.
 - Save is `CreateFileA` (`GENERIC_WRITE`, `CREATE_ALWAYS`) + two `WriteFile`s + `CloseHandle` (listing 11, exit **0** on success). Load pre-seeds or `ReadFile`s 8 bytes and exits **1** when magic and version match the immediate it uses (listing 12).
 
 ## Lookup

@@ -35,7 +35,7 @@ Use `cmp` or `test` then a `jcc`. Implement if, if/else, while, counted for, and
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 5
     mov rbx, 5
@@ -72,7 +72,7 @@ RAX equals RBX, so `jne` falls through, RCX becomes 10, exit 10. If they differe
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 10
     
@@ -112,7 +112,7 @@ The `then` path must `jmp end_if` or it would fall into `else`. 10 ≥ 0, so exi
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax               ; Sum = 0
     mov rcx, 5                 ; Counter = 5
@@ -151,7 +151,7 @@ Comment says "While rcx > 0"; the code exits with `jle` when RCX ≤ 0. That is 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax               ; Sum = 0
     xor rcx, rcx               ; Index = 0
@@ -193,7 +193,7 @@ This is `for (i = 0; i < 5; i++) sum += i`. Condition `jge` after `cmp i, n` is 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rcx, rcx               ; Counter = 0
     
@@ -237,7 +237,7 @@ Both increments run. Exit 2. If you used `jl` for the second test you would skip
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rcx, rcx               ; Counter = 0
     
@@ -275,7 +275,7 @@ RCX goes 1, 2, 3. At 3, `je loop_done` fires. Exit code is 3 (RCX is already the
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rdi, 42
     

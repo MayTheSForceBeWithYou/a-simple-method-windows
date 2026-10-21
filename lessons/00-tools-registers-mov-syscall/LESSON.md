@@ -100,7 +100,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     mov ecx, 42                ; Exit status in RCX (first argument, MS x64 ABI)
-    sub rsp, 32                ; Shadow space (32 bytes required by ABI)
+    sub rsp, 40                ; Shadow space (32 bytes required by ABI)
     call ExitProcess           ; Never returns
 main ENDP
 
@@ -210,7 +210,7 @@ Listing `03-register-sizes` fills RAX with −1, then writes 42 to EAX (RAX beco
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
 
     ; Demonstrate zero-extension with 32-bit write
     mov rax, -1                ; Fill RAX with all 1s (0xFFFFFFFFFFFFFFFF)
@@ -246,7 +246,7 @@ Listing `04-xor-zero-idiom` zeros ECX two ways and exits 0:
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
 
     ; Two ways to zero a register:
     mov ecx, 0                 ; Explicit zero (works but longer encoding)
@@ -278,7 +278,7 @@ Listing `05-mov-data-movement` accumulates 5 + 5 + 5 = 15 in RAX and exits 15. I
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
 
     ; Immediate to register
     mov rax, 5                 ; RAX = 5

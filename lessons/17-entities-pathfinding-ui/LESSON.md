@@ -18,6 +18,7 @@ entity_vx QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov entity_x, 100
     mov entity_vx, 5
     mov rax, entity_x
@@ -62,6 +63,7 @@ alive DB 1, 0, 1
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     xor     ecx, ecx
     call    ExitProcess
 main ENDP
@@ -96,6 +98,7 @@ alive DB 1, 0, 1
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     xor     rcx, rcx
 loop_start:
     cmp     rcx, 3
@@ -136,6 +139,7 @@ HP  EQU 4
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     eax, POS OR VEL OR HP
     mov     ecx, eax
     call    ExitProcess
@@ -157,6 +161,7 @@ Listing `02-manhattan-dist` computes **one** absolute difference: `rax = 10`, `r
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov rax, 10
     mov rbx, 5
     sub rax, rbx
@@ -197,6 +202,7 @@ focus QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     focus, 2
     inc     focus
     mov     rax, focus
@@ -227,6 +233,7 @@ END
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 90
     add     rax, 20
     cmp     rax, 100

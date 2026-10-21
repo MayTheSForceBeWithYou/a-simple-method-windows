@@ -47,6 +47,7 @@ source DB "42", 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rsi, source
     xor rdi, rdi
 next_digit:
@@ -81,6 +82,7 @@ source DB "foo", 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rsi, source
     xor rcx, rcx
 scan_loop:
@@ -116,6 +118,7 @@ That order is the parentheses. `1+2*3` without parens is `1+(2*3) = 7` because `
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov rax, 1
     add rax, 2
     imul rax, 3
@@ -169,6 +172,7 @@ acc QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, bytecode
     mov ip, rax
     xor rax, rax
@@ -221,13 +225,13 @@ The stream is `1, 4, 1, 5, 2, 0`. That is push 4, push 5, add, halt.
 
 The add handler decrements `sp_`, loads that slot into RAX (5), decrements again, adds the lower slot (4), writes 9 back, and increments so one value remains. Halt pops that 9. The arithmetic result is **9**.
 
-The listing comment says `Expected exit: 5`. The instruction stream does not leave 5 on the stack after `add_op`. 5 is the second push, consumed by the add. Treat the comment as stale; the code adds 4 and 5.
+The header is `Expected exit: 9`. That is 4 + 5. 5 is only the second push, consumed by the add.
 
 The array is named `st`. MASM also uses `st` for x87 `ST(0)`. That name is a collision risk, same family of problem as `sp` in lesson 11 listing 13.
 
 ```asm
 ; Listing 05: Stack bytecode interpreter (LESSON.md block 5)
-; Expected exit: 5
+; Expected exit: 9
 ; Expected stdout: (none)
 
 .DATA
@@ -241,6 +245,7 @@ sp_ QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     sp_, 0
     lea     rsi, code
 fetch:
@@ -306,6 +311,7 @@ code DB 3, 2, 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     lea     rsi, code
     movzx   rax, BYTE PTR [rsi]
     inc     rsi

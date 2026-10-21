@@ -33,7 +33,7 @@ The other demos in this listing are not the exit code. `and` leaves 15 in RAX. `
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; AND: clear bits
     mov rax, 0xFF              ; 11111111
@@ -90,7 +90,7 @@ This listing uses MASM hex (`0FFh`, `0Fh`). A literal that starts with A–F nee
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 0FFh              ; RAX = 11111111 binary
     and rax, 0Fh               ; RAX = 00001111 binary (keep low nibble)
@@ -127,7 +127,7 @@ Listing `03-or-setting-bits` zeros RAX with `xor rax, rax`, ORs 1 (bit 0), then 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax               ; RAX = 0
     or rax, 1                  ; Set bit 0
@@ -163,7 +163,7 @@ Listing `04-xor-toggle` loads 5 (`101` binary) and XORs 1. Bit 0 flips; RAX beco
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 5                 ; Binary 101
     xor rax, 1                 ; Flip bit 0 → binary 100
@@ -202,6 +202,7 @@ XOR can also swap two distinct registers without a temporary. Listing `09-xor-sw
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rcx, 5          ; a = 5
     mov     rdx, 42         ; b = 42
     
@@ -241,6 +242,7 @@ Listing `10-not-instruction` writes `0Fh` to AL (`00001111`), then `not al` prod
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     al, 0Fh         ; al = 00001111 binary
     not     al              ; al = 11110000 binary = 0xF0 = 240
     
@@ -279,7 +281,7 @@ Listing `05-shl-multiply` loads 3 and shifts left by 2. That is 3 × 4 = 12. Exp
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 3
     shl rax, 2                 ; RAX = 3 * 4 = 12
@@ -311,7 +313,7 @@ Listing `06-shr-divide` loads 12 and shifts right by 2. That is 12 / 4 = 3, rema
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 12
     shr rax, 2                 ; RAX = 12 / 4 = 3
@@ -343,7 +345,7 @@ Listing `07-sar-signed-divide` loads −8 and arithmetic-shifts right by 1. The 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, -8
     sar rax, 1                 ; RAX = -8 / 2 = -4 (correct signed)
@@ -388,7 +390,7 @@ Listing `08-pack-bitfields` packs three 3-bit values: a = 5 in bits 0–2, b = 2
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Pack a=5, b=2, c=1 into bits 0-2, 3-5, 6-8
     mov rax, 5
@@ -431,6 +433,7 @@ Listing `11-unpack-bitfield` starts from the packed value `055h` (the 85 produce
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 055h       ; Packed value = 0b001_010_101 = 0x55
     
     ; Extract 'b' (bits 3-5, width 3):
@@ -469,6 +472,7 @@ Listing `12-rol-rotate` loads `80h` into AL (`10000000`) and rotates left by 1. 
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     al, 80h         ; al = 10000000 binary
     rol     al, 1           ; Rotate left by 1
     
@@ -727,8 +731,8 @@ After the shift, RBX holds `0FFABh`, not `0ABh`. `mov ecx, ebx` passes that poll
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov rax, 0FFABCDEFh        ; Bits above bit 23 pollute a bare shr

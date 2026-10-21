@@ -30,6 +30,7 @@ A byte is a decimal digit when it sits in the inclusive range `'0'` (48) through
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov al, '7'
     cmp al, '0'
     jb not_digit
@@ -63,6 +64,7 @@ input DB "(1)", 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     lea     rsi, input
     mov     al, '('
     cmp     BYTE PTR [rsi], al
@@ -103,6 +105,7 @@ node_next QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     node_value, 9
     mov     node_next, 0
     mov     ecx, 9
@@ -134,6 +137,7 @@ node3 QWORD 30, 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, node1
     xor ecx, ecx
 walk_loop:
@@ -174,6 +178,7 @@ node2 DQ 2 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     QWORD PTR node1, 1
     mov     QWORD PTR node1[8], 0
     mov     rax, head
@@ -218,6 +223,7 @@ n1 DQ 3, n2
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     lea     rsi, n1
     xor     rdi, rdi
 walk:
@@ -249,6 +255,7 @@ arena_cursor QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, arena
     mov arena_cursor, rax
     mov rbx, arena_cursor
@@ -282,6 +289,7 @@ bump QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     bump, 0
     mov     rdi, 16
     mov     rax, bump
@@ -316,6 +324,7 @@ vec_cap QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     vec_cap, 8
     mov     vec_len, 0
     mov     rdi, 10
@@ -359,6 +368,7 @@ A hash table maps a key to a slot index by mixing the key, then reducing modulo 
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 5
     mov     rbx, rax
     shl     rbx, 3
@@ -385,6 +395,7 @@ slots DQ 4 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     QWORD PTR slots[16], 42
     mov     rax, slots[16]
     mov     ecx, eax
@@ -405,6 +416,7 @@ stack_top QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov stack_top, 0
     mov rax, 42
     mov rbx, stack_top
@@ -440,6 +452,7 @@ sp QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     sp, 0
     mov     rdi, 1
     mov     rcx, sp
@@ -478,6 +491,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     head, 0
     mov     tail, 0
     mov     rdi, 7
@@ -513,6 +527,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     head, 0
     mov     tail, 0
     mov     rcx, tail
@@ -546,6 +561,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     tail, 3
     inc     tail
     and     tail, 3
@@ -555,11 +571,11 @@ main ENDP
 END
 ```
 
-Listing `18-ring-tail-mask` shows the mask alone, without an increment: `tail = 7`, then `and tail, 3`. `7 AND 3 = 3`. `DWORD PTR tail` is 3, so `ExitProcess` receives **3**. The listing comment claims exit 0; the instruction stream does not produce 0. 0 would be `8 AND 3`, or the increment-then-mask of listing 15 starting at 3.
+Listing `18-ring-tail-mask` shows the mask alone, without an increment: `tail = 7`, then `and tail, 3`. `7 AND 3 = 3`. `DWORD PTR tail` is 3, so `ExitProcess` receives **3**. The header is `Expected exit: 3`. 0 would be `8 AND 3`, or the increment-then-mask of listing 15 starting at 3.
 
 ```asm
 ; Listing 18: Tail index wrap with mask (LESSON.md block 18)
-; Expected exit: 0
+; Expected exit: 3
 ; Expected stdout: (none)
 
 .DATA?
@@ -569,6 +585,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     tail, 7
     and     tail, 3
     mov     ecx, DWORD PTR tail
@@ -597,6 +614,7 @@ node_right QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     node_kind, 1
     mov     node_left, 2
     mov     node_right, 3

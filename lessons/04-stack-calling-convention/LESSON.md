@@ -31,7 +31,7 @@ Windows has **no red zone**. Do not store below RSP.
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 42
     push rax                   ; Save RAX on stack (RSP -= 8)
@@ -95,7 +95,7 @@ add_four PROC
 add_four ENDP
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
     
     ; Call add_four(1, 2, 3, 4)
     mov rcx, 1
@@ -139,7 +139,7 @@ square PROC
 square ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 5
     call square                ; RAX = 25
@@ -194,7 +194,7 @@ compute PROC FRAME
 compute ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rbx, 99                ; Main's RBX value
     mov rcx, 32
@@ -288,7 +288,7 @@ sum3 PROC
 sum3 ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 10
     mov rdx, 20
@@ -302,20 +302,20 @@ main ENDP
 END
 ```
 
-Immediately before `call sum3`: RCX=10, RDX=20, R8=30, 32 bytes free at RSP. `sum3` is a leaf; it does not touch the shadow space. RAX=60. Exit 60.
+Immediately before `call sum3`: RCX=10, RDX=20, R8=30. `main` allocated **40** bytes (32 of shadow plus 8 so RSP is 0 mod 16 at the `call`). `sum3` is a leaf; it does not touch the shadow space. RAX=60. Exit 60.
 
 ### A plausible wrong reading (and why it fails)
 
 *"Four register arguments exist, so I can `call` with RSP unaligned and with no shadow space, like a Linux leaf using the red zone."*
 
-**Why it fails:** Windows has no red zone. Win32 and CRT functions assume 32 bytes below the incoming RSP (after the return address) are scratch for homing, and they assume 16-byte alignment for XMM spills. `sub rsp, 32` in this listing's `main` leaves RSP ≡ 8 (mod 16) at `call` if `main` was entered with RSP ≡ 8. Listing `05-stack-alignment` uses 40 to restore 0 mod 16. Integer-only `sum3` may still run; SSE-using callees may not. See `docs/PROSE_TECH_FLAGS.md`.
+**Why it fails:** Windows has no red zone. Win32 and CRT functions assume 32 bytes below the incoming RSP (after the return address) are scratch for homing, and they assume 16-byte alignment for XMM spills. With entry RSP ≡ 8 (mod 16), `sub rsp, 32` would leave RSP ≡ 8 at `call`. Listing `06-sum3-example` and listing `05-stack-alignment` both use `sub rsp, 40` so the `call` is 16-byte aligned. Integer-only `sum3` may still run with a 32-byte frame; SSE-using callees may not.
 
 ## Frame pointer
 
 ```asm
-; Listing 07: Prologue/epilogue with RBP frame pointer
+; Listing 07: RBP frame forms (LESSON.md)
 ;
-; Purpose: Demonstrate frame pointer usage (lines 122-134 of LESSON.md).
+; Purpose: Two Win64 unwind patterns — .SETFRAME vs .PUSHREG-only RBP.
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
@@ -325,25 +325,43 @@ Immediately before `call sum3`: RCX=10, RDX=20, R8=30, 32 bytes free at RSP. `su
 
 EXTRN ExitProcess:PROC
 
-compute PROC FRAME
-    push rbp                   ; Save old frame pointer
+; Form 1: RBP is a real frame pointer for unwind (locals below [rbp-8]…).
+; .SETFRAME offset N must equal the stack allocation and match lea rbp,[rsp+N].
+compute_setframe PROC FRAME
+    push rbp
     .pushreg rbp
-    mov rbp, rsp               ; Set up new frame pointer
-    sub rsp, 32                ; Allocate locals
+    sub rsp, 40
+    lea rbp, [rsp+40]          ; N = 40 (multiple of 16, <= 240)
+    .setframe rbp, 40
+    .allocstack 40
+    .endprolog
+
+    mov rax, 42
+
+    add rsp, 40
+    pop rbp
+    ret
+compute_setframe ENDP
+
+; Form 2: RBP is just another saved nonvolatile (no .SETFRAME).
+compute_rbp_saved PROC FRAME
+    push rbp
+    .pushreg rbp
+    sub rsp, 32
     .allocstack 32
     .endprolog
-    
-    ; Function body - access locals via [RBP-N]
-    mov rax, 42
-    
-    mov rsp, rbp               ; Deallocate locals
-    pop rbp                    ; Restore frame pointer
+
+    mov rbp, 42                ; use RBP as a general preserved slot
+    mov rax, rbp
+
+    add rsp, 32
+    pop rbp
     ret
-compute ENDP
+compute_rbp_saved ENDP
 
 main PROC
-    sub rsp, 32
-    call compute
+    sub rsp, 40
+    call compute_setframe
     mov rcx, rax
     call ExitProcess
 main ENDP
@@ -351,7 +369,47 @@ main ENDP
 END
 ```
 
-After `push rbp` / `mov rbp, rsp`, locals are `[rbp-8]`, `[rbp-16]`, … independent of further RSP motion. This listing never stores a local; it returns 42. Unwind codes record the push and the 32-byte alloc; they do not include `.setframe rbp`. Flagged.
+Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 40`, `lea rbp, [rsp+40]`, `.setframe rbp, 40`, `.allocstack 40`. The `.SETFRAME` offset must equal that allocation. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 32`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program.
+
+```asm
+; Listing 08: RBP saved as nonvolatile only (no .SETFRAME)
+;
+; Purpose: Contrast with listing 07 form 1 — unwind sees RBP as pushed, not a frame base.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo08-rbp-pushreg-only.obj 08-rbp-pushreg-only.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-rbp-pushreg-only.exe 08-rbp-pushreg-only.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+compute_rbp_saved PROC FRAME
+    push rbp
+    .pushreg rbp
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+
+    mov rbp, 42
+    mov rax, rbp
+
+    add rsp, 32
+    pop rbp
+    ret
+compute_rbp_saved ENDP
+
+main PROC
+    sub rsp, 40
+    call compute_rbp_saved
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+After a form-1 prologue, locals are `[rbp-8]`, `[rbp-16]`, … independent of further RSP motion. Form 1 never stores a local; it returns 42. Form 2 writes 42 into RBP as a preserved slot and copies it to RAX.
 
 ## Distinctions worth keeping straight
 
@@ -388,4 +446,4 @@ After `push rbp` / `mov rbp, rsp`, locals are `[rbp-8]`, `[rbp-16]`, … indepen
 
 ## Exercises
 
-Quoted listings: `01-push-pop.asm` through `07-frame-pointer.asm`.
+Quoted listings: `01-push-pop.asm` through `08-rbp-pushreg-only.asm`.

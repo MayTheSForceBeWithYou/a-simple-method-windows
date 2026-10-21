@@ -26,7 +26,7 @@ Destination is both source and result:
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 10
     add rax, 5                 ; RAX = 15
@@ -67,7 +67,7 @@ Trace: 10+5=15, −3=12, inc=13, inc=14, dec=13, +2=15. Exit 15.
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Two-operand form
     mov rax, 5
@@ -103,7 +103,7 @@ Two- and three-operand `imul` truncate to the destination size. One-operand `imu
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 10
     mov rbx, 4
@@ -139,7 +139,7 @@ END
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 22                ; Dividend in RAX
     cqo                        ; Sign-extend RAX into RDX:RAX
@@ -171,7 +171,7 @@ END
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 100               ; Dividend in RAX
     xor rdx, rdx               ; Clear high half (RDX = 0)
@@ -205,7 +205,7 @@ Zero divisor or a quotient that does not fit in 64 bits raises `#DE`. Windows de
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Zero flag: result is zero
     mov rax, 5
@@ -257,7 +257,7 @@ The last `add al, 1` overwrites AL after CL already wrapped; flags at `ExitProce
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 10
     mov rbx, 5
@@ -291,7 +291,7 @@ END
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 0b0101            ; Binary: 0101 (bits 0 and 2 set)
     test rax, 4                ; Test bit 2 (4 = 0b0100)
@@ -329,7 +329,7 @@ Destination is always 8-bit. Zero-extend with `movzx` for a 64-bit boolean.
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax               ; Counter = 0
     

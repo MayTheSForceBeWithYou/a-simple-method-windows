@@ -24,8 +24,8 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN QueryPerformanceFrequency:PROC
 EXTRN ExitProcess:PROC
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     lea rcx, freq
     call QueryPerformanceFrequency
@@ -52,6 +52,7 @@ curr_time QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov prev_time, 100
     mov curr_time, 142
     mov rax, curr_time
@@ -82,6 +83,7 @@ hold_count QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     BYTE PTR key, 1
     mov     hold_count, 0
     cmp     BYTE PTR key, 1
@@ -120,6 +122,7 @@ Mouse motion is a pair `(dx, dy)` since the last sample. **Manhattan distance** 
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 5
     mov     rbx, -2
     test    rbx, rbx
@@ -156,8 +159,8 @@ EXTRN PeekConsoleInputA:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 64
-    .allocstack 64
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov     rcx, -10
@@ -191,6 +194,7 @@ Listing `06-fixed-step-div` divides 50 by 16. `xor rdx, rdx` is required: `div r
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 50
     xor     rdx, rdx
     mov     rbx, 16
@@ -217,6 +221,7 @@ Listing `07-timestep-clamp` divides 100 by 16 (`xor rdx, rdx` first), gets 6 in 
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 100
     xor     rdx, rdx
     mov     rbx, 16
@@ -247,6 +252,7 @@ A counter difference is often in microseconds or raw ticks. The step size here i
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 16000
     xor     rdx, rdx
     mov     rbx, 1000
@@ -272,6 +278,7 @@ Listing `10-fixed-step-count` is the same conversion written as a second copy: 1
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rax, 16000
     xor     rdx, rdx
     mov     rbx, 1000
@@ -316,6 +323,7 @@ accum QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     accum, 32
     xor     rcx, rcx
 update_loop:

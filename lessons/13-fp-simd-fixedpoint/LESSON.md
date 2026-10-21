@@ -46,6 +46,7 @@ Listing `01-q16-encode` loads 5, shifts left 16 (now `00050000h`), then `sar eax
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov eax, 5
     shl eax, 16
     sar eax, 16
@@ -69,6 +70,7 @@ Listing `02-q16-add` builds 1.5 and 2.5 at assemble time: `(1 SHL 16) + (1 SHL 1
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov eax, (1 SHL 16) + (1 SHL 15)
     mov ebx, (2 SHL 16) + (1 SHL 15)
     add eax, ebx
@@ -93,6 +95,7 @@ Listing `03-q16-mul` encodes 2.0 and 3.0, sign-extends both to 64 bits (`movsxd`
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov eax, 2
     shl eax, 16
     mov ebx, 3
@@ -124,6 +127,7 @@ The comment says "Clamp Q16.16 value to range [0, max]" and "Clamp 150 to [0, 10
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov rax, 150
     mov rbx, 100
     cmp rax, rbx
@@ -151,6 +155,7 @@ A periodic counter wraps when it meets or passes the period. Listing `05-tick-wr
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     eax, 350
     add     eax, 20
     cmp     eax, 360

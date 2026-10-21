@@ -38,12 +38,14 @@ offset = y * pitch + x * bytes_per_pixel
 Listing `01-pixel-plot` does **not** compute that offset. It `lea rax, fb` and writes `0FFFFFFFFh` at `[rax]` — pixel (0, 0), all bits 1. Then it zeros ECX. Status **0**. The reservation is `640*480*4` bytes in `.DATA?` (zeroed at load). The store is the plot; the address is the base.
 
 ```asm
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Plot pixel at (x,y) in framebuffer, exit 0
 .DATA?
 fb DB 640*480*4 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, fb
     mov DWORD PTR [rax], 0FFFFFFFFh
     xor ecx, ecx
@@ -59,12 +61,14 @@ Listing `02-fill-rect` is named as a rectangle. The body is a 1-D loop: RDI star
 `0FF0000FFh` in memory is bytes `FFh, 00h, 00h, FFh` (little-endian). If you read that as 8-bit B, G, R, A you get blue and opaque alpha; if you read it as A, R, G, B you get alpha `FFh` and blue `FFh`.
 
 ```asm
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Fill rectangle with color, exit 0
 .DATA?
 fb DB 640*480*4 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rdi, fb
     mov ecx, 100
 fill_loop:
@@ -88,6 +92,9 @@ A **blit** (block transfer) copies a rectangle from source to destination. Listi
 RSI and RDI are nonvolatile. Again, this entry point does not return.
 
 ```asm
+; Listing rule: code using rep movs* must run cld before the string op and before ret
+; (MS x64 ABI guarantees DF clear on function entry and return; do not assume DF=0 across calls).
+;
 ; Copy sprite to framebuffer, exit 0
 .DATA
 sprite DD 1, 2, 3, 4
@@ -96,6 +103,7 @@ fb DB 640*480*4 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rsi, sprite
     lea rdi, fb
     mov ecx, 4
@@ -111,6 +119,7 @@ END
 A **color-key blit** skips source pixels that match a transparent key (here, 0). Listing `04-blit-key-copy` walks four bytes of `src DB 0, 5, 0, 5, 0` (the fifth 0 is unused). On a zero it jumps past the store. `dst` is `.DATA?`, so skipped slots stay 0. After the copy, `dst` is `0, 5, 0, 5`. The sum loop adds those four bytes: 10. Status **10**.
 
 ```asm
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Listing 04: Color-key blit copy loop (LESSON.md block 4)
 ; Expected exit: 10
 ; Expected stdout: (none)
@@ -125,6 +134,7 @@ dst DB 4 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     xor     rcx, rcx
 copy_loop:
     cmp     rcx, 4
@@ -182,6 +192,7 @@ Then the Win32 sequence (lesson 08):
 The prologue is `PROC FRAME`, `push rbx` / `.pushreg rbx`, `sub rsp, 64` / `.allocstack 64`, `.endprolog`. RBX holds the HANDLE across calls (RBX is nonvolatile). 64 bytes covers 32 bytes of shadow space plus the three stack arguments to `CreateFileA`. There is no `.setframe`: that directive exists when you set a frame-pointer register (usually RBP). This listing does not.
 
 ```asm
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Listing 05: Write P6 PPM via Win32 (LESSON.md block 5)
 ; Expected exit: 0
 ; Expected stdout: (none)

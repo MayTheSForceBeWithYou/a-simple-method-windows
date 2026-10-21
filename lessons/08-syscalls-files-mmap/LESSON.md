@@ -149,8 +149,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; CreateFileA(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)
@@ -227,8 +227,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
@@ -312,8 +312,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; Open file for reading
@@ -398,8 +398,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 64
+    .allocstack 64
     .endprolog
 
     lea rcx, filename
@@ -470,8 +470,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 64
+    .allocstack 64
     .endprolog
 
     lea rcx, filename
@@ -538,8 +538,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 64
+    .allocstack 64
     .endprolog
 
     lea rcx, filename
@@ -670,8 +670,8 @@ EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     xor ecx, ecx
@@ -754,8 +754,8 @@ main PROC FRAME
     .pushreg r12
     push    r13
     .pushreg r13
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; Open file for reading
@@ -857,8 +857,8 @@ EXTRN GetCurrentProcessId:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     ; GetCurrentProcessId returns DWORD in EAX
@@ -899,8 +899,8 @@ EXTRN QueryPerformanceFrequency:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     ; QueryPerformanceFrequency(&frequency)
@@ -948,8 +948,8 @@ Listing `11-mandatory-shadow-space` is that minimum: `sub rsp, 32`, `xor ecx, ec
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     xor ecx, ecx
@@ -992,8 +992,8 @@ myFunc PROC FRAME
 myFunc ENDP
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     call myFunc
     xor ecx, ecx
@@ -1047,8 +1047,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 56
-    .allocstack 56
+    sub rsp, 64
+    .allocstack 64
     .endprolog
 
     lea rcx, path

@@ -40,8 +40,8 @@ DEBUG EQU 1
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     IFDEF DEBUG
         mov ecx, 1
@@ -90,6 +90,7 @@ Add3 MACRO reg, val1, val2, val3
 ENDM
 
 main PROC
+    sub rsp, 40
     Add3 rax, 10, 20, 12    ; RAX = 10 + 20 + 12 = 42
     
     mov     ecx, eax
@@ -97,7 +98,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ## Assembly-time loops and conditionals
@@ -123,6 +123,7 @@ Listing `03-rept-repetition` clears EAX, then `REPT 3` / `inc eax` / `ENDM`. Thr
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     xor     eax, eax
     
     ; Generate three INC instructions at assembly time
@@ -136,7 +137,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### Preprocessor variables with `=`
@@ -169,6 +169,7 @@ Listing `06-conditional-assembly` has `DEBUG = 1` commented out. `IFDEF DEBUG` i
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     IFDEF DEBUG
         mov     ecx, 1      ; Debug exit code
     ELSE
@@ -179,7 +180,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ## Macro-local labels with LOCAL
@@ -208,8 +208,8 @@ skip_label:
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     xor rdi, rdi
     TWICE
@@ -244,8 +244,8 @@ skip_label:
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     xor rdi, rdi
     TWICE
@@ -286,6 +286,7 @@ skip_neg:
 ENDM
 
 main PROC
+    sub rsp, 40
     mov     rax, -9
     AbsValue rax            ; First invocation uses unique skip_neg
     mov     rbx, -5
@@ -297,7 +298,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 Listing `10-abs-macro-local` is the same algorithm under the name `ABS` with `LOCAL ok_label`, applied once to RDI = −9. `FRAME`, `sub rsp, 32`. `mov ecx, edi` / `call ExitProcess`. Expected exit: **9**.
@@ -321,8 +321,8 @@ ok_label:
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov rdi, -9
     ABS rdi
@@ -354,8 +354,8 @@ MACRO_NAME MACRO
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     xor rcx, rcx
     MACRO_NAME
@@ -448,7 +448,6 @@ main PROC FRAME
 main ENDP
 
 END
-
 ```
 
 ## Splitting across multiple files
@@ -482,10 +481,9 @@ add_two_numbers PROC
 add_two_numbers ENDP
 
 END
-
 ```
 
-Listing `05-multifile-main` is the driver. It imports `add_two_numbers:PROC` and `ExitProcess:PROC`, loads RCX = 20 and RDX = 22, calls the helper, and exits with EAX. No `FRAME`. Expected exit: **42**.
+Listing `05-multifile-main` is the driver. It imports `add_two_numbers:PROC` and `ExitProcess:PROC`, allocates 40 bytes (shadow plus alignment; zero pushes at the first `call`), loads RCX = 20 and RDX = 22, calls the helper, and exits with EAX. No `FRAME`. Expected exit: **42**.
 
 ```bat
 ml64 /c /Fo05-multifile-main.obj 05-multifile-main.asm
@@ -513,6 +511,7 @@ EXTRN add_two_numbers:PROC
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rcx, 20         ; First argument (MS x64 ABI)
     mov     rdx, 22         ; Second argument
     call    add_two_numbers ; Returns result in RAX
@@ -522,7 +521,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### helper_add as a link object
@@ -544,10 +542,9 @@ helper_add PROC
 helper_add ENDP
 
 END
-
 ```
 
-Listing `16-main-call-helper` imports `helper_add:PROC`, uses a `FRAME` with `sub rsp, 32`, calls with 20 and 22, and exits with EAX. Expected exit: **42**.
+Listing `16-main-call-helper` imports `helper_add:PROC`, uses a `FRAME` with `sub rsp, 40` / `.allocstack 40`, calls with 20 and 22, and exits with EAX. Expected exit: **42**.
 
 ```bat
 ml64 /c 14-helper-add.asm
@@ -568,8 +565,8 @@ EXTRN helper_add:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov rcx, 20
     mov rdx, 22
@@ -579,7 +576,6 @@ main PROC FRAME
 main ENDP
 
 END
-
 ```
 
 ### PUBLIC data as a link object
@@ -673,8 +669,8 @@ MY_ADDR EQU OFFSET msg
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov ecx, MY_ADDR
     call ExitProcess
@@ -791,8 +787,8 @@ EXIT_WITH MACRO code
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov rcx, 20
     mov rdx, 22
@@ -801,7 +797,6 @@ main PROC FRAME
 main ENDP
 
 END
-
 ```
 
 ```asm
@@ -819,7 +814,6 @@ add_two_numbers PROC
 add_two_numbers ENDP
 
 END
-
 ```
 
 Expected exit: **42** (`echo %ERRORLEVEL%`).
