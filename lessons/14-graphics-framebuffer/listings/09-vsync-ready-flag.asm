@@ -2,7 +2,7 @@
 ; Expected exit: 3
 ; Expected stdout: (none)
 ;
-; Runs three frames; each frame spins until QPC advances by at least 1 tick.
+; Completes three QPC wait loops; exit code equals the number of waits.
 
 .DATA?
 qpc_start QWORD ?
@@ -26,22 +26,22 @@ main PROC FRAME
 
     xor     ebx, ebx
 
-frame_loop:
+frame_wait_loop:
+    lea     rcx, qpc_now
+wait_spin:
+    call    QueryPerformanceCounter
+    mov     rax, QWORD PTR qpc_now
+    cmp     rax, QWORD PTR frame_target
+    jl      wait_spin
+
     inc     ebx
     cmp     ebx, 3
     jge     frames_done
 
-wait_tick:
-    lea     rcx, qpc_now
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_now
-    cmp     rax, QWORD PTR frame_target
-    jl      wait_tick
-
     mov     rax, QWORD PTR qpc_now
     add     rax, 1
     mov     frame_target, rax
-    jmp     frame_loop
+    jmp     frame_wait_loop
 
 frames_done:
     mov     ecx, ebx

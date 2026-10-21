@@ -52,7 +52,7 @@ main PROC FRAME
     test    rax, rax
     jz      fail_close
 
-    mov     ecx, DWORD PTR bytesRead
+    mov     ebx, DWORD PTR bytesRead
     jmp     cleanup
 
 fail_close:
@@ -68,12 +68,13 @@ cleanup:
     call    CloseHandle
     mov     rcx, hWrite
     call    CloseHandle
-    jmp     exit_proc
+    mov     ecx, ebx
+
+exit_proc:
+    call    ExitProcess
 
 fail:
     mov     ecx, 1
-
-exit_proc:
     call    ExitProcess
 main ENDP
 END

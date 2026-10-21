@@ -17,8 +17,10 @@ EXTRN Sleep:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
     .endprolog
 
     call    GetTickCount64
@@ -31,23 +33,22 @@ work_wait:
     cmp     rax, WORK_TARGET_MS
     jl      work_wait
 
-    mov     rbx, rax
+    mov     r8, rax
     mov     rax, FRAME_BUDGET_MS
-    sub     rax, rbx
-    jns     sleep_positive
-    xor     rax, rax
-    mov     ecx, 1
-    jmp     do_sleep
+    sub     rax, r8
+    jns     sleep_has_budget
 
-sleep_positive:
-    mov     ecx, eax
-    xor     edx, edx
-    jmp     do_sleep
-
-do_sleep:
-    mov     r8d, edx
+    xor     ecx, ecx
+    mov     ebx, 1
     call    Sleep
-    mov     ecx, r8d
+    mov     ecx, ebx
+    call    ExitProcess
+
+sleep_has_budget:
+    mov     ebx, 0
+    mov     rcx, rax
+    call    Sleep
+    mov     ecx, ebx
     call    ExitProcess
 main ENDP
 END
