@@ -1,4 +1,6 @@
 ; Manhattan distance for A*, exit dist
+; Expected exit: 5
+; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC

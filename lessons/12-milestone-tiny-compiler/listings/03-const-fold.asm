@@ -1,4 +1,6 @@
 ; 03-const-fold.asm: Fold constant expression (1+2)*3, exit 9
+; Expected exit: 9
+; Expected stdout: (none)
 ; Demonstrates precedence: * before +
 .CODE
 EXTRN ExitProcess:PROC

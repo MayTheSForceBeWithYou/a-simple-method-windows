@@ -1,4 +1,6 @@
 ; One A* pathfinding step, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA?
 open_list QWORD 16 DUP(?)
 closed_list QWORD 16 DUP(?)

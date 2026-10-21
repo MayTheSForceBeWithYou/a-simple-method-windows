@@ -1,4 +1,6 @@
 ; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
+; Expected exit: 0
+; Expected stdout: (none)
 ; Fill rectangle with color, exit 0
 .DATA?
 fb DB 640*480*4 DUP(?)

@@ -1,4 +1,6 @@
 ; Listing rule: code using rep movs* must run cld before the string op and before ret
+; Expected exit: 0
+; Expected stdout: (none)
 ; (MS x64 ABI guarantees DF clear on function entry and return; do not assume DF=0 across calls).
 ;
 ; Copy sprite to framebuffer, exit 0

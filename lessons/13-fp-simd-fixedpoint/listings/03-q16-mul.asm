@@ -1,4 +1,6 @@
 ; 03-q16-mul.asm: Multiply Q16.16 values (2.0 * 3.0 = 6.0)
+; Expected exit: 6
+; Expected stdout: (none)
 ; Exit 6
 .CODE
 EXTRN ExitProcess:PROC

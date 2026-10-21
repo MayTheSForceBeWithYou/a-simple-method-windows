@@ -1,4 +1,6 @@
 ; Update entity position, exit new x
+; Expected exit: 105
+; Expected stdout: (none)
 .DATA?
 entity_x QWORD ?
 entity_vx QWORD ?

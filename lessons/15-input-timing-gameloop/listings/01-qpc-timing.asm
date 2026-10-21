@@ -1,4 +1,6 @@
 ; QueryPerformanceCounter timing, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA?
 counter QWORD ?
 freq QWORD ?

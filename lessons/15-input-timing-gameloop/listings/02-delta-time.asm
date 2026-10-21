@@ -1,4 +1,6 @@
 ; Calculate delta time, exit with dt
+; Expected exit: 42
+; Expected stdout: (none)
 .DATA?
 prev_time QWORD ?
 curr_time QWORD ?
