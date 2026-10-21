@@ -12,7 +12,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     rax, 055h       ; Packed value = 0b001_010_101 = 0x55
     
     ; Extract 'b' (bits 3-5, width 3):

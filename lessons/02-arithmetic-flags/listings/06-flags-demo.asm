@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Zero flag: result is zero
     mov rax, 5

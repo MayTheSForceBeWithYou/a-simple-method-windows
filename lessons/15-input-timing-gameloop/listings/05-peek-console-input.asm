@@ -11,8 +11,8 @@ EXTRN PeekConsoleInputA:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 64
-    .allocstack 64
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov     rcx, -10

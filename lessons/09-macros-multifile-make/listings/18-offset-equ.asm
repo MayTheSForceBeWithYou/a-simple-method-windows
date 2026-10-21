@@ -13,8 +13,8 @@ MY_ADDR EQU OFFSET msg
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov ecx, MY_ADDR
     call ExitProcess

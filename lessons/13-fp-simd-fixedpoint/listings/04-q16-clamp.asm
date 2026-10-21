@@ -3,7 +3,7 @@
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov rax, 150
     mov rbx, 100
     cmp rax, rbx

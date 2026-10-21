@@ -7,8 +7,8 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN QueryPerformanceFrequency:PROC
 EXTRN ExitProcess:PROC
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     lea rcx, freq
     call QueryPerformanceFrequency

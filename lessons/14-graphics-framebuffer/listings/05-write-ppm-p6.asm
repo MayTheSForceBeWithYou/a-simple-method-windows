@@ -1,3 +1,4 @@
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Listing 05: Write P6 PPM via Win32 (LESSON.md block 5)
 ; Expected exit: 0
 ; Expected stdout: (none)

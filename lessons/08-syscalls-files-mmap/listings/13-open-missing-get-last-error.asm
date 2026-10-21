@@ -19,8 +19,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 56
-    .allocstack 56
+    sub rsp, 64
+    .allocstack 64
     .endprolog
 
     lea rcx, path

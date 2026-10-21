@@ -24,8 +24,8 @@ myFunc PROC FRAME
 myFunc ENDP
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     call myFunc
     xor ecx, ecx

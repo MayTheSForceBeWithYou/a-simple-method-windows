@@ -5,7 +5,7 @@ source DB "42", 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     lea rsi, source
     xor rdi, rdi
 next_digit:

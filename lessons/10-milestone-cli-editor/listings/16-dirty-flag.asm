@@ -11,7 +11,7 @@ dirty BYTE ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     BYTE PTR dirty, 1
     mov     BYTE PTR dirty, 0
     movzx   ecx, BYTE PTR dirty

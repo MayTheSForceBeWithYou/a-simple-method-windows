@@ -15,7 +15,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     IFDEF DEBUG
         mov     ecx, 1      ; Debug exit code
     ELSE

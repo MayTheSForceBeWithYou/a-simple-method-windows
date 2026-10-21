@@ -10,7 +10,7 @@ upkeep QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     cash, 10
     mov     upkeep, 3
     mov     rax, cash

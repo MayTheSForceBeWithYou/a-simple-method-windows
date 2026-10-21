@@ -13,7 +13,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     BYTE PTR buf[5], 'Z'
     mov     gap_start, 2
     mov     gap_end, 5

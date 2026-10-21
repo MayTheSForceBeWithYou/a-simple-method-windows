@@ -9,7 +9,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     tail, 7
     and     tail, 3
     mov     ecx, DWORD PTR tail

@@ -16,8 +16,8 @@ ok_label:
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov rdi, -9
     ABS rdi

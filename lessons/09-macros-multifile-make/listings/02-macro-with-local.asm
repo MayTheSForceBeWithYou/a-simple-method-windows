@@ -21,7 +21,7 @@ skip_neg:
 ENDM
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     rax, -9
     AbsValue rax            ; First invocation uses unique skip_neg
     mov     rbx, -5

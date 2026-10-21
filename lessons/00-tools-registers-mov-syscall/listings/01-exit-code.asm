@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     mov ecx, 42                ; Exit status in RCX (first argument, MS x64 ABI)
-    sub rsp, 32                ; Shadow space (32 bytes required by ABI)
+    sub rsp, 40                ; Shadow space (32 bytes required by ABI)
     call ExitProcess           ; Never returns
 main ENDP
 

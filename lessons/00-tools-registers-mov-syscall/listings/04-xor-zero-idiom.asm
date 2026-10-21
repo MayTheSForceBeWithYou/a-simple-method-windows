@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
 
     ; Two ways to zero a register:
     mov ecx, 0                 ; Explicit zero (works but longer encoding)

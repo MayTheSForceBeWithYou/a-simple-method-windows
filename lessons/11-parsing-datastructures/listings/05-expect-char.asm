@@ -9,7 +9,7 @@ input DB "(1)", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     lea     rsi, input
     mov     al, '('
     cmp     BYTE PTR [rsi], al

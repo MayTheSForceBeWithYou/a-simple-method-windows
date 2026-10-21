@@ -26,8 +26,8 @@ main PROC FRAME
     .pushreg r12
     push    r13
     .pushreg r13
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; Open file for reading

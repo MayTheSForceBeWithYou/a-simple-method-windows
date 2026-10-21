@@ -12,7 +12,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     xor     eax, eax
     
     ; Generate three INC instructions at assembly time

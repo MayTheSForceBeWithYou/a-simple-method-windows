@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 22                ; Dividend in RAX
     cqo                        ; Sign-extend RAX into RDX:RAX

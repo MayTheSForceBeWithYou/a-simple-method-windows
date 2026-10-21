@@ -16,8 +16,8 @@ EXTRN SetConsoleMode:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov     rcx, -10

@@ -11,7 +11,7 @@ n1 DQ 3, n2
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     lea     rsi, n1
     xor     rdi, rdi
 walk:

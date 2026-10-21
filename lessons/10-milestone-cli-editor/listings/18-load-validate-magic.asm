@@ -11,7 +11,7 @@ magic DB "ED01", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     cmp     WORD PTR magic, 4445h
     jne     bad_magic
     mov     ecx, 1

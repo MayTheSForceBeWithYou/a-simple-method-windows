@@ -15,8 +15,8 @@ EXIT_WITH MACRO code
 ENDM
 
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     mov rcx, 20
     mov rdx, 22

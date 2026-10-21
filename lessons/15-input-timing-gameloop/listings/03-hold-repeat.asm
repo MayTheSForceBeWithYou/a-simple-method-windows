@@ -10,7 +10,7 @@ hold_count QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     BYTE PTR key, 1
     mov     hold_count, 0
     cmp     BYTE PTR key, 1

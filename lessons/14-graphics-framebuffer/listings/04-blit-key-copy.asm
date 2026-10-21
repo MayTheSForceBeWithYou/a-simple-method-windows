@@ -1,3 +1,4 @@
+; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
 ; Listing 04: Color-key blit copy loop (LESSON.md block 4)
 ; Expected exit: 10
 ; Expected stdout: (none)
@@ -12,7 +13,7 @@ dst DB 4 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     xor     rcx, rcx
 copy_loop:
     cmp     rcx, 4

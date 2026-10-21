@@ -13,7 +13,7 @@ sp_ QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     sp_, 0
     lea     rsi, code
 fetch:

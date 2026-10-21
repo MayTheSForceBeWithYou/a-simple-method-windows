@@ -17,7 +17,7 @@ person_record:
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load base address
     lea rbx, person_record

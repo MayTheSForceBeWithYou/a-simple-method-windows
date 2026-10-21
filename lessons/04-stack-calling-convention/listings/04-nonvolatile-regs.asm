@@ -31,7 +31,7 @@ compute PROC FRAME
 compute ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rbx, 99                ; Main's RBX value
     mov rcx, 32

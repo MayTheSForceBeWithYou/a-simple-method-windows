@@ -4,17 +4,14 @@
 ; Expected exit code: 15
 ; Expected output: (none)
 ;
-; Build: ml64 /c /Fo06-lea-vs-mov.obj 06-lea-vs-mov.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-lea-vs-mov.exe 06-lea-vs-mov.obj kernel32.lib
-
-.DATA
-value DQ 20
+; Build: ml64 /c /Fo09-lea-vs-mov.obj 09-lea-vs-mov.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-lea-vs-mov.exe 09-lea-vs-mov.obj kernel32.lib
 
 .CODE
 
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 5
     lea rdx, [rcx+rcx*2]       ; RDX = 5 + 5*2 = 15 (no memory access)

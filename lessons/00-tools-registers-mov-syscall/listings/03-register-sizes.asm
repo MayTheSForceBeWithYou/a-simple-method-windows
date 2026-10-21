@@ -12,7 +12,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
 
     ; Demonstrate zero-extension with 32-bit write
     mov rax, -1                ; Fill RAX with all 1s (0xFFFFFFFFFFFFFFFF)

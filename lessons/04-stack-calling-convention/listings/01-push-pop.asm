@@ -14,7 +14,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 42
     push rax                   ; Save RAX on stack (RSP -= 8)

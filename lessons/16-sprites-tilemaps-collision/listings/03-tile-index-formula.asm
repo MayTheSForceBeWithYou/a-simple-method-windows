@@ -5,7 +5,7 @@
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov eax, 2
     imul eax, 10
     add eax, 3

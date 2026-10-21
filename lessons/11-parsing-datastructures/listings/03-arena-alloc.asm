@@ -5,7 +5,7 @@ arena_cursor QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     lea rax, arena
     mov arena_cursor, rax
     mov rbx, arena_cursor

@@ -12,7 +12,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     al, 0Fh         ; al = 00001111 binary
     not     al              ; al = 11110000 binary = 0xF0 = 240
     

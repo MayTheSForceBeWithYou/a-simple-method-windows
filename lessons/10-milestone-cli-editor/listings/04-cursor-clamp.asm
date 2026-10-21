@@ -15,7 +15,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     ; Setup: buffer with length 3
     mov     length, 3
     

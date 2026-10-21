@@ -13,7 +13,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     BYTE PTR buf[0], 'X'
     mov     len, 1
     mov     cur, 1

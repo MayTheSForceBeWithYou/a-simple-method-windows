@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 0FFh              ; RAX = 11111111 binary
     and rax, 0Fh               ; RAX = 00001111 binary (keep low nibble)

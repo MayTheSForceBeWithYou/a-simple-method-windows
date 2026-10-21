@@ -12,7 +12,7 @@ map DB 64 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     xor     ecx, ecx
     call    ExitProcess
 main ENDP

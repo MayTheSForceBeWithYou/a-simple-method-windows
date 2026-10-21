@@ -14,7 +14,7 @@ buffer DB 64 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     lea rbx, buffer
     

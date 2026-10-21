@@ -19,7 +19,7 @@ square PROC
 square ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 5
     call square                ; RAX = 25

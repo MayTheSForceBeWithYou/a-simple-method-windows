@@ -9,7 +9,7 @@ focus QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     focus, 2
     inc     focus
     mov     rax, focus

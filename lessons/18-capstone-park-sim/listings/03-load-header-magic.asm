@@ -9,7 +9,7 @@ header_buf DB "PK01", 1, 0, 0, 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     ; LE DWORD for ASCII PK01: 31h,30h,4Bh,50h -> 31304B50h (not ZIP 02014B50h)
     cmp     DWORD PTR header_buf, 31304B50h
     jne     bad

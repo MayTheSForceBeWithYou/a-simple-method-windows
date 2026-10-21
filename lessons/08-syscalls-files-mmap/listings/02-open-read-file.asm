@@ -22,8 +22,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)

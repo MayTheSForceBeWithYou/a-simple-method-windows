@@ -10,7 +10,7 @@ bump QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     bump, 0
     mov     rdi, 16
     mov     rax, bump

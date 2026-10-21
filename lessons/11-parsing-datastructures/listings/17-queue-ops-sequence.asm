@@ -11,7 +11,7 @@ tail QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     head, 0
     mov     tail, 0
     mov     rcx, tail

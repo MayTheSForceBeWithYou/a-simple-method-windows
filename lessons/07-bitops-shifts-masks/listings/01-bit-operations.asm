@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; AND: clear bits
     mov rax, 0xFF              ; 11111111

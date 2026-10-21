@@ -9,7 +9,7 @@ slots DQ 4 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub     rsp, 32
+    sub rsp, 40
     mov     QWORD PTR slots[16], 42
     mov     rax, slots[16]
     mov     ecx, eax
