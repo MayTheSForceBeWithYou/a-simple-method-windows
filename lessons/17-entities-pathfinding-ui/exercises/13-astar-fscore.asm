@@ -1,8 +1,10 @@
 ; 13-astar-fscore: astar fscore
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement astar fscore>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

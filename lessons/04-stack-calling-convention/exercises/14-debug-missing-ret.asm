@@ -9,7 +9,6 @@ EXTRN ExitProcess:PROC
 get_three PROC
     mov rax, 3
     ; BUG: Missing RET - falls through!
-    .ERR <BUG: Add RET instruction>
 get_three ENDP
 
 main PROC

@@ -1,8 +1,8 @@
 ; Listing 04: The XOR-to-zero idiom
 ;
 ; Purpose: Demonstrates the idiomatic way to zero a register using XOR.
-; Expected exit code: 0
-; Expected output: (none)
+; Expected exit: 0
+; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo04-xor-zero-idiom.obj 04-xor-zero-idiom.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-xor-zero-idiom.exe 04-xor-zero-idiom.obj kernel32.lib
 

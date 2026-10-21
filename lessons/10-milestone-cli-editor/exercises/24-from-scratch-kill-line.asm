@@ -12,6 +12,9 @@ main PROC
     mov buf[3], 10
     mov len, 4
     mov cur, 1
-    .ERR <TODO: Find \n after cur, delete from cur to \n (leave \n), exit len>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

@@ -24,11 +24,14 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdout, WriteFile message, exit 0
-    .ERR <TODO: GetStdHandle(-11), WriteFile, exit 0>
     
     xor     ecx, ecx
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

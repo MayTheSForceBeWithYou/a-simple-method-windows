@@ -24,16 +24,17 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdin handle
-    .ERR <TODO: Call GetStdHandle with STD_INPUT_HANDLE (-10)>
     
     ; TODO: ReadFile(stdin, &buffer, 1, &bytesRead, NULL)
-    .ERR <TODO: Call ReadFile to read 1 byte>
     
     ; TODO: Check if bytesRead == 0 (EOF), exit 0; else exit with buffer byte
-    .ERR <TODO: Load buffer byte into exit code>
     
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

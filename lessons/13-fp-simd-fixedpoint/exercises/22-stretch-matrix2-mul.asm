@@ -1,8 +1,10 @@
 ; 22-stretch-matrix2-mul
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 22-stretch-matrix2-mul>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

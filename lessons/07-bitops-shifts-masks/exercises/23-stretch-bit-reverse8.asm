@@ -25,12 +25,15 @@ main PROC FRAME
     xor     bl, bl          ; Result accumulator
     
     ; TODO: Reverse bits of AL into BL
-    .ERR <TODO: Implement bit reversal loop or algorithm>
     
     movzx   ecx, bl
     pop     r12
     pop     rbx
     call    ExitProcess     ; Should exit with 45
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

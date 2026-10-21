@@ -1,8 +1,10 @@
 ; 04-clamp-fixed.asm: Clamp value to [0, max], exit clamped
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Clamp value to [0, max], exit clamped>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

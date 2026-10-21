@@ -1,8 +1,10 @@
 ; 16-anim-frame: anim frame
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement anim frame>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

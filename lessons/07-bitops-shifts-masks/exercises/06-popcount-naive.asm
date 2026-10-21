@@ -24,11 +24,14 @@ main PROC FRAME
     xor     rax, rax        ; counter = 0
     
     ; TODO: Implement popcount loop
-    .ERR <TODO: Create loop that tests bit 0, increments counter if set, shifts right, repeats>
     
     mov     ecx, eax
     pop     rbx
     call    ExitProcess     ; Should exit with 6
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

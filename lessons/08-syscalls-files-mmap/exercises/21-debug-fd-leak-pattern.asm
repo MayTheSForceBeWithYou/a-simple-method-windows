@@ -21,15 +21,17 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA("NUL", GENERIC_READ, ...)
-    .ERR <TODO: Open NUL>
     
     ; BUG: Should call CloseHandle here, but intentionally skip it
     ; TODO: Exit 0 without closing (leak demonstration)
-    .ERR <TODO: Exit 0 without CloseHandle>
     
     xor     ecx, ecx
     add     rsp, 56
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -1,8 +1,10 @@
 ; 21-scenario-goal: scenario goal
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement scenario goal>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

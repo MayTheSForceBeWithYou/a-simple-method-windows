@@ -5,6 +5,9 @@ raw_mode QWORD ?
 EXTRN ExitProcess:PROC
 main PROC
     mov raw_mode, 0
-    .ERR <TODO: Set raw_mode=1 (simulate entering raw mode), exit raw_mode>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

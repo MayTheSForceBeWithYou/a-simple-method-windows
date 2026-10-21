@@ -23,15 +23,17 @@ main PROC FRAME
     and     rax, 0Fh        ; Mask to 4 bits
     
     ; TODO: Load b=5, mask, shift by 4, OR into rax
-    .ERR <TODO: Pack b=5 into bits 4-7>
     
     ; TODO: Load c=3, mask, shift by 8, OR into rax
-    .ERR <TODO: Pack c=3 into bits 8-11>
     
     mov     ecx, eax
     pop     r12
     pop     rbx
     call    ExitProcess     ; Should exit with 857
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -16,10 +16,13 @@ main PROC
     mov     rax, 7          ; Starting value
     
     ; TODO: Shift left by 3 to multiply by 8
-    .ERR <TODO: Insert SHL instruction to shift left by 3>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 56
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

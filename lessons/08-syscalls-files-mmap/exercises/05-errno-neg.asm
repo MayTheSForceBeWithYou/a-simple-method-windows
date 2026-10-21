@@ -23,17 +23,18 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    .ERR <TODO: Call CreateFileA>
     
     ; TODO: Check for INVALID_HANDLE_VALUE (-1)
-    .ERR <TODO: cmp rax, -1; jne success>
     
     ; Failed, get error code
     ; TODO: Call GetLastError
-    .ERR <TODO: call GetLastError, mov ecx, eax>
     
     add     rsp, 56
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -10,7 +10,6 @@ str DB "assembly", 0
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement strlen(RCX) -> RAX
-.ERR <TODO: Implement strlen procedure>
 
 main PROC
     sub rsp, 32

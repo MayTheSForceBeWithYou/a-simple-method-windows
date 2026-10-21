@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive pow(RCX=base, RDX=exp)
-.ERR <TODO: Implement recursive power function from scratch>
 
 main PROC
     sub rsp, 32

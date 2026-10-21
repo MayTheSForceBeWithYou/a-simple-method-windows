@@ -16,7 +16,6 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement void write_buf() that calls WriteFile
-.ERR <TODO: Implement write_buf procedure>
 
 main PROC
     sub rsp, 32

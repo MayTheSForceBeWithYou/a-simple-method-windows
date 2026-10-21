@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo05-imul-three.obj 05-imul-three.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-imul-three.exe 05-imul-three.obj kernel32.lib
 ; Run: 05-imul-three.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -17,8 +17,11 @@ main PROC
     mov rbx, 14
     
     ; TODO: IMUL RAX, RBX, 3; exit
-    .ERR <TODO: Use IMUL three-operand form>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

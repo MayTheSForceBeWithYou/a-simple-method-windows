@@ -1,8 +1,8 @@
 ; Listing 04: Recursive sum_to (lines 70-94 of LESSON.md)
 ;
 ; Purpose: sum_to(n) = n + sum_to(n-1), base case 0.
-; Expected exit code: 15 (1+2+3+4+5)
-; Expected output: (none)
+; Expected exit: 15
+; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo04-recursive-sum.obj 04-recursive-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-recursive-sum.exe 04-recursive-sum.obj kernel32.lib
 
@@ -27,7 +27,7 @@ recursive:
     call sum_to
     pop rcx                    ; Restore original n
     add rax, rcx               ; Add n to sum(n-1)
-    ret
+    jmp done
     
 done:
     add rsp, 32

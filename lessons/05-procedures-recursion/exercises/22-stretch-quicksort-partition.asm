@@ -7,11 +7,13 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Port from NASM to MASM
-.ERR <TODO: Implement this exercise>
 
 main PROC
     sub rsp, 32
     ; TODO: Implement
-    .ERR <TODO: Complete implementation>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

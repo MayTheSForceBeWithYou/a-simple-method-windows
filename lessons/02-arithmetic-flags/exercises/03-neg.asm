@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo03-neg.obj 03-neg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-neg.exe 03-neg.obj kernel32.lib
 ; Run: 03-neg.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -17,8 +17,11 @@ main PROC
     mov rax, -42
     
     ; TODO: NEG RAX, exit
-    .ERR <TODO: Negate and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

@@ -8,6 +8,5 @@ EXTRN ExitProcess:PROC
 
 main PROC
     ; TODO: xor ecx, ecx; call ExitProcess
-    .ERR <TODO: Exit 0>
 main ENDP
 END

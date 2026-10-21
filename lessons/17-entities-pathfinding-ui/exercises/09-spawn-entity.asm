@@ -1,8 +1,10 @@
 ; 09-spawn-entity: spawn entity
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement spawn entity>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

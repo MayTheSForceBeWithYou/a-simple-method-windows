@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo16-mov-imm-vs-reg.obj 16-mov-imm-vs-reg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-mov-imm-vs-reg.exe 16-mov-imm-vs-reg.obj kernel32.lib
 ; Run: 16-mov-imm-vs-reg & echo %ERRORLEVEL%
 ;
-; Expected: exit code 20
-
+; Expected exit: 20
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, rax               ; Copy RAX to RBX (register operand)
     
     ; TODO: Add RBX to RAX, move result to RCX, and exit
-    .ERR <TODO: Finish the addition and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

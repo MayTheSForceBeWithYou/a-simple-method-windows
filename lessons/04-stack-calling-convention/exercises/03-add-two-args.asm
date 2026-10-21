@@ -10,7 +10,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement add2(RCX, RDX) that returns RCX + RDX in RAX
-.ERR <TODO: Implement add2 PROC>
 
 main PROC
     sub rsp, 32

@@ -18,10 +18,13 @@ main PROC
     mov     al, 81h         ; binary 10000001
     
     ; TODO: Rotate left by 1
-    .ERR <TODO: Insert ROL instruction to rotate left by 1>
     
     movzx   ecx, al
     call    ExitProcess     ; Should exit with 3
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

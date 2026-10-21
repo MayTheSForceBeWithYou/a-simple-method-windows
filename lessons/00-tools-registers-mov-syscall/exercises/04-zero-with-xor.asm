@@ -15,7 +15,6 @@ main PROC
     sub rsp, 32
     
     ; TODO: Use XOR to zero RCX (not mov rcx, 0), then call ExitProcess
-    .ERR <TODO: Use xor rcx, rcx to zero RCX>
     
 main ENDP
 

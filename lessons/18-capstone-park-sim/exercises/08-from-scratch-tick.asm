@@ -1,8 +1,10 @@
 ; 08-from-scratch-tick: from scratch tick
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement from scratch tick>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

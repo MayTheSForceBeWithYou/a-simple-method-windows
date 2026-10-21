@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement variadic sum_n(RCX=count, stack args)
-.ERR <TODO: Implement variadic sum_n>
 
 main PROC FRAME
     sub rsp, 72                ; Shadow + args + alignment

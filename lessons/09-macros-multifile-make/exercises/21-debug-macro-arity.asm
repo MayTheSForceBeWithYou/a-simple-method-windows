@@ -12,6 +12,5 @@ ENDM
 
 main PROC
     ; TODO: Fix invocation: ExitStatus 4
-    .ERR <TODO: Supply argument to ExitStatus>
 main ENDP
 END

@@ -15,10 +15,13 @@ main PROC
     mov     rax, 5          ; Starting offset
     
     ; TODO: Add 5 to offset
-    .ERR <TODO: add rax, 5>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 10
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

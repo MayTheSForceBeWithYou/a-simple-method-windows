@@ -17,10 +17,13 @@ main PROC
     mov     al, 0ABh        ; Given value
     
     ; TODO: Use AND to extract low nibble (bits 0-3)
-    .ERR <TODO: Insert AND instruction with appropriate mask>
     
     movzx   ecx, al
     call    ExitProcess     ; Should exit with 11
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

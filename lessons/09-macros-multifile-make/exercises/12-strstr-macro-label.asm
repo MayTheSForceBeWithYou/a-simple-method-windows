@@ -5,12 +5,10 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: TWICE MACRO; inc rax; inc rax; ENDM (no labels needed)
-.ERR <TODO: Define TWICE macro>
 
 main PROC
     xor eax, eax
     ; TODO: TWICE
-    .ERR <TODO: Invoke TWICE>
     mov ecx, eax
     call ExitProcess
 main ENDP

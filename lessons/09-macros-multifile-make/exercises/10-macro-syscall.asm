@@ -12,13 +12,15 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 ; TODO: Define WriteK MACRO (no args) that writes msg
-.ERR <TODO: Define zero-argument macro>
 
 main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
     ; TODO: Invoke WriteK
-    .ERR <TODO: Invoke macro, exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

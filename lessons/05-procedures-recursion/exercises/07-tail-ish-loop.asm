@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement iterative sum_to using loop
-.ERR <TODO: Implement tail-recursive conversion to loop>
 
 main PROC
     sub rsp, 32

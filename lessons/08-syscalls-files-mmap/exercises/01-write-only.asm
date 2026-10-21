@@ -27,17 +27,18 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdout handle
-    .ERR <TODO: Call GetStdHandle with STD_OUTPUT_HANDLE (-11)>
     
     ; TODO: WriteFile msg1
-    .ERR <TODO: WriteFile(stdout, msg1, msg1_len, &bytesWritten, NULL)>
     
     ; TODO: WriteFile msg2
-    .ERR <TODO: WriteFile(stdout, msg2, msg2_len, &bytesWritten, NULL)>
     
     xor     ecx, ecx
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

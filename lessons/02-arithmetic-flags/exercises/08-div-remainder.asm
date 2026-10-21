@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo08-div-remainder.obj 08-div-remainder.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-div-remainder.exe 08-div-remainder.obj kernel32.lib
 ; Run: 08-div-remainder.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 2
-
+; Expected exit: 2
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 7
     
     ; TODO: XOR RDX, RDX; DIV RBX; exit with RDX (remainder)
-    .ERR <TODO: Use DIV and exit with remainder>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

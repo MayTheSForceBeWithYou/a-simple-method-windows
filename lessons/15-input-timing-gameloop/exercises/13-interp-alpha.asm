@@ -1,8 +1,10 @@
 ; 13-interp-alpha: interp alpha
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement interp alpha>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

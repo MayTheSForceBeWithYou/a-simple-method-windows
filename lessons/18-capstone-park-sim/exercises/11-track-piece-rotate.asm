@@ -1,8 +1,10 @@
 ; 11-track-piece-rotate: track piece rotate
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement track piece rotate>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

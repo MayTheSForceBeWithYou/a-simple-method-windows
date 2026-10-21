@@ -1,8 +1,8 @@
 ; Exercise 21: abi quiz exit (Win32 port)
 ; identity4 returns 4th arg. MS x64: R9 is 4th arg. Exit 4.
 ; Build: ml64 /c /Fo21-abi-quiz-exit.obj 21-abi-quiz-exit.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:21-abi-quiz-exit.exe 21-abi-quiz-exit.obj kernel32.lib
-; Expected: exit code 4
-
+; Expected exit: 4
+; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
 
@@ -18,6 +18,9 @@ main PROC
     mov r8, 3
     mov r9, 4                  ; 4th arg
     ; TODO: Call identity4 and exit with result
-    .ERR <TODO: Call identity4 and exit>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 END

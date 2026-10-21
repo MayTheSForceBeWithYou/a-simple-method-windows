@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo10-cmp-setne.obj 10-cmp-setne.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-cmp-setne.exe 10-cmp-setne.obj kernel32.lib
 ; Run: 10-cmp-setne.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 1
-
+; Expected exit: 1
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 20
     
     ; TODO: CMP RAX, RBX; SETNE CL; MOVZX RCX, CL; exit
-    .ERR <TODO: Use CMP and SETNE>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

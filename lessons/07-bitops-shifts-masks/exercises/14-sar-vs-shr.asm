@@ -19,10 +19,13 @@ main PROC
     mov     al, 0E0h        ; -32 as signed byte (0xE0 = 224 unsigned)
     
     ; TODO: Use SHR to shift right by 2 (demonstrates wrong result for signed)
-    .ERR <TODO: Insert SHR instruction to shift right by 2>
     
     movzx   ecx, al
     call    ExitProcess     ; Will exit with 56 (wrong for signed division)
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

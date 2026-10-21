@@ -1,8 +1,10 @@
 ; 23-stretch-ui-modal: stretch ui modal
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement stretch ui modal>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

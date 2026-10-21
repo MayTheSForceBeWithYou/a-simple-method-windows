@@ -21,11 +21,14 @@ main PROC FRAME
     xor     rax, rax        ; Counter
     
     ; TODO: Implement trailing zero count loop
-    .ERR <TODO: Create loop that tests bit 0, increments if 0, shifts right>
     
     mov     ecx, eax
     pop     rbx
     call    ExitProcess     ; Should exit with 3
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

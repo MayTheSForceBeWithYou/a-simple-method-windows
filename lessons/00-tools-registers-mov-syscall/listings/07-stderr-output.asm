@@ -1,8 +1,8 @@
 ; Listing 07: Writing to stderr instead of stdout
 ;
 ; Purpose: Demonstrates using GetStdHandle with STD_ERROR_HANDLE.
-; Expected exit code: 0
-; Expected output: (to stderr) Error message\n
+; Expected exit: 0
+; Expected stdout: "Error message\n"
 ;
 ; Build: ml64 /c /Fo07-stderr-output.obj 07-stderr-output.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-stderr-output.exe 07-stderr-output.obj kernel32.lib
 ; Run: 07-stderr-output.exe 2>&1
@@ -23,8 +23,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 48
+    .allocstack 48
     .endprolog
 
     ; GetStdHandle(STD_ERROR_HANDLE = -12)
@@ -41,6 +41,8 @@ main PROC FRAME
     call WriteFile
 
     xor ecx, ecx
+    add rsp, 48
+    pop rbx
     call ExitProcess
 main ENDP
 

@@ -1,8 +1,10 @@
 ; 23-stretch-ppm-header-len: stretch ppm header len
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement stretch ppm header len>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

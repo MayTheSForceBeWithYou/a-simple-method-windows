@@ -6,8 +6,8 @@
 ; Build: ml64 /c /Fo04-mov-vs-lea.obj 04-mov-vs-lea.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-mov-vs-lea.exe 04-mov-vs-lea.obj kernel32.lib
 ; Run: 04-mov-vs-lea.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 99
-
+; Expected exit: 99
+; Expected stdout: (none)
 .DATA
 x DQ 99
 
@@ -21,8 +21,11 @@ main PROC
     ; TODO: Use LEA to load address of x into RBX
     ; TODO: Use MOV to load value from [RBX] into RAX
     ; TODO: Move RAX to RCX and exit
-    .ERR <TODO: Implement LEA, MOV, and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

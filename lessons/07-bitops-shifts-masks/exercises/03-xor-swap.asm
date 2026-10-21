@@ -20,12 +20,13 @@ main PROC
     mov     rbx, 20
     
     ; TODO: XOR swap algorithm (three XORs)
-    .ERR <TODO: Insert first XOR (xor rax, rbx)>
-    .ERR <TODO: Insert second XOR (xor rbx, rax)>
-    .ERR <TODO: Insert third XOR (xor rax, rbx)>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 20
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

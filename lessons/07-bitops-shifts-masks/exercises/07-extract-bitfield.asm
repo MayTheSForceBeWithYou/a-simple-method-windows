@@ -18,13 +18,15 @@ main PROC
     mov     rax, 1F8h       ; Value = 0b111111000
     
     ; TODO: Shift right by 3 to move bits 3-7 to bits 0-4
-    .ERR <TODO: Insert SHR instruction to shift right by 3>
     
     ; TODO: Mask to 5 bits (2^5 - 1 = 31 = 0x1F)
-    .ERR <TODO: Insert AND instruction with mask 0x1F>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 31
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

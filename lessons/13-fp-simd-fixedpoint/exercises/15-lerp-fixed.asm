@@ -1,8 +1,10 @@
 ; 15-lerp-fixed.asm: Linear interpolation Q16.16, exit result
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Linear interpolation Q16.16, exit result>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

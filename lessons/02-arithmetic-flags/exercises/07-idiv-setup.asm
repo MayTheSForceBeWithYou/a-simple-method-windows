@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo07-idiv-setup.obj 07-idiv-setup.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-idiv-setup.exe 07-idiv-setup.obj kernel32.lib
 ; Run: 07-idiv-setup.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 3
     
     ; TODO: CQO to sign-extend, IDIV RBX, exit with quotient
-    .ERR <TODO: Use CQO and IDIV>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

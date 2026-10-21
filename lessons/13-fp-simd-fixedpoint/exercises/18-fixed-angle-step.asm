@@ -1,8 +1,10 @@
 ; 18-fixed-angle-step
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-fixed-angle-step>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

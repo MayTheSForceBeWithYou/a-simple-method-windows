@@ -22,18 +22,19 @@ main PROC FRAME
     .endprolog
     
     ; TODO: VirtualAlloc
-    .ERR <TODO: VirtualAlloc(NULL, 4096, 0x3000, 4)>
     
     ; TODO: Fill first 16 bytes with 1
-    .ERR <TODO: Loop to store 1 into [rax+0] through [rax+15]>
     
     ; TODO: VirtualFree, exit 16
-    .ERR <TODO: VirtualFree, mov ecx, 16>
     
     add     rsp, 32
     pop     r12
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -1,8 +1,10 @@
 ; 03-list-node
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 03-list-node>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

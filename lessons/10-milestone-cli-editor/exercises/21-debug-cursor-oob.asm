@@ -7,6 +7,9 @@ EXTRN ExitProcess:PROC
 main PROC
     mov len, 3
     mov cur, 9
-    .ERR <TODO: Clamp cur to [0, len], exit cur (should be 3)>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

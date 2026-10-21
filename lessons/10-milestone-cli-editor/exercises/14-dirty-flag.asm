@@ -5,6 +5,9 @@ dirty QWORD ?
 EXTRN ExitProcess:PROC
 main PROC
     mov dirty, 0
-    .ERR <TODO: Simulate edit (set dirty=1), simulate save (clear dirty=0), exit dirty>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

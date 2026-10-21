@@ -19,10 +19,13 @@ main PROC
     mov     rax, 44         ; 0b00101100
     
     ; TODO: Find next power of 2 above highest set bit
-    .ERR <TODO: Implement algorithm to find next power of 2>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 64
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

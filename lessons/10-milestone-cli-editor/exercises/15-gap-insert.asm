@@ -8,6 +8,9 @@ EXTRN ExitProcess:PROC
 main PROC
     mov gap_start, 0
     mov gap_end, 256
-    .ERR <TODO: Store 'G' at buf[gap_start], inc gap_start, exit gap_start>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

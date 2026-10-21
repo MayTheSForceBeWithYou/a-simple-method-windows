@@ -1,8 +1,10 @@
 ; 03-aabb-reject: aabb reject
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement aabb reject>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

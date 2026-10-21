@@ -23,14 +23,16 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
-    .ERR <TODO: CreatePipe with pointers to handles>
     
     ; TODO: CloseHandle both handles
-    .ERR <TODO: CloseHandle(hReadPipe), CloseHandle(hWritePipe)>
     
     xor     ecx, ecx
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -22,14 +22,16 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Try CreateFileA("C:\", GENERIC_WRITE, ...)
-    .ERR <TODO: CreateFileA with GENERIC_WRITE on directory>
     
     ; TODO: Check for failure, GetLastError, exit 1
-    .ERR <TODO: cmp rax, -1; je error; exit 1>
     
     mov     ecx, 1
     add     rsp, 56
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

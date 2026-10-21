@@ -17,13 +17,15 @@ main PROC
     xor     rax, rax        ; Start with 0
     
     ; TODO: Set bit 0 using OR
-    .ERR <TODO: Insert OR instruction to set bit 0>
     
     ; TODO: Set bit 3 using OR
-    .ERR <TODO: Insert OR instruction to set bit 3>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 9
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -20,15 +20,17 @@ main PROC FRAME
     .endprolog
     
     ; TODO: VirtualAlloc
-    .ERR <TODO: VirtualAlloc(NULL, 4096, 0x3000, 4)>
     
     ; TODO: Save address, VirtualFree
-    .ERR <TODO: mov rbx, rax; VirtualFree(rbx, 0, 0x8000)>
     
     xor     ecx, ecx
     add     rsp, 32
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

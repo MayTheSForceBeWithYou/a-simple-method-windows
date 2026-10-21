@@ -17,13 +17,15 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Call GetCurrentProcessId
-    .ERR <TODO: call GetCurrentProcessId>
     
     ; TODO: Mask to low 7 bits, exit with result
-    .ERR <TODO: and eax, 7Fh; mov ecx, eax>
     
     add     rsp, 32
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

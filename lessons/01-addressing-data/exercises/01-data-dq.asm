@@ -5,10 +5,9 @@
 ; Build: ml64 /c /Fo01-data-dq.obj 01-data-dq.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-data-dq.exe 01-data-dq.obj kernel32.lib
 ; Run: 01-data-dq.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 ; TODO: Declare .DATA section with count DQ 41
-.ERR <TODO: Declare .DATA section and count variable>
 
 .CODE
 
@@ -18,8 +17,11 @@ main PROC
     sub rsp, 32
     
     ; TODO: Load count into RAX, add 1, move to RCX, exit
-    .ERR <TODO: Load, add, and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

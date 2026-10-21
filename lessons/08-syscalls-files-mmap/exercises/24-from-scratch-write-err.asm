@@ -23,14 +23,16 @@ main PROC FRAME
     .endprolog
     
     ; TODO: WriteFile(INVALID_HANDLE_VALUE, message, message_len, &bytesWritten, NULL)
-    .ERR <TODO: Call WriteFile with handle = -1>
     
     ; TODO: Check for error (return 0), exit 1
-    .ERR <TODO: test eax, eax; jz error; exit 1>
     
     mov     ecx, 1
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

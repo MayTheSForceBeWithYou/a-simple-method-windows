@@ -1,8 +1,10 @@
 ; 10-map-erase: map erase
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement map erase>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

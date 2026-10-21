@@ -5,10 +5,9 @@
 ; Build: ml64 /c /Fo03-bss-store.obj 03-bss-store.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-bss-store.exe 03-bss-store.obj kernel32.lib
 ; Run: 03-bss-store.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 7
-
+; Expected exit: 7
+; Expected stdout: (none)
 ; TODO: Declare .DATA? section with a 1-byte variable
-.ERR <TODO: Declare .DATA? section>
 
 .CODE
 
@@ -18,8 +17,11 @@ main PROC
     sub rsp, 32
     
     ; TODO: Store 7 to the byte variable, load it back, exit with it
-    .ERR <TODO: Store, load, and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

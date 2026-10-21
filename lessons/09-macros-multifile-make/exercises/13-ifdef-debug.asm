@@ -9,7 +9,6 @@ EXTRN ExitProcess:PROC
 
 main PROC
     ; TODO: IFDEF DEBUG; mov ecx, 1; ELSE; xor ecx, ecx; ENDIF
-    .ERR <TODO: Use IFDEF DEBUG conditional>
     call ExitProcess
 main ENDP
 END

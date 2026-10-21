@@ -10,7 +10,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement helper that uses RBX but preserves it (PUSH/POP)
-.ERR <TODO: Implement helper PROC that preserves RBX>
 
 main PROC
     sub rsp, 32

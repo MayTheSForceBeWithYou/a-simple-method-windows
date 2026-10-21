@@ -15,13 +15,15 @@ main PROC
     mov     rax, 359h       ; Packed value = 0x359
     
     ; TODO: Shift right by 4
-    .ERR <TODO: Insert SHR instruction to shift right by 4>
     
     ; TODO: Mask to 4 bits
-    .ERR <TODO: Insert AND instruction with 0xF>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 5
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

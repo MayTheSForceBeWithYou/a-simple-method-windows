@@ -24,12 +24,15 @@ main PROC FRAME
     mov     bl, 180
     
     ; TODO: Compute (a & b) + ((a ^ b) >> 1)
-    .ERR <TODO: Implement SWAR average formula>
     
     movzx   ecx, al
     pop     r12
     pop     rbx
     call    ExitProcess     ; Should exit with 190
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -11,7 +11,6 @@ b DQ 2
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement swap(RCX=ptr1, RDX=ptr2)
-.ERR <TODO: Implement swap via pointers>
 
 main PROC
     sub rsp, 32

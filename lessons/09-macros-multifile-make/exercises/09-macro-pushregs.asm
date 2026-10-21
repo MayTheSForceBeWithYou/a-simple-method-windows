@@ -5,14 +5,11 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: PushRegs MACRO; push rbx; push r12; ENDM
-.ERR <TODO: Define PushRegs macro>
 ; TODO: PopRegs MACRO; pop r12; pop rbx; ENDM
-.ERR <TODO: Define PopRegs macro>
 
 main PROC
     mov eax, 5
     ; TODO: PushRegs; PopRegs
-    .ERR <TODO: Invoke macros>
     mov ecx, eax
     call ExitProcess
 main ENDP

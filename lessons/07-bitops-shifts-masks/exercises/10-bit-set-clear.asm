@@ -18,11 +18,14 @@ main PROC
     mov     rax, 0FFh       ; All bits set
     
     ; TODO: Clear bit 2 using AND with inverted mask
-    .ERR <TODO: Insert AND instruction to clear bit 2>
     
     mov     ecx, eax
     and     ecx, 0FFh
     call    ExitProcess     ; Should exit with 251
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

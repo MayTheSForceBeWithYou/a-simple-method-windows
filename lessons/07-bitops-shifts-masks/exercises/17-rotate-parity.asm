@@ -22,12 +22,15 @@ main PROC FRAME
     xor     bl, bl          ; Parity accumulator
     
     ; TODO: Loop 8 times, rotating and XORing bit 0 into accumulator
-    .ERR <TODO: Implement rotate-and-XOR loop to compute parity>
     
     movzx   ecx, bl
     and     ecx, 1          ; Keep only parity bit
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

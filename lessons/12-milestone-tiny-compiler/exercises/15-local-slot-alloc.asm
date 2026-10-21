@@ -1,8 +1,10 @@
 ; 15-local-slot-alloc.asm: Allocate 3 local slots, exit count (3)
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Allocate 3 local slots, exit count (3)>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

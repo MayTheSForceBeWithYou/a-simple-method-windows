@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo01-add-sub.obj 01-add-sub.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-add-sub.exe 01-add-sub.obj kernel32.lib
 ; Run: 01-add-sub.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -17,8 +17,11 @@ main PROC
     mov rax, 100
     
     ; TODO: Add 20, then sub 78, exit with result
-    .ERR <TODO: Perform arithmetic and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

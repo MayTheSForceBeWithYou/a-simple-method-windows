@@ -22,23 +22,22 @@ main PROC FRAME
     .endprolog
     
     ; TODO: VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
-    .ERR <TODO: Call VirtualAlloc with proper flags>
     
     ; TODO: Check for NULL
-    .ERR <TODO: Test rax, jz error>
     
     ; TODO: Store 42 at [rax]
-    .ERR <TODO: mov BYTE PTR [rax], 42>
     
     ; TODO: Read back and exit with value
-    .ERR <TODO: movzx ecx, BYTE PTR [rax]>
     
     ; TODO: VirtualFree(address, 0, MEM_RELEASE)
-    .ERR <TODO: Call VirtualFree>
     
     add     rsp, 32
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

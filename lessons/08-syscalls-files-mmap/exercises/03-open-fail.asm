@@ -23,10 +23,8 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    .ERR <TODO: Call CreateFileA with OPEN_EXISTING (3)>
     
     ; TODO: Check for INVALID_HANDLE_VALUE
-    .ERR <TODO: Compare rax with -1, jump to error label if equal>
     
     ; Success (unlikely)
     mov     rcx, rax
@@ -40,6 +38,10 @@ error:
 done:
     add     rsp, 56
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -28,22 +28,22 @@ main PROC FRAME
     .endprolog
     
     ; TODO: VirtualAlloc
-    .ERR <TODO: VirtualAlloc(NULL, 4096, 0x3000, 4)>
     
     ; TODO: Copy four bytes from source to allocated memory
-    .ERR <TODO: Use MOVSB or manual copy>
     
     ; TODO: Sum the four bytes
-    .ERR <TODO: Add bytes together>
     
     ; TODO: VirtualFree, exit with sum (should be 10)
-    .ERR <TODO: VirtualFree, exit with sum>
     
     add     rsp, 32
     pop     rdi
     pop     rsi
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

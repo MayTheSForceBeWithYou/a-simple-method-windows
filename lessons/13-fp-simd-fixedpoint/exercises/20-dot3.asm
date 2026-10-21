@@ -1,8 +1,10 @@
 ; 20-dot3
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 20-dot3>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

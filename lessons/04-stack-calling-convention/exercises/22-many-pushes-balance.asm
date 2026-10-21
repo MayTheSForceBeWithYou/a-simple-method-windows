@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement sum_top3 that sums values from stack
-.ERR <TODO: Implement sum_top3 reading from stack>
 
 main PROC
     sub rsp, 32

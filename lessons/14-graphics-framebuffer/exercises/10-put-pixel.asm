@@ -1,8 +1,10 @@
 ; 10-put-pixel: put pixel
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement put pixel>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

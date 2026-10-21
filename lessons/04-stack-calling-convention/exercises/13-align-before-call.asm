@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement check_alignment that returns RSP&15
-.ERR <TODO: Implement alignment check>
 
 main PROC
     sub rsp, 32

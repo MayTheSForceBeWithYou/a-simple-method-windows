@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive sum_to
-.ERR <TODO: Implement recursive sum with proper spill>
 
 main PROC
     sub rsp, 32

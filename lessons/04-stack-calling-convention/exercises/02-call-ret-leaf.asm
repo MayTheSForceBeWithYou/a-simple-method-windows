@@ -9,7 +9,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement answer() function that returns 42 in RAX
-.ERR <TODO: Implement answer PROC that returns 42>
 
 main PROC
     sub rsp, 32

@@ -9,6 +9,9 @@ main PROC
     mov buf[0], 'X'
     mov gap_start, 1
     mov gap_end, 256
-    .ERR <TODO: Move gap left: dec gap_start, dec gap_end, copy buf[gap_start] to buf[gap_end], exit gap_start>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

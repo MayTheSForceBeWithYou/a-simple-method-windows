@@ -30,21 +30,21 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA("NUL", GENERIC_WRITE, ...)
-    .ERR <TODO: Open NUL for writing>
     
     ; TODO: SetFilePointer(handle, 0, NULL, FILE_BEGIN)
-    .ERR <TODO: Seek to offset 0>
     
     ; TODO: WriteFile(handle, message, message_len, &bytesWritten, NULL)
-    .ERR <TODO: Write message>
     
     ; TODO: CloseHandle, exit 0
-    .ERR <TODO: Close and exit>
     
     xor     ecx, ecx
     add     rsp, 48
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -12,6 +12,9 @@ main PROC
     mov buf[3], 'B'
     mov len, 4
     mov cur, 3
-    .ERR <TODO: Scan back from cur for \n, find line_start, exit line_start>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

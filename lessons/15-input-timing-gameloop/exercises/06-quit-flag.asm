@@ -1,8 +1,10 @@
 ; 06-quit-flag: quit flag
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement quit flag>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

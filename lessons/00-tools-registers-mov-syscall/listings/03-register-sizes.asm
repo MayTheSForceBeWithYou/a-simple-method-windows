@@ -2,8 +2,8 @@
 ;
 ; Purpose: Demonstrates how writing to 32-bit register names zero-extends to 64 bits,
 ;          while writing to 8-bit or 16-bit names leaves upper bits unchanged.
-; Expected exit code: 42
-; Expected output: (none)
+; Expected exit: 42
+; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo03-register-sizes.obj 03-register-sizes.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-register-sizes.exe 03-register-sizes.obj kernel32.lib
 

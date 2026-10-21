@@ -1,8 +1,10 @@
 ; 13-pack-rgba8888
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 13-pack-rgba8888>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

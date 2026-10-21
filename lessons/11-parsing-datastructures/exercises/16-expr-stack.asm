@@ -1,8 +1,10 @@
 ; 16-expr-stack
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 16-expr-stack>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

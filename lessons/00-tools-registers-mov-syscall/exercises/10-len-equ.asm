@@ -6,13 +6,12 @@
 ; Build: ml64 /c /Fo10-len-equ.obj 10-len-equ.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-len-equ.exe 10-len-equ.obj kernel32.lib
 ; Run: 10-len-equ.exe
 ;
-; Expected output: Test message\n
-; Expected exit code: 0
+; Expected exit: 0
+; Expected stdout: "Test message\n"
 
 .DATA
 ; TODO: Declare 'msg' with "Test message" and CRLF
 ; TODO: Use 'msg_len EQU $ - msg' to compute length
-.ERR <TODO: Declare msg and msg_len>
 
 .DATA?
 bytes_written DQ ?
@@ -26,8 +25,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx
     .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 48
+    .allocstack 48
     .endprolog
     
     ; Code provided; you must fix data declarations above
@@ -43,6 +42,8 @@ main PROC FRAME
     call WriteFile
     
     xor ecx, ecx
+    add rsp, 48
+    pop rbx
     call ExitProcess
 main ENDP
 

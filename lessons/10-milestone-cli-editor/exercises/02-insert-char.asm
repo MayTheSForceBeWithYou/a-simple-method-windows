@@ -6,6 +6,9 @@ len QWORD ?
 EXTRN ExitProcess:PROC
 main PROC
     mov len, 0
-    .ERR <TODO: mov rax, len; mov buf[rax], 'A'; inc len; mov ecx, DWORD PTR len; exit>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

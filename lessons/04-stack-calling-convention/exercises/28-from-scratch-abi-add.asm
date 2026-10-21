@@ -7,9 +7,7 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement add3(RCX, RDX, R8) -> RAX from scratch
-.ERR <TODO: Implement add3 and main from scratch>
 
 ; TODO: Implement main PROC calling add3 and ExitProcess
-.ERR <TODO: Implement main>
 
 END

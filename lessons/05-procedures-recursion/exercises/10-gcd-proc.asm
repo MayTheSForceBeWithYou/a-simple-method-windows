@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive Euclidean GCD
-.ERR <TODO: Implement recursive GCD>
 
 main PROC
     sub rsp, 32

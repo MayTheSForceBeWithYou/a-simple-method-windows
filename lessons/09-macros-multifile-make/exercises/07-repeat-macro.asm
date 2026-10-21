@@ -8,7 +8,6 @@ EXTRN ExitProcess:PROC
 main PROC
     xor eax, eax
     ; TODO: REPT 3; inc eax; ENDM
-    .ERR <TODO: Use REPT to generate three inc eax>
     mov ecx, eax
     call ExitProcess
 main ENDP

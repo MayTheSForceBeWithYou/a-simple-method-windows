@@ -1,8 +1,10 @@
 ; 11-fixed-div.asm: Q16.16 division, exit result
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Q16.16 division, exit result>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

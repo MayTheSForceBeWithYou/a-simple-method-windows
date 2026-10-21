@@ -1,8 +1,10 @@
 ; 05-entity-alive: entity alive
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement entity alive>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

@@ -9,7 +9,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement iterative factorial(RCX) -> RAX
-.ERR <TODO: Implement factorial PROC>
 
 main PROC
     sub rsp, 32

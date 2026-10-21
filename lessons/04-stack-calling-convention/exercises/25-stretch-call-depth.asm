@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive bump(RCX) with depth counter
-.ERR <TODO: Implement recursive bump with call depth>
 
 main PROC
     sub rsp, 32

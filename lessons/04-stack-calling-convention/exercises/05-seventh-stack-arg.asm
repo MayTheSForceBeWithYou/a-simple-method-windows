@@ -9,7 +9,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement sum7(a,b,c,d,e,f,g) summing all 7 args
-.ERR <TODO: Implement sum7 PROC with 7 arguments>
 
 main PROC FRAME
     sub rsp, 64                ; Shadow (32) + 3 stack args (24) + alignment (8)

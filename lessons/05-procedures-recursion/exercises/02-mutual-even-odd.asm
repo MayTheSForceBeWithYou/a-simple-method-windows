@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement is_even and is_odd with mutual recursion
-.ERR <TODO: Implement mutual recursion>
 
 main PROC
     sub rsp, 32

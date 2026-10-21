@@ -10,7 +10,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement sum6 that sums RCX, RDX, R8, R9, [RSP+32], [RSP+40]
-.ERR <TODO: Implement sum6 PROC with 6 arguments>
 
 main PROC FRAME
     sub rsp, 56                ; Shadow (32) + 2 stack args (16) + alignment (8)

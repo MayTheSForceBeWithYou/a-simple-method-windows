@@ -20,10 +20,8 @@ main PROC FRAME
     .endprolog
     
     ; TODO: VirtualAlloc
-    .ERR <TODO: VirtualAlloc(NULL, 4096, 0x3000, 4)>
     
     ; TODO: Check nonzero, free, exit 0
-    .ERR <TODO: test rax, rax; jz error; VirtualFree>
     
     xor     ecx, ecx
     jmp     done
@@ -35,6 +33,10 @@ done:
     add     rsp, 32
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

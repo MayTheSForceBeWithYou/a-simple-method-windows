@@ -1,8 +1,8 @@
 ; Listing 06: Multiple writes to stdout
 ;
 ; Purpose: Demonstrates calling WriteFile multiple times with different messages.
-; Expected exit code: 0
-; Expected output: First line\nSecond line\n
+; Expected exit: 0
+; Expected stdout: "First line\nSecond line\n"
 ;
 ; Build: ml64 /c /Fo06-write-two-messages.obj 06-write-two-messages.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-write-two-messages.exe 06-write-two-messages.obj kernel32.lib
 
@@ -26,7 +26,7 @@ main PROC FRAME
     .pushreg rbx
     push rsi
     .pushreg rsi
-    sub rsp, 40                ; Shadow space + alignment (total 56, 16-aligned)
+    sub rsp, 40                ; Shadow + 5th WriteFile arg (after 2 pushes)
     .allocstack 40
     .endprolog
 
@@ -51,8 +51,10 @@ main PROC FRAME
     mov qword ptr [rsp+32], 0
     call WriteFile
 
-    ; Exit
     xor ecx, ecx
+    add rsp, 40
+    pop rsi
+    pop rbx
     call ExitProcess
 main ENDP
 

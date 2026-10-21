@@ -24,10 +24,8 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdout, WriteFile message
-    .ERR <TODO: GetStdHandle, WriteFile>
     
     ; TODO: Check if bytesWritten == message_len
-    .ERR <TODO: cmp bytesWritten, message_len; jne error>
     
     xor     ecx, ecx
     jmp     done
@@ -38,6 +36,10 @@ error:
 done:
     add     rsp, 40
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

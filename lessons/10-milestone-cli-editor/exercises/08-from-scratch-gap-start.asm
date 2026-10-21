@@ -6,6 +6,9 @@ gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    .ERR <TODO: mov gap_start, 0; mov gap_end, 256; exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

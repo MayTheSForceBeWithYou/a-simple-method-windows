@@ -15,6 +15,9 @@ main PROC FRAME
     .allocstack 56
     .endprolog
     mov len, 0
-    .ERR <TODO: CreateFileA, WriteFile, CloseHandle, exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

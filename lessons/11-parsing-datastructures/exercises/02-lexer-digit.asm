@@ -1,8 +1,10 @@
 ; 02-lexer-digit
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 02-lexer-digit>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

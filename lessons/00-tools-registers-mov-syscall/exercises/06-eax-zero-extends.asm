@@ -19,7 +19,6 @@ main PROC
     
     ; TODO: Write 5 to EAX (which zero-extends to RAX)
     ; Then move RAX to RCX and call ExitProcess
-    .ERR <TODO: Write 5 to EAX and exit with it>
     
 main ENDP
 

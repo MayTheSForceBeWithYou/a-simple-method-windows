@@ -11,7 +11,6 @@ helper PROC
     mov rbx, 99
     mov rax, 1
     ret
-    .ERR <BUG: Add PUSH RBX at start and POP RBX before RET>
 helper ENDP
 
 main PROC

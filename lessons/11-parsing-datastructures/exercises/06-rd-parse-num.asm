@@ -1,8 +1,10 @@
 ; 06-rd-parse-num
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 06-rd-parse-num>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

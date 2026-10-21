@@ -1,8 +1,10 @@
 ; 18-double-buffer-index: double buffer index
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement double buffer index>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

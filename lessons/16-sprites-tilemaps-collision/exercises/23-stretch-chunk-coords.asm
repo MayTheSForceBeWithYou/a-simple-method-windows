@@ -1,8 +1,10 @@
 ; 23-stretch-chunk-coords: stretch chunk coords
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement stretch chunk coords>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

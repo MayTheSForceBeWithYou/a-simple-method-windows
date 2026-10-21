@@ -11,7 +11,6 @@ heap_len EQU ($ - heap) / 8
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive tree sum over heap array
-.ERR <TODO: Implement recursive heap sum>
 
 main PROC
     sub rsp, 32

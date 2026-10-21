@@ -19,10 +19,13 @@ main PROC
     neg     rbx             ; -x
     
     ; TODO: AND rax with rbx to isolate lowest set bit
-    .ERR <TODO: Insert AND instruction>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 4
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

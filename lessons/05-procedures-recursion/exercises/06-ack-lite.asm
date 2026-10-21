@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement Ackermann function ack(RCX=m, RDX=n)
-.ERR <TODO: Implement Ackermann function>
 
 main PROC
     sub rsp, 32

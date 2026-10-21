@@ -6,6 +6,9 @@ stack_top QWORD ?
 EXTRN ExitProcess:PROC
 main PROC
     mov stack_top, 0
-    .ERR <TODO: Push action (e.g. 42) onto undo_stack, inc stack_top, exit stack_top>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

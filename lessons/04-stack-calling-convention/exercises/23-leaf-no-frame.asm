@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement mul3 as leaf (no PROC FRAME needed)
-.ERR <TODO: Implement leaf function mul3>
 
 main PROC
     sub rsp, 32

@@ -1,8 +1,10 @@
 ; 20-sqrt-newton-stub.asm: Stub: Newton sqrt iteration, exit approx
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Stub: Newton sqrt iteration, exit approx>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

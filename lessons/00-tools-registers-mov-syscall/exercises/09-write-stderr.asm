@@ -6,8 +6,8 @@
 ; Run: 09-write-stderr.exe 2>&1
 ;
 ; Expected output: (to stderr) Error\n
-; Expected exit code: 0
-
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA
 msg DB "Error", 13, 10
 msg_len EQU $ - msg
@@ -30,8 +30,11 @@ main PROC FRAME
     
     ; TODO: Get stderr handle (STD_ERROR_HANDLE = -12, not -11)
     ; TODO: Write message to stderr
-    .ERR <TODO: Use GetStdHandle with -12 for stderr>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

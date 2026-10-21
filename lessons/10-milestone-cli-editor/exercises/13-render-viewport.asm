@@ -13,6 +13,9 @@ main PROC FRAME
     .endprolog
     mov buf[0], 'V'
     mov len, 1
-    .ERR <TODO: Write viewport (min(len, screensize)) to stdout, exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

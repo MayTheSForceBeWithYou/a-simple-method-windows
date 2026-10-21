@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo06-mul-unsigned.obj 06-mul-unsigned.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-mul-unsigned.exe 06-mul-unsigned.obj kernel32.lib
 ; Run: 06-mul-unsigned.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 2
     
     ; TODO: MUL RBX; exit with RAX
-    .ERR <TODO: Use MUL>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

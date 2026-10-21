@@ -6,10 +6,9 @@
 ; Run: 02-rodata-string.exe
 ;
 ; Expected output: rodata\n
-; Expected exit code: 0
-
+; Expected exit: 0
+; Expected stdout: (none)
 ; TODO: Declare .CONST section with msg and msg_len
-.ERR <TODO: Declare .CONST section>
 
 .DATA?
 bytes_written DQ ?
@@ -28,8 +27,11 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdout, write message, exit 0
-    .ERR <TODO: Implement GetStdHandle, WriteFile, ExitProcess>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

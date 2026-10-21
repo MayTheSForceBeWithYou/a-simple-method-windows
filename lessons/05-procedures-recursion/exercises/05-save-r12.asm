@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement function that uses R12 but preserves it
-.ERR <TODO: Save and restore R12>
 
 main PROC
     sub rsp, 32

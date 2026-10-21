@@ -1,8 +1,10 @@
 ; 18-input-queue: input queue
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement input queue>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

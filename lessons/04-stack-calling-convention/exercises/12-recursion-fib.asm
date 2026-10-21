@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive fibonacci with PROC FRAME
-.ERR <TODO: Implement recursive fibonacci>
 
 main PROC
     sub rsp, 32

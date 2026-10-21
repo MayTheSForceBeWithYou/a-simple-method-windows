@@ -1,8 +1,10 @@
 ; 22-stretch-coaster-excitement: stretch coaster excitement
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement stretch coaster excitement>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

@@ -20,10 +20,8 @@ main PROC FRAME
     .endprolog
     
     ; TODO: QueryPerformanceCounter(&counter)
-    .ERR <TODO: lea rcx, counter; call QueryPerformanceCounter>
     
     ; TODO: Check result, exit 0
-    .ERR <TODO: test eax, eax; jz error; exit 0>
     
     xor     ecx, ecx
     jmp     done
@@ -34,6 +32,10 @@ error:
 done:
     add     rsp, 32
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

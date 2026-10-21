@@ -16,7 +16,6 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement write_str(RCX=buf, RDX=len)
-.ERR <TODO: Implement write_str helper>
 
 main PROC
     sub rsp, 32

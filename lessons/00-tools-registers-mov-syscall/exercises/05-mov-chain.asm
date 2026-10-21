@@ -17,7 +17,6 @@ main PROC
     mov rax, 13
     
     ; TODO: Move RAX to RBX, then RBX to RCX, then call ExitProcess
-    .ERR <TODO: Complete the mov chain>
     
 main ENDP
 

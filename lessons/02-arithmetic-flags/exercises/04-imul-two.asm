@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo04-imul-two.obj 04-imul-two.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-imul-two.exe 04-imul-two.obj kernel32.lib
 ; Run: 04-imul-two.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 42
-
+; Expected exit: 42
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 7
     
     ; TODO: IMUL RAX, RBX; exit
-    .ERR <TODO: Use IMUL two-operand form>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

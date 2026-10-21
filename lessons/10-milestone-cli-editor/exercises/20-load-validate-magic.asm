@@ -16,6 +16,9 @@ main PROC FRAME
     sub rsp, 56
     .allocstack 56
     .endprolog
-    .ERR <TODO: Open file, read magic, validate, read len, read data, exit 0 if valid else 1>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

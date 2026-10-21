@@ -5,7 +5,7 @@
 ; Build: ml64 /c /Fo09-pointer-walk.obj 09-pointer-walk.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-pointer-walk.exe 09-pointer-walk.obj kernel32.lib
 ; Run: 09-pointer-walk.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 131 (65+66 = 'A'+'B')
+; Expected exit: 131 (65+66 = 'A'+'B')
 
 .DATA
 str DB "ABC", 0
@@ -22,8 +22,11 @@ main PROC
     ; TODO: INC RSI or ADD RSI, 1
     ; TODO: MOVZX RBX, BYTE PTR [RSI]   ; second byte
     ; TODO: ADD RAX, RBX and exit
-    .ERR <TODO: Walk pointer and sum>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

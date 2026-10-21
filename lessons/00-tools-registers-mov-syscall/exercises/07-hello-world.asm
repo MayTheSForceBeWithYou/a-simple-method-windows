@@ -6,8 +6,8 @@
 ; Run: 07-hello-world.exe
 ;
 ; Expected output: Hello, world\n
-; Expected exit code: 0
-
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA
 msg DB "Hello, world", 13, 10
 msg_len EQU $ - msg
@@ -31,8 +31,11 @@ main PROC FRAME
     ; TODO: Get stdout handle with GetStdHandle(-11)
     ; TODO: Call WriteFile with proper arguments
     ; TODO: Exit with status 0
-    .ERR <TODO: Implement GetStdHandle, WriteFile, and ExitProcess calls>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

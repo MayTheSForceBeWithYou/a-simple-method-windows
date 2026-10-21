@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo03-sum-loop.obj 03-sum-loop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-sum-loop.exe 03-sum-loop.obj kernel32.lib
 ; Run: 03-sum-loop.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 55
-
+; Expected exit: 55
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rcx, 10                ; Counter
     
     ; TODO: While loop: add rcx to rax, dec rcx, repeat until rcx is 0
-    .ERR <TODO: Implement sum loop>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

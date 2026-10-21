@@ -10,6 +10,9 @@ main PROC
     mov buf[1], 'B'
     mov len, 2
     mov cur, 2
-    .ERR <TODO: Check cur>0; dec len; dec cur; exit len>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

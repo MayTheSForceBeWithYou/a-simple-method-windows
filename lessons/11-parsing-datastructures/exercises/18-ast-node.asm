@@ -1,8 +1,10 @@
 ; 18-ast-node
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-ast-node>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

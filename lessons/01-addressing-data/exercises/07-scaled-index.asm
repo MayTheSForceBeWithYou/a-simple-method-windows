@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo07-scaled-index.obj 07-scaled-index.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-scaled-index.exe 07-scaled-index.obj kernel32.lib
 ; Run: 07-scaled-index.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 33
-
+; Expected exit: 33
+; Expected stdout: (none)
 .DATA
 arr DQ 11, 22, 33, 44
 
@@ -21,8 +21,11 @@ main PROC
     ; TODO: MOV index 2 into RCX
     ; TODO: MOV RAX, [RBX+RCX*8]
     ; TODO: Exit with RAX
-    .ERR <TODO: Use scaled indexing>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

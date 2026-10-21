@@ -1,8 +1,10 @@
 ; 19-debug-map-bounds: debug map bounds
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement debug map bounds>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

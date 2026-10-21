@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement function with 3 local variables
-.ERR <TODO: Implement function with locals>
 
 main PROC
     sub rsp, 32

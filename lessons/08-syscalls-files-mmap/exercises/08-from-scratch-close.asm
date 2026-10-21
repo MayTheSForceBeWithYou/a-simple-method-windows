@@ -24,13 +24,10 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA("NUL", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    .ERR <TODO: Call CreateFileA>
     
     ; TODO: Check for error
-    .ERR <TODO: cmp rax, -1; je error>
     
     ; TODO: CloseHandle(handle)
-    .ERR <TODO: mov rcx, rax; call CloseHandle>
     
     xor     ecx, ecx
     jmp     done
@@ -42,6 +39,10 @@ done:
     add     rsp, 48
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

@@ -1,8 +1,10 @@
 ; 01-soa-pos: soa pos
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement soa pos>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

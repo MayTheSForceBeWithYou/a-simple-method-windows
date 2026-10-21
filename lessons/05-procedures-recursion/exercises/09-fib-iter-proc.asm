@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement iterative fibonacci
-.ERR <TODO: Implement iterative fib>
 
 main PROC
     sub rsp, 32

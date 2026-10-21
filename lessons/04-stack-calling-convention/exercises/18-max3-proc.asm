@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement max3(RCX, RDX, R8) -> RAX
-.ERR <TODO: Implement max3 using CMP and conditional moves/jumps>
 
 main PROC
     sub rsp, 32

@@ -1,8 +1,10 @@
 ; 09-clear-color: clear color
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement clear color>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

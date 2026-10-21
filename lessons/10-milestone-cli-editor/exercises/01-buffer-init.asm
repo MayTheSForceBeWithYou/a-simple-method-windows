@@ -6,6 +6,9 @@ cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
-    .ERR <TODO: mov len, 0; mov cur, 0; xor ecx, ecx; call ExitProcess>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

@@ -6,10 +6,8 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Define STATUS_OK EQU 0
-.ERR <TODO: Define STATUS_OK using EQU>
 
 main PROC
     ; TODO: mov ecx, STATUS_OK; call ExitProcess
-    .ERR <TODO: Use STATUS_OK constant>
 main ENDP
 END

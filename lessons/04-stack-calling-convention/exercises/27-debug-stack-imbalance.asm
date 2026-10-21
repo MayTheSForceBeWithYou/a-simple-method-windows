@@ -10,7 +10,6 @@ get_two PROC
     push rax                   ; BUG: Pushed but never popped!
     mov rax, 2
     ret
-    .ERR <BUG: Add POP RAX before RET to balance stack>
 get_two ENDP
 
 main PROC

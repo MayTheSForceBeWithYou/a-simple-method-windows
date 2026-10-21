@@ -14,6 +14,9 @@ main PROC FRAME
     sub rsp, 56
     .allocstack 56
     .endprolog
-    .ERR <TODO: CreateFileA(OPEN_EXISTING), ReadFile, set len=bytesRead, exit len>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

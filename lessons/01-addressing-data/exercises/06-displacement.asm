@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo06-displacement.obj 06-displacement.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-displacement.exe 06-displacement.obj kernel32.lib
 ; Run: 06-displacement.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 15
-
+; Expected exit: 15
+; Expected stdout: (none)
 .DATA
 arr DQ 5, 15, 25
 
@@ -20,8 +20,11 @@ main PROC
     ; TODO: LEA RBX, arr
     ; TODO: MOV RAX, [RBX+8] to get second element
     ; TODO: Exit with RAX
-    .ERR <TODO: Load with displacement and exit>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

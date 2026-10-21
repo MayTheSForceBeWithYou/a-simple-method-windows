@@ -13,13 +13,15 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 ; TODO: Define WriteMsgMacro
-.ERR <TODO: Macro to GetStdHandle, WriteFile>
 
 main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
     ; TODO: Invoke macro, exit 0
-    .ERR <TODO: Call macro, exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

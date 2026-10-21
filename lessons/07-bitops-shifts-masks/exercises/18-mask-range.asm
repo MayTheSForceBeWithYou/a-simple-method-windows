@@ -16,10 +16,13 @@ EXTRN ExitProcess:PROC
 
 main PROC
     ; TODO: Compute mask with bits 2-5 set
-    .ERR <TODO: Create mask for bits 2-5 using shifts and subtract>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 60
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

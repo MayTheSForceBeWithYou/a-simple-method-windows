@@ -6,8 +6,8 @@
 ; Run: 08-two-writes.exe
 ;
 ; Expected output: Line one\nLine two\n
-; Expected exit code: 0
-
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA
 msg1 DB "Line one", 13, 10
 msg1_len EQU $ - msg1
@@ -31,8 +31,11 @@ main PROC FRAME
     .endprolog
     
     ; TODO: Get stdout, write both messages, exit 0
-    .ERR <TODO: Implement two WriteFile calls>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

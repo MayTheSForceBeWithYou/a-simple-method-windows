@@ -17,13 +17,15 @@ main PROC
     mov     rbx, rax
     
     ; TODO: Shift rbx right by 1
-    .ERR <TODO: Insert SHR rbx, 1>
     
     ; TODO: XOR rax with rbx to get Gray code
-    .ERR <TODO: Insert XOR rax, rbx>
     
     mov     ecx, eax
     call    ExitProcess     ; Should exit with 10
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

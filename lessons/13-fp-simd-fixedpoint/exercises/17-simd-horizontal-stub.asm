@@ -1,8 +1,10 @@
 ; 17-simd-horizontal-stub
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 17-simd-horizontal-stub>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

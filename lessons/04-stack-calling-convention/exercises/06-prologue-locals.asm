@@ -9,7 +9,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement function with local variable on stack
-.ERR <TODO: Implement function with prologue and local variable>
 
 main PROC
     sub rsp, 32

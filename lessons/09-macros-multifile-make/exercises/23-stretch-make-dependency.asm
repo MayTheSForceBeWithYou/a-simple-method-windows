@@ -6,6 +6,5 @@ EXTRN ExitProcess:PROC
 
 main PROC
     ; TODO: mov ecx, 3; call ExitProcess
-    .ERR <TODO: Exit 3>
 main ENDP
 END

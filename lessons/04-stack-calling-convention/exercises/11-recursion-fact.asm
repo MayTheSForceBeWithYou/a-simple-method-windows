@@ -7,7 +7,6 @@
 EXTRN ExitProcess:PROC
 
 ; TODO: Implement recursive factorial with proper PROC FRAME
-.ERR <TODO: Implement recursive factorial>
 
 main PROC
     sub rsp, 32

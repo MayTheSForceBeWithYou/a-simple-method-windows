@@ -16,11 +16,14 @@ main PROC
     mov     rax, -16        ; Signed negative value
     
     ; TODO: Shift arithmetic right by 2 to divide by 4
-    .ERR <TODO: Insert SAR instruction to shift right by 2>
     
     mov     ecx, eax
     and     ecx, 0FFh       ; Exit with low byte
     call    ExitProcess     ; Should exit with 252
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

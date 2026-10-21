@@ -28,13 +28,16 @@ main PROC FRAME
     mov     r12, bytes_len
     
     ; TODO: Loop through bytes, XOR each into RAX
-    .ERR <TODO: Create loop that XORs each byte into accumulator>
     
     mov     ecx, eax
     and     ecx, 0FFh       ; Low byte only
     pop     r12
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

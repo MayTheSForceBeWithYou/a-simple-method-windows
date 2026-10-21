@@ -1,8 +1,10 @@
 ; 06-clip-test: clip test
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement clip test>
 main PROC
-.ERR <TODO>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

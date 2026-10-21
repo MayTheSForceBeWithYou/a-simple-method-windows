@@ -5,8 +5,8 @@
 ; Build: ml64 /c /Fo05-signed-cmp.obj 05-signed-cmp.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-signed-cmp.exe 05-signed-cmp.obj kernel32.lib
 ; Run: 05-signed-cmp.exe & echo %ERRORLEVEL%
 ;
-; Expected: exit code 1
-
+; Expected exit: 1
+; Expected stdout: (none)
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -18,8 +18,11 @@ main PROC
     mov rbx, 3
     
     ; TODO: CMP RAX, RBX; JL (less, signed); set RCX=1; else 0
-    .ERR <TODO: Use signed comparison JL>
     
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 0
+    call ExitProcess
 main ENDP
 
 END

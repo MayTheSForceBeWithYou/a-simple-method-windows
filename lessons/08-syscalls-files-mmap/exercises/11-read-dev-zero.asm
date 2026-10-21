@@ -27,12 +27,15 @@ main PROC FRAME
     .endprolog
     
     ; TODO: CreateFileA, ReadFile 8 bytes, CloseHandle
-    .ERR <TODO: Open NUL, ReadFile into buffer, close>
     
     xor     ecx, ecx
     add     rsp, 48
     pop     rbx
     call    ExitProcess
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END

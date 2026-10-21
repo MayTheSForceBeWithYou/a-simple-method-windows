@@ -16,6 +16,9 @@ main PROC FRAME
     .allocstack 56
     .endprolog
     mov len, 0
-    .ERR <TODO: Create file, write MAGIC, write len, write buf, close, exit 0>
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 END

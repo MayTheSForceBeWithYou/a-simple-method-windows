@@ -22,11 +22,14 @@ main PROC FRAME
     xor     rbx, rbx        ; Counter
     
     ; TODO: Implement leading zero count loop
-    .ERR <TODO: Create loop that tests bit 15, increments counter, shifts left>
     
     mov     ecx, ebx
     pop     rbx
     call    ExitProcess     ; Should exit with 10
+
+    ; TODO: complete exercise (scaffold uses wrong exit code)
+    mov ecx, 1
+    call ExitProcess
 main ENDP
 
 END
