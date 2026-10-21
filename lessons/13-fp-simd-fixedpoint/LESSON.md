@@ -1,334 +1,247 @@
-# 13 — Fixed-point Arithmetic
+# Lesson 13 — Fixed-point Arithmetic
 
-Lesson 12's compiler operated on integers. Real programs—especially games and graphics—need fractional numbers: positions, velocities, colors as 0.0–1.0, interpolation weights. This lesson shows you how to represent fractions as **fixed-point** integers: a convention where the low *n* bits are the fractional part, and the remaining bits are the integer part. No floating-point hardware, no SSE—just shifts, multiplies, and divides on integer registers. By the end you'll see that Q16.16 (16 integer bits, 16 fraction bits) can represent smooth motion, linear interpolation, dot products, and clamping with deterministic, fast integer operations.
+Lesson 12's compiler operated on integers. Positions, velocities, and blend weights need fractions. This lesson represents a fraction as an integer with a fixed number of fraction bits: **Q16.16** (16 integer bits, 16 fraction bits). There is no `addss`, no XMM register, and no x87 in the Jack listings. You shift, add, multiply, compare, and wrap on EAX/RAX.
+
+Every listing is a complete MASM program. Status is ECX to `ExitProcess`. Build from an x64 Native Tools prompt:
+
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
+```
 
 ## What this lesson asks of you
 
-- Encode an integer *n* in Q16.16 by shifting left 16 bits (`n << 16`); encode 0.5 as `1 << 15`.
-- Add two fixed-point values without shifting; multiply them and shift right by 16 to restore the scale.
-- Divide two fixed-point values by shifting the dividend left by 16 (widening it to 64 bits with `cqo`), performing `idiv`, then shifting the quotient right by 16 to convert to integer if needed.
-- Clamp a value to a range, wrap angles (modulo 360), and compute dot products—all in integer arithmetic.
-- Recognize that the "SSE" drills in this lesson are scalar stubs (they do **not** execute `addss`, `movss`, or SIMD instructions).
+Encode integer *n* as `n` shifted left 16, and decode with an arithmetic shift right 16 so the sign survives. Add two Q16.16 values with a plain `add` (the scale stays). Multiply two Q16.16 values with `imul`, then shift right 16 to return to Q16.16 — and a second shift right 16 if you want the integer for `ExitProcess`. Clamp with a compare and a move. Wrap a tick or angle by subtracting the period when you cross it.
 
-## Why fixed-point for the game milestone
+## Why fixed-point for the later milestones
 
-Lesson 16's sprite blitting and lesson 17's pathfinding need sub-pixel positions, smooth scrolling, and interpolation. Fixed-point gives you:
+Lesson 16's sprites and lesson 17's pathfinding want sub-pixel positions and interpolation. Fixed-point gives you:
 
-- **Determinism:** No floating-point rounding surprises across CPUs or runs.
-- **Speed:** Integer ALU ops are fast; no mode switch to the FPU or SSE.
-- **Simplicity:** No NaN, no infinity, no denormals—just integers with a convention.
+- **Determinism.** The same integer ops on every CPU.
+- **No FP environment.** No rounding-mode surprises, no NaN.
+- **The ALU you already have.** Shifts and `imul` from lessons 02 and 07.
 
-Modern games often use floats (lesson 14 will mention them), but fixed-point remains valuable for retro-style projects, embedded systems, and understanding numeric representation.
+Modern games often use hardware floats. You still need Q-format when you want bit-exact replay or when you are not touching SSE yet.
 
-## Q-format: integer and fractional bits
+## Q16.16: integer bits and fraction bits
 
-A **Q-format** number is an integer where the low *n* bits represent the fractional part. The notation **Qm.n** means *m* integer bits and *n* fraction bits.
+A **Q-format** number is an integer whose low *n* bits are the fraction. **Q16.16** is 32 bits: 16 integer, 16 fraction.
 
-**Q16.16:** 32 bits total, 16 integer, 16 fraction.
+| Value | Q16.16 (hex) | Integer bits . fraction bits |
+|------:|-------------:|------------------------------|
+| 0.0 | `00000000h` | `0000000000000000.0000000000000000` |
+| 1.0 | `00010000h` | `0000000000000001.0000000000000000` |
+| 0.5 | `00008000h` | `0000000000000000.1000000000000000` |
+| 1.5 | `00018000h` | `0000000000000001.1000000000000000` |
+| 2.5 | `00028000h` | `0000000000000010.1000000000000000` |
+| −1.0 | `FFFF0000h` | `1111111111111111.0000000000000000` |
 
-| Value | Q16.16 encoding (hex) | Binary interpretation |
-|-------|----------------------:|----------------------|
-| 0.0 | `0x00000000` | `0000000000000000.0000000000000000` |
-| 1.0 | `0x00010000` | `0000000000000001.0000000000000000` |
-| 0.5 | `0x00008000` | `0000000000000000.1000000000000000` |
-| 1.5 | `0x00018000` | `0000000000000001.1000000000000000` |
-| 2.5 | `0x00028000` | `0000000000000010.1000000000000000` |
-| −1.0 | `0xFFFF0000` | `1111111111111111.0000000000000000` |
+Encode integer *n* with `shl eax, 16`. Encode 0.5 with `1 SHL 15` (high bit of the fraction). Decode the integer part with `sar eax, 16` when the value can be negative; `shr` zero-fills and turns a negative Q value into a large positive integer.
 
-To encode integer *n*: `n << 16`.  
-To encode 0.5: `1 << 15` (the high bit of the fraction).  
-To extract the integer part: `val >> 16` (arithmetic shift for signed).
-
-**Drill:** `09-q16-from-int.asm` shifts 5 left by 16, then right by 16, exits 5.
-
-**Drill:** `10-q16-frac.asm` adds two halves (`1<<15` each), gets `1<<16` (1.0), shifts right by 16, exits 1.
-
-## Addition: no shift needed
-
-Adding two Q16.16 values is just integer addition. The scale factors are the same, so the result is still Q16.16.
+Listing `01-q16-encode` loads 5, shifts left 16 (now `00050000h`), then `sar eax, 16` back to 5. Status **5**.
 
 ```asm
-; 1.5 + 2.5 = 4.0
-mov eax, (1<<16) + (1<<15)  ; 1.5
-mov ebx, (2<<16) + (1<<15)  ; 2.5
-add eax, ebx                ; 4.0 in Q16.16
-shr eax, 16                 ; convert to integer 4
-mov edi, eax
-mov rax, 60
-syscall
+; 01-q16-encode.asm: Encode integers in Q16.16 format
+; 5 << 16 = 0x50000, then >> 16 = 5, exit 5
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov eax, 5
+    shl eax, 16
+    sar eax, 16
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `02-fixed-add.asm` computes `1.5 + 2.5` and exits 4.
+The two shifts cancel for a pure integer. They exist so you can see the encode/decode pair. Between them, EAX is 5.0 in Q16.16.
 
-## Multiplication: shift right by 16 afterward
+## Addition keeps the scale
 
-Multiplying two Q16.16 values produces a Q32.32 result (the fraction bits add: 16 + 16 = 32). Shift right by 16 to return to Q16.16.
+Add two Q16.16 values with integer `add`. Both already have 16 fraction bits, so the sum does too.
+
+Listing `02-q16-add` builds 1.5 and 2.5 at assemble time: `(1 SHL 16) + (1 SHL 15)` and `(2 SHL 16) + (1 SHL 15)`. `SHL` here is the MASM operator, not the `shl` instruction. `add eax, ebx` yields 4.0 (`00040000h`). `shr eax, 16` converts that to the integer 4 for the process status. Status **4**.
 
 ```asm
-; 2.0 * 3.0 = 6.0
-mov eax, 2
-shl eax, 16                 ; 2.0 in Q16.16
-mov ebx, 3
-shl ebx, 16                 ; 3.0 in Q16.16
-movsxd rax, eax             ; sign-extend to 64 bits
-movsxd rbx, ebx
-imul rax, rbx               ; Q32.32: 6.0 with 32 fraction bits
-shr rax, 16                 ; Q16.16: 6.0 with 16 fraction bits
+; 02-q16-add.asm: Add two Q16.16 values (1.5 + 2.5 = 4.0)
+; Exit 4
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov eax, (1 SHL 16) + (1 SHL 15)
+    mov ebx, (2 SHL 16) + (1 SHL 15)
+    add eax, ebx
+    shr eax, 16
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Important:** The value is now correct Q16.16 (6.0 = `0x60000`), but the **exit status** is the low 8 bits (0). To exit with 6, do a **second** `shr rax, 16` to convert to integer.
+The `shr` is "print as integer," not part of the add. The Q result is already correct after `add`.
 
-**Drill:** `01-fixed-mul.asm` does one shift (to Q16.16) and exits 0 (the low byte of `6<<16`).
+## Multiplication doubles the fraction bits
 
-**Drill:** `19-debug-q-shift.asm` does **two** shifts (Q16.16 → integer) and exits 6.
+`imul` of two Q16.16 values produces 32 fraction bits (Q32.32 in the 64-bit product). Shift right 16 to return to Q16.16. Shift right 16 *again* if you want the integer.
 
-**Bug listing in `19-debug-q-shift.asm`:** The broken version masks with 255 before shifting, which discards the high bits and also exits 0. The fix shifts twice, exiting 6.
-
-### Signed multiplication
-
-For negative products, use **`sar`** (arithmetic shift) instead of `shr` (logical shift) after `imul`. `shr` treats the value as unsigned, which fails for negative results. The drills only use positive values, so `shr` works, but a real implementation needs `sar`.
-
-## Division: shift left by 16 before dividing
-
-Dividing two Q16.16 values naively gives a plain integer quotient (the scales cancel: `(a·2¹⁶) / (b·2¹⁶)` = `a/b` with zero fraction bits). To keep 16 fraction bits, **widen the dividend** by shifting left 16, giving it 32 fraction bits, so the quotient retains 16.
+Listing `03-q16-mul` encodes 2.0 and 3.0, sign-extends both to 64 bits (`movsxd`), multiplies, then `shr rax, 16` twice. After the first shift RAX is `00060000h` (6.0 in Q16.16). After the second it is 6. Status **6**.
 
 ```asm
-; 6.0 / 2.0 = 3.0
-mov eax, 6
-shl eax, 16                 ; 6.0 in Q16.16
-mov ebx, 2
-shl ebx, 16                 ; 2.0 in Q16.16
-movsxd rax, eax
-shl rax, 16                 ; widen: dividend now Q16.32
-movsxd rbx, ebx
-cqo                         ; sign-extend rax into rdx:rax
-idiv rbx                    ; rax = (6·2³²) / (2·2¹⁶) = 3·2¹⁶ (Q16.16)
-shr rax, 16                 ; convert to integer 3
-mov rdi, rax
-mov rax, 60
-syscall
+; 03-q16-mul.asm: Multiply Q16.16 values (2.0 * 3.0 = 6.0)
+; Exit 6
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov eax, 2
+    shl eax, 16
+    mov ebx, 3
+    shl ebx, 16
+    movsxd rax, eax
+    movsxd rbx, ebx
+    imul rax, rbx
+    shr rax, 16
+    shr rax, 16
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `11-fixed-div.asm` computes `6.0 / 2.0` and exits 3.
+`movsxd` before `imul` matters for negative factors: the 32-bit Q value must fill RAX with a sign, not with zeros in the high half.
 
-**Why `cqo`?** `idiv rbx` divides the 128-bit `rdx:rax` by `rbx`. `cqo` sign-extends `rax` into `rdx`, so negative dividends work correctly.
+These values are positive, so `shr` and `sar` match. A negative product needs `sar` on the 64-bit result (and you must have sign-extended first). `shr rax, 16` on a negative Q32.32 fills the top with zeros and destroys the sign.
 
-**Why `movsxd` first?** The Q value was built in 32-bit `eax`. Sign-extend it to 64-bit `rax` before shifting, or you'll lose the sign bit.
+## Clamp is a compare, then a move
 
-## Worked example: why shift left before `idiv` in `11-fixed-div.asm`?
+Clamp *x* to a maximum: if `x > max`, `x = max`. Listing `04-q16-clamp` does that on the **integers** 150 and 100, not on Q16.16 encodings. 150 compared to 100 takes `mov rax, rbx`, so RAX becomes 100. Status **100**.
 
-**Task:** Divide 6.0 by 2.0 in Q16.16 and exit with 3.
-
-**Plausible wrong reading:**
-
-*"Multiplying two Q16.16 values requires a shift **after** `imul`. Dividing should be symmetric, so I just do `idiv` with no shifts."*
-
-**Why it's wrong:** The scales cancel. `(6·2¹⁶) / (2·2¹⁶)` = `6/2` = 3, a plain integer with **zero** fraction bits. For `1.0 / 2.0`, this would give 0 (integer division truncates), not 0.5. Pre-shifting the dividend by 16 restores the 16 fraction bits: `(6·2³²) / (2·2¹⁶)` = `3·2¹⁶` (3.0 in Q16.16).
-
-**The correct reading:** After `idiv`, `rax` holds `3<<16` (196608), a proper Q16.16 result. The final `shr rax, 16` converts that to the integer 3 for the exit status. That last shift is a "print as integer" step, not part of the division.
-
-**Arithmetic summary:**
-- **Multiply:** Fraction bits **add** → shift right to reduce from Q32.32 to Q16.16.
-- **Divide:** Fraction bits **subtract** → shift left (widen) before `idiv` to keep 16 fraction bits.
-
-## Linear interpolation (lerp)
-
-Lerp between *a* and *b* with parameter *t* ∈ [0, 1]:
-
-```
-result = a + (b - a) * t
-```
-
-When *a* = 0, this simplifies to `b * t`.
-
-**Drill:** `15-lerp-fixed.asm` lerps from 0 toward 10.0 with `t = 0.5`:
-- `b = 10<<16` (Q16.16)
-- `t = 1<<15` (0.5 in Q16.16)
-- Product: `10·2¹⁶ · 0.5·2¹⁶` = `5·2³²` (Q32.32)
-- Shift right 16 → `5<<16` (Q16.16)
-- Shift right 16 → 5 (integer), exit 5
-
-**Common mistake:** "t = `1<<15` has 15 fraction bits, not 16." Wrong—`1<<15` is the Q16.16 encoding of 0.5 (the high bit of the fraction). The product has 32 fraction bits (16+16), and two shifts of 16 return to an integer.
-
-## Clamping and wrapping
-
-### Clamp to a range
-
-Clamp *x* to [min, max]:
+The comment says "Clamp Q16.16 value to range [0, max]" and "Clamp 150 to [0, 100]". There is no `shl`/`sar` pair. The algorithm is the same one you would use on Q values (`cmp` / `jle` / `mov`); the stored numbers here are 150 and 100, not `150 SHL 16`.
 
 ```asm
-; clamp(10, 0, 8) = 8
-mov eax, 10<<16
-mov ebx, 8<<16
-cmp eax, ebx
-jle .ok
-mov eax, ebx                ; clamp down to 8
-.ok:
-shr eax, 16                 ; integer 8
+; 04-q16-clamp.asm: Clamp Q16.16 value to range [0, max]
+; Clamp 150 to [0, 100], exit 100
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    mov rax, 150
+    mov rbx, 100
+    cmp rax, rbx
+    jle no_clamp
+    mov rax, rbx
+no_clamp:
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `04-clamp-fixed.asm` clamps 10.0 down to 8.0, exits 8.
+A lower bound is the symmetric test against 0 (or against `min`): if `x < min`, `x = min`.
 
-**Drill:** `16-clamp-q.asm` clamps integer −3 into [0, 100], exits 0.
+## Tick / angle wrap
 
-### Angle wrapping (modulo 360)
-
-An angle of 350° + 20° = 370° wraps to 10° by subtracting 360°:
+A periodic counter wraps when it meets or passes the period. Listing `05-tick-wrap` adds 20 to 350, compares to 360, and subtracts 360 because 370 is not less than 360. EAX is 10. Status **10**.
 
 ```asm
-mov eax, 350
-add eax, 20                 ; 370
-cmp eax, 360
-jl .done
-sub eax, 360                ; 10
-.done:
+; Listing 05: Counter wrap after threshold (LESSON.md block 5)
+; Expected exit: 10
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    mov     eax, 350
+    add     eax, 20
+    cmp     eax, 360
+    jl      done
+    sub     eax, 360
+done:
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `18-fixed-angle-step.asm` exits 10.
+The compare is `jl done` (signed). 370 − 360 = 10. A value already below 360 would skip the subtract. Two full periods (370 + 360) would need a loop or a divide; this listing subtracts once.
 
-## Vector dot product
+The same pattern wraps a heading: 350° + 20° = 10°.
 
-The dot product of two vectors `(a, b)` and `(c, d)` is `a*c + b*d`.
+<!-- LISTING-PENDING: no Jack listing for Q16 divide, lerp, length-squared, Q8.8, or SSE/SIMD; encode/add/mul/clamp/wrap are listed above -->
 
-**Drill:** `05-dot2-fixed.asm` computes `(1, 2) · (3, 4)` = `1*3 + 2*4` = 11, exits 11.
+## Division, lerp, and SIMD — prose only
 
-**Drill:** `20-dot3.asm` computes `(1, 2, 3) · (4, 5, 6)` = `4 + 10 + 18` = 32, exits 32.
+**Divide.** Naive `idiv` of two Q16.16 values cancels the scales and leaves an integer quotient (`6.0/2.0` → 3 with zero fraction bits; `1.0/2.0` → 0). Widen the dividend first: sign-extend, `shl rax, 16`, `cqo`, `idiv` the divisor. The quotient is Q16.16. Use `sar` if you then convert a signed quotient to an integer.
 
-### Length squared (avoiding square root)
+**Lerp.** `result = a + (b - a) * t` with *t* in `[0, 1]`. For `a = 0` this is `b * t`. `t = 1 SHL 15` is 0.5 in Q16.16. The product has 32 fraction bits; one shift of 16 returns Q16.16.
 
-Length of `(x, y)` is `√(x² + y²)`. For comparisons (e.g., "is this vector longer than radius *r*?"), compare **length squared** instead: `x² + y²` vs. `r²`. No square root needed.
+**Length squared.** Compare `x*x + y*y` to `r*r`. Do not take a square root just to test "inside the circle."
 
-**Drill:** `14-vec2-length2.asm` computes `3² + 4²` = 25, exits 25 (not 5). The lesson stresses "not 5" because the file never takes a square root.
+**Q8.8.** Eight fraction bits. Multiply, then shift right 8.
 
-## Q8.8: an alternative format
+Filenames and exercises that say SSE or SIMD in this lesson are scalar integer stubs unless you see an XMM instruction. The five Jack listings use EAX/EBX/RAX/RBX only.
 
-**Q8.8** uses 8 fraction bits. Multiplication produces 16 fraction bits, so shift right by 8.
+## Worked example: why listing 03 shifts twice
 
-**Drill:** `08-from-scratch-q8.asm` multiplies `1.5` by `2` in Q8.8, shifts once by 8, leaving `3<<8` (768) in the register. The exit status is 0 (low byte). A second shift would give integer 3.
+**Task.** Listing `03-q16-mul` computes 2.0 × 3.0. After `imul`, how many fraction bits does RAX hold, and why are there two `shr rax, 16` instructions?
 
-**Drill:** `24-from-scratch-q8-mul.asm` multiplies `2.5 * 2` in Q8.8, shifts once, leaving `5<<8` (1280), status 0.
+**Arithmetic.** 2.0 is `2 SHL 16`. 3.0 is `3 SHL 16`. The product is `6` with 32 fraction bits: `6 SHL 32` in the 64-bit register.
 
-## Stubs: reciprocal, matrix, sine table
+**First `shr rax, 16`.** Drop 16 fraction bits. RAX is `6 SHL 16` — 6.0 in Q16.16. That is the multiply result you keep if the next consumer is also Q16.16.
 
-**Drill:** `21-fast-inv-stub.asm` is `shr 10, 1` → 5, exit 5. It's **not** a Newton-Raphson reciprocal iteration (that's a stretch for later).
+**Second `shr rax, 16`.** Drop the remaining 16 fraction bits. RAX is the integer 6. `mov ecx, eax` / `ExitProcess` yields status **6**.
 
-**Drill:** `22-stretch-matrix2-mul.asm` represents a 2×2 identity matrix times `(3, 4)`. The file does not load a matrix—it just exits 3 (the *x* component, a constant).
+**Plausible wrong reading.** *"Multiply needs one shift, like the textbook Q16 rule, so the status is the low byte of `6 SHL 16`, which is 0."*
 
-**Drill:** `23-stretch-sin-lut.asm` has a sine lookup table (three qwords: 0, 1, 0) and exits 1 (the middle entry). No angle indexing is performed.
-
-These are placeholders for future integration. The milestone binary will expand them into real matrix mul and trig lookups.
-
-## The "SIMD" drills are scalar stubs
-
-Several drill filenames mention SSE or SIMD, but **they do not execute SSE instructions**. They are scalar integer stubs that will be replaced with real `xmm` code in a later version of the course.
-
-**Drill:** `03-sse-add-scalar.asm` exits 5 (no `addss` instruction).
-
-**Drill:** `12-sse-movss-stub.asm` exits 1 (no `movss` or `movaps`).
-
-**Drill:** `07-simd-lane-sum-stub.asm` adds bytes `1, 2, 3, 4` with scalar `add`, exits 10.
-
-**Drill:** `17-simd-horizontal-stub.asm` adds dwords `1, 2, 3, 4` with scalar `add`, exits 10.
-
-**Drill:** `13-pack-rgba8888.asm` exits 255 (only the red byte in the low position; G, B, A are not shifted in). Lesson 14 will teach a different pack order (`XRGB`).
-
-**Do not** load `xmm` registers to satisfy a prompt that says "SSE" if the solution does not use them. These drills are integer-only.
-
-## Arithmetic shift vs. logical shift
-
-The drills use `shr` (logical shift) after `imul` because all test values are positive. For **negative** fixed-point values, use `sar` (arithmetic shift right) to preserve the sign bit. `shr` zero-fills, which treats negative Q16.16 as a large positive number.
-
-**Example (32-bit register):** `−2.0` in Q16.16 is `0xFFFE0000`. Logical `shr eax, 16` gives `0x0000FFFE` (65534, wrong). Arithmetic `sar eax, 16` gives `0xFFFFFFFE` (−2, correct).
-
-If using a 64-bit register, sign-extend first: `movsxd rax, eax` makes `rax = 0xFFFFFFFFFFFE0000`. Then `shr rax, 16` gives `0x0000FFFFFFFFFFFE` (wrong), while `sar rax, 16` gives `0xFFFFFFFFFFFFFFFE` (−2, correct).
-
-Similarly, after `idiv` in `11-fixed-div.asm`, use `sar` if the quotient can be negative.
+**Why it fails.** The textbook rule produces Q16.16, not an integer exit code. Listing 03 wants the integer 6, so it shifts twice. Listing 02 also shifts once after add — same "print as integer" step. Listing 01 uses `sar` for that decode because encode/decode of a signed integer should copy the sign bit.
 
 ## Distinctions worth keeping straight
 
-| Confusion | Reality |
-|-----------|---------|
-| Adding Q16.16 values needs a shift | Addition keeps the scale; no shift needed |
-| Multiplying Q16.16 values needs two shifts | One shift (by 16) returns to Q16.16; a second shift converts to integer (for printing) |
-| Dividing Q16.16 values is just `idiv` | Must shift dividend left by 16 first (widen to Q16.32) to keep fraction bits in the quotient |
-| `shr` works for all fixed-point operations | `shr` is logical (zero-fill); use `sar` (sign-fill) for signed values |
-| `1<<15` has 15 fraction bits | `1<<15` is the Q16.16 encoding of 0.5 (16 fraction bits, high bit set) |
-| Length is `x² + y²` | Length **squared** is `x² + y²`; length is the square root (not computed in these drills) |
-| The SSE drills execute `addss` or `movss` | The SSE-named drills are scalar integer stubs; no `xmm` registers are used |
+| Confusion | What actually separates them |
+|-----------|------------------------------|
+| Add needs a shift to stay Q16.16 | Add keeps 16 fraction bits. The `shr` in listing 02 is only to exit 4. |
+| One `shr` after `imul` leaves integer 6 | One `shr` leaves `6 SHL 16`. Listing 03 shifts twice to exit 6. |
+| `shr` is fine for every Q value | `shr` zero-fills. Use `sar` (listing 01) when the value can be negative. |
+| `1 SHL 15` has 15 fraction bits | It is 0.5 in Q16.16: 16 fraction bits, high bit set. |
+| Listing 04 clamps `150 SHL 16` | It compares the integers 150 and 100 and exits 100. The algorithm is the clamp; the format is not Q in that file. |
+| `SHL` in `(1 SHL 16)` is the `shl` instruction | That `SHL` is an assemble-time MASM operator. The instruction is `shl eax, 16` in listing 01. |
+| SSE drills in the exercise folder execute `addss` | The Jack listings do not touch XMM. Treat SSE names as scalar stubs unless you see the opcode. |
 
 ## Check yourself
 
-1. `01-fixed-mul.asm` exits 0 although it computes 2.0 × 3.0 correctly. What is in `rdi` at the `syscall`, and why is the status 0?
-
-2. `15-lerp-fixed.asm` multiplies `10<<16` by `1<<15` and then does `shr rax, 16` twice. How many fraction bits does the product have before the shifts, and is the total shift correct?
-
-3. `14-vec2-length2.asm` exits 25. Why does the lesson stress "not 5"?
-
-4. You divide `1.0 / 2.0` in Q16.16 without shifting the dividend left. What integer result does `idiv` give, and why is that wrong?
-
-5. You have a negative Q16.16 value `−4.0` = `0xFFFC0000` in `eax`. You `shr eax, 16`. What value is in `eax`? What do you get with `sar eax, 16` instead?
+1. Listing `01-q16-encode`: what is EAX after `shl eax, 16` and before `sar eax, 16`? Why `sar` rather than `shr` if the encoded value were negative?
+2. Listing `02-q16-add`: what is EAX immediately after `add eax, ebx`, before the `shr`? What Q value is that?
+3. Listing `03-q16-mul`: if you deleted the second `shr rax, 16`, what would `ExitProcess` receive in ECX, and what would a harness that reports only the low 8 bits print?
+4. You divide `1.0 / 2.0` in Q16.16 with `idiv` and no pre-shift of the dividend. What integer sits in RAX, and why is that not 0.5?
+5. Listing `05-tick-wrap`: what happens if EAX is 350 + 20 + 360 (two overflows) and you subtract 360 only once?
 
 ## Key takeaways
 
-- Q16.16 encodes a fractional number as an integer with 16 fraction bits: integer *n* is `n<<16`, 0.5 is `1<<15`.
-- Addition keeps the scale (no shift); subtraction is the same.
-- Multiplication produces double the fraction bits (Q32.32), so shift right by 16 to return to Q16.16.
-- Division cancels the scales, so shift the dividend left by 16 first (widen to Q16.32), then `idiv` keeps 16 fraction bits in the quotient.
-- Use `sar` (arithmetic shift) for signed values, not `shr` (logical shift).
-- Linear interpolation (lerp) is `a + (b - a) * t`; for `a = 0`, simplifies to `b * t`.
-- Length squared (`x² + y²`) avoids the square root, useful for comparisons.
-- The "SSE" drills in this lesson are scalar integer stubs; real SIMD is deferred to a later course update.
+- Q16.16 encodes *n* as `n SHL 16` and 0.5 as `1 SHL 15`. Listing 01 exits 5 after `shl` / `sar`.
+- Addition does not change the scale. Listing 02 adds 1.5 + 2.5 and exits the integer 4.
+- Multiplication produces 32 fraction bits. One shift returns to Q16.16; listing 03 shifts twice and exits 6.
+- Clamp is `cmp` then a conditional move. Listing 04 exits 100 for integer 150 against 100.
+- Wrap is compare against the period and subtract. Listing 05 exits 10 for 350 + 20 against 360.
+- Decode signed Q values with `sar`, not `shr`.
 
 ## Lookup
 
-- Fixed-point arithmetic: [Wikipedia: Q (number format)](https://en.wikipedia.org/wiki/Q_(number_format))
-- Signed vs. unsigned shifts: [Intel SDM Vol. 1, Section 4.1.6](https://www.intel.com/content/www/us/en/architecture-and-technology/64-ia-32-architectures-software-developer-vol-1-manual.html)
-- Dot product and vector length: [Wikipedia: Dot product](https://en.wikipedia.org/wiki/Dot_product), [Vector magnitude](https://en.wikipedia.org/wiki/Euclidean_vector#Length)
-- Linear interpolation: [Wikipedia: Linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/01-q16-encode.asm -->
-<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/02-q16-add.asm -->
-<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/03-q16-mul.asm -->
-<!-- LISTING-PENDING: lessons/13-fp-simd-fixedpoint/listings/04-q16-clamp.asm -->
+- Q format: [Q (number format)](https://en.wikipedia.org/wiki/Q_(number_format))
+- `SHL` / `SHR` / `SAR` / `IMUL` / `IDIV` / `CQO`: Intel SDM Volume 2
+- Linear interpolation: [Linear interpolation](https://en.wikipedia.org/wiki/Linear_interpolation)
+- Microsoft x64: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
-```bash
+```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
 ```
 
-**Q-format basics:**
-- `01-fixed-mul.asm` — 2.0 × 3.0, one shift, exit 0 (register `6<<16`)
-- `02-fixed-add.asm` — 1.5 + 2.5, exit 4
-- `08-from-scratch-q8.asm` — Q8.8: 1.5 × 2, one shift, exit 0 (register `3<<8`)
-- `09-q16-from-int.asm` — shift 5 left 16, then right 16, exit 5
-- `10-q16-frac.asm` — two halves = 1.0, exit 1
-- `11-fixed-div.asm` — 6.0 / 2.0, widen dividend, exit 3
-- `15-lerp-fixed.asm` — lerp to 10.0 with t=0.5, exit 5
-- `19-debug-q-shift.asm` — 2.0 × 3.0, two shifts, exit 6
-- `24-from-scratch-q8-mul.asm` — Q8.8: 2.5 × 2, one shift, exit 0 (register `5<<8`)
+Q-format: encode 5, add 1.5 + 2.5, multiply 2.0 × 3.0 (watch how many shifts you take before `ExitProcess`), Q8.8 multiplies, lerp toward 10.0 with t = 0.5, divide 6.0 / 2.0 with a widened dividend.
 
-**Integer geometry:**
-- `04-clamp-fixed.asm` — clamp 10.0 to 8.0, exit 8
-- `05-dot2-fixed.asm` — `(1,2)·(3,4)` = 11, exit 11
-- `06-shift-div.asm` — `sar` 20 by 2, exit 5 (not Q divide)
-- `14-vec2-length2.asm` — `3² + 4²` = 25, exit 25 (not 5)
-- `16-clamp-q.asm` — clamp −3 to [0, 100], exit 0
-- `18-fixed-angle-step.asm` — 350 + 20 wrap to 10, exit 10
-- `20-dot3.asm` — `(1,2,3)·(4,5,6)` = 32, exit 32
-- `21-fast-inv-stub.asm` — `shr 10, 1`, exit 5 (stub, not Newton)
-- `22-stretch-matrix2-mul.asm` — identity × (3,4), exit 3 (no matrix)
-- `23-stretch-sin-lut.asm` — sine table, exit 1 (middle entry)
+Geometry: clamp, dot2, dot3, length squared (25, not 5), angle wrap 350 + 20 → 10.
 
-**Scalar stubs (not SSE):**
-- `03-sse-add-scalar.asm` — scalar add, exit 5 (no `addss`)
-- `07-simd-lane-sum-stub.asm` — add bytes 1,2,3,4, exit 10
-- `12-sse-movss-stub.asm` — exit 1 (no `movss`)
-- `13-pack-rgba8888.asm` — exit 255 (R only, no G/B/A)
-- `17-simd-horizontal-stub.asm` — add dwords 1,2,3,4, exit 10
+Scalar stubs named SSE/SIMD: they add in GPRs. Do not invent `addss` to satisfy a filename.
