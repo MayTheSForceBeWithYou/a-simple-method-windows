@@ -434,4 +434,4 @@ A second NASM-shaped mistake: treating `mov rax, counter` as "load address." In 
 
 ## Exercises
 
-Work in `exercises/`. Standalone listings quoted above are `lessons/01-addressing-data/listings/01-data-sections.asm` through `08-size-specifiers.asm`.
+Work in `exercises/`. Standalone listings quoted above are `lessons/01-addressing-data/listings/01-data-sections.asm` through `08-size-specifiers.asm`. The listings tree also has `09-lea-vs-mov.asm` and `10-array-sum.asm`. Those files are CRLF copies of `06-lea-vs-mov.asm` and `07-array-sum.asm`, including the stale `Listing 06` / `Listing 07` headers and the `06-` / `07-` build names. This lesson quotes 06 and 07 once.
