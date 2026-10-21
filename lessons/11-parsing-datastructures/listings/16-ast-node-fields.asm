@@ -11,6 +11,7 @@ node_right QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     node_kind, 1
     mov     node_left, 2
     mov     node_right, 3

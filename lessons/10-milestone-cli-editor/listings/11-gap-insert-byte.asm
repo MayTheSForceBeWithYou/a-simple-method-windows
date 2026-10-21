@@ -13,6 +13,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     gap_start, 2
     mov     gap_end, 6
     mov     rax, gap_start

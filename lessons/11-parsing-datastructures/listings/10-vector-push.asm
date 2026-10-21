@@ -11,6 +11,7 @@ vec_cap QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     vec_cap, 8
     mov     vec_len, 0
     mov     rdi, 10

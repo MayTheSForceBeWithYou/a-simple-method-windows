@@ -15,6 +15,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     ; Setup: "AC" with cursor at 1
     mov     BYTE PTR buffer[0], 'A'
     mov     BYTE PTR buffer[1], 'C'

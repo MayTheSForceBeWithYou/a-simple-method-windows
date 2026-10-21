@@ -1,5 +1,5 @@
 ; Listing 05: Stack bytecode interpreter (LESSON.md block 5)
-; Expected exit: 5
+; Expected exit: 9
 ; Expected stdout: (none)
 
 .DATA
@@ -13,6 +13,7 @@ sp_ QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     sp_, 0
     lea     rsi, code
 fetch:

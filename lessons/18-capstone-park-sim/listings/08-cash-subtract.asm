@@ -9,6 +9,7 @@ cash QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     cash, 10
     sub     cash, 3
     mov     ecx, DWORD PTR cash

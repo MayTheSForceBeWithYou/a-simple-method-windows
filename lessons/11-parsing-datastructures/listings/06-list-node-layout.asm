@@ -10,6 +10,7 @@ node_next QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     node_value, 9
     mov     node_next, 0
     mov     ecx, 9

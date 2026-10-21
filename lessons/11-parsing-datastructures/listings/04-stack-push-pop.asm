@@ -5,6 +5,7 @@ stack_top QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov stack_top, 0
     mov rax, 42
     mov rbx, stack_top

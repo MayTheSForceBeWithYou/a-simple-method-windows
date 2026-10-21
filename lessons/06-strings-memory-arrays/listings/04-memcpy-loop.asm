@@ -12,6 +12,7 @@ dst DB 16 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     lea     rcx, dst
     lea     rdx, src
     mov     r8, 4

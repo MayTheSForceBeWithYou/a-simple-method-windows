@@ -3,6 +3,7 @@
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov eax, (1 SHL 16) + (1 SHL 15)
     mov ebx, (2 SHL 16) + (1 SHL 15)
     add eax, ebx

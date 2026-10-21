@@ -5,6 +5,7 @@ source DB "foo", 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     lea rsi, source
     xor rcx, rcx
 scan_loop:

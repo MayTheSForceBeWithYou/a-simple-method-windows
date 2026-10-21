@@ -4,6 +4,7 @@ visitor_count QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov visitor_count, 0
     inc visitor_count
     mov rax, visitor_count

@@ -9,6 +9,7 @@ acc QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     lea rax, bytecode
     mov ip, rax
     xor rax, rax

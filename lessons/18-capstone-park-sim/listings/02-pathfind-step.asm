@@ -5,6 +5,7 @@ closed_list QWORD 16 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     xor ecx, ecx
     call ExitProcess
 main ENDP

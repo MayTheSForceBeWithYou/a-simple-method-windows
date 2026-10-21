@@ -10,6 +10,7 @@ HP  EQU 4
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     eax, POS OR VEL OR HP
     mov     ecx, eax
     call    ExitProcess

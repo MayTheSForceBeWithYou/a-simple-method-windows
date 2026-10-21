@@ -9,6 +9,7 @@ code DB 3, 2, 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     lea     rsi, code
     movzx   rax, BYTE PTR [rsi]
     inc     rsi

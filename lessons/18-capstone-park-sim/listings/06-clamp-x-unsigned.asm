@@ -8,6 +8,7 @@ width EQU 8
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     rax, 99
     cmp     rax, width
     jb      ok

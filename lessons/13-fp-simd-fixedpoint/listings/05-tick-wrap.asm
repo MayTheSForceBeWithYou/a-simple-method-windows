@@ -6,6 +6,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     eax, 350
     add     eax, 20
     cmp     eax, 360

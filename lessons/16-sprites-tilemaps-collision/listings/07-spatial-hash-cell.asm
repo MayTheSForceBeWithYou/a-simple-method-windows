@@ -1,10 +1,11 @@
 ; Listing 07: Spatial hash cell index
-; Expected exit: 0
+; Expected exit: 160
 ; Expected stdout: (none)
 
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov eax, 40
     shr eax, 3
     mov ebx, eax

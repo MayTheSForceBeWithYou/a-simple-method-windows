@@ -1,10 +1,10 @@
-; Listing 07: Complete array summing example
+; Listing 10: Complete array summing example (LESSON.md block 10)
 ;
 ; Purpose: Iterate over array, sum all elements.
 ; Expected exit code: 100 (10+20+30+40)
 ; Expected output: (none)
 ;
-; Build: ml64 /c /Fo07-array-sum.obj 07-array-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-array-sum.exe 07-array-sum.obj kernel32.lib
+; Build: ml64 /c /Fo10-array-sum.obj 10-array-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-array-sum.exe 10-array-sum.obj kernel32.lib
 
 .DATA
 arr DQ 10, 20, 30, 40

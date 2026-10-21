@@ -5,6 +5,7 @@
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     ; Boxes overlap: exit 0 (no miss)
     xor ecx, ecx
     call ExitProcess

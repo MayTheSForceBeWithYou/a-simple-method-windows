@@ -18,6 +18,7 @@ Add3 MACRO reg, val1, val2, val3
 ENDM
 
 main PROC
+    sub     rsp, 32
     Add3 rax, 10, 20, 12    ; RAX = 10 + 20 + 12 = 42
     
     mov     ecx, eax

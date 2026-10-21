@@ -10,6 +10,7 @@ parent DQ 8 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     agent_pos, 5
     mov     parent[5*8], 2
     mov     rax, agent_pos

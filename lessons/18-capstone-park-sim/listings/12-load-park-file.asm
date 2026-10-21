@@ -25,7 +25,7 @@ main PROC FRAME
     .endprolog
 
     ; Pre-seed header for harness when file missing
-    mov     DWORD PTR header_buf, 314B5050h
+    mov     DWORD PTR header_buf, 31304B50h   ; LE PK01 (P,K,0,1)
     mov     DWORD PTR header_buf[4], 1
 
     lea     rcx, path
@@ -52,7 +52,7 @@ have_file:
     call    CloseHandle
 
 validate:
-    cmp     DWORD PTR header_buf, 314B5050h
+    cmp     DWORD PTR header_buf, 31304B50h
     jne     bad
     mov     eax, DWORD PTR header_buf[4]
     cmp     eax, 1

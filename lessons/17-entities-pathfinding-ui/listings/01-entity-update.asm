@@ -5,6 +5,7 @@ entity_vx QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov entity_x, 100
     mov entity_vx, 5
     mov rax, entity_x

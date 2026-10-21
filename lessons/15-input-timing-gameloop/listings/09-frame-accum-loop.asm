@@ -9,6 +9,7 @@ accum QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     accum, 32
     xor     rcx, rcx
 update_loop:

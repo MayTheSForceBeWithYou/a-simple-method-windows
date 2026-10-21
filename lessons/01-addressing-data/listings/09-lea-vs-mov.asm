@@ -1,7 +1,7 @@
-; Listing 06: LEA vs MOV - computing addresses vs loading values
+; Listing 09: LEA scaled index without a memory load (LESSON.md block 9)
 ;
-; Purpose: Show the crucial difference between LEA and MOV with memory operands.
-; Expected exit code: 20
+; Purpose: LEA computes 3*rcx in one instruction; distinct from listing 06 (loads value 20).
+; Expected exit code: 15
 ; Expected output: (none)
 ;
 ; Build: ml64 /c /Fo06-lea-vs-mov.obj 06-lea-vs-mov.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-lea-vs-mov.exe 06-lea-vs-mov.obj kernel32.lib
@@ -16,18 +16,9 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 32
     
-    ; LEA: compute address, no memory access
-    lea rax, value             ; RAX = address of value
-    
-    ; MOV: load value from memory
-    mov rbx, value             ; RBX = 20 (loaded from memory)
-    
-    ; LEA with arithmetic: multiply by 3
     mov rcx, 5
-    lea rdx, [rcx+rcx*2]       ; RDX = rcx + rcx*2 = 5 + 10 = 15
-    
-    ; Exit with the value (20)
-    mov rcx, rbx
+    lea rdx, [rcx+rcx*2]       ; RDX = 5 + 5*2 = 15 (no memory access)
+    mov rcx, rdx
     call ExitProcess
 main ENDP
 

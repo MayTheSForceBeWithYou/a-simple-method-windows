@@ -12,6 +12,7 @@ dst DB 4 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     xor     rcx, rcx
 copy_loop:
     cmp     rcx, 4

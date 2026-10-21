@@ -11,6 +11,7 @@ node2 DQ 2 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     QWORD PTR node1, 1
     mov     QWORD PTR node1[8], 0
     mov     rax, head

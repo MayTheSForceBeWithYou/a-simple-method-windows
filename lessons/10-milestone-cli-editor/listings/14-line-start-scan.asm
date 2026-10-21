@@ -11,6 +11,7 @@ buf BYTE "ab", 10, "cd", 0
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     rsi, 4
     mov     rcx, rsi
 scan:

@@ -12,6 +12,7 @@ alive DB 1, 0, 1
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     xor     ecx, ecx
     call    ExitProcess
 main ENDP

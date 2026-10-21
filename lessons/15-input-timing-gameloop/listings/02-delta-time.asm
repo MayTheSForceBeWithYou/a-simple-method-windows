@@ -5,6 +5,7 @@ curr_time QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov prev_time, 100
     mov curr_time, 142
     mov rax, curr_time

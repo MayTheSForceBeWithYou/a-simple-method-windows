@@ -10,6 +10,7 @@ sp QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     mov     sp, 0
     mov     rdi, 1
     mov     rcx, sp

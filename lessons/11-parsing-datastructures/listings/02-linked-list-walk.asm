@@ -6,6 +6,7 @@ node3 QWORD 30, 0
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     lea rax, node1
     xor ecx, ecx
 walk_loop:

@@ -2,6 +2,7 @@
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub     rsp, 32
     mov al, '7'
     cmp al, '0'
     jb not_digit

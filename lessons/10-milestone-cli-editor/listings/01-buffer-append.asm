@@ -15,6 +15,7 @@ cursor QWORD ?
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub     rsp, 32
     ; Initialize empty buffer
     mov     length, 0
     mov     cursor, 0
