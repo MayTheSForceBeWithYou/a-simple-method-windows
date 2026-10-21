@@ -21,25 +21,18 @@ EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
 main PROC
-    push    rbx
     sub     rsp, 40
 
-    ; GetStdHandle(STD_ERROR_HANDLE = -12)
     mov     ecx, -12
     call    GetStdHandle
-    mov     rbx, rax
 
-    ; WriteFile to stderr
-    mov     rcx, rbx
+    mov     rcx, rax
     lea     rdx, msg
     mov     r8d, msg_len
     lea     r9, bytes_written
     mov     QWORD PTR [rsp+32], 0
     call    WriteFile
 
-    add     rsp, 40
-    pop     rbx
-    sub     rsp, 40
     xor     ecx, ecx
     call    ExitProcess
 main ENDP

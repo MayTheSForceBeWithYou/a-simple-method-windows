@@ -14,7 +14,6 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
 
 main PROC
-    push    rbx
     sub     rsp, 40
 
     lea     rcx, qpc_start
@@ -44,9 +43,6 @@ wait_spin:
 
 frames_done:
     mov     ecx, ebx
-    add     rsp, 40
-    pop     rbx
-    sub     rsp, 40
     call    ExitProcess
 main ENDP
 END
