@@ -17,14 +17,13 @@ EXTERN ExitProcess:PROC
 ; link *.obj /OUT:prog.exe /ENTRY:main /SUBSYSTEM:CONSOLE kernel32.lib
 
 .code
-
 ex_15_makefile_phony_doc PROC
-mov rcx, 0
-    mov     eax, 0
+    sub rsp, 40
+        mov     eax, 0
     ret
+
 ex_15_makefile_phony_doc ENDP
 main PROC
-    sub     rsp, 40
     call    ex_15_makefile_phony_doc
     mov     rcx, rax
     call    ExitProcess

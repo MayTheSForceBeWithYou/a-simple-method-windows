@@ -8,17 +8,16 @@ EXTERN ExitProcess:PROC
 ctx QWORD 10
 
 .code
-
 ex_17_closure_sim PROC
-lea r12, ctx
+    sub rsp, 40
+    lea r12, ctx
     mov rcx, 5
     call add_ctx
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_17_closure_sim ENDP
 main PROC
-    sub     rsp, 40
     call    ex_17_closure_sim
     mov     rcx, rax
     call    ExitProcess

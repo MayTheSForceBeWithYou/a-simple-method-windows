@@ -13,9 +13,10 @@ EXTERN ExitProcess:PROC
 counter QWORD ?
 
 .code
-
 ex_16_clock_gettime_stub PROC
-; QueryPerformanceCounter(&counter)
+    sub rsp, 40
+    
+    ; QueryPerformanceCounter(&counter)
     lea rcx, counter
     call QueryPerformanceCounter
     
@@ -36,7 +37,6 @@ L_o:
     ret
 ex_16_clock_gettime_stub ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_clock_gettime_stub
     mov     rcx, rax
     call    ExitProcess

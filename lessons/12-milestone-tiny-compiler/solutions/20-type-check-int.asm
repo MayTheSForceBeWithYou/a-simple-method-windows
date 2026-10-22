@@ -8,14 +8,13 @@ EXTERN ExitProcess:PROC
 TY_INT EQU 1
 
 .code
-
 ex_20_type_check_int PROC
-mov rcx, TY_INT
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, TY_INT
     ret
+
 ex_20_type_check_int ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_type_check_int
     mov     rcx, rax
     call    ExitProcess

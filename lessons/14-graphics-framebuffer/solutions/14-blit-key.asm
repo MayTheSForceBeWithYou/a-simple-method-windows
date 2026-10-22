@@ -16,9 +16,9 @@ src BYTE 0,5,0,5
 dst BYTE 4 DUP(?)
 
 .code
-
 ex_14_blit_key PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
 loop_start:
     cmp rcx, 4
     jge loop_end
@@ -49,7 +49,6 @@ loop_end:
     ret
 ex_14_blit_key ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_blit_key
     mov     rcx, rax
     call    ExitProcess

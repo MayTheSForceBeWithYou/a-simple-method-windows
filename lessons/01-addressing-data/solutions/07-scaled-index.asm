@@ -12,16 +12,15 @@ EXTERN ExitProcess:PROC
 arr QWORD 5, 10, 15, 20
 
 .code
-
 ex_07_scaled_index PROC
-mov r8, 2
+    sub rsp, 40
+    mov r8, 2
     lea r11, [arr]
-    mov rcx, QWORD PTR [r11+r8*8]
-    mov     eax, ecx
+        mov     eax, QWORD PTR [r11+r8*8]
     ret
+
 ex_07_scaled_index ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_scaled_index
     mov     rcx, rax
     call    ExitProcess

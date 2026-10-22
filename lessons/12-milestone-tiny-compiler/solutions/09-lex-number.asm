@@ -9,9 +9,9 @@ EXTERN ExitProcess:PROC
 s BYTE "42", 0
 
 .code
-
 ex_09_lex_number PROC
-lea rsi, s
+    sub rsp, 40
+    lea rsi, s
     xor rcx, rcx
 loop_parse:
     movzx rax, BYTE PTR [rsi]
@@ -27,7 +27,6 @@ done_parse:
     ret
 ex_09_lex_number ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_lex_number
     mov     rcx, rax
     call    ExitProcess

@@ -10,20 +10,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_06_hash_cell PROC
-mov rax, 10
+    sub rsp, 40
+    mov rax, 10
     shr rax, 3
     mov rbx, 10
     shr rbx, 3
     shl rbx, 4
     add rax, rbx
     and rax, 255
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_06_hash_cell ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_hash_cell
     mov     rcx, rax
     call    ExitProcess

@@ -15,17 +15,16 @@ cash QWORD 0
 map BYTE 256 DUP(0)
 
 .code
-
 ex_24_from_scratch_sim_integrate PROC
-mov BYTE PTR [map], 1
+    sub rsp, 40
+    mov BYTE PTR [map], 1
     inc QWORD PTR [peep_x]
     inc QWORD PTR [cash]
-    mov rcx, QWORD PTR [cash]
-    mov     eax, ecx
+        mov     eax, QWORD PTR [cash]
     ret
+
 ex_24_from_scratch_sim_integrate ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_sim_integrate
     mov     rcx, rax
     call    ExitProcess

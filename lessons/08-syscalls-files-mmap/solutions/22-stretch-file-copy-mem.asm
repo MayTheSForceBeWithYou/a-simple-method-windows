@@ -13,9 +13,8 @@ EXTERN ExitProcess:PROC
 srcinit BYTE 1, 2, 3, 4
 
 .code
-
 ex_22_stretch_file_copy_mem PROC
-sub rsp, 40
+    sub rsp, 40
     
     ; VirtualAlloc for destination
     mov rcx, 0          ; lpAddress = NULL
@@ -45,10 +44,9 @@ sub rsp, 40
     add rdi, rax
     
     ; Exit with checksum
-    mov rcx, rdi
-    add     rsp, 40
-    mov     eax, 0
+        mov     eax, rdi
     ret
+
 ex_22_stretch_file_copy_mem ENDP
 main PROC
     call    ex_22_stretch_file_copy_mem

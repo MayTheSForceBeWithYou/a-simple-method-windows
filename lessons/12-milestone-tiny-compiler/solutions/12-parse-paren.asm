@@ -6,16 +6,16 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_12_parse_paren PROC
-mov rax, 1
+    sub rsp, 40
+    mov rax, 1
     add rax, 2
     imul rax, 3
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_12_parse_paren ENDP
 main PROC
-    sub     rsp, 40
     call    ex_12_parse_paren
     mov     rcx, rax
     call    ExitProcess

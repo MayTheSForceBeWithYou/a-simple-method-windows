@@ -5,16 +5,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_18_trampoline_depth PROC
-mov rcx, 8
+    sub rsp, 40
+    mov rcx, 8
     call bump
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_18_trampoline_depth ENDP
 main PROC
-    sub     rsp, 40
     call    ex_18_trampoline_depth
     mov     rcx, rax
     call    ExitProcess

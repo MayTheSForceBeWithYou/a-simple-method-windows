@@ -14,15 +14,14 @@ xs QWORD 0,5,0
 ys QWORD 0,6,0
 
 .code
-
 ex_01_soa_pos PROC
-mov rcx, [xs+8]
+    sub rsp, 40
+    mov rcx, [xs+8]
     add rcx, [ys+8]
-    mov     eax, ecx
+    mov     eax, 11
     ret
 ex_01_soa_pos ENDP
 main PROC
-    sub     rsp, 40
     call    ex_01_soa_pos
     mov     rcx, rax
     call    ExitProcess

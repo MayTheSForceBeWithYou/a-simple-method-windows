@@ -9,15 +9,14 @@ EXTERN ExitProcess:PROC
 slots QWORD 4 DUP(?)
 
 .code
-
 ex_13_hashmap_put_get PROC
-mov QWORD PTR [slots+16], 42
-    mov rcx, QWORD PTR [slots+16]
-    mov     eax, ecx
+    sub rsp, 40
+    mov QWORD PTR [slots+16], 42
+        mov     eax, QWORD PTR [slots+16]
     ret
+
 ex_13_hashmap_put_get ENDP
 main PROC
-    sub     rsp, 40
     call    ex_13_hashmap_put_get
     mov     rcx, rax
     call    ExitProcess

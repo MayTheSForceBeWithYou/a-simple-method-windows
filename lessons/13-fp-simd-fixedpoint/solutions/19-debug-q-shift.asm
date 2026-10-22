@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_19_debug_q_shift PROC
-mov eax, 2
+    sub rsp, 40
+    mov eax, 2
     shl eax, 16
     mov ebx, 3
     shl ebx, 16
@@ -17,11 +17,11 @@ mov eax, 2
     imul rax, rbx
     shr rax, 16
     shr rax, 16
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_19_debug_q_shift ENDP
 main PROC
-    sub     rsp, 40
     call    ex_19_debug_q_shift
     mov     rcx, rax
     call    ExitProcess

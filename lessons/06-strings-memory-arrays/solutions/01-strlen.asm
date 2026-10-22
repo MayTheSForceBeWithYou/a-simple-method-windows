@@ -8,16 +8,15 @@ EXTERN ExitProcess:PROC
 s BYTE "hello", 0
 
 .code
-
 ex_01_strlen PROC
-lea rcx, s
+    sub rsp, 40
+    lea rcx, s
     call strlen_fn
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_01_strlen ENDP
 main PROC
-    sub     rsp, 40
     call    ex_01_strlen
     mov     rcx, rax
     call    ExitProcess

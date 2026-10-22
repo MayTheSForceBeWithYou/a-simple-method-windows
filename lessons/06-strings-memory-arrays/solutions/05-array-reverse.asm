@@ -8,17 +8,16 @@ EXTERN ExitProcess:PROC
 arr QWORD 1,2,3,4
 
 .code
-
 ex_05_array_reverse PROC
-lea rcx, arr
+    sub rsp, 40
+    lea rcx, arr
     mov rdx, 4
     call rev_array
-    mov rcx, arr
-    mov     eax, ecx
+        mov     eax, arr
     ret
+
 ex_05_array_reverse ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_array_reverse
     mov     rcx, rax
     call    ExitProcess

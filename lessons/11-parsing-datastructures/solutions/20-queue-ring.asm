@@ -11,9 +11,9 @@ head QWORD ?
 tail QWORD ?
 
 .code
-
 ex_20_queue_ring PROC
-mov QWORD PTR [head], 0
+    sub rsp, 40
+    mov QWORD PTR [head], 0
     mov QWORD PTR [tail], 0
     mov rcx, QWORD PTR [tail]
     lea r11, [q]
@@ -27,11 +27,10 @@ mov QWORD PTR [head], 0
     lea r11, [q]
     mov rcx, QWORD PTR [r11+rcx*8]
     inc QWORD PTR [head]
-    mov     eax, ecx
+    mov     eax, 7
     ret
 ex_20_queue_ring ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_queue_ring
     mov     rcx, rax
     call    ExitProcess

@@ -9,9 +9,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_05_mov_chain PROC
-mov al, 3
+    sub rsp, 40
+    mov al, 3
     mov bl, 5
     mov cl, 7
     mov dil, al
@@ -22,7 +22,6 @@ mov al, 3
     ret
 ex_05_mov_chain ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_mov_chain
     mov     rcx, rax
     call    ExitProcess

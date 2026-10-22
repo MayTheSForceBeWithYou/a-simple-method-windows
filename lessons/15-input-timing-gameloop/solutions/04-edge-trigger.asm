@@ -10,9 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_04_edge_trigger PROC
-mov eax, 0
+    sub rsp, 40
+    mov eax, 0
     mov ebx, 1
     cmp eax, 0
     jne not_rising
@@ -23,10 +23,10 @@ mov eax, 0
 not_rising:
     xor rcx, rcx
 exit_proc:
+    mov     eax, 1
     ret
 ex_04_edge_trigger ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_edge_trigger
     mov     rcx, rax
     call    ExitProcess

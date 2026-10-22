@@ -9,9 +9,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_09_nested_calls PROC
-mov rcx, 10
+    sub rsp, 40
+    mov rcx, 10
     call double_it
     push rax
     mov rcx, 11
@@ -19,12 +19,11 @@ mov rcx, 10
     mov rdx, rax
     pop rcx
     call add2
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_09_nested_calls ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_nested_calls
     mov     rcx, rax
     call    ExitProcess

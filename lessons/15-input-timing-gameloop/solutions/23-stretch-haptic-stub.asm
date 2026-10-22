@@ -13,15 +13,14 @@ EXTERN ExitProcess:PROC
 rumble QWORD ?
 
 .code
-
 ex_23_stretch_haptic_stub PROC
-mov QWORD PTR [rumble], 2
-    mov rcx, [rumble]
-    mov     eax, ecx
+    sub rsp, 40
+    mov QWORD PTR [rumble], 2
+        mov     eax, [rumble]
     ret
+
 ex_23_stretch_haptic_stub ENDP
 main PROC
-    sub     rsp, 40
     call    ex_23_stretch_haptic_stub
     mov     rcx, rax
     call    ExitProcess

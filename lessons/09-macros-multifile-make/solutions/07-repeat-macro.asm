@@ -9,9 +9,10 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_07_repeat_macro PROC
-xor rcx, rcx
+    sub rsp, 40
+    
+    xor rcx, rcx
     ; MASM uses REPT instead of %rep
     REPT 3
         inc rcx
@@ -20,7 +21,6 @@ xor rcx, rcx
     ret
 ex_07_repeat_macro ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_repeat_macro
     mov     rcx, rax
     call    ExitProcess

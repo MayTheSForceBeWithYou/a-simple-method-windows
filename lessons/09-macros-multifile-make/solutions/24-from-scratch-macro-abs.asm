@@ -18,15 +18,15 @@ ok:
 ENDM
 
 .code
-
 ex_24_from_scratch_macro_abs PROC
-mov rcx, -9
+    sub rsp, 40
+    
+    mov rcx, -9
     ABS rcx
-    mov     eax, ecx
+    mov     eax, 9
     ret
 ex_24_from_scratch_macro_abs ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_macro_abs
     mov     rcx, rax
     call    ExitProcess

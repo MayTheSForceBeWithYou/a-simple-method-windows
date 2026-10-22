@@ -18,9 +18,8 @@ msg BYTE "Z", 10
 written DWORD ?
 
 .code
-
 ex_09_write_len_check PROC
-sub rsp, 56
+    sub rsp, 56
     
     ; Get stdout handle
     mov rcx, -11
@@ -47,7 +46,6 @@ L_bad:
     mov rcx, 1
     
 L_o:
-    add     rsp, 56
     mov     eax, 0
     ret
 ex_09_write_len_check ENDP

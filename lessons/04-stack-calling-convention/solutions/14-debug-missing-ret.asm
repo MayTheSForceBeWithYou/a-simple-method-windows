@@ -5,15 +5,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_14_debug_missing_ret PROC
-call three
-    mov rcx, rax
-    mov     eax, ecx
+    sub rsp, 40
+    call three
+        mov     eax, rax
     ret
+
 ex_14_debug_missing_ret ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_debug_missing_ret
     mov     rcx, rax
     call    ExitProcess

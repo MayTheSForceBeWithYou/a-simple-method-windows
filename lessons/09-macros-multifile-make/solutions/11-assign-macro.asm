@@ -9,9 +9,10 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_11_assign_macro PROC
-xor rcx, rcx
+    sub rsp, 40
+    
+    xor rcx, rcx
     ; MASM uses = for reassignable values
     i = 0
     REPT 4
@@ -22,7 +23,6 @@ xor rcx, rcx
     ret
 ex_11_assign_macro ENDP
 main PROC
-    sub     rsp, 40
     call    ex_11_assign_macro
     mov     rcx, rax
     call    ExitProcess

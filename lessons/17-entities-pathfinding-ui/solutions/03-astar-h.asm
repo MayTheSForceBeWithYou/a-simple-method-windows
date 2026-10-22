@@ -10,18 +10,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_03_astar_h PROC
-mov rax, 3
+    sub rsp, 40
+    mov rax, 3
     sub rax, 1
     mov rbx, 4
     sub rbx, 2
     add rax, rbx
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_03_astar_h ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_astar_h
     mov     rcx, rax
     call    ExitProcess

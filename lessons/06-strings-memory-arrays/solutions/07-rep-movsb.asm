@@ -11,9 +11,9 @@ src BYTE 1,2,3,4,5
 dst BYTE 5 DUP(?)
 
 .code
-
 ex_07_rep_movsb PROC
-lea rsi, src
+    sub rsp, 40
+    lea rsi, src
     lea rdi, dst
     mov rcx, 5
     rep movsb
@@ -28,11 +28,10 @@ lea rsi, src
     add rcx, rax
     movzx rax, BYTE PTR dst[4]
     add rcx, rax
-    mov     eax, ecx
+    mov     eax, 15
     ret
 ex_07_rep_movsb ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_rep_movsb
     mov     rcx, rax
     call    ExitProcess

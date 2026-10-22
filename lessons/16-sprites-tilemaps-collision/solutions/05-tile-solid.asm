@@ -13,14 +13,13 @@ EXTERN ExitProcess:PROC
 solid BYTE 0,0,1,0
 
 .code
-
 ex_05_tile_solid PROC
-movzx rcx, BYTE PTR [solid+2]
+    sub rsp, 40
+    movzx rcx, BYTE PTR [solid+2]
     mov     eax, 1
     ret
 ex_05_tile_solid ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_tile_solid
     mov     rcx, rax
     call    ExitProcess

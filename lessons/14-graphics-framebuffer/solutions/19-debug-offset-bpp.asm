@@ -10,15 +10,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_19_debug_offset_bpp PROC
-mov rcx, 2
+    sub rsp, 40
+    mov rcx, 2
     imul rcx, 4
-    mov     eax, ecx
+    mov     eax, 8
     ret
 ex_19_debug_offset_bpp ENDP
 main PROC
-    sub     rsp, 40
     call    ex_19_debug_offset_bpp
     mov     rcx, rax
     call    ExitProcess

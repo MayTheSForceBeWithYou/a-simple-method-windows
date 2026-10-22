@@ -9,15 +9,14 @@ EXTERN ExitProcess:PROC
 slot QWORD ?
 
 .code
-
 ex_13_codegen_mov PROC
-mov QWORD PTR [slot], 42
-    mov rcx, QWORD PTR [slot]
-    mov     eax, ecx
+    sub rsp, 40
+    mov QWORD PTR [slot], 42
+        mov     eax, QWORD PTR [slot]
     ret
+
 ex_13_codegen_mov ENDP
 main PROC
-    sub     rsp, 40
     call    ex_13_codegen_mov
     mov     rcx, rax
     call    ExitProcess

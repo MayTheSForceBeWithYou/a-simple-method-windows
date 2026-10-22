@@ -4,9 +4,10 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-
 ex_04_count_loop PROC
-xor rcx, rcx
+    sub rsp, 40
+    
+    xor rcx, rcx
     xor rax, rax
 loop_start:
     cmp rcx, 5
@@ -15,12 +16,11 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_04_count_loop ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_count_loop
     mov     rcx, rax
     call    ExitProcess

@@ -12,18 +12,18 @@ EXTERN ExitProcess:PROC
 PUBLIC helper_add
 
 .code
-
 ex_14_multifile_sim_globals PROC
-mov rcx, 20
+    sub rsp, 40
+    
+    mov rcx, 20
     mov rdx, 22
     call helper_add
     
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_14_multifile_sim_globals ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_multifile_sim_globals
     mov     rcx, rax
     call    ExitProcess

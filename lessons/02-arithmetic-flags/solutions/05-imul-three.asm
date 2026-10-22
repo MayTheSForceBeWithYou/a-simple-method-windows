@@ -9,15 +9,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_05_imul_three PROC
-mov rcx, 6
+    sub rsp, 40
+    mov rcx, 6
     imul rcx, 7
-    mov     eax, ecx
+    mov     eax, 42
     ret
 ex_05_imul_three ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_imul_three
     mov     rcx, rax
     call    ExitProcess

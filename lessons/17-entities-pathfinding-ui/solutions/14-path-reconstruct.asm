@@ -11,14 +11,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_14_path_reconstruct PROC
-mov rcx, 4
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 4
     ret
+
 ex_14_path_reconstruct ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_path_reconstruct
     mov     rcx, rax
     call    ExitProcess

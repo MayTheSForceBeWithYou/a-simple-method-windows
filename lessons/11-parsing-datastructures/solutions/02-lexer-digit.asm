@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_02_lexer_digit PROC
-mov al, '7'
+    sub rsp, 40
+    mov al, '7'
     cmp al, '0'
     jb not_digit
     cmp al, '9'
@@ -18,11 +18,10 @@ mov al, '7'
 not_digit:
     xor rcx, rcx
 done:
-    mov     eax, ecx
+    mov     eax, 1
     ret
 ex_02_lexer_digit ENDP
 main PROC
-    sub     rsp, 40
     call    ex_02_lexer_digit
     mov     rcx, rax
     call    ExitProcess

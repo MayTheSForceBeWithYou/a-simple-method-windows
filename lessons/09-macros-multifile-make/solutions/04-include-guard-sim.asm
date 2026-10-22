@@ -14,14 +14,13 @@ ANSWER EQU 42
 ENDIF
 
 .code
-
 ex_04_include_guard_sim PROC
-mov rcx, ANSWER
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, ANSWER
     ret
+
 ex_04_include_guard_sim ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_include_guard_sim
     mov     rcx, rax
     call    ExitProcess

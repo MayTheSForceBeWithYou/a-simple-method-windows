@@ -14,15 +14,15 @@ ADD_IMM MACRO reg, imm
 ENDM
 
 .code
-
 ex_08_from_scratch_macro_add PROC
-mov rcx, 40
+    sub rsp, 40
+    
+    mov rcx, 40
     ADD_IMM rcx, 2
-    mov     eax, ecx
+    mov     eax, 42
     ret
 ex_08_from_scratch_macro_add ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_from_scratch_macro_add
     mov     rcx, rax
     call    ExitProcess

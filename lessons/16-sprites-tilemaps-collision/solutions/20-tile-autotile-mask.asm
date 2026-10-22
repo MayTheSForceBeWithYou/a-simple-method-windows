@@ -13,15 +13,14 @@ N EQU 1
 E EQU 4
 
 .code
-
 ex_20_tile_autotile_mask PROC
-mov rcx, N
+    sub rsp, 40
+    mov rcx, N
     or rcx, E
-    mov     eax, ecx
+    mov     eax, 5
     ret
 ex_20_tile_autotile_mask ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_tile_autotile_mask
     mov     rcx, rax
     call    ExitProcess

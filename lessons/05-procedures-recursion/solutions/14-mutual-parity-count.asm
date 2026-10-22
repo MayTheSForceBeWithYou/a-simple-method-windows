@@ -5,16 +5,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_14_mutual_parity_count PROC
-mov rcx, 6
+    sub rsp, 40
+    mov rcx, 6
     call is_even
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_14_mutual_parity_count ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_mutual_parity_count
     mov     rcx, rax
     call    ExitProcess

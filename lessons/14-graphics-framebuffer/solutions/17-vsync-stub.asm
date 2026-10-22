@@ -13,15 +13,14 @@ EXTERN ExitProcess:PROC
 ready BYTE ?
 
 .code
-
 ex_17_vsync_stub PROC
-mov BYTE PTR [ready], 0
+    sub rsp, 40
+    mov BYTE PTR [ready], 0
     movzx rcx, BYTE PTR [ready]
     mov     eax, 0
     ret
 ex_17_vsync_stub ENDP
 main PROC
-    sub     rsp, 40
     call    ex_17_vsync_stub
     mov     rcx, rax
     call    ExitProcess

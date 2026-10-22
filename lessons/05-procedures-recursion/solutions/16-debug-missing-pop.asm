@@ -5,16 +5,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_16_debug_missing_pop PROC
-mov rcx, 3
+    sub rsp, 40
+    mov rcx, 3
     call fact
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_16_debug_missing_pop ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_debug_missing_pop
     mov     rcx, rax
     call    ExitProcess

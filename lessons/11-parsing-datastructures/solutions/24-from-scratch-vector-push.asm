@@ -11,19 +11,18 @@ len QWORD ?
 cap QWORD ?
 
 .code
-
 ex_24_from_scratch_vector_push PROC
-mov QWORD PTR [cap], 8
+    sub rsp, 40
+    mov QWORD PTR [cap], 8
     mov QWORD PTR [len], 0
     call push1
     call push1
     call push1
-    mov rcx, QWORD PTR [len]
-    mov     eax, ecx
+        mov     eax, QWORD PTR [len]
     ret
+
 ex_24_from_scratch_vector_push ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_vector_push
     mov     rcx, rax
     call    ExitProcess

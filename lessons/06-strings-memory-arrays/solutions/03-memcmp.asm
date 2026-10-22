@@ -9,18 +9,17 @@ a BYTE 1,2,3
 b BYTE 1,2,3
 
 .code
-
 ex_03_memcmp PROC
-lea rcx, a
+    sub rsp, 40
+    lea rcx, a
     lea rdx, b
     mov r8, 3
     call memcmp_fn
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_03_memcmp ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_memcmp
     mov     rcx, rax
     call    ExitProcess

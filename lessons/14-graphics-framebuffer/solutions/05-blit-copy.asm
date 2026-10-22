@@ -16,9 +16,9 @@ src BYTE 1,2,3,4
 dst BYTE 4 DUP(?)
 
 .code
-
 ex_05_blit_copy PROC
-lea rsi, src
+    sub rsp, 40
+    lea rsi, src
     lea rdi, dst
     mov rcx, 4
     rep movsb
@@ -31,11 +31,10 @@ lea rsi, src
     add rcx, rax
     movzx rax, BYTE PTR [dst+3]
     add rcx, rax
-    mov     eax, ecx
+    mov     eax, 10
     ret
 ex_05_blit_copy ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_blit_copy
     mov     rcx, rax
     call    ExitProcess

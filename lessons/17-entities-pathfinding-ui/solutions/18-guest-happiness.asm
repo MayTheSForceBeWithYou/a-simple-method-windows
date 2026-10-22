@@ -8,19 +8,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_18_guest_happiness PROC
-mov rax, 90
+    sub rsp, 40
+    mov rax, 90
     add rax, 20
     cmp rax, 100
     jle happy_ok
     mov rax, 100
 happy_ok:
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_18_guest_happiness ENDP
 main PROC
-    sub     rsp, 40
     call    ex_18_guest_happiness
     mov     rcx, rax
     call    ExitProcess

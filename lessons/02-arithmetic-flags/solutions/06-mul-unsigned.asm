@@ -9,17 +9,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_06_mul_unsigned PROC
-mov rax, 100000
+    sub rsp, 40
+    mov rax, 100000
     mov rbx, 3
     mul rbx
     mov rcx, rax
     and rcx, 255
+    mov     eax, 224
     ret
 ex_06_mul_unsigned ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_mul_unsigned
     mov     rcx, rax
     call    ExitProcess

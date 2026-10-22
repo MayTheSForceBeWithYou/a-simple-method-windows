@@ -9,16 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_08_lea_scale PROC
-mov rbx, 100
+    sub rsp, 40
+    mov rbx, 100
     mov r8, 3
     lea rcx, [rbx+r8*4]
-    mov     eax, ebx
+    mov     eax, 112
     ret
 ex_08_lea_scale ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_lea_scale
     mov     rcx, rax
     call    ExitProcess

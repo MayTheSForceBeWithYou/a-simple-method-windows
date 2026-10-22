@@ -11,19 +11,18 @@ EXTERN ExitProcess:PROC
 arr QWORD 2,3,4
 
 .code
-
 ex_24_from_scratch_rec_sum_array PROC
-.ALLOCSTACK 40
+    sub rsp, 40
+    .ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, arr
     mov rdx, 3
     call rec_sum
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_rec_sum_array
     mov     rcx, rax
     call    ExitProcess

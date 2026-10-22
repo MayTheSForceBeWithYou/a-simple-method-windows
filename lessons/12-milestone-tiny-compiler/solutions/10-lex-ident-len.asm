@@ -9,9 +9,9 @@ EXTERN ExitProcess:PROC
 s BYTE "foo", 0
 
 .code
-
 ex_10_lex_ident_len PROC
-lea rsi, s
+    sub rsp, 40
+    lea rsi, s
     xor rcx, rcx
 loop_len:
     movzx rax, BYTE PTR [rsi]
@@ -27,7 +27,6 @@ done_len:
     ret
 ex_10_lex_ident_len ENDP
 main PROC
-    sub     rsp, 40
     call    ex_10_lex_ident_len
     mov     rcx, rax
     call    ExitProcess

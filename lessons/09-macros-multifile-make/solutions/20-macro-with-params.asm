@@ -16,16 +16,16 @@ ADD3 MACRO a, b, c
 ENDM
 
 .code
-
 ex_20_macro_with_params PROC
-ADD3 10, 20, 12
+    sub rsp, 40
     
-    mov rcx, rax
-    mov     eax, ecx
+    ADD3 10, 20, 12
+    
+        mov     eax, rax
     ret
+
 ex_20_macro_with_params ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_macro_with_params
     mov     rcx, rax
     call    ExitProcess

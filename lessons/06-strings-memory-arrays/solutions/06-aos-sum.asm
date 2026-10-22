@@ -8,9 +8,9 @@ EXTERN ExitProcess:PROC
 rec QWORD 1,2, 3,4
 
 .code
-
 ex_06_aos_sum PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
     add rcx, rec[0]
     add rcx, rec[8]
     add rcx, rec[16]
@@ -19,7 +19,6 @@ xor rcx, rcx
     ret
 ex_06_aos_sum ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_aos_sum
     mov     rcx, rax
     call    ExitProcess

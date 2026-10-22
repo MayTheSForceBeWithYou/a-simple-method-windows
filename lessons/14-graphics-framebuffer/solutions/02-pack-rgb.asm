@@ -10,19 +10,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_02_pack_rgb PROC
-mov rax, 1
+    sub rsp, 40
+    mov rax, 1
     shl rax, 16
     mov rbx, 2
     shl rbx, 8
     or rax, rbx
     or rax, 3
     movzx rcx, al
+    mov     eax, 3
     ret
 ex_02_pack_rgb ENDP
 main PROC
-    sub     rsp, 40
     call    ex_02_pack_rgb
     mov     rcx, rax
     call    ExitProcess

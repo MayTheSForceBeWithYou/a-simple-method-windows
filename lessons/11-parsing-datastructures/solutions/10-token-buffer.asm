@@ -13,9 +13,9 @@ tok BYTE 8 DUP(?)
 n QWORD ?
 
 .code
-
 ex_10_token_buffer PROC
-lea rsi, src
+    sub rsp, 40
+    lea rsi, src
     lea rdi, tok
     xor rcx, rcx
 loop_copy:
@@ -31,7 +31,6 @@ done_copy:
     ret
 ex_10_token_buffer ENDP
 main PROC
-    sub     rsp, 40
     call    ex_10_token_buffer
     mov     rcx, rax
     call    ExitProcess

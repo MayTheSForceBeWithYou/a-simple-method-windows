@@ -5,16 +5,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_10_bit_set_clear PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
     or rcx, (1 SHL 3)
     and rcx, NOT (1 SHL 3)
     mov     eax, 0
     ret
 ex_10_bit_set_clear ENDP
 main PROC
-    sub     rsp, 40
     call    ex_10_bit_set_clear
     mov     rcx, rax
     call    ExitProcess

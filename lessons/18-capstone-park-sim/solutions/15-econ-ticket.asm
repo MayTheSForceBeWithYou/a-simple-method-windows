@@ -11,15 +11,14 @@ EXTERN ExitProcess:PROC
 cash QWORD 0
 
 .code
-
 ex_15_econ_ticket PROC
-add QWORD PTR [cash], 15
-    mov rcx, QWORD PTR [cash]
-    mov     eax, ecx
+    sub rsp, 40
+    add QWORD PTR [cash], 15
+        mov     eax, QWORD PTR [cash]
     ret
+
 ex_15_econ_ticket ENDP
 main PROC
-    sub     rsp, 40
     call    ex_15_econ_ticket
     mov     rcx, rax
     call    ExitProcess

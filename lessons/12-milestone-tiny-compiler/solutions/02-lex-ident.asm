@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_02_lex_ident PROC
-mov al, 'a'
+    sub rsp, 40
+    mov al, 'a'
     cmp al, 'a'
     jb not_alpha
     cmp al, 'z'
@@ -18,11 +18,10 @@ mov al, 'a'
 not_alpha:
     xor rcx, rcx
 done:
-    mov     eax, ecx
+    mov     eax, 1
     ret
 ex_02_lex_ident ENDP
 main PROC
-    sub     rsp, 40
     call    ex_02_lex_ident
     mov     rcx, rax
     call    ExitProcess

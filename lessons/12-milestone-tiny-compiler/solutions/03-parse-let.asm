@@ -9,20 +9,19 @@ EXTERN ExitProcess:PROC
 kw BYTE "let", 0
 
 .code
-
 ex_03_parse_let PROC
-cmp BYTE PTR [kw], 'l'
+    sub rsp, 40
+    cmp BYTE PTR [kw], 'l'
     jne not_l
     mov rcx, 1
     jmp done
 not_l:
     xor rcx, rcx
 done:
-    mov     eax, ecx
+    mov     eax, 1
     ret
 ex_03_parse_let ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_parse_let
     mov     rcx, rax
     call    ExitProcess

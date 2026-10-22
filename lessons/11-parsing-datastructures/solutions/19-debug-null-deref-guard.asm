@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_19_debug_null_deref_guard PROC
-xor rsi, rsi
+    sub rsp, 40
+    xor rsi, rsi
     xor rcx, rcx
 loop_walk:
     test rsi, rsi
@@ -21,7 +21,6 @@ done_walk:
     ret
 ex_19_debug_null_deref_guard ENDP
 main PROC
-    sub     rsp, 40
     call    ex_19_debug_null_deref_guard
     mov     rcx, rax
     call    ExitProcess

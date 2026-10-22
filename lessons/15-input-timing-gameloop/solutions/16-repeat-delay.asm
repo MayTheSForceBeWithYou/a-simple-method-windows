@@ -13,9 +13,9 @@ EXTERN ExitProcess:PROC
 held QWORD ?
 
 .code
-
 ex_16_repeat_delay PROC
-mov QWORD PTR [held], 3
+    sub rsp, 40
+    mov QWORD PTR [held], 3
     cmp QWORD PTR [held], 3
     jl not_fire
     mov rcx, 1
@@ -23,11 +23,10 @@ mov QWORD PTR [held], 3
 not_fire:
     xor rcx, rcx
 exit_proc:
-    mov     eax, ecx
+    mov     eax, 1
     ret
 ex_16_repeat_delay ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_repeat_delay
     mov     rcx, rax
     call    ExitProcess

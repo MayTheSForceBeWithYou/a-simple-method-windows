@@ -9,15 +9,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_03_exit_from_register PROC
-mov rbx, 42
-    mov rcx, rbx
-    mov     eax, ecx
+    sub rsp, 40
+    mov rbx, 42
+        mov     eax, rbx
     ret
+
 ex_03_exit_from_register ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_exit_from_register
     mov     rcx, rax
     call    ExitProcess

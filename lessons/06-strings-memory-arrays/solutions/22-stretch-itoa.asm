@@ -11,19 +11,18 @@ EXTERN ExitProcess:PROC
 buf BYTE 16 DUP(?)
 
 .code
-
 ex_22_stretch_itoa PROC
-.ALLOCSTACK 40
+    sub rsp, 40
+    .ALLOCSTACK 40
     .ENDPROLOG
     mov rcx, 123
     lea rdx, buf
     call itoa
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_22_stretch_itoa ENDP
 main PROC
-    sub     rsp, 40
     call    ex_22_stretch_itoa
     mov     rcx, rax
     call    ExitProcess

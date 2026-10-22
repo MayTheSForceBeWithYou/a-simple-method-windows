@@ -20,19 +20,19 @@ POP_CALLEE MACRO
 ENDM
 
 .code
-
 ex_09_macro_pushregs PROC
-mov rbx, 5
+    sub rsp, 40
+    
+    mov rbx, 5
     PUSH_CALLEE
     mov rbx, 0
     POP_CALLEE
     
-    mov rcx, rbx
-    mov     eax, ecx
+        mov     eax, rbx
     ret
+
 ex_09_macro_pushregs ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_macro_pushregs
     mov     rcx, rax
     call    ExitProcess

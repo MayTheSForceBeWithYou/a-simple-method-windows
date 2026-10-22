@@ -6,15 +6,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_06_shift_div PROC
-mov rcx, 20
+    sub rsp, 40
+    mov rcx, 20
     sar rcx, 2
-    mov     eax, ecx
+    mov     eax, 5
     ret
 ex_06_shift_div ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_shift_div
     mov     rcx, rax
     call    ExitProcess

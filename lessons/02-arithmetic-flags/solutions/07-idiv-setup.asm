@@ -9,17 +9,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_07_idiv_setup PROC
-mov rax, 84
+    sub rsp, 40
+    mov rax, 84
     cqo
     mov rbx, 2
     idiv rbx
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_07_idiv_setup ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_idiv_setup
     mov     rcx, rax
     call    ExitProcess

@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_03_aabb_reject PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
     mov     eax, 0
     ret
 ex_03_aabb_reject ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_aabb_reject
     mov     rcx, rax
     call    ExitProcess

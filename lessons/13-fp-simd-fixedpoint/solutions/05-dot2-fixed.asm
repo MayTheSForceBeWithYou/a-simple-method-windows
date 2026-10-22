@@ -6,14 +6,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_05_dot2_fixed PROC
-mov rcx, 1*3+2*4
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 1*3+2*4
     ret
+
 ex_05_dot2_fixed ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_dot2_fixed
     mov     rcx, rax
     call    ExitProcess

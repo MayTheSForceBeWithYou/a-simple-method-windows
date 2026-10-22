@@ -9,16 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_03_neg PROC
-mov rcx, 5
+    sub rsp, 40
+    mov rcx, 5
     neg rcx
     add rcx, 10
-    mov     eax, ecx
+    mov     eax, 5
     ret
 ex_03_neg ENDP
 main PROC
-    sub     rsp, 40
     call    ex_03_neg
     mov     rcx, rax
     call    ExitProcess

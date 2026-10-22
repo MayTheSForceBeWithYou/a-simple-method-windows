@@ -3,16 +3,16 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_07_extract_bitfield PROC
-mov rax, 0ABCDh
+    sub rsp, 40
+    mov rax, 0ABCDh
     shr rax, 4
     and rax, 0Fh
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_07_extract_bitfield ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_extract_bitfield
     mov     rcx, rax
     call    ExitProcess

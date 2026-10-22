@@ -236,7 +236,9 @@ def main_stack_reserve(inner: str) -> str:
 
 
 def convert_solution_text(text: str, sym: str) -> str:
-    if proc_defined(text, sym):
+    if proc_defined(text, sym) and re.search(
+        rf"\bcall\s+{sym}\b", text, re.I
+    ):
         return text
     m = re.search(
         r"(?is)(^\s*main\s+PROC[^\n]*\n)(.*?)(^\s*main\s+ENDP\b)",
@@ -248,38 +250,36 @@ def convert_solution_text(text: str, sym: str) -> str:
     inner = m.group(2)
     stack = main_stack_reserve(inner)
     exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
-    body = strip_stack_adjustments(inner)
-    body = re.sub(r"(?im)^\s*call\s+ExitProcess\s*$", "", body)
-    if body_needs_own_stack(body) and not re.search(r"\bsub\s+rsp\b", body, re.I):
-        body = f"    sub     rsp, {stack}\n{body}"
-    body = balance_stack_before_ret(body)
-    body = body.strip()
-    if not body:
-        body = "    ; student solution"
 
-    if re.search(r"\b(add|mov)\s+rax\b", body, re.I) or re.search(
-        r"\bmov\s+eax\s*,", body, re.I
-    ):
-        tail = ""
-    elif re.search(r"\bmov\s+rcx\s*,\s*0\b", body, re.I):
-        tail = "    mov     eax, 0"
-    elif re.search(r"\bmov\s+rcx\s*,", body, re.I) or re.search(
-        r"\bmov\s+ecx\s*,", body, re.I
-    ):
-        tail = "    mov     eax, ecx"
-    elif re.search(r"\bmov\s+rbx\b", body, re.I):
-        tail = "    mov     eax, ebx"
+    student = inner
+    exit_m = re.search(
+        r"mov\s+(rcx|rax|ecx|eax)\s*,\s*([^\n;]+)\s*\n\s*call\s+ExitProcess",
+        student,
+        re.I,
+    )
+    if exit_m:
+        reg, val = exit_m.group(1).lower(), exit_m.group(2).strip()
+        if reg in ("rcx", "ecx"):
+            ret_setup = f"    mov     eax, {val}\n    ret"
+        else:
+            ret_setup = f"    mov     eax, {val}\n    ret"
+        student = re.sub(
+            r"mov\s+(rcx|rax|ecx|eax)\s*,\s*[^\n]+\s*\n\s*call\s+ExitProcess",
+            ret_setup,
+            student,
+            count=1,
+            flags=re.I,
+        )
     else:
-        tail = f"    mov     eax, {exit_val}"
+        student = re.sub(
+            r"(?im)^\s*call\s+ExitProcess\s*$",
+            f"    mov     eax, {exit_val}\n    ret",
+            student,
+            count=1,
+        )
 
-    tail_line = f"{tail}\n" if tail else ""
-    proc = f"""
-{sym} PROC
-{body}
-{tail_line}    ret
-{sym} ENDP
-"""
-    if re.search(r"\bsub\s+rsp\b", body, re.I):
+    proc = f"{sym} PROC\n{student}\n{sym} ENDP\n"
+    if re.search(r"\bsub\s+rsp\b", student, re.I):
         main_prolog = ""
     else:
         main_prolog = f"    sub     rsp, {stack}\n"

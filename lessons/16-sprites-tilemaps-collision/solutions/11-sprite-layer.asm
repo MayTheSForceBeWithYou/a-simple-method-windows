@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_11_sprite_layer PROC
-mov rcx, 2
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 2
     ret
+
 ex_11_sprite_layer ENDP
 main PROC
-    sub     rsp, 40
     call    ex_11_sprite_layer
     mov     rcx, rax
     call    ExitProcess

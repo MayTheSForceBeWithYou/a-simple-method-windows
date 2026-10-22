@@ -14,19 +14,18 @@ paused BYTE ?
 updates QWORD ?
 
 .code
-
 ex_15_pause_flag PROC
-mov BYTE PTR [paused], 1
+    sub rsp, 40
+    mov BYTE PTR [paused], 1
     cmp BYTE PTR [paused], 0
     jne skip_update
     inc QWORD PTR [updates]
 skip_update:
-    mov rcx, [updates]
-    mov     eax, ecx
+        mov     eax, [updates]
     ret
+
 ex_15_pause_flag ENDP
 main PROC
-    sub     rsp, 40
     call    ex_15_pause_flag
     mov     rcx, rax
     call    ExitProcess

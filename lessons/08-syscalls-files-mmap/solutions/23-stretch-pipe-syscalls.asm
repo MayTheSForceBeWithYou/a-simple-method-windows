@@ -14,9 +14,10 @@ hReadPipe QWORD ?
 hWritePipe QWORD ?
 
 .code
-
 ex_23_stretch_pipe_syscalls PROC
-; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
+    sub rsp, 40
+    
+    ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
     lea rcx, hReadPipe
     lea rdx, hWritePipe
     mov r8, 0               ; lpPipeAttributes = NULL
@@ -40,7 +41,6 @@ L_o:
     ret
 ex_23_stretch_pipe_syscalls ENDP
 main PROC
-    sub     rsp, 40
     call    ex_23_stretch_pipe_syscalls
     mov     rcx, rax
     call    ExitProcess

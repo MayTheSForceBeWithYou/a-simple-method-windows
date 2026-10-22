@@ -9,15 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_19_save_length_prefix PROC
-mov rcx, 8
+    sub rsp, 40
+    
+    mov rcx, 8
     add rcx, 4
-    mov     eax, ecx
+    mov     eax, 12
     ret
 ex_19_save_length_prefix ENDP
 main PROC
-    sub     rsp, 40
     call    ex_19_save_length_prefix
     mov     rcx, rax
     call    ExitProcess

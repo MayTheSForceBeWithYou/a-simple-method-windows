@@ -10,15 +10,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_04_sprite_origin PROC
-mov rcx, 50
+    sub rsp, 40
+    mov rcx, 50
     sub rcx, 20
-    mov     eax, ecx
+    mov     eax, 30
     ret
 ex_04_sprite_origin ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_sprite_origin
     mov     rcx, rax
     call    ExitProcess

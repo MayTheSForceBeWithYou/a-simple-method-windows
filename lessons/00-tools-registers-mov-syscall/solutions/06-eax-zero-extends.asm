@@ -9,15 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_06_eax_zero_extends PROC
-mov rax, 0FFFFFFFFFFFFFFFFh
+    sub rsp, 40
+    mov rax, 0FFFFFFFFFFFFFFFFh
     mov eax, 1
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_06_eax_zero_extends ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_eax_zero_extends
     mov     rcx, rax
     call    ExitProcess

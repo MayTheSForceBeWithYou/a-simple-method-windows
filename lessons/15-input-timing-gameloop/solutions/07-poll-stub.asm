@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_07_poll_stub PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
     mov     eax, 0
     ret
 ex_07_poll_stub ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_poll_stub
     mov     rcx, rax
     call    ExitProcess

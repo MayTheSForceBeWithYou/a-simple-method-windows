@@ -12,9 +12,9 @@ EXTERN ExitProcess:PROC
 bytes BYTE 1, 2, 3, 4
 
 .code
-
 ex_09_pointer_walk PROC
-lea rsi, [bytes]
+    sub rsp, 40
+    lea rsi, [bytes]
     xor rcx, rcx
     movzx rax, BYTE PTR [rsi]
     add rcx, rax
@@ -31,7 +31,6 @@ lea rsi, [bytes]
     ret
 ex_09_pointer_walk ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_pointer_walk
     mov     rcx, rax
     call    ExitProcess

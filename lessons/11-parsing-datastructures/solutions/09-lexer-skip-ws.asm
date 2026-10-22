@@ -9,9 +9,9 @@ EXTERN ExitProcess:PROC
 s BYTE "  7", 0
 
 .code
-
 ex_09_lexer_skip_ws PROC
-lea rsi, s
+    sub rsp, 40
+    lea rsi, s
 loop_skip:
     cmp BYTE PTR [rsi], ' '
     jne done_skip
@@ -24,7 +24,6 @@ done_skip:
     ret
 ex_09_lexer_skip_ws ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_lexer_skip_ws
     mov     rcx, rax
     call    ExitProcess

@@ -9,14 +9,13 @@ EXTERN ExitProcess:PROC
 lut QWORD 0,1,0
 
 .code
-
 ex_23_stretch_sin_lut PROC
-mov rcx, QWORD PTR [lut+8]
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, QWORD PTR [lut+8]
     ret
+
 ex_23_stretch_sin_lut ENDP
 main PROC
-    sub     rsp, 40
     call    ex_23_stretch_sin_lut
     mov     rcx, rax
     call    ExitProcess

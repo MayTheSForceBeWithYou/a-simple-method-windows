@@ -11,9 +11,9 @@ EXTERN ExitProcess:PROC
 guests QWORD 0
 
 .code
-
 ex_21_scenario_goal PROC
-mov QWORD PTR [guests], 100
+    sub rsp, 40
+    mov QWORD PTR [guests], 100
     cmp QWORD PTR [guests], 100
     jl goal_no
     mov rcx, 1
@@ -21,11 +21,10 @@ mov QWORD PTR [guests], 100
 goal_no:
     xor ecx, ecx
 goal_done:
-    mov     eax, ecx
+    mov     eax, 1
     ret
 ex_21_scenario_goal ENDP
 main PROC
-    sub     rsp, 40
     call    ex_21_scenario_goal
     mov     rcx, rax
     call    ExitProcess

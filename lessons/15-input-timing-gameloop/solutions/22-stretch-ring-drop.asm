@@ -13,15 +13,14 @@ EXTERN ExitProcess:PROC
 dropped QWORD ?
 
 .code
-
 ex_22_stretch_ring_drop PROC
-mov QWORD PTR [dropped], 1
-    mov rcx, [dropped]
-    mov     eax, ecx
+    sub rsp, 40
+    mov QWORD PTR [dropped], 1
+        mov     eax, [dropped]
     ret
+
 ex_22_stretch_ring_drop ENDP
 main PROC
-    sub     rsp, 40
     call    ex_22_stretch_ring_drop
     mov     rcx, rax
     call    ExitProcess

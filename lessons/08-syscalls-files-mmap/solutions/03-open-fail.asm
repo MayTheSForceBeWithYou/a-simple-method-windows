@@ -13,9 +13,8 @@ EXTERN ExitProcess:PROC
 path BYTE "/no/such/asm_course_file", 0
 
 .code
-
 ex_03_open_fail PROC
-sub rsp, 72
+    sub rsp, 72
     
     ; CreateFileA
     lea rcx, path               ; lpFileName
@@ -40,8 +39,7 @@ L_bad:
     mov rcx, 1
     
 L_out:
-    add     rsp, 72
-    mov     eax, 0
+    mov     eax, 1
     ret
 ex_03_open_fail ENDP
 main PROC

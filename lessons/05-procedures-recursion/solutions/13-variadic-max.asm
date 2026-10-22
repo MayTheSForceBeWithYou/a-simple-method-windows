@@ -5,19 +5,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_13_variadic_max PROC
-mov rcx, 3
+    sub rsp, 72
+    mov rcx, 3
     mov QWORD PTR [rsp+32], 5
     mov QWORD PTR [rsp+40], 1
     mov QWORD PTR [rsp+48], 9
     call max_n
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_13_variadic_max ENDP
 main PROC
-    sub     rsp, 72
     call    ex_13_variadic_max
     mov     rcx, rax
     call    ExitProcess

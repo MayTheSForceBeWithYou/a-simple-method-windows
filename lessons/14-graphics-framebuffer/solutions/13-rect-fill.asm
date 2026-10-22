@@ -13,9 +13,9 @@ EXTERN ExitProcess:PROC
 fb BYTE 16 DUP(?)
 
 .code
-
 ex_13_rect_fill PROC
-mov BYTE PTR [fb], 3
+    sub rsp, 40
+    mov BYTE PTR [fb], 3
     mov BYTE PTR [fb+1], 3
     mov BYTE PTR [fb+4], 3
     mov BYTE PTR [fb+5], 3
@@ -32,7 +32,6 @@ mov BYTE PTR [fb], 3
     ret
 ex_13_rect_fill ENDP
 main PROC
-    sub     rsp, 40
     call    ex_13_rect_fill
     mov     rcx, rax
     call    ExitProcess

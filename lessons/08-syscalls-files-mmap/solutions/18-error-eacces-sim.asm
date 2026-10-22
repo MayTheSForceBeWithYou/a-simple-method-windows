@@ -14,9 +14,8 @@ EXTERN ExitProcess:PROC
 path BYTE "C:\", 0
 
 .code
-
 ex_18_error_eacces_sim PROC
-sub rsp, 72
+    sub rsp, 72
     
     ; CreateFileA - try to open root with write access
     lea rcx, path               ; lpFileName
@@ -44,8 +43,7 @@ L_bad:
     mov rcx, 1
     
 L_o:
-    add     rsp, 72
-    mov     eax, 0
+    mov     eax, 1
     ret
 ex_18_error_eacces_sim ENDP
 main PROC

@@ -10,17 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_24_from_scratch_fb_size PROC
-mov rax, 320
+    sub rsp, 40
+    mov rax, 320
     imul rax, 200
     imul rax, 4
     shr rax, 16
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_24_from_scratch_fb_size ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_fb_size
     mov     rcx, rax
     call    ExitProcess

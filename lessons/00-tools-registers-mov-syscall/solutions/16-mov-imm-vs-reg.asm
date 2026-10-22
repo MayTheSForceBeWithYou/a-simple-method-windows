@@ -9,15 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_16_mov_imm_vs_reg PROC
-mov rax, 100
+    sub rsp, 40
+    mov rax, 100
     mov rbx, rax
-    mov rcx, rbx
+        mov     eax, rbx
     ret
+
 ex_16_mov_imm_vs_reg ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_mov_imm_vs_reg
     mov     rcx, rax
     call    ExitProcess

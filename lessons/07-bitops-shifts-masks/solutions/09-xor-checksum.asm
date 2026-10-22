@@ -8,9 +8,9 @@ EXTERN ExitProcess:PROC
 b BYTE 1,2,4,8
 
 .code
-
 ex_09_xor_checksum PROC
-xor eax, eax
+    sub rsp, 40
+    xor eax, eax
     xor al, b[0]
     xor al, b[1]
     xor al, b[2]
@@ -20,7 +20,6 @@ xor eax, eax
     ret
 ex_09_xor_checksum ENDP
 main PROC
-    sub     rsp, 40
     call    ex_09_xor_checksum
     mov     rcx, rax
     call    ExitProcess

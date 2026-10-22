@@ -11,9 +11,9 @@ n2 QWORD 4, 0
 n1 QWORD 3, 0
 
 .code
-
 ex_12_ll_sum PROC
-lea rax, n3
+    sub rsp, 40
+    lea rax, n3
     mov QWORD PTR [n2+8], rax
     lea rax, n2
     mov QWORD PTR [n1+8], rax
@@ -30,7 +30,6 @@ done_sum:
     ret
 ex_12_ll_sum ENDP
 main PROC
-    sub     rsp, 40
     call    ex_12_ll_sum
     mov     rcx, rax
     call    ExitProcess

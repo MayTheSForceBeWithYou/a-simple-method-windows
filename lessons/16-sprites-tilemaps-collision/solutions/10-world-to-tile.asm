@@ -10,15 +10,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_10_world_to_tile PROC
-mov rax, 20
+    sub rsp, 40
+    mov rax, 20
     shr rax, 3
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_10_world_to_tile ENDP
 main PROC
-    sub     rsp, 40
     call    ex_10_world_to_tile
     mov     rcx, rax
     call    ExitProcess

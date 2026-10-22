@@ -6,17 +6,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_05_hash_mix PROC
-mov rax, 5
+    sub rsp, 40
+    mov rax, 5
     mov rbx, rax
     shl rbx, 3
     xor rax, rbx
     movzx rcx, al
+    mov     eax, 45
     ret
 ex_05_hash_mix ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_hash_mix
     mov     rcx, rax
     call    ExitProcess

@@ -14,9 +14,8 @@ EXTERN ExitProcess:PROC
 path BYTE "C:\this_file_should_not_exist_asm_course_xyzzy.txt", 0
 
 .code
-
 ex_05_errno_neg PROC
-sub rsp, 72
+    sub rsp, 72
     
     ; CreateFileA - try to open nonexistent file
     lea rcx, path               ; lpFileName
@@ -30,10 +29,9 @@ sub rsp, 72
     
     ; GetLastError is the Windows-native error; Linux used -errno.
     call GetLastError
-    mov rcx, rax
-    add     rsp, 72
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_05_errno_neg ENDP
 main PROC
     call    ex_05_errno_neg

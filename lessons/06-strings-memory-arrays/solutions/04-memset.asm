@@ -8,9 +8,9 @@ EXTERN ExitProcess:PROC
 buf BYTE 4 DUP(?)
 
 .code
-
 ex_04_memset PROC
-lea rcx, buf
+    sub rsp, 40
+    lea rcx, buf
     mov rdx, 7
     mov r8, 4
     call memset_fn
@@ -27,7 +27,6 @@ lea rcx, buf
     ret
 ex_04_memset ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_memset
     mov     rcx, rax
     call    ExitProcess

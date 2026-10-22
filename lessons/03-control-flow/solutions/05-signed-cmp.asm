@@ -4,9 +4,10 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-
 ex_05_signed_cmp PROC
-mov rax, -5
+    sub rsp, 40
+    
+    mov rax, -5
     mov rbx, 3
     cmp rax, rbx
     jl less_than
@@ -15,10 +16,10 @@ mov rax, -5
 less_than:
     mov rcx, 1
 done:
+    mov     eax, 1
     ret
 ex_05_signed_cmp ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_signed_cmp
     mov     rcx, rax
     call    ExitProcess

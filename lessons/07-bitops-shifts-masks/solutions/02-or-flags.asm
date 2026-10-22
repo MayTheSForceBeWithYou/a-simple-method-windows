@@ -5,16 +5,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_02_or_flags PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
     or rcx, 1
     or rcx, 4
     mov     eax, 5
     ret
 ex_02_or_flags ENDP
 main PROC
-    sub     rsp, 40
     call    ex_02_or_flags
     mov     rcx, rax
     call    ExitProcess

@@ -3,9 +3,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_15_bitfield_pack PROC
-mov rax, 5
+    sub rsp, 40
+    mov rax, 5
     and rax, 7
     mov rbx, 2
     and rbx, 7
@@ -16,11 +16,11 @@ mov rax, 5
     shl rbx, 6
     or rax, rbx
     mov rcx, rax
-    mov rax,60
+        mov     eax, 60
     ret
+
 ex_15_bitfield_pack ENDP
 main PROC
-    sub     rsp, 40
     call    ex_15_bitfield_pack
     mov     rcx, rax
     call    ExitProcess

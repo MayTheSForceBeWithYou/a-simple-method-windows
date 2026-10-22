@@ -13,15 +13,14 @@ EXTERN ExitProcess:PROC
 flags BYTE 1
 
 .code
-
 ex_05_entity_alive PROC
-movzx rcx, BYTE PTR [flags]
+    sub rsp, 40
+    movzx rcx, BYTE PTR [flags]
     and rcx, 1
     mov     eax, 1
     ret
 ex_05_entity_alive ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_entity_alive
     mov     rcx, rax
     call    ExitProcess

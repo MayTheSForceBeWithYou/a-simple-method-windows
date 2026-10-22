@@ -3,16 +3,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_08_from_scratch_rol PROC
-mov al, 80h
+    sub rsp, 40
+    mov al, 80h
     rol al, 1
     movzx rcx, al
     mov     eax, 1
     ret
 ex_08_from_scratch_rol ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_from_scratch_rol
     mov     rcx, rax
     call    ExitProcess

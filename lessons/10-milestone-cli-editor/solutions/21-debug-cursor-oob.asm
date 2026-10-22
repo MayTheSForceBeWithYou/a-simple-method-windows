@@ -13,9 +13,10 @@ cur QWORD ?
 len QWORD ?
 
 .code
-
 ex_21_debug_cursor_oob PROC
-mov QWORD PTR [cur], 9
+    sub rsp, 40
+    
+    mov QWORD PTR [cur], 9
     mov QWORD PTR [len], 3
     
     mov rax, [cur]
@@ -26,11 +27,11 @@ mov QWORD PTR [cur], 9
     mov [cur], rax
     
 L_ok:
-    mov rcx, [cur]
+        mov     eax, [cur]
     ret
+
 ex_21_debug_cursor_oob ENDP
 main PROC
-    sub     rsp, 40
     call    ex_21_debug_cursor_oob
     mov     rcx, rax
     call    ExitProcess

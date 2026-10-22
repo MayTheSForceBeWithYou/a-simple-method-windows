@@ -10,9 +10,9 @@ stk QWORD 8 DUP(?)
 sp_ QWORD ?
 
 .code
-
 ex_16_expr_stack PROC
-mov QWORD PTR [sp_], 0
+    sub rsp, 40
+    mov QWORD PTR [sp_], 0
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
     mov QWORD PTR [r11+rcx*8], 2
@@ -32,11 +32,11 @@ mov QWORD PTR [sp_], 0
     lea r11, [stk]
     mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_16_expr_stack ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_expr_stack
     mov     rcx, rax
     call    ExitProcess

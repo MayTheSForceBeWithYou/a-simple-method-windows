@@ -11,20 +11,20 @@ EXTERN ExitProcess:PROC
 focus QWORD 0
 
 .code
-
 ex_16_ui_focus PROC
-mov QWORD PTR [focus], 2
+    sub rsp, 40
+    mov QWORD PTR [focus], 2
     inc QWORD PTR [focus]
     mov rax, QWORD PTR [focus]
     xor rdx, rdx
     mov r8, 3
     div r8
     mov QWORD PTR [focus], rdx
-    mov rcx, rdx
+        mov     eax, rdx
     ret
+
 ex_16_ui_focus ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_ui_focus
     mov     rcx, rax
     call    ExitProcess

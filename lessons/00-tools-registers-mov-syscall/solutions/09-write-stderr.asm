@@ -19,9 +19,8 @@ written DWORD ?
 hStdErr QWORD ?
 
 .code
-
 ex_09_write_stderr PROC
-sub rsp, 56
+    sub rsp, 56
     
     ; Get stderr handle
     mov rcx, -12
@@ -37,10 +36,9 @@ sub rsp, 56
     call WriteFile
     
     ; Exit 1
-    mov rcx, 1
-    add     rsp, 56
-    mov     eax, ecx
+        mov     eax, 1
     ret
+
 ex_09_write_stderr ENDP
 main PROC
     call    ex_09_write_stderr

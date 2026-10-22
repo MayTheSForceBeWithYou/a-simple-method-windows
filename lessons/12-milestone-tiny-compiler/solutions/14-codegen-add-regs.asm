@@ -10,18 +10,18 @@ v1 QWORD ?
 v2 QWORD ?
 
 .code
-
 ex_14_codegen_add_regs PROC
-mov QWORD PTR [v1], 10
+    sub rsp, 40
+    mov QWORD PTR [v1], 10
     mov QWORD PTR [v2], 32
     mov rax, QWORD PTR [v1]
     add rax, QWORD PTR [v2]
     mov QWORD PTR [v1], rax
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_14_codegen_add_regs ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_codegen_add_regs
     mov     rcx, rax
     call    ExitProcess

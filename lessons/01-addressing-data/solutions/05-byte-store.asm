@@ -18,9 +18,8 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-
 ex_05_byte_store PROC
-sub rsp, 56
+    sub rsp, 56
     
     ; Store characters
     mov BYTE PTR [buf], 'O'
@@ -40,10 +39,9 @@ sub rsp, 56
     call WriteFile
     
     ; Exit 0
-    mov rcx, 0
-    add     rsp, 56
-    mov     eax, 0
+        mov     eax, 0
     ret
+
 ex_05_byte_store ENDP
 main PROC
     call    ex_05_byte_store

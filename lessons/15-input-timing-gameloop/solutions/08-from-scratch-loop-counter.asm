@@ -10,9 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_08_from_scratch_loop_counter PROC
-xor rcx, rcx
+    sub rsp, 40
+    xor rcx, rcx
 loop_start:
     cmp rcx, 10
     jge loop_done
@@ -23,7 +23,6 @@ loop_done:
     ret
 ex_08_from_scratch_loop_counter ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_from_scratch_loop_counter
     mov     rcx, rax
     call    ExitProcess

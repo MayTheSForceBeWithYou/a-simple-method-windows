@@ -10,17 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_11_mouse_delta PROC
-mov rax, 5
+    sub rsp, 40
+    mov rax, 5
     mov rbx, -2
     neg rbx
     add rax, rbx
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_11_mouse_delta ENDP
 main PROC
-    sub     rsp, 40
     call    ex_11_mouse_delta
     mov     rcx, rax
     call    ExitProcess

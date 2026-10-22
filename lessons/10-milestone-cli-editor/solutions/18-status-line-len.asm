@@ -12,15 +12,15 @@ EXTERN ExitProcess:PROC
 len QWORD ?
 
 .code
-
 ex_18_status_line_len PROC
-mov QWORD PTR [len], 12
-    mov rcx, [len]
-    mov     eax, ecx
+    sub rsp, 40
+    
+    mov QWORD PTR [len], 12
+        mov     eax, [len]
     ret
+
 ex_18_status_line_len ENDP
 main PROC
-    sub     rsp, 40
     call    ex_18_status_line_len
     mov     rcx, rax
     call    ExitProcess

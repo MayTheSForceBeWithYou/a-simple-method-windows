@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_20_fixed_hz PROC
-mov rcx, 60
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 60
     ret
+
 ex_20_fixed_hz ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_fixed_hz
     mov     rcx, rax
     call    ExitProcess

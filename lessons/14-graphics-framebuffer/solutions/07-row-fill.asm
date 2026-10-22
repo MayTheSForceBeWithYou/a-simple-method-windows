@@ -13,9 +13,9 @@ EXTERN ExitProcess:PROC
 row BYTE 3 DUP(?)
 
 .code
-
 ex_07_row_fill PROC
-mov BYTE PTR [row], 9
+    sub rsp, 40
+    mov BYTE PTR [row], 9
     mov BYTE PTR [row+1], 9
     mov BYTE PTR [row+2], 9
     movzx rcx, BYTE PTR [row+1]
@@ -23,7 +23,6 @@ mov BYTE PTR [row], 9
     ret
 ex_07_row_fill ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_row_fill
     mov     rcx, rax
     call    ExitProcess

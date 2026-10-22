@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_18_fixed_angle_step PROC
-mov rax, 350
+    sub rsp, 40
+    mov rax, 350
     add rax, 20
 loop_wrap:
     cmp rax, 360
@@ -16,11 +16,11 @@ loop_wrap:
     sub rax, 360
     jmp loop_wrap
 done_wrap:
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_18_fixed_angle_step ENDP
 main PROC
-    sub     rsp, 40
     call    ex_18_fixed_angle_step
     mov     rcx, rax
     call    ExitProcess

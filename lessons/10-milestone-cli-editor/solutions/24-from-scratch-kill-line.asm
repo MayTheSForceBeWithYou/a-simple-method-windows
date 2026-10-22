@@ -16,9 +16,10 @@ len QWORD ?
 cur QWORD ?
 
 .code
-
 ex_24_from_scratch_kill_line PROC
-mov QWORD PTR [len], 5
+    sub rsp, 40
+    
+    mov QWORD PTR [len], 5
     mov QWORD PTR [cur], 0
     
     ; Find newline
@@ -51,12 +52,11 @@ L_cpy:
     
 L_done:
     mov [len], rdi
-    mov rcx, [len]
-    mov     eax, 0
+        mov     eax, [len]
     ret
+
 ex_24_from_scratch_kill_line ENDP
 main PROC
-    sub     rsp, 40
     call    ex_24_from_scratch_kill_line
     mov     rcx, rax
     call    ExitProcess

@@ -10,15 +10,14 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_12_aabb_minkowski PROC
-mov rcx, 4
+    sub rsp, 40
+    mov rcx, 4
     add rcx, 2
-    mov     eax, ecx
+    mov     eax, 6
     ret
 ex_12_aabb_minkowski ENDP
 main PROC
-    sub     rsp, 40
     call    ex_12_aabb_minkowski
     mov     rcx, rax
     call    ExitProcess

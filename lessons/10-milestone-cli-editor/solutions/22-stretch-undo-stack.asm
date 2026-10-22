@@ -13,9 +13,10 @@ ustk QWORD 8 DUP(?)
 usp QWORD ?
 
 .code
-
 ex_22_stretch_undo_stack PROC
-mov QWORD PTR [usp], 0
+    sub rsp, 40
+    
+    mov QWORD PTR [usp], 0
     
     ; Push 1
     mov rcx, [usp]
@@ -34,12 +35,11 @@ mov QWORD PTR [usp], 0
     ; Get top (which is now 1)
     mov rcx, [usp]
     dec rcx
-    mov rcx, [rdx+rcx*8]
-    mov     eax, ecx
+        mov     eax, [rdx+rcx*8]
     ret
+
 ex_22_stretch_undo_stack ENDP
 main PROC
-    sub     rsp, 40
     call    ex_22_stretch_undo_stack
     mov     rcx, rax
     call    ExitProcess

@@ -11,17 +11,17 @@ EXTERN ExitProcess:PROC
 m QWORD 1,2,3,4,5,6,7,8,9
 
 .code
-
 ex_19_matrix_index PROC
-mov rax, 1
+    sub rsp, 40
+    mov rax, 1
     imul rax, 3
     add rax, 2
     lea r11, [m]
-    mov rcx, QWORD PTR [r11+rax*8]
+        mov     eax, QWORD PTR [r11+rax*8]
     ret
+
 ex_19_matrix_index ENDP
 main PROC
-    sub     rsp, 40
     call    ex_19_matrix_index
     mov     rcx, rax
     call    ExitProcess

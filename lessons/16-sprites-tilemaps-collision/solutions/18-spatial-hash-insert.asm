@@ -13,15 +13,14 @@ EXTERN ExitProcess:PROC
 count QWORD ?
 
 .code
-
 ex_18_spatial_hash_insert PROC
-inc QWORD PTR [count]
-    mov rcx, [count]
-    mov     eax, ecx
+    sub rsp, 40
+    inc QWORD PTR [count]
+        mov     eax, [count]
     ret
+
 ex_18_spatial_hash_insert ENDP
 main PROC
-    sub     rsp, 40
     call    ex_18_spatial_hash_insert
     mov     rcx, rax
     call    ExitProcess

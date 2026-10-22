@@ -12,21 +12,21 @@ EXTERN ExitProcess:PROC
 cur QWORD ?
 
 .code
-
 ex_17_utf8_ascii_cursor PROC
-mov QWORD PTR [cur], 0
+    sub rsp, 40
+    
+    mov QWORD PTR [cur], 0
     mov rcx, 5
     
 L_l:
     inc QWORD PTR [cur]
     loop L_l
     
-    mov rcx, [cur]
-    mov     eax, ecx
+        mov     eax, [cur]
     ret
+
 ex_17_utf8_ascii_cursor ENDP
 main PROC
-    sub     rsp, 40
     call    ex_17_utf8_ascii_cursor
     mov     rcx, rax
     call    ExitProcess

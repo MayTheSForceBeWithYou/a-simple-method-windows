@@ -9,17 +9,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_08_div_remainder PROC
-mov rax, 20
+    sub rsp, 40
+    mov rax, 20
     xor rdx, rdx
     mov rbx, 6
     div rbx
-    mov rcx, rdx
+        mov     eax, rdx
     ret
+
 ex_08_div_remainder ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_div_remainder
     mov     rcx, rax
     call    ExitProcess

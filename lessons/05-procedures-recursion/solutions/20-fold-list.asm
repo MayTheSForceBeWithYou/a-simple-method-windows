@@ -8,16 +8,15 @@ EXTERN ExitProcess:PROC
 lst QWORD 3,4,5,0
 
 .code
-
 ex_20_fold_list PROC
-lea rcx, lst
+    sub rsp, 40
+    lea rcx, lst
     call fold_add
-    mov rcx, rax
-    mov     eax, ecx
+        mov     eax, rax
     ret
+
 ex_20_fold_list ENDP
 main PROC
-    sub     rsp, 40
     call    ex_20_fold_list
     mov     rcx, rax
     call    ExitProcess

@@ -13,14 +13,13 @@ w WORD 01122h
 d DWORD 033445566h
 
 .code
-
 ex_10_word_dword PROC
-movzx rcx, BYTE PTR [w]
+    sub rsp, 40
+    movzx rcx, BYTE PTR [w]
     mov     eax, 34
     ret
 ex_10_word_dword ENDP
 main PROC
-    sub     rsp, 40
     call    ex_10_word_dword
     mov     rcx, rax
     call    ExitProcess

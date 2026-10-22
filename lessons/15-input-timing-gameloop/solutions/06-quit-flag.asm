@@ -13,14 +13,13 @@ EXTERN ExitProcess:PROC
 quit QWORD 1
 
 .code
-
 ex_06_quit_flag PROC
-mov rcx, [quit]
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, [quit]
     ret
+
 ex_06_quit_flag ENDP
 main PROC
-    sub     rsp, 40
     call    ex_06_quit_flag
     mov     rcx, rax
     call    ExitProcess

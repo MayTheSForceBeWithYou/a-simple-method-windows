@@ -10,9 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_12_timestep_spiral PROC
-mov rax, 100
+    sub rsp, 40
+    mov rax, 100
     xor rdx, rdx
     mov rbx, 16
     div rbx
@@ -20,11 +20,11 @@ mov rax, 100
     jbe clamp_ok
     mov rax, 3
 clamp_ok:
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_12_timestep_spiral ENDP
 main PROC
-    sub     rsp, 40
     call    ex_12_timestep_spiral
     mov     rcx, rax
     call    ExitProcess

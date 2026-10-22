@@ -9,15 +9,14 @@ EXTERN ExitProcess:PROC
 sym QWORD ?
 
 .code
-
 ex_23_stretch_symbol_resolve PROC
-mov QWORD PTR [sym], 32
-    mov rcx, QWORD PTR [sym]
-    mov     eax, ecx
+    sub rsp, 40
+    mov QWORD PTR [sym], 32
+        mov     eax, QWORD PTR [sym]
     ret
+
 ex_23_stretch_symbol_resolve ENDP
 main PROC
-    sub     rsp, 40
     call    ex_23_stretch_symbol_resolve
     mov     rcx, rax
     call    ExitProcess

@@ -11,16 +11,15 @@ EXTERN ExitProcess:PROC
 cash QWORD 0
 
 .code
-
 ex_16_econ_upkeep PROC
-mov QWORD PTR [cash], 10
+    sub rsp, 40
+    mov QWORD PTR [cash], 10
     sub QWORD PTR [cash], 3
-    mov rcx, QWORD PTR [cash]
-    mov     eax, ecx
+        mov     eax, QWORD PTR [cash]
     ret
+
 ex_16_econ_upkeep ENDP
 main PROC
-    sub     rsp, 40
     call    ex_16_econ_upkeep
     mov     rcx, rax
     call    ExitProcess

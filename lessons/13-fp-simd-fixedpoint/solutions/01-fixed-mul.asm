@@ -6,9 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_01_fixed_mul PROC
-mov eax, 2
+    sub rsp, 40
+    mov eax, 2
     shl eax, 16
     mov ebx, 3
     shl ebx, 16
@@ -16,11 +16,11 @@ mov eax, 2
     movsxd rbx, ebx
     imul rax, rbx
     shr rax, 32
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_01_fixed_mul ENDP
 main PROC
-    sub     rsp, 40
     call    ex_01_fixed_mul
     mov     rcx, rax
     call    ExitProcess

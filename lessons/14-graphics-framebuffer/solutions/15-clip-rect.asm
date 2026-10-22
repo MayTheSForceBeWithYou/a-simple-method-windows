@@ -10,9 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_15_clip_rect PROC
-mov rax, -1
+    sub rsp, 40
+    mov rax, -1
     cmp rax, 0
     jge check_hi
     xor rax, rax
@@ -21,11 +21,11 @@ check_hi:
     jl done_clip
     mov rax, 9
 done_clip:
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_15_clip_rect ENDP
 main PROC
-    sub     rsp, 40
     call    ex_15_clip_rect
     mov     rcx, rax
     call    ExitProcess

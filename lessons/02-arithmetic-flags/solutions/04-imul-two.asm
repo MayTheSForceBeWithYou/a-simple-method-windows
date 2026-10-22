@@ -9,15 +9,15 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_04_imul_two PROC
-mov rax, 6
+    sub rsp, 40
+    mov rax, 6
     imul rax, 7
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_04_imul_two ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_imul_two
     mov     rcx, rax
     call    ExitProcess

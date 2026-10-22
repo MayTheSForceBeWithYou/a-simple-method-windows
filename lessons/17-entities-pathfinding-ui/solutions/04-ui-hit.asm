@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_04_ui_hit PROC
-mov rcx, 1
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 1
     ret
+
 ex_04_ui_hit ENDP
 main PROC
-    sub     rsp, 40
     call    ex_04_ui_hit
     mov     rcx, rax
     call    ExitProcess

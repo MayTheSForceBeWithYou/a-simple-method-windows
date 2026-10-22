@@ -6,16 +6,16 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_08_from_scratch_const_fold PROC
-mov rax, 1
+    sub rsp, 40
+    mov rax, 1
     add rax, 2
     imul rax, 3
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_08_from_scratch_const_fold ENDP
 main PROC
-    sub     rsp, 40
     call    ex_08_from_scratch_const_fold
     mov     rcx, rax
     call    ExitProcess

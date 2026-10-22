@@ -6,18 +6,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_14_vec2_length2 PROC
-mov rax, 3
+    sub rsp, 40
+    mov rax, 3
     imul rax, rax
     mov rbx, 4
     imul rbx, rbx
     add rax, rbx
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_14_vec2_length2 ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_vec2_length2
     mov     rcx, rax
     call    ExitProcess

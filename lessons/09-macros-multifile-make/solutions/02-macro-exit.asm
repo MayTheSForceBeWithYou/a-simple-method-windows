@@ -15,14 +15,12 @@ exit_with MACRO code
 ENDM
 
 .code
-
 ex_02_macro_exit PROC
-exit_with 7
-    mov     eax, 7
-    ret
+    sub rsp, 40
+    exit_with 7
+
 ex_02_macro_exit ENDP
 main PROC
-    sub     rsp, 40
     call    ex_02_macro_exit
     mov     rcx, rax
     call    ExitProcess

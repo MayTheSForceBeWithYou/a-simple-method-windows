@@ -10,14 +10,13 @@
 EXTERN ExitProcess:PROC
 
 .code
-
 ex_07_panel_draw_stub PROC
-mov rcx, 3
-    mov     eax, ecx
+    sub rsp, 40
+        mov     eax, 3
     ret
+
 ex_07_panel_draw_stub ENDP
 main PROC
-    sub     rsp, 40
     call    ex_07_panel_draw_stub
     mov     rcx, rax
     call    ExitProcess

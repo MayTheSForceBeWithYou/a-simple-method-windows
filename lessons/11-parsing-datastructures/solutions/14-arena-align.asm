@@ -9,18 +9,18 @@ EXTERN ExitProcess:PROC
 bump QWORD ?
 
 .code
-
 ex_14_arena_align PROC
-mov QWORD PTR [bump], 1
+    sub rsp, 40
+    mov QWORD PTR [bump], 1
     mov rax, QWORD PTR [bump]
     add rax, 7
     and rax, NOT 7
     mov QWORD PTR [bump], rax
-    mov rcx, rax
+        mov     eax, rax
     ret
+
 ex_14_arena_align ENDP
 main PROC
-    sub     rsp, 40
     call    ex_14_arena_align
     mov     rcx, rax
     call    ExitProcess

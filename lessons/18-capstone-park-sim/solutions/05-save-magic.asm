@@ -13,14 +13,13 @@ EXTERN ExitProcess:PROC
 magic BYTE "PK01"
 
 .code
-
 ex_05_save_magic PROC
-movzx rcx, BYTE PTR [magic]
+    sub rsp, 40
+    movzx rcx, BYTE PTR [magic]
     mov     eax, 80
     ret
 ex_05_save_magic ENDP
 main PROC
-    sub     rsp, 40
     call    ex_05_save_magic
     mov     rcx, rax
     call    ExitProcess
