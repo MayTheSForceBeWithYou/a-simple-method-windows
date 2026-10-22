@@ -24,7 +24,8 @@ rev_loop:
     shr eax, 1
     dec r9d
     jnz rev_loop
-        mov     eax, ecx
+    mov ecx, r8d
+    mov     eax, r8d
     add     rsp, 40
     ret
 ex_23_stretch_bit_reverse8 ENDP

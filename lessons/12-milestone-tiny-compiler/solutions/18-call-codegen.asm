@@ -9,8 +9,10 @@ EXTERN ExitProcess:PROC
 ex_18_call_codegen PROC
     sub rsp, 40
     call f
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_18_call_codegen ENDP
 main PROC
     sub     rsp, 40

@@ -9,12 +9,20 @@ heap QWORD 1,2,3,4,5
 heap_n EQU 5
 
 .code
-main PROC
+ex_04_tree_sum_flat PROC
     sub rsp, 40
     xor rcx, rcx
     call heap_sum
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_04_tree_sum_flat ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_tree_sum_flat
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 heap_sum PROC

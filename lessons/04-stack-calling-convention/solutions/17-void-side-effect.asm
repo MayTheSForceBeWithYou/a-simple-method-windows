@@ -11,7 +11,7 @@ EXTERN WriteFile:PROC
 buf BYTE 0, 10
 
 .code
-main PROC
+ex_17_void_side_effect PROC
     sub rsp, 56
     mov cl, '!'
     lea rdx, buf
@@ -25,7 +25,15 @@ main PROC
     mov QWORD PTR [rsp+40], 0
     call WriteFile
     xor rcx, rcx
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 56
+    ret
+ex_17_void_side_effect ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_void_side_effect
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 store_byte PROC

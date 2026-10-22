@@ -8,7 +8,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_22_many_pushes_balance PROC
     push 1
     push 2
     push 3
@@ -16,7 +16,15 @@ main PROC
     add rsp, 24
     mov rcx, rax
     sub rsp, 40
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_22_many_pushes_balance ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_many_pushes_balance
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum_top3 PROC

@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_02_mutual_even_odd PROC
     sub rsp, 40
     mov rcx, 4
     call is_even
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_02_mutual_even_odd ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_mutual_even_odd
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 is_even PROC

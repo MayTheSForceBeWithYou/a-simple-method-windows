@@ -18,8 +18,10 @@ ex_11_fixed_div PROC
     cqo
     idiv rbx
     shr rax, 16
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_11_fixed_div ENDP
 main PROC
     sub     rsp, 40

@@ -6,8 +6,8 @@ EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_make_dependency:PROC
 
 main PROC
-    ; TODO: mov ecx, 3; mov ecx, 1
-    ; TODO: implement ex_23_stretch_make_dependency (student routine; defined in solutions/).
+    sub     rsp, 40
+    ; TODO: return 3 from ex_23_stretch_make_dependency (object-count metaphor).
     call    ex_23_stretch_make_dependency
     mov     ecx, eax
     call    ExitProcess

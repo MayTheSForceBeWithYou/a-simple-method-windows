@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_30_signed_vs_unsigned_jmp PROC
     sub rsp, 40
     mov rax, -1
     cmp rax, 1
@@ -19,6 +19,14 @@ main PROC
 less:
     mov rcx, 1
 L_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_30_signed_vs_unsigned_jmp ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_30_signed_vs_unsigned_jmp
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

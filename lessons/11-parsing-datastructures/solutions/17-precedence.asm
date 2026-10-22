@@ -11,8 +11,10 @@ ex_17_precedence PROC
     mov rax, 3
     imul rax, 4
     add rax, 2
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_17_precedence ENDP
 main PROC
     sub     rsp, 40

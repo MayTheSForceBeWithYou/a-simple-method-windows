@@ -43,7 +43,8 @@ L_s:
     
 L_o:
     ; Exit with sum (16)
-        mov     eax, edi
+    mov rcx, rdi
+    mov     eax, rdi
     add     rsp, 40
     ret
 ex_20_mmap_pagesize_fill ENDP

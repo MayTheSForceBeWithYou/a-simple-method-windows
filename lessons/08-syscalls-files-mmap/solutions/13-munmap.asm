@@ -36,14 +36,15 @@ ex_13_munmap PROC
     jz L_f
     
     ; Success - exit 0
-        mov     eax, 0
+    mov rcx, 0
+    mov     eax, 0
     add     rsp, 40
     ret
 L_f:
     ; Failure - exit 1
     mov rcx, 1
-    call ExitProcess
-
+    mov     eax, 1
+    ret
 ex_13_munmap ENDP
 main PROC
     sub     rsp, 40

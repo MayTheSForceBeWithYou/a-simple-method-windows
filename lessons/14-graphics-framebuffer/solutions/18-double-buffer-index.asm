@@ -18,7 +18,8 @@ ex_18_double_buffer_index PROC
     mov QWORD PTR [idx], 0
     xor QWORD PTR [idx], 1
     xor QWORD PTR [idx], 1
-        mov     eax, ecx
+    mov rcx, [idx]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_double_buffer_index ENDP

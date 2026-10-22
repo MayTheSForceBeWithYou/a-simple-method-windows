@@ -1,5 +1,5 @@
 ; 13-ifdef-debug.asm
-; IFDEF DEBUG keeps mov ecx, 1; exit 1.
+; IFDEF DEBUG should affect exit code inside ex_13_ifdef_debug (see solutions/).
 
 ; Uncomment to enable debug:
 ; DEBUG = 1
@@ -9,8 +9,8 @@ EXTRN ExitProcess:PROC
 EXTRN ex_13_ifdef_debug:PROC
 
 main PROC
-    ; TODO: IFDEF DEBUG; mov ecx, 1; ELSE; xor ecx, ecx; ENDIF
-    ; TODO: implement ex_13_ifdef_debug (student routine; defined in solutions/).
+    sub     rsp, 40
+    ; TODO: IFDEF DEBUG / ELSE in ex_13_ifdef_debug; return exit code in eax.
     call    ex_13_ifdef_debug
     mov     ecx, eax
     call    ExitProcess

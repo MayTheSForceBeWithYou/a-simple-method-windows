@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_20_clamp PROC
     sub rsp, 40
     mov rax, 150
     cmp rax, 0
@@ -21,6 +21,14 @@ hi:
     mov rax, 100
 ok:
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_20_clamp ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_clamp
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

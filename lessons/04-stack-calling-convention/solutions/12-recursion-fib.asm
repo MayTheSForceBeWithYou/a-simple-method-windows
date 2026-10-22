@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_12_recursion_fib PROC
     sub rsp, 40
     mov rcx, 7
     call fib
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_12_recursion_fib ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_recursion_fib
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 fib PROC

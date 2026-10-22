@@ -27,7 +27,8 @@ ex_09_insert_at_cursor PROC
     inc QWORD PTR [len]
     inc QWORD PTR [cur]
     
-        mov     eax, ecx
+    mov rcx, [cur]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_insert_at_cursor ENDP

@@ -12,10 +12,18 @@ EXTERN ExitProcess:PROC
 buf BYTE ?
 
 .code
-main PROC
+ex_11_debug_size PROC
     sub rsp, 40
     mov BYTE PTR [buf], 1
     movzx rcx, BYTE PTR [buf]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_11_debug_size ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_debug_size
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

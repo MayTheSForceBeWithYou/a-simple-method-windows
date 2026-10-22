@@ -13,7 +13,7 @@ arr QWORD 1, 3, 5, 7, 9
 n EQU 5
 
 .code
-main PROC
+ex_25_stretch_binsearch PROC
     sub rsp, 40
     xor r8, r8
     mov r9, n
@@ -44,6 +44,14 @@ found:
 miss:
     mov rcx, 255
 L_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_25_stretch_binsearch ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_25_stretch_binsearch
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

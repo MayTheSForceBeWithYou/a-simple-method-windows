@@ -9,11 +9,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_24_register_widths PROC
     sub rsp, 40
     mov rax, 01111222233334444h
     mov ax, 0ABCDh
     movzx rcx, al
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_24_register_widths ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_register_widths
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

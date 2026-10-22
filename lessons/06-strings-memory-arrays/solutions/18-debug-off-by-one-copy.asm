@@ -14,7 +14,7 @@ src BYTE "ok", 0
 dst BYTE 8 DUP(?)
 
 .code
-ex_18_debug_off_by_one_copy PROC
+ex_18_debug_off_by_one_copy PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
@@ -23,8 +23,10 @@ ex_18_debug_off_by_one_copy PROC
     call strcpy
     lea rcx, dst
     call strlen_fn
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_18_debug_off_by_one_copy ENDP
 main PROC
     sub     rsp, 40

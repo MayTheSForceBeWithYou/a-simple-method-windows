@@ -17,8 +17,10 @@ clamp_hi:
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_16_clamp_q ENDP
 main PROC
     sub     rsp, 40

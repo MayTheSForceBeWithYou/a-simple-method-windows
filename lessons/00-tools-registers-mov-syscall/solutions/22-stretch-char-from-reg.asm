@@ -18,7 +18,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_22_stretch_char_from_reg PROC
     sub rsp, 56
     
     ; Set character
@@ -40,6 +40,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_22_stretch_char_from_reg ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_char_from_reg
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

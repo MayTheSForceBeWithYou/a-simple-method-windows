@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_14_debug_div_rdx PROC
     sub rsp, 40
     mov rax, 100
     xor rdx, rdx
     mov rbx, 10
     div rbx
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_14_debug_div_rdx ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_debug_div_rdx
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

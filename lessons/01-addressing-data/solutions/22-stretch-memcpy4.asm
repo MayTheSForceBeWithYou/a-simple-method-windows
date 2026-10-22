@@ -15,7 +15,7 @@ src BYTE 1, 2, 3, 4
 dst BYTE 4 DUP(?)
 
 .code
-main PROC
+ex_22_stretch_memcpy4 PROC
     sub rsp, 40
     mov al, BYTE PTR [src]
     mov BYTE PTR [dst], al
@@ -34,6 +34,14 @@ main PROC
     add rcx, rax
     movzx rax, BYTE PTR [dst+3]
     add rcx, rax
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_22_stretch_memcpy4 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_memcpy4
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

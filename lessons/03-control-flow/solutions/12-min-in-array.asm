@@ -13,7 +13,7 @@ arr QWORD 3, 9, 2, 7
 n EQU 4
 
 .code
-main PROC
+ex_12_min_in_array PROC
     sub rsp, 40
     lea r11, [arr]
     mov rcx, QWORD PTR [r11]
@@ -30,6 +30,14 @@ cont:
     inc r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_12_min_in_array ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_min_in_array
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

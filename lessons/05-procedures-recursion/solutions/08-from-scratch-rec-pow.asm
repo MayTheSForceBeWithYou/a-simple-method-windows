@@ -5,13 +5,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_08_from_scratch_rec_pow PROC
     sub rsp, 40
     mov rcx, 2
     mov rdx, 5
     call pow_fn
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_08_from_scratch_rec_pow ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_rec_pow
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 pow_fn PROC

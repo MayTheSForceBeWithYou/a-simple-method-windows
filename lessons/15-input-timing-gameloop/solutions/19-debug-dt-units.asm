@@ -19,8 +19,10 @@ ex_19_debug_dt_units PROC
     xor rdx, rdx
     mov rbx, 16
     div rbx
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_19_debug_dt_units ENDP
 main PROC
     sub     rsp, 40

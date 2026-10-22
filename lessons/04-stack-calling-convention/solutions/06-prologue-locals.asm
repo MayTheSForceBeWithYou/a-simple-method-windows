@@ -9,12 +9,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_06_prologue_locals PROC
     sub rsp, 40
     mov rcx, 41
     call inc_local
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_06_prologue_locals ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_prologue_locals
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 inc_local PROC

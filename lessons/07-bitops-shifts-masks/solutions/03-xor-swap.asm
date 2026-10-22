@@ -10,8 +10,10 @@ ex_03_xor_swap PROC
     xor rax, rbx
     xor rbx, rax
     xor rax, rbx
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_03_xor_swap ENDP
 main PROC
     sub     rsp, 40

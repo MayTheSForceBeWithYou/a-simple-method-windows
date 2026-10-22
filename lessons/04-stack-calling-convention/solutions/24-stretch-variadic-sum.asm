@@ -8,7 +8,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
+ex_24_stretch_variadic_sum PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
@@ -19,7 +19,15 @@ main PROC FRAME
     mov QWORD PTR [rsp+32], 6
     call sum_n
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_24_stretch_variadic_sum ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_stretch_variadic_sum
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum_n PROC

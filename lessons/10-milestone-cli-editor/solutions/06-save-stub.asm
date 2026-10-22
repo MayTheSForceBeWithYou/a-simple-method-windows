@@ -11,7 +11,8 @@ EXTERN ExitProcess:PROC
 .code
 ex_06_save_stub PROC
     sub rsp, 40
-        mov     eax, 0
+    mov rcx, 0
+    mov     eax, 0
     add     rsp, 40
     ret
 ex_06_save_stub ENDP

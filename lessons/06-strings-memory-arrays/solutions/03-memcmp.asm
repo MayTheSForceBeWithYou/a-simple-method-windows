@@ -15,8 +15,10 @@ ex_03_memcmp PROC
     lea rdx, b
     mov r8, 3
     call memcmp_fn
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_03_memcmp ENDP
 main PROC
     sub     rsp, 40

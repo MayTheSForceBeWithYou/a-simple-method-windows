@@ -5,13 +5,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_10_gcd_proc PROC
     sub rsp, 40
     mov rcx, 48
     mov rdx, 18
     call gcd
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_10_gcd_proc ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_gcd_proc
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 gcd PROC

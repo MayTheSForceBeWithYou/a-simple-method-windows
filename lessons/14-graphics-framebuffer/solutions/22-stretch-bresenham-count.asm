@@ -12,7 +12,8 @@ EXTERN ExitProcess:PROC
 .code
 ex_22_stretch_bresenham_count PROC
     sub rsp, 40
-        mov     eax, 4
+    mov rcx, 4
+    mov     eax, 4
     add     rsp, 40
     ret
 ex_22_stretch_bresenham_count ENDP

@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_11_recursion_fact PROC
     sub rsp, 40
     mov rcx, 4
     call fact
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_11_recursion_fact ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_recursion_fact
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 fact PROC

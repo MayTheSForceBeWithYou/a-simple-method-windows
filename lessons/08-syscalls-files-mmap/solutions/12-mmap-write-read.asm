@@ -30,12 +30,13 @@ ex_12_mmap_write_read PROC
     
     ; Read back and exit with value
     movzx rcx, BYTE PTR [rbx+100]
-    call ExitProcess
-    
+    mov     eax, ecx
+    add     rsp, 40
+    ret
 L_f:
     ; Exit 2 on allocation failure
-        mov     eax, 2
-    add     rsp, 40
+    mov rcx, 2
+    mov     eax, 2
     ret
 ex_12_mmap_write_read ENDP
 main PROC

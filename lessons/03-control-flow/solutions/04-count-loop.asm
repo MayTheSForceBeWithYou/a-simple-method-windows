@@ -16,8 +16,10 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_04_count_loop ENDP
 main PROC
     sub     rsp, 40

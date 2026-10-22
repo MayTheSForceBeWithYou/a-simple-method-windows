@@ -12,9 +12,17 @@ EXTERN ExitProcess:PROC
 x QWORD 55
 
 .code
-main PROC
+ex_19_debug_lea_load PROC
     sub rsp, 40
     mov rcx, [x]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_19_debug_lea_load ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_lea_load
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

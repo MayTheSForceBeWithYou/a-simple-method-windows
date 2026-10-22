@@ -15,8 +15,10 @@ ex_17_clock_diff PROC
     mov rax, 100
     mov rbx, 60
     sub rax, rbx
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_17_clock_diff ENDP
 main PROC
     sub     rsp, 40

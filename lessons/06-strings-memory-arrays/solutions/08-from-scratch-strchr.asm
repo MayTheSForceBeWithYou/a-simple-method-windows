@@ -13,8 +13,10 @@ ex_08_from_scratch_strchr PROC
     lea rcx, s
     mov rdx, 'c'
     call strchr_idx
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_08_from_scratch_strchr ENDP
 main PROC
     sub     rsp, 40

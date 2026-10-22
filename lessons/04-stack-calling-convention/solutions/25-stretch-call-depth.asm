@@ -8,14 +8,22 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
+ex_25_stretch_call_depth PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     mov rcx, 5
     call bump
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_25_stretch_call_depth ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_25_stretch_call_depth
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 bump PROC FRAME

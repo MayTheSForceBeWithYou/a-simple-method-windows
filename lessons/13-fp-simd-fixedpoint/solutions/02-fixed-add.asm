@@ -12,8 +12,10 @@ ex_02_fixed_add PROC
     mov ebx, (2 SHL 16)+(1 SHL 15)
     add eax, ebx
     shr eax, 16
-        add     rsp, 40
-        ret
+    mov ecx, eax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_02_fixed_add ENDP
 main PROC
     sub     rsp, 40

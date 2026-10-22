@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_22_is_prime_lite PROC
     sub rsp, 40
     mov r8, 11
     mov r9, 2
@@ -29,6 +29,14 @@ composite:
 prime:
     mov rcx, 1
 L_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_22_is_prime_lite ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_is_prime_lite
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -15,8 +15,10 @@ ex_17_simd_horizontal_stub PROC
     add eax, DWORD PTR [v+4]
     add eax, DWORD PTR [v+8]
     add eax, DWORD PTR [v+12]
-        add     rsp, 40
-        ret
+    mov ecx, eax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_17_simd_horizontal_stub ENDP
 main PROC
     sub     rsp, 40

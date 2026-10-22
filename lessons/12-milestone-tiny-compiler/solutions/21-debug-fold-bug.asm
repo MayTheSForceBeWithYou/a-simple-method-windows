@@ -11,8 +11,10 @@ ex_21_debug_fold_bug PROC
     mov rax, 2
     imul rax, 3
     add rax, 4
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_21_debug_fold_bug ENDP
 main PROC
     sub     rsp, 40

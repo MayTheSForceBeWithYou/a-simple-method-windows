@@ -12,7 +12,8 @@ EXTERN ExitProcess:PROC
 .code
 ex_11_sprite_layer PROC
     sub rsp, 40
-        mov     eax, 2
+    mov rcx, 2
+    mov     eax, 2
     add     rsp, 40
     ret
 ex_11_sprite_layer ENDP

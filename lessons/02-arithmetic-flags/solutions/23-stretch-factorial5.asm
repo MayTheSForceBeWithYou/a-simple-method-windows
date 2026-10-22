@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_23_stretch_factorial5 PROC
     sub rsp, 40
     mov rax, 1
     imul rax, 2
@@ -17,6 +17,14 @@ main PROC
     imul rax, 4
     imul rax, 5
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_23_stretch_factorial5 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_factorial5
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

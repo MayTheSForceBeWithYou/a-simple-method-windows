@@ -13,7 +13,7 @@ arr BYTE 3, 1, 4, 1, 5
 n EQU 5
 
 .code
-main PROC
+ex_08_find_first PROC
     sub rsp, 40
     xor r8, r8
 loop_start:
@@ -31,6 +31,14 @@ found:
 missing:
     mov rcx, 255
 exit_proc:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_08_find_first ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_find_first
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

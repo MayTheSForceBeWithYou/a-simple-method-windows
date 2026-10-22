@@ -18,8 +18,10 @@ ex_01_pixel_offset PROC
     imul rbx, 4
     add rax, rbx
     and rax, 255
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_01_pixel_offset ENDP
 main PROC
     sub     rsp, 40

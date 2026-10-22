@@ -10,8 +10,10 @@ ex_21_fast_inv_stub PROC
     sub rsp, 40
     mov rax, 10
     shr rax, 1
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_21_fast_inv_stub ENDP
 main PROC
     sub     rsp, 40

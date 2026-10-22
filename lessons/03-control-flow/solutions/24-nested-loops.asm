@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_24_nested_loops PROC
     sub rsp, 40
     xor rcx, rcx
     xor r8, r8
@@ -27,6 +27,14 @@ next:
     inc r8
     jmp outer
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_24_nested_loops ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_nested_loops
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

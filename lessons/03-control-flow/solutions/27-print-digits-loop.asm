@@ -16,7 +16,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_27_print_digits_loop PROC
     sub rsp, 56
     xor r8, r8
 loop_start:
@@ -49,6 +49,14 @@ write_buf:
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_27_print_digits_loop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_27_print_digits_loop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

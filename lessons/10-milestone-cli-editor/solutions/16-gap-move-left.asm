@@ -22,7 +22,8 @@ ex_16_gap_move_left PROC
     dec QWORD PTR [gap_s]
     dec QWORD PTR [gap_e]
     
-        mov     eax, ecx
+    mov rcx, [gap_s]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_16_gap_move_left ENDP

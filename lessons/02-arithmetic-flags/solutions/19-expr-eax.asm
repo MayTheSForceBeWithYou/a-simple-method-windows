@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_19_expr_eax PROC
     sub rsp, 40
     mov rax, 3
     add rax, 5
     imul rax, 7
     sub rax, 8
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_19_expr_eax ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_expr_eax
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

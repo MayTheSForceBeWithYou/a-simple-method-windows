@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_05_counted_loop PROC
     sub rsp, 40
     xor rcx, rcx
     mov r8, 5
@@ -20,6 +20,14 @@ loop_start:
     dec r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_05_counted_loop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_counted_loop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

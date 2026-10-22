@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_13_setb_unsigned PROC
     sub rsp, 40
     mov rax, 1
     mov rbx, 2
     cmp rax, rbx
     setb al
     movzx rcx, al
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_13_setb_unsigned ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_setb_unsigned
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

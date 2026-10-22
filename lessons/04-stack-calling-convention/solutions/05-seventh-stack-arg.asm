@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_05_seventh_stack_arg PROC
     sub rsp, 56        ; 32 shadow + 24 (16 for args 5-6, 8 for arg 7, round to 16)
     mov rcx, 1
     mov rdx, 2
@@ -22,7 +22,14 @@ main PROC
     add rsp, 56
     mov rcx, rax
     sub rsp, 40
-    call ExitProcess
+    mov     eax, ecx
+    ret
+ex_05_seventh_stack_arg ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_seventh_stack_arg
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum7 PROC

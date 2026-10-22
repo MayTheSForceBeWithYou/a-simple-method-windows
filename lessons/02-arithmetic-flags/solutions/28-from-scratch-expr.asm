@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_28_from_scratch_expr PROC
     sub rsp, 40
     mov rax, 12
     imul rax, 12
@@ -19,6 +19,14 @@ main PROC
     idiv rbx
     add rax, 1
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_28_from_scratch_expr ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_28_from_scratch_expr
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

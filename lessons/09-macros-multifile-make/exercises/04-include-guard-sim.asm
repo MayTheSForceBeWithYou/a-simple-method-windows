@@ -12,8 +12,8 @@ EXTRN ExitProcess:PROC
 EXTRN ex_04_include_guard_sim:PROC
 
 main PROC
-    ; TODO: mov ecx, MYVAL; mov ecx, 1
-    ; TODO: implement ex_04_include_guard_sim (student routine; defined in solutions/).
+    sub     rsp, 40
+    ; TODO: IFNDEF guard + MYVAL EQU 42 inside ex_04_include_guard_sim (see solutions/).
     call    ex_04_include_guard_sim
     mov     ecx, eax
     call    ExitProcess

@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_04_if_else PROC
     sub rsp, 40
     mov rax, 11
     cmp rax, 10
@@ -19,6 +19,14 @@ main PROC
 then_branch:
     mov rcx, 1
 L_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_04_if_else ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_if_else
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

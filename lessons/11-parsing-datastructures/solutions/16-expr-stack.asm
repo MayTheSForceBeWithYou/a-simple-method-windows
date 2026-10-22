@@ -32,8 +32,10 @@ ex_16_expr_stack PROC
     lea r11, [stk]
     mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_16_expr_stack ENDP
 main PROC
     sub     rsp, 40

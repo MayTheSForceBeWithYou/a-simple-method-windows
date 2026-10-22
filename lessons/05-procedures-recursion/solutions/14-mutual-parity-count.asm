@@ -9,8 +9,10 @@ ex_14_mutual_parity_count PROC
     sub rsp, 40
     mov rcx, 6
     call is_even
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_14_mutual_parity_count ENDP
 main PROC
     sub     rsp, 40

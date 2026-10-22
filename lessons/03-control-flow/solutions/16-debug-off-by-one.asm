@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_16_debug_off_by_one PROC
     sub rsp, 40
     xor rcx, rcx
     mov r8, 1
@@ -20,6 +20,14 @@ loop_start:
     inc r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_16_debug_off_by_one ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_debug_off_by_one
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

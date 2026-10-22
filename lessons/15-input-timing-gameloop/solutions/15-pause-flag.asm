@@ -21,7 +21,8 @@ ex_15_pause_flag PROC
     jne skip_update
     inc QWORD PTR [updates]
 skip_update:
-        mov     eax, ecx
+    mov rcx, [updates]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_pause_flag ENDP

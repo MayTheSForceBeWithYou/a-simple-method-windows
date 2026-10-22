@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 s BYTE "asm", 0
 
 .code
-ex_24_from_scratch_reverse_string PROC
+ex_24_from_scratch_reverse_string PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG

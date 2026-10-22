@@ -12,7 +12,8 @@ EXTERN ExitProcess:PROC
 .code
 ex_02_bfs_dist PROC
     sub rsp, 40
-        mov     eax, 1
+    mov rcx, 1
+    mov     eax, 1
     add     rsp, 40
     ret
 ex_02_bfs_dist ENDP

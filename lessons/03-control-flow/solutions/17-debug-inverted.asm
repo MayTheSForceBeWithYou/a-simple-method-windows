@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_17_debug_inverted PROC
     sub rsp, 40
     mov rax, 5
     cmp rax, 3
@@ -19,6 +19,14 @@ main PROC
 big:
     mov rcx, 2
 L_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_17_debug_inverted ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_debug_inverted
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

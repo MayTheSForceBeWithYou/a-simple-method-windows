@@ -8,7 +8,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
+ex_28_from_scratch_abi_add PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
@@ -17,7 +17,15 @@ main PROC FRAME
     mov r8, 12
     call add3
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_28_from_scratch_abi_add ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_28_from_scratch_abi_add
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 add3 PROC

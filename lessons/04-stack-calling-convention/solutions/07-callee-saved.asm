@@ -9,12 +9,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_07_callee_saved PROC
     sub rsp, 40
     mov rbx, 9
     call clobber_careful
     mov rcx, rbx
-    call ExitProcess
+    mov     eax, rbx
+    add     rsp, 40
+    ret
+ex_07_callee_saved ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_07_callee_saved
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 clobber_careful PROC

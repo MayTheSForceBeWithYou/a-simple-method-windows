@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_01_locals_three PROC
     sub rsp, 40
     mov rcx, 10
     call sum_locals
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_01_locals_three ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_locals_three
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum_locals PROC

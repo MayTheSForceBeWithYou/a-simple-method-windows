@@ -8,8 +8,8 @@ EXTRN ex_15_makefile_phony_doc:PROC
 ; .PHONY in Makefile marks non-file targets like "clean" or "all"
 
 main PROC
-    ; TODO: xor ecx, ecx; mov ecx, 1
-    ; TODO: implement ex_15_makefile_phony_doc (student routine; defined in solutions/).
+    sub     rsp, 40
+    ; TODO: return 0 from ex_15_makefile_phony_doc (.PHONY comment in header).
     call    ex_15_makefile_phony_doc
     mov     ecx, eax
     call    ExitProcess

@@ -9,12 +9,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_15_debug_inc_cf PROC
     sub rsp, 40
     mov al, 0FFh
     add al, 1
     setc al
     movzx rcx, al
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_15_debug_inc_cf ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_debug_inc_cf
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

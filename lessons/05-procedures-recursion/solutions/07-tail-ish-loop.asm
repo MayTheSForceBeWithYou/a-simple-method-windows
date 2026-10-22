@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_07_tail_ish_loop PROC
     sub rsp, 40
     mov rcx, 6
     call sum_to
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_07_tail_ish_loop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_07_tail_ish_loop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum_to PROC

@@ -8,14 +8,22 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
+ex_23_leaf_no_frame PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     mov rcx, 14
     call mul3
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_23_leaf_no_frame ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_leaf_no_frame
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 mul3 PROC

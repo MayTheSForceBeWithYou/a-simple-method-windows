@@ -9,7 +9,7 @@ ex_16_bitfield_unpack PROC
     shr rax, 3
     and rax, 7
     mov rcx, rax
-        mov     eax, 60
+    mov     eax, eax
     add     rsp, 40
     ret
 ex_16_bitfield_unpack ENDP

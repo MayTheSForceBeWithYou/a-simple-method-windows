@@ -39,12 +39,13 @@ ex_02_read_stdin_one PROC
     
     ; Exit with byte value
     movzx rcx, BYTE PTR [b]
-    call ExitProcess
-    
+    mov     eax, ecx
+    add     rsp, 56
+    ret
 L_fail:
     ; Exit 0 on failure
-        mov     eax, 0
-    add     rsp, 56
+    mov rcx, 0
+    mov     eax, 0
     ret
 ex_02_read_stdin_one ENDP
 main PROC

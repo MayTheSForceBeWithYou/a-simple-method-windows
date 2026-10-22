@@ -36,7 +36,8 @@ ex_02_rodata_string PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, 0
+    mov rcx, 0
+    mov     eax, 0
     add     rsp, 56
     ret
 ex_02_rodata_string ENDP

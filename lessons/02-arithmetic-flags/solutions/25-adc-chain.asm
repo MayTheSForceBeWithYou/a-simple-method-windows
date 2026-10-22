@@ -9,7 +9,7 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_25_adc_chain PROC
     sub rsp, 40
     mov rax, 1
     mov rdx, 0
@@ -19,6 +19,14 @@ main PROC
     adc rdx, r8
     ; High word is 1 after the incoming carry from add.
     mov rcx, rdx
-    call ExitProcess
+    mov     eax, rdx
+    add     rsp, 40
+    ret
+ex_25_adc_chain ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_25_adc_chain
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

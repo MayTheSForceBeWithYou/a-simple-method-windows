@@ -16,8 +16,10 @@ ex_14_arena_align PROC
     add rax, 7
     and rax, NOT 7
     mov QWORD PTR [bump], rax
-        add     rsp, 40
-        ret
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
 ex_14_arena_align ENDP
 main PROC
     sub     rsp, 40

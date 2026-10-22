@@ -9,12 +9,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
+ex_11_test_zf PROC
     sub rsp, 40
     xor rax, rax
     test rax, rax
     sete al
     movzx rcx, al
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_11_test_zf ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_test_zf
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

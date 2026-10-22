@@ -17,7 +17,7 @@ msg_len EQU $ - msg
 written DWORD ?
 
 .code
-main PROC FRAME
+ex_26_print_via_helper PROC FRAME
     sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
@@ -25,7 +25,15 @@ main PROC FRAME
     mov rdx, msg_len
     call write_str
     xor ecx, ecx
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_26_print_via_helper ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_26_print_via_helper
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 write_str PROC FRAME

@@ -19,6 +19,7 @@ ex_08_from_scratch_macro_add PROC
     
     mov rcx, 40
     ADD_IMM rcx, 2
+    
     mov     eax, ecx
     add     rsp, 40
     ret
