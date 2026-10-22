@@ -13,7 +13,7 @@ EXTRN ex_09_nested_calls:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_09_nested_calls (student routine; defined in solutions/).
+    ; TODO: write ex_09_nested_calls in this file.
     call    ex_09_nested_calls
     mov     ecx, eax
     call    ExitProcess

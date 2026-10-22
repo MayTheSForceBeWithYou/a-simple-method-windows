@@ -16,7 +16,7 @@ EXTRN ex_22_stretch_units_header:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_22_stretch_units_header (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_units_header in this file.
     call    ex_22_stretch_units_header
     mov     ecx, eax
     call    ExitProcess

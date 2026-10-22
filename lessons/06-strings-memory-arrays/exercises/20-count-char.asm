@@ -11,7 +11,7 @@ EXTRN ex_20_count_char:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_20_count_char (student routine; defined in solutions/).
+    ; TODO: write ex_20_count_char in this file.
     call    ex_20_count_char
     mov     ecx, eax
     call    ExitProcess

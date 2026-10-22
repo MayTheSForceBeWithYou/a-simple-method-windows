@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_09_insert_at_cursor:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_09_insert_at_cursor (student routine; defined in solutions/).
+    ; TODO: write ex_09_insert_at_cursor in this file.
     call    ex_09_insert_at_cursor
     mov     ecx, eax
     call    ExitProcess

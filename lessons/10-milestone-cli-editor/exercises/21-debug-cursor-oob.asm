@@ -7,7 +7,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_21_debug_cursor_oob:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_21_debug_cursor_oob (student routine; defined in solutions/).
+    ; TODO: write ex_21_debug_cursor_oob in this file.
     call    ex_21_debug_cursor_oob
     mov     ecx, eax
     call    ExitProcess

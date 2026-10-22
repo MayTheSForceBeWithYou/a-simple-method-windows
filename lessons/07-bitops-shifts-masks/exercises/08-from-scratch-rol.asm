@@ -17,7 +17,7 @@ EXTRN ex_08_from_scratch_rol:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_08_from_scratch_rol (student routine; defined in solutions/).
+    ; TODO: write ex_08_from_scratch_rol in this file.
     call    ex_08_from_scratch_rol
     mov     ecx, eax
     call    ExitProcess

@@ -12,13 +12,13 @@ main PROC
     mov     rbx, 5
     sub     rax, rbx
     call    abs_rax
-    mov     rcx, rax
+    mov     rbx, rax
     mov     rax, 3
-    mov     rbx, 8
-    sub     rax, rbx
+    mov     rcx, 8
+    sub     rax, rcx
     call    abs_rax
-    add     rcx, rax
-    mov     ecx, ecx
+    add     rbx, rax
+    mov     ecx, ebx
     call    ExitProcess
 main ENDP
 

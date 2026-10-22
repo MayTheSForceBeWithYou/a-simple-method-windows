@@ -11,7 +11,7 @@ EXTRN ex_21_abi_quiz_exit:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_21_abi_quiz_exit (student routine; defined in solutions/).
+    ; TODO: write ex_21_abi_quiz_exit in this file.
     call    ex_21_abi_quiz_exit
     mov     ecx, eax
     call    ExitProcess

@@ -12,7 +12,7 @@ EXTRN ex_14_mutual_parity_count:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_14_mutual_parity_count (student routine; defined in solutions/).
+    ; TODO: write ex_14_mutual_parity_count in this file.
     call    ex_14_mutual_parity_count
     mov     ecx, eax
     call    ExitProcess

@@ -14,7 +14,7 @@ EXTRN ex_01_cmp_je:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_01_cmp_je (student routine; defined in solutions/).
+    ; TODO: write ex_01_cmp_je in this file.
     call    ex_01_cmp_je
     mov     ecx, eax
     call    ExitProcess

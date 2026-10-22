@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_aabb_y:PROC
 main PROC
-    ; TODO: implement ex_19_debug_aabb_y (student routine; defined in solutions/).
+    ; TODO: write ex_19_debug_aabb_y in this file.
     call    ex_19_debug_aabb_y
     mov     ecx, eax
     call    ExitProcess

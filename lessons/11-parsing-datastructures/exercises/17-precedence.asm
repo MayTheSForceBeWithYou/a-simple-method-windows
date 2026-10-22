@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_precedence:PROC
 main PROC
-    ; TODO: implement ex_17_precedence (student routine; defined in solutions/).
+    ; TODO: write ex_17_precedence in this file.
     call    ex_17_precedence
     mov     ecx, eax
     call    ExitProcess

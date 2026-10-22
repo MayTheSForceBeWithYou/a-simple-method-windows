@@ -20,7 +20,7 @@ EXTRN ex_03_open_fail:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_03_open_fail (student routine; defined in solutions/).
+    ; TODO: write ex_03_open_fail in this file.
     call    ex_03_open_fail
     mov     ecx, eax
     call    ExitProcess

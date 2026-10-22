@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_poll_stub:PROC
 main PROC
-    ; TODO: implement ex_07_poll_stub (student routine; defined in solutions/).
+    ; TODO: write ex_07_poll_stub in this file.
     call    ex_07_poll_stub
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_16_ui_focus:PROC
 main PROC
-    ; TODO: implement ex_16_ui_focus (student routine; defined in solutions/).
+    ; TODO: write ex_16_ui_focus in this file.
     call    ex_16_ui_focus
     mov     ecx, eax
     call    ExitProcess

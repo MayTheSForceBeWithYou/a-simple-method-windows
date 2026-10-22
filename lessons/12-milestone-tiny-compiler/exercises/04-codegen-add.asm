@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_04_codegen_add:PROC
 main PROC
-    ; TODO: implement ex_04_codegen_add (student routine; defined in solutions/).
+    ; TODO: write ex_04_codegen_add in this file.
     call    ex_04_codegen_add
     mov     ecx, eax
     call    ExitProcess

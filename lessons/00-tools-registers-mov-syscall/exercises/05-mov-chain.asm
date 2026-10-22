@@ -14,7 +14,7 @@ EXTRN ex_05_mov_chain:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_05_mov_chain (student routine; defined in solutions/).
+    ; TODO: write ex_05_mov_chain in this file.
     call    ex_05_mov_chain
     mov     ecx, eax
     call    ExitProcess

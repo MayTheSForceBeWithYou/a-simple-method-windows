@@ -22,7 +22,7 @@ EXTRN ex_07_write_iov_lite:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_07_write_iov_lite (student routine; defined in solutions/).
+    ; TODO: write ex_07_write_iov_lite in this file.
     call    ex_07_write_iov_lite
     mov     ecx, eax
     call    ExitProcess

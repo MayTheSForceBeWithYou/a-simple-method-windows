@@ -26,7 +26,7 @@ EXTRN ex_08_two_writes:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_08_two_writes (student routine; defined in solutions/).
+    ; TODO: write ex_08_two_writes in this file.
     call    ex_08_two_writes
     mov     ecx, eax
     call    ExitProcess

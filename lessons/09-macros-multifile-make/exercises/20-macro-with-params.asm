@@ -9,7 +9,7 @@ EXTRN ex_20_macro_with_params:PROC
 
 main PROC
     ; TODO: ADD3 rax, 10, 20, 12
-    ; TODO: implement ex_20_macro_with_params (student routine; defined in solutions/).
+    ; TODO: write ex_20_macro_with_params in this file.
     call    ex_20_macro_with_params
     mov     ecx, eax
     call    ExitProcess

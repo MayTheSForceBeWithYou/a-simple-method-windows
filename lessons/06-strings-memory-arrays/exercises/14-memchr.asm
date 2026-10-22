@@ -11,7 +11,7 @@ EXTRN ex_14_memchr:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_14_memchr (student routine; defined in solutions/).
+    ; TODO: write ex_14_memchr in this file.
     call    ex_14_memchr
     mov     ecx, eax
     call    ExitProcess

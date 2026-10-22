@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_03_econ_tick:PROC
 main PROC
-    ; TODO: implement ex_03_econ_tick (student routine; defined in solutions/).
+    ; TODO: write ex_03_econ_tick in this file.
     call    ex_03_econ_tick
     mov     ecx, eax
     call    ExitProcess

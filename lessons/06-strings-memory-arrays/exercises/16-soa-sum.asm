@@ -11,7 +11,7 @@ EXTRN ex_16_soa_sum:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_16_soa_sum (student routine; defined in solutions/).
+    ; TODO: write ex_16_soa_sum in this file.
     call    ex_16_soa_sum
     mov     ecx, eax
     call    ExitProcess

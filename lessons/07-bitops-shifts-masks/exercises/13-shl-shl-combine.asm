@@ -15,7 +15,7 @@ EXTRN ex_13_shl_shl_combine:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_13_shl_shl_combine (student routine; defined in solutions/).
+    ; TODO: write ex_13_shl_shl_combine in this file.
     call    ex_13_shl_shl_combine
     mov     ecx, eax
     call    ExitProcess

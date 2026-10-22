@@ -11,7 +11,7 @@ EXTRN ex_21_sparse_fill:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_21_sparse_fill (student routine; defined in solutions/).
+    ; TODO: write ex_21_sparse_fill in this file.
     call    ex_21_sparse_fill
     mov     ecx, eax
     call    ExitProcess

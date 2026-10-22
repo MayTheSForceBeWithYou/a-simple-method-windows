@@ -10,6 +10,7 @@
 
 EXTRN ExitProcess:PROC
 
+; One push (8) + sub rsp,32 (32) => 40 bytes; RSP mod 16 == 8 before nested call.
 sum_to PROC FRAME
     push rbx
     .pushreg rbx

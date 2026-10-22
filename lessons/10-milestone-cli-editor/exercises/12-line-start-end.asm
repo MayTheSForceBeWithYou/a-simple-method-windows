@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_12_line_start_end:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_12_line_start_end (student routine; defined in solutions/).
+    ; TODO: write ex_12_line_start_end in this file.
     call    ex_12_line_start_end
     mov     ecx, eax
     call    ExitProcess

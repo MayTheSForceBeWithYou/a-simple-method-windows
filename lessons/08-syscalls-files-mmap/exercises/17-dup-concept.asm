@@ -21,7 +21,7 @@ EXTRN ex_17_dup_concept:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_17_dup_concept (student routine; defined in solutions/).
+    ; TODO: write ex_17_dup_concept in this file.
     call    ex_17_dup_concept
     mov     ecx, eax
     call    ExitProcess

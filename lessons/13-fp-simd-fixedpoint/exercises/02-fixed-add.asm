@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_02_fixed_add:PROC
 main PROC
-    ; TODO: implement ex_02_fixed_add (student routine; defined in solutions/).
+    ; TODO: write ex_02_fixed_add in this file.
     call    ex_02_fixed_add
     mov     ecx, eax
     call    ExitProcess

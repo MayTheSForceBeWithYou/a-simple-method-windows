@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_bresenham_count:PROC
 main PROC
-    ; TODO: implement ex_22_stretch_bresenham_count (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_bresenham_count in this file.
     call    ex_22_stretch_bresenham_count
     mov     ecx, eax
     call    ExitProcess

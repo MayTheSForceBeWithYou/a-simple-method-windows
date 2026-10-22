@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_lerp_fixed:PROC
 main PROC
-    ; TODO: implement ex_15_lerp_fixed (student routine; defined in solutions/).
+    ; TODO: write ex_15_lerp_fixed in this file.
     call    ex_15_lerp_fixed
     mov     ecx, eax
     call    ExitProcess

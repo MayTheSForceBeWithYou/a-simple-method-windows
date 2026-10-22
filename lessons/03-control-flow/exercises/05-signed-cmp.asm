@@ -14,7 +14,7 @@ EXTRN ex_05_signed_cmp:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_05_signed_cmp (student routine; defined in solutions/).
+    ; TODO: write ex_05_signed_cmp in this file.
     call    ex_05_signed_cmp
     mov     ecx, eax
     call    ExitProcess

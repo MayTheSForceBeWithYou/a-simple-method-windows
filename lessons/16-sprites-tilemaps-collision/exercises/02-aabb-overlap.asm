@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_02_aabb_overlap:PROC
 main PROC
-    ; TODO: implement ex_02_aabb_overlap (student routine; defined in solutions/).
+    ; TODO: write ex_02_aabb_overlap in this file.
     call    ex_02_aabb_overlap
     mov     ecx, eax
     call    ExitProcess

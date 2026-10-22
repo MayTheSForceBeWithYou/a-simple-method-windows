@@ -14,7 +14,7 @@ EXTRN ex_08_lea_scale:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_08_lea_scale (student routine; defined in solutions/).
+    ; TODO: write ex_08_lea_scale in this file.
     call    ex_08_lea_scale
     mov     ecx, eax
     call    ExitProcess

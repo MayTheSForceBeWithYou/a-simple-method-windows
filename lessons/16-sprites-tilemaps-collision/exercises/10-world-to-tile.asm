@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_10_world_to_tile:PROC
 main PROC
-    ; TODO: implement ex_10_world_to_tile (student routine; defined in solutions/).
+    ; TODO: write ex_10_world_to_tile in this file.
     call    ex_10_world_to_tile
     mov     ecx, eax
     call    ExitProcess

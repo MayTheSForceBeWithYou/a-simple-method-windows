@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_keymap:PROC
 main PROC
-    ; TODO: implement ex_01_keymap (student routine; defined in solutions/).
+    ; TODO: write ex_01_keymap in this file.
     call    ex_01_keymap
     mov     ecx, eax
     call    ExitProcess

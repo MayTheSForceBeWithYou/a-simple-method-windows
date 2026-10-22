@@ -16,7 +16,7 @@ EXTRN ex_22_stretch_swar_avg:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_22_stretch_swar_avg (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_swar_avg in this file.
     call    ex_22_stretch_swar_avg
     mov     ecx, eax
     call    ExitProcess

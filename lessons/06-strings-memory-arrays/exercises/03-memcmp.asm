@@ -11,7 +11,7 @@ EXTRN ex_03_memcmp:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_03_memcmp (student routine; defined in solutions/).
+    ; TODO: write ex_03_memcmp in this file.
     call    ex_03_memcmp
     mov     ecx, eax
     call    ExitProcess

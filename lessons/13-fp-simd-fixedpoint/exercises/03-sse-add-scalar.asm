@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_03_sse_add_scalar:PROC
 main PROC
-    ; TODO: implement ex_03_sse_add_scalar (student routine; defined in solutions/).
+    ; TODO: write ex_03_sse_add_scalar in this file.
     call    ex_03_sse_add_scalar
     mov     ecx, eax
     call    ExitProcess

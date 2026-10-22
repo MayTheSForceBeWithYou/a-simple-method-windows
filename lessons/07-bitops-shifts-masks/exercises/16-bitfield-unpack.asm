@@ -14,7 +14,7 @@ EXTRN ex_16_bitfield_unpack:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_16_bitfield_unpack (student routine; defined in solutions/).
+    ; TODO: write ex_16_bitfield_unpack in this file.
     call    ex_16_bitfield_unpack
     mov     ecx, eax
     call    ExitProcess

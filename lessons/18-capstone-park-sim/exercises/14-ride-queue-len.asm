@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_ride_queue_len:PROC
 main PROC
-    ; TODO: implement ex_14_ride_queue_len (student routine; defined in solutions/).
+    ; TODO: write ex_14_ride_queue_len in this file.
     call    ex_14_ride_queue_len
     mov     ecx, eax
     call    ExitProcess

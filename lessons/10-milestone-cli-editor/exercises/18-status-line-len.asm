@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_18_status_line_len:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_18_status_line_len (student routine; defined in solutions/).
+    ; TODO: write ex_18_status_line_len in this file.
     call    ex_18_status_line_len
     mov     ecx, eax
     call    ExitProcess

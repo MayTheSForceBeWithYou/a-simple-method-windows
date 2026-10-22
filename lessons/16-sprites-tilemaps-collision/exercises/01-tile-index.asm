@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_tile_index:PROC
 main PROC
-    ; TODO: implement ex_01_tile_index (student routine; defined in solutions/).
+    ; TODO: write ex_01_tile_index in this file.
     call    ex_01_tile_index
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_rd_expect:PROC
 main PROC
-    ; TODO: implement ex_15_rd_expect (student routine; defined in solutions/).
+    ; TODO: write ex_15_rd_expect in this file.
     call    ex_15_rd_expect
     mov     ecx, eax
     call    ExitProcess

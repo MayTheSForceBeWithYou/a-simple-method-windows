@@ -9,7 +9,7 @@ EXTRN ex_06_extern_sim_onefile:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_06_extern_sim_onefile (student routine; defined in solutions/).
+    ; TODO: write ex_06_extern_sim_onefile in this file.
     call    ex_06_extern_sim_onefile
     mov     ecx, eax
     call    ExitProcess

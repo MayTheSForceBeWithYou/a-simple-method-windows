@@ -32,7 +32,7 @@ ex_02_read_stdin_one PROC
     call ReadFile
     
     ; Check if read succeeded and got 1 byte
-    test rax, rax
+    test eax, eax
     jz L_fail
     cmp bytesRead, 1
     jne L_fail

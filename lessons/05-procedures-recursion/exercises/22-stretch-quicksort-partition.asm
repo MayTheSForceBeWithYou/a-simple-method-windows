@@ -12,7 +12,7 @@ EXTRN ex_22_stretch_quicksort_partition:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_22_stretch_quicksort_partition (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_quicksort_partition in this file.
     call    ex_22_stretch_quicksort_partition
     mov     ecx, eax
     call    ExitProcess

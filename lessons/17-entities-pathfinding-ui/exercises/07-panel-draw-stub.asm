@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_panel_draw_stub:PROC
 main PROC
-    ; TODO: implement ex_07_panel_draw_stub (student routine; defined in solutions/).
+    ; TODO: write ex_07_panel_draw_stub in this file.
     call    ex_07_panel_draw_stub
     mov     ecx, eax
     call    ExitProcess

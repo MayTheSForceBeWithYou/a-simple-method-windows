@@ -6,7 +6,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_14_dirty_flag:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_14_dirty_flag (student routine; defined in solutions/).
+    ; TODO: write ex_14_dirty_flag in this file.
     call    ex_14_dirty_flag
     mov     ecx, eax
     call    ExitProcess

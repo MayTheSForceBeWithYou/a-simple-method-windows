@@ -14,7 +14,7 @@ EXTRN ex_03_sum_loop:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_03_sum_loop (student routine; defined in solutions/).
+    ; TODO: write ex_03_sum_loop in this file.
     call    ex_03_sum_loop
     mov     ecx, eax
     call    ExitProcess

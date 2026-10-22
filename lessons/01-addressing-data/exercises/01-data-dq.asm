@@ -17,7 +17,7 @@ EXTRN ex_01_data_dq:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Load count into RAX, add 1, move to RCX, exit
-    ; TODO: implement ex_01_data_dq (student routine; defined in solutions/).
+    ; TODO: write ex_01_data_dq in this file.
     call    ex_01_data_dq
     mov     ecx, eax
     call    ExitProcess

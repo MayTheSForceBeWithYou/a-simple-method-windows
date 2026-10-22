@@ -14,7 +14,7 @@ EXTRN ex_05_imul_three:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_05_imul_three (student routine; defined in solutions/).
+    ; TODO: write ex_05_imul_three in this file.
     call    ex_05_imul_three
     mov     ecx, eax
     call    ExitProcess

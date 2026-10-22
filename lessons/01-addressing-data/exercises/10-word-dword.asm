@@ -21,7 +21,7 @@ main PROC
     ; TODO: Zero RAX, then load lower byte with MOVZX RCX, BYTE PTR [buffer]
     ; TODO: Exit with RCX
     ; Note: 256 = 00100h, low byte is 0
-    ; TODO: implement ex_10_word_dword (student routine; defined in solutions/).
+    ; TODO: write ex_10_word_dword in this file.
     call    ex_10_word_dword
     mov     ecx, eax
     call    ExitProcess

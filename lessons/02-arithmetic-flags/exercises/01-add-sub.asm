@@ -14,7 +14,7 @@ EXTRN ex_01_add_sub:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_01_add_sub (student routine; defined in solutions/).
+    ; TODO: write ex_01_add_sub in this file.
     call    ex_01_add_sub
     mov     ecx, eax
     call    ExitProcess

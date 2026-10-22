@@ -14,7 +14,7 @@ EXTRN ex_06_mul_unsigned:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_06_mul_unsigned (student routine; defined in solutions/).
+    ; TODO: write ex_06_mul_unsigned in this file.
     call    ex_06_mul_unsigned
     mov     ecx, eax
     call    ExitProcess

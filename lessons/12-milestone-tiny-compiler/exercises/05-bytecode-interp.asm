@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_05_bytecode_interp:PROC
 main PROC
-    ; TODO: implement ex_05_bytecode_interp (student routine; defined in solutions/).
+    ; TODO: write ex_05_bytecode_interp in this file.
     call    ex_05_bytecode_interp
     mov     ecx, eax
     call    ExitProcess

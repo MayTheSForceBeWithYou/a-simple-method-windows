@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_tile_collision_mask:PROC
 main PROC
-    ; TODO: implement ex_14_tile_collision_mask (student routine; defined in solutions/).
+    ; TODO: write ex_14_tile_collision_mask in this file.
     call    ex_14_tile_collision_mask
     mov     ecx, eax
     call    ExitProcess

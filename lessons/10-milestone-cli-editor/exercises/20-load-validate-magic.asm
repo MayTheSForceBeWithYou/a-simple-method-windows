@@ -15,7 +15,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_20_load_validate_magic:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_20_load_validate_magic (student routine; defined in solutions/).
+    ; TODO: write ex_20_load_validate_magic in this file.
     call    ex_20_load_validate_magic
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_12_parse_paren:PROC
 main PROC
-    ; TODO: implement ex_12_parse_paren (student routine; defined in solutions/).
+    ; TODO: write ex_12_parse_paren in this file.
     call    ex_12_parse_paren
     mov     ecx, eax
     call    ExitProcess

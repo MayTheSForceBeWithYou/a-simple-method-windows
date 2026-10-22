@@ -14,7 +14,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_19_save_length_prefix:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_19_save_length_prefix (student routine; defined in solutions/).
+    ; TODO: write ex_19_save_length_prefix in this file.
     call    ex_19_save_length_prefix
     mov     ecx, eax
     call    ExitProcess

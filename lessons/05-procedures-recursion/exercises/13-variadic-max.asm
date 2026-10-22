@@ -12,7 +12,7 @@ EXTRN ex_13_variadic_max:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_13_variadic_max (student routine; defined in solutions/).
+    ; TODO: write ex_13_variadic_max in this file.
     call    ex_13_variadic_max
     mov     ecx, eax
     call    ExitProcess

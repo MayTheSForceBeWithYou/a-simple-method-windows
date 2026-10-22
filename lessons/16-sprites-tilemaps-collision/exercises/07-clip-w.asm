@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_clip_w:PROC
 main PROC
-    ; TODO: implement ex_07_clip_w (student routine; defined in solutions/).
+    ; TODO: write ex_07_clip_w in this file.
     call    ex_07_clip_w
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_13_pack_rgba8888:PROC
 main PROC
-    ; TODO: implement ex_13_pack_rgba8888 (student routine; defined in solutions/).
+    ; TODO: write ex_13_pack_rgba8888 in this file.
     call    ex_13_pack_rgba8888
     mov     ecx, eax
     call    ExitProcess

@@ -14,7 +14,7 @@ EXTRN ex_16_mov_imm_vs_reg:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_16_mov_imm_vs_reg (student routine; defined in solutions/).
+    ; TODO: write ex_16_mov_imm_vs_reg in this file.
     call    ex_16_mov_imm_vs_reg
     mov     ecx, eax
     call    ExitProcess

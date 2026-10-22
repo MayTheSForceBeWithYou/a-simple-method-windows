@@ -14,7 +14,7 @@ EXTRN ex_02_inc_dec:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_02_inc_dec (student routine; defined in solutions/).
+    ; TODO: write ex_02_inc_dec in this file.
     call    ex_02_inc_dec
     mov     ecx, eax
     call    ExitProcess

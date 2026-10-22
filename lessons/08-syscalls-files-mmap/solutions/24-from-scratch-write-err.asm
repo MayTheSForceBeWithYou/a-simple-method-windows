@@ -28,7 +28,7 @@ ex_24_from_scratch_write_err PROC
     call WriteFile
     
     ; WriteFile returns 0 on failure
-    test rax, rax
+    test eax, eax
     jz L_ok
     
     ; Unexpected success - exit 0

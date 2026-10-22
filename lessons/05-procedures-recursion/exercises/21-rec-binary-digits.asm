@@ -12,7 +12,7 @@ EXTRN ex_21_rec_binary_digits:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_21_rec_binary_digits (student routine; defined in solutions/).
+    ; TODO: write ex_21_rec_binary_digits in this file.
     call    ex_21_rec_binary_digits
     mov     ecx, eax
     call    ExitProcess

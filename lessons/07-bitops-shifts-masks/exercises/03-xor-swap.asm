@@ -18,7 +18,7 @@ EXTRN ex_03_xor_swap:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_03_xor_swap (student routine; defined in solutions/).
+    ; TODO: write ex_03_xor_swap in this file.
     call    ex_03_xor_swap
     mov     ecx, eax
     call    ExitProcess

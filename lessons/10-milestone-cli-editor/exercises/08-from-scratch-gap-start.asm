@@ -7,7 +7,7 @@ gap_end QWORD ?
 EXTRN ExitProcess:PROC
 EXTRN ex_08_from_scratch_gap_start:PROC
 main PROC
-    ; TODO: implement ex_08_from_scratch_gap_start (student routine; defined in solutions/).
+    ; TODO: write ex_08_from_scratch_gap_start in this file.
     call    ex_08_from_scratch_gap_start
     mov     ecx, eax
     call    ExitProcess

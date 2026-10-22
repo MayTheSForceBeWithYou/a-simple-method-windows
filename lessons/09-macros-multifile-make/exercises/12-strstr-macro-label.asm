@@ -9,7 +9,7 @@ EXTRN ex_12_strstr_macro_label:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_12_strstr_macro_label (student routine; defined in solutions/).
+    ; TODO: write ex_12_strstr_macro_label in this file.
     call    ex_12_strstr_macro_label
     mov     ecx, eax
     call    ExitProcess

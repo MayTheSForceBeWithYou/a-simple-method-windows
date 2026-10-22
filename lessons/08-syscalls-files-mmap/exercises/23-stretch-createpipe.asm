@@ -1,4 +1,4 @@
-; 23-stretch-pipe-syscalls.asm (stretch)
+; 23-stretch-createpipe.asm (stretch)
 ;
 ; Create an anonymous pipe, exit 0 (do not read/write).
 ;
@@ -15,12 +15,12 @@ hWritePipe QWORD ?
 
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_pipe_syscalls:PROC
+EXTRN ex_23_stretch_createpipe:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_23_stretch_pipe_syscalls (student routine; defined in solutions/).
-    call    ex_23_stretch_pipe_syscalls
+    ; TODO: write ex_23_stretch_createpipe in this file.
+    call    ex_23_stretch_createpipe
     mov     ecx, eax
     call    ExitProcess
 main ENDP

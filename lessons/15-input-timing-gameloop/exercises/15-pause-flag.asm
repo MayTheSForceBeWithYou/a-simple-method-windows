@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_pause_flag:PROC
 main PROC
-    ; TODO: implement ex_15_pause_flag (student routine; defined in solutions/).
+    ; TODO: write ex_15_pause_flag in this file.
     call    ex_15_pause_flag
     mov     ecx, eax
     call    ExitProcess

@@ -22,7 +22,7 @@ EXTRN ex_11_read_dev_zero:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_11_read_dev_zero (student routine; defined in solutions/).
+    ; TODO: write ex_11_read_dev_zero in this file.
     call    ex_11_read_dev_zero
     mov     ecx, eax
     call    ExitProcess

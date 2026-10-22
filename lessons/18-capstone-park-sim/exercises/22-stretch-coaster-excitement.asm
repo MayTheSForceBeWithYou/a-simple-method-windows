@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_coaster_excitement:PROC
 main PROC
-    ; TODO: implement ex_22_stretch_coaster_excitement (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_coaster_excitement in this file.
     call    ex_22_stretch_coaster_excitement
     mov     ecx, eax
     call    ExitProcess

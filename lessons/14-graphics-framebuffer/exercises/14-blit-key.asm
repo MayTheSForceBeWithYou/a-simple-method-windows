@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_blit_key:PROC
 main PROC
-    ; TODO: implement ex_14_blit_key (student routine; defined in solutions/).
+    ; TODO: write ex_14_blit_key in this file.
     call    ex_14_blit_key
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_24_from_scratch_vector_push:PROC
 main PROC
-    ; TODO: implement ex_24_from_scratch_vector_push (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_vector_push in this file.
     call    ex_24_from_scratch_vector_push
     mov     ecx, eax
     call    ExitProcess

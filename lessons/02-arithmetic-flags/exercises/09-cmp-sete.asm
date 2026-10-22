@@ -14,7 +14,7 @@ EXTRN ex_09_cmp_sete:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_09_cmp_sete (student routine; defined in solutions/).
+    ; TODO: write ex_09_cmp_sete in this file.
     call    ex_09_cmp_sete
     mov     ecx, eax
     call    ExitProcess

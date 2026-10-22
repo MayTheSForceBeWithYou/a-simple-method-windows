@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_06_clip_test:PROC
 main PROC
-    ; TODO: implement ex_06_clip_test (student routine; defined in solutions/).
+    ; TODO: write ex_06_clip_test in this file.
     call    ex_06_clip_test
     mov     ecx, eax
     call    ExitProcess

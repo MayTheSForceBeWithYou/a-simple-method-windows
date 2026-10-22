@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_20_type_check_int:PROC
 main PROC
-    ; TODO: implement ex_20_type_check_int (student routine; defined in solutions/).
+    ; TODO: write ex_20_type_check_int in this file.
     call    ex_20_type_check_int
     mov     ecx, eax
     call    ExitProcess

@@ -1,23 +1,50 @@
-; Listing 18: MY_ADDR EQU OFFSET msg (LESSON.md block 18)
+; Listing 18: OFFSET / label span (LESSON.md block 18)
 ;
-; Purpose: Assembly-time offset of a data label equals distance from segment base.
-; Expected exit: 0
+; Purpose: RIP-relative LEA vs OFFSET immediate; assemble-time span MSG_LEN.
+; Expected exit: 2
 ; Expected stdout: (none)
+;
+; MSG_LEN = msg_end - msg (same .DATA section). Runtime span must match.
+; Failure codes: 117 = span mismatch, 118 = LEA vs OFFSET address mismatch.
 
 .DATA
 msg BYTE "Z", 0
+msg_end LABEL BYTE
 
-MY_ADDR EQU OFFSET msg
+MSG_LEN EQU msg_end - msg
+FAIL_SPAN EQU 117
+FAIL_ADDR EQU 118
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
+    sub     rsp, 40
     .allocstack 40
     .endprolog
-    ; MY_ADDR (= OFFSET msg) is 0 when msg is the first object in this .data segment.
-    mov     ecx, 0
+
+    ; Two legal ways to take the address of msg in MASM x64:
+    lea     rcx, msg                 ; RIP-relative
+    mov     rdx, OFFSET msg          ; 64-bit immediate (ADDR64)
+
+    lea     rax, msg
+    lea     rbx, msg_end
+    sub     rbx, rax
+    cmp     ebx, MSG_LEN
+    jne     fail_span
+
+    cmp     rcx, rdx
+    jne     fail_addr
+
+    mov     ecx, MSG_LEN
+    call    ExitProcess
+
+fail_span:
+    mov     ecx, FAIL_SPAN
+    call    ExitProcess
+
+fail_addr:
+    mov     ecx, FAIL_ADDR
     call    ExitProcess
 main ENDP
 

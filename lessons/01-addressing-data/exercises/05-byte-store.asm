@@ -19,7 +19,7 @@ main PROC
     sub     rsp, 32
     ; TODO: Store BYTE 88 to buffer, load with MOVZX, exit
     ; Hint: Use BYTE PTR [buffer] and movzx rcx, BYTE PTR [buffer]
-    ; TODO: implement ex_05_byte_store (student routine; defined in solutions/).
+    ; TODO: write ex_05_byte_store in this file.
     call    ex_05_byte_store
     mov     ecx, eax
     call    ExitProcess

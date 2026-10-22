@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_24_from_scratch_overlap_area:PROC
 main PROC
-    ; TODO: implement ex_24_from_scratch_overlap_area (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_overlap_area in this file.
     call    ex_24_from_scratch_overlap_area
     mov     ecx, eax
     call    ExitProcess

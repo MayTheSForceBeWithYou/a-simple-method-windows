@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_12_aabb_minkowski:PROC
 main PROC
-    ; TODO: implement ex_12_aabb_minkowski (student routine; defined in solutions/).
+    ; TODO: write ex_12_aabb_minkowski in this file.
     call    ex_12_aabb_minkowski
     mov     ecx, eax
     call    ExitProcess

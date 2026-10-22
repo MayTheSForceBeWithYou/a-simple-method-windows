@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_05_blit_copy:PROC
 main PROC
-    ; TODO: implement ex_05_blit_copy (student routine; defined in solutions/).
+    ; TODO: write ex_05_blit_copy in this file.
     call    ex_05_blit_copy
     mov     ecx, eax
     call    ExitProcess

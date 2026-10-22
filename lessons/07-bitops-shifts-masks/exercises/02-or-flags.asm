@@ -16,7 +16,7 @@ EXTRN ex_02_or_flags:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_02_or_flags (student routine; defined in solutions/).
+    ; TODO: write ex_02_or_flags in this file.
     call    ex_02_or_flags
     mov     ecx, eax
     call    ExitProcess

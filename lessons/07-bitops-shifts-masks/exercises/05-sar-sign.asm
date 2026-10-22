@@ -15,7 +15,7 @@ EXTRN ex_05_sar_sign:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_05_sar_sign (student routine; defined in solutions/).
+    ; TODO: write ex_05_sar_sign in this file.
     call    ex_05_sar_sign
     mov     ecx, eax
     call    ExitProcess

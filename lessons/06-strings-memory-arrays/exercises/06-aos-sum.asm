@@ -11,7 +11,7 @@ EXTRN ex_06_aos_sum:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_06_aos_sum (student routine; defined in solutions/).
+    ; TODO: write ex_06_aos_sum in this file.
     call    ex_06_aos_sum
     mov     ecx, eax
     call    ExitProcess

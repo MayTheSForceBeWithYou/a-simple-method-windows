@@ -12,7 +12,7 @@ EXTRN ex_19_compare_procs:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_19_compare_procs (student routine; defined in solutions/).
+    ; TODO: write ex_19_compare_procs in this file.
     call    ex_19_compare_procs
     mov     ecx, eax
     call    ExitProcess

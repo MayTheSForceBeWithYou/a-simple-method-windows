@@ -14,7 +14,7 @@ EXTRN ex_02_if_else:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_02_if_else (student routine; defined in solutions/).
+    ; TODO: write ex_02_if_else in this file.
     call    ex_02_if_else
     mov     ecx, eax
     call    ExitProcess

@@ -1,4 +1,4 @@
-; 16-clock-gettime-stub.asm
+; 16-qpc.asm
 ;
 ; Query performance counter (high-resolution timer), exit 0.
 ;
@@ -13,12 +13,12 @@ counter QWORD ?
 
 EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_16_clock_gettime_stub:PROC
+EXTRN ex_16_qpc:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_16_clock_gettime_stub (student routine; defined in solutions/).
-    call    ex_16_clock_gettime_stub
+    ; TODO: write ex_16_qpc in this file.
+    call    ex_16_qpc
     mov     ecx, eax
     call    ExitProcess
 main ENDP

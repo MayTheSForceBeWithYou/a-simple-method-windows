@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_21_scenario_goal:PROC
 main PROC
-    ; TODO: implement ex_21_scenario_goal (student routine; defined in solutions/).
+    ; TODO: write ex_21_scenario_goal in this file.
     call    ex_21_scenario_goal
     mov     ecx, eax
     call    ExitProcess

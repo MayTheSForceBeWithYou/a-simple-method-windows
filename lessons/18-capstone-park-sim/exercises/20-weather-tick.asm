@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_20_weather_tick:PROC
 main PROC
-    ; TODO: implement ex_20_weather_tick (student routine; defined in solutions/).
+    ; TODO: write ex_20_weather_tick in this file.
     call    ex_20_weather_tick
     mov     ecx, eax
     call    ExitProcess

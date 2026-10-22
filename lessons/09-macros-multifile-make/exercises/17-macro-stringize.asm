@@ -14,7 +14,7 @@ EXTRN ex_17_macro_stringize:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_17_macro_stringize (student routine; defined in solutions/).
+    ; TODO: write ex_17_macro_stringize in this file.
     call    ex_17_macro_stringize
     mov     ecx, eax
     call    ExitProcess

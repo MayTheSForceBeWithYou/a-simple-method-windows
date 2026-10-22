@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_15_gap_insert:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_15_gap_insert (student routine; defined in solutions/).
+    ; TODO: write ex_15_gap_insert in this file.
     call    ex_15_gap_insert
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_11_sprite_layer:PROC
 main PROC
-    ; TODO: implement ex_11_sprite_layer (student routine; defined in solutions/).
+    ; TODO: write ex_11_sprite_layer in this file.
     call    ex_11_sprite_layer
     mov     ecx, eax
     call    ExitProcess

@@ -2,7 +2,7 @@
 ;
 ; STRETCH: CreatePipe into handles; if success exit 0. (Should work)
 ;
-; Build: ml64 /c 23-stretch-pipe-syscalls.asm && link /OUT:23-stretch-pipe-syscalls.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-pipe-syscalls.obj kernel32.lib
+; Build: ml64 /c 23-stretch-createpipe.asm && link /OUT:23-stretch-createpipe.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-createpipe.obj kernel32.lib
 ;
 ; Expected exit: 0
 
@@ -14,7 +14,7 @@ hReadPipe QWORD ?
 hWritePipe QWORD ?
 
 .code
-ex_23_stretch_pipe_syscalls PROC
+ex_23_stretch_createpipe PROC
     sub rsp, 40
     
     ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
@@ -25,7 +25,7 @@ ex_23_stretch_pipe_syscalls PROC
     call CreatePipe
     
     ; Returns nonzero on success
-    test rax, rax
+    test eax, eax
     jz L_fail
     
     ; Success - exit 0
@@ -40,10 +40,10 @@ L_o:
     mov     eax, ecx
     add     rsp, 40
     ret
-ex_23_stretch_pipe_syscalls ENDP
+ex_23_stretch_createpipe ENDP
 main PROC
     sub     rsp, 40
-    call    ex_23_stretch_pipe_syscalls
+    call    ex_23_stretch_createpipe
     mov     rcx, rax
     call    ExitProcess
 main ENDP

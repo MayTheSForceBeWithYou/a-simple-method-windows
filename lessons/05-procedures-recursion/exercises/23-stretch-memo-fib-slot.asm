@@ -12,7 +12,7 @@ EXTRN ex_23_stretch_memo_fib_slot:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_23_stretch_memo_fib_slot (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_memo_fib_slot in this file.
     call    ex_23_stretch_memo_fib_slot
     mov     ecx, eax
     call    ExitProcess

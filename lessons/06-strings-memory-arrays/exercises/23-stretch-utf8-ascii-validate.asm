@@ -11,7 +11,7 @@ EXTRN ex_23_stretch_utf8_ascii_validate:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_23_stretch_utf8_ascii_validate (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_utf8_ascii_validate in this file.
     call    ex_23_stretch_utf8_ascii_validate
     mov     ecx, eax
     call    ExitProcess

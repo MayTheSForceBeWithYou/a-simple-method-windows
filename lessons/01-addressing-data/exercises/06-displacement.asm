@@ -20,7 +20,7 @@ main PROC
     ; TODO: LEA RBX, arr
     ; TODO: MOV RAX, [RBX+8] to get second element
     ; TODO: Exit with RAX
-    ; TODO: implement ex_06_displacement (student routine; defined in solutions/).
+    ; TODO: write ex_06_displacement in this file.
     call    ex_06_displacement
     mov     ecx, eax
     call    ExitProcess

@@ -11,7 +11,7 @@ EXTRN ex_19_matrix_index:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_19_matrix_index (student routine; defined in solutions/).
+    ; TODO: write ex_19_matrix_index in this file.
     call    ex_19_matrix_index
     mov     ecx, eax
     call    ExitProcess

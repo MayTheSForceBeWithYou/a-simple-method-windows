@@ -2,7 +2,7 @@
 ;
 ; VirtualAlloc then VirtualFree; exit 0 if VirtualFree succeeds.
 ;
-; Build: ml64 /c 13-munmap.asm && link /OUT:13-munmap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-munmap.obj kernel32.lib
+; Build: ml64 /c 13-virtualfree.asm && link /OUT:13-virtualfree.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-virtualfree.obj kernel32.lib
 ;
 ; Expected exit: 0
 
@@ -11,7 +11,7 @@ EXTERN VirtualFree:PROC
 EXTERN ExitProcess:PROC
 
 .code
-ex_13_munmap PROC
+ex_13_virtualfree PROC
     sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
@@ -32,7 +32,7 @@ ex_13_munmap PROC
     call VirtualFree
     
     ; VirtualFree returns nonzero on success, 0 on failure
-    test rax, rax
+    test eax, eax
     jz L_f
     
     ; Success - exit 0
@@ -45,10 +45,10 @@ L_f:
     mov rcx, 1
     mov     eax, 1
     ret
-ex_13_munmap ENDP
+ex_13_virtualfree ENDP
 main PROC
     sub     rsp, 40
-    call    ex_13_munmap
+    call    ex_13_virtualfree
     mov     rcx, rax
     call    ExitProcess
 main ENDP

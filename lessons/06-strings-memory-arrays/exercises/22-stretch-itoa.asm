@@ -11,7 +11,7 @@ EXTRN ex_22_stretch_itoa:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_22_stretch_itoa (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_itoa in this file.
     call    ex_22_stretch_itoa
     mov     ecx, eax
     call    ExitProcess

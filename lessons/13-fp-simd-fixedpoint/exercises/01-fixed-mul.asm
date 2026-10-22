@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_fixed_mul:PROC
 main PROC
-    ; TODO: implement ex_01_fixed_mul (student routine; defined in solutions/).
+    ; TODO: write ex_01_fixed_mul in this file.
     call    ex_01_fixed_mul
     mov     ecx, eax
     call    ExitProcess

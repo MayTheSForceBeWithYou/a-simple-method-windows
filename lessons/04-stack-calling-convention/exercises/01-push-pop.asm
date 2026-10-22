@@ -12,7 +12,7 @@ EXTRN ex_01_push_pop:PROC
 main PROC
     sub     rsp, 32
     ; TODO: PUSH 42, PUSH 99, POP to RBX, POP to RCX, exit with RCX
-    ; TODO: implement ex_01_push_pop (student routine; defined in solutions/).
+    ; TODO: write ex_01_push_pop in this file.
     call    ex_01_push_pop
     mov     ecx, eax
     call    ExitProcess

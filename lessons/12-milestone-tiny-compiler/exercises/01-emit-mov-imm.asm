@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_emit_mov_imm:PROC
 main PROC
-    ; TODO: implement ex_01_emit_mov_imm (student routine; defined in solutions/).
+    ; TODO: write ex_01_emit_mov_imm in this file.
     call    ex_01_emit_mov_imm
     mov     ecx, eax
     call    ExitProcess

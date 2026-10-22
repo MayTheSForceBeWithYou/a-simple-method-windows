@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_11_track_piece_rotate:PROC
 main PROC
-    ; TODO: implement ex_11_track_piece_rotate (student routine; defined in solutions/).
+    ; TODO: write ex_11_track_piece_rotate in this file.
     call    ex_11_track_piece_rotate
     mov     ecx, eax
     call    ExitProcess

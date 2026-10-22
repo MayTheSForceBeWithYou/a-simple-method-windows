@@ -14,7 +14,7 @@ ex_15_getpid PROC
     sub rsp, 40
     
     call GetCurrentProcessId
-    test rax, rax
+    test eax, eax
     setz cl
     movzx rcx, cl
     mov     eax, ecx

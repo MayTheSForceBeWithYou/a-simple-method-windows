@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_16_clamp_q:PROC
 main PROC
-    ; TODO: implement ex_16_clamp_q (student routine; defined in solutions/).
+    ; TODO: write ex_16_clamp_q in this file.
     call    ex_16_clamp_q
     mov     ecx, eax
     call    ExitProcess

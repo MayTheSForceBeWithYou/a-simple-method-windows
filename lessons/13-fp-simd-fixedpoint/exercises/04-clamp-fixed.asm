@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_04_clamp_fixed:PROC
 main PROC
-    ; TODO: implement ex_04_clamp_fixed (student routine; defined in solutions/).
+    ; TODO: write ex_04_clamp_fixed in this file.
     call    ex_04_clamp_fixed
     mov     ecx, eax
     call    ExitProcess

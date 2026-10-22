@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_10_map_erase:PROC
 main PROC
-    ; TODO: implement ex_10_map_erase (student routine; defined in solutions/).
+    ; TODO: write ex_10_map_erase in this file.
     call    ex_10_map_erase
     mov     ecx, eax
     call    ExitProcess

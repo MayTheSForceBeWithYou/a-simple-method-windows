@@ -21,7 +21,7 @@ EXTRN ex_09_write_len_check:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_09_write_len_check (student routine; defined in solutions/).
+    ; TODO: write ex_09_write_len_check in this file.
     call    ex_09_write_len_check
     mov     ecx, eax
     call    ExitProcess

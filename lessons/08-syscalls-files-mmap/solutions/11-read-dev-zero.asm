@@ -22,7 +22,7 @@ ex_11_read_dev_zero PROC
     call VirtualAlloc
     
     ; Check for NULL (failure)
-    test rax, rax
+    test eax, eax
     jz L_e
     
     ; Memory is automatically zero-filled

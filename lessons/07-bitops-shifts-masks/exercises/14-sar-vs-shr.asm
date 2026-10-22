@@ -18,7 +18,7 @@ EXTRN ex_14_sar_vs_shr:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_14_sar_vs_shr (student routine; defined in solutions/).
+    ; TODO: write ex_14_sar_vs_shr in this file.
     call    ex_14_sar_vs_shr
     mov     ecx, eax
     call    ExitProcess

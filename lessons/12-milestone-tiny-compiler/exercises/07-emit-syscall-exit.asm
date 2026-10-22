@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_emit_syscall_exit:PROC
 main PROC
-    ; TODO: implement ex_07_emit_syscall_exit (student routine; defined in solutions/).
+    ; TODO: write ex_07_emit_syscall_exit in this file.
     call    ex_07_emit_syscall_exit
     mov     ecx, eax
     call    ExitProcess

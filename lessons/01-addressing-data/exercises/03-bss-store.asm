@@ -17,7 +17,7 @@ EXTRN ex_03_bss_store:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Store 7 to the byte variable, load it back, exit with it
-    ; TODO: implement ex_03_bss_store (student routine; defined in solutions/).
+    ; TODO: write ex_03_bss_store in this file.
     call    ex_03_bss_store
     mov     ecx, eax
     call    ExitProcess

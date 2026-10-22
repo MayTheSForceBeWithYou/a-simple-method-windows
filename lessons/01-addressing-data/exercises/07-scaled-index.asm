@@ -21,7 +21,7 @@ main PROC
     ; TODO: MOV index 2 into RCX
     ; TODO: MOV RAX, [RBX+RCX*8]
     ; TODO: Exit with RAX
-    ; TODO: implement ex_07_scaled_index (student routine; defined in solutions/).
+    ; TODO: write ex_07_scaled_index in this file.
     call    ex_07_scaled_index
     mov     ecx, eax
     call    ExitProcess

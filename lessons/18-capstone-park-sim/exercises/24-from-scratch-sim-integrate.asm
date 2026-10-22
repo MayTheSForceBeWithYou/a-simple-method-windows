@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_24_from_scratch_sim_integrate:PROC
 main PROC
-    ; TODO: implement ex_24_from_scratch_sim_integrate (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_sim_integrate in this file.
     call    ex_24_from_scratch_sim_integrate
     mov     ecx, eax
     call    ExitProcess

@@ -15,7 +15,7 @@ EXTRN ex_21_gray_code:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_21_gray_code (student routine; defined in solutions/).
+    ; TODO: write ex_21_gray_code in this file.
     call    ex_21_gray_code
     mov     ecx, eax
     call    ExitProcess

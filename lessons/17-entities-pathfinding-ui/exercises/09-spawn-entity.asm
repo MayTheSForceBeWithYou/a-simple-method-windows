@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_09_spawn_entity:PROC
 main PROC
-    ; TODO: implement ex_09_spawn_entity (student routine; defined in solutions/).
+    ; TODO: write ex_09_spawn_entity in this file.
     call    ex_09_spawn_entity
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_input_queue:PROC
 main PROC
-    ; TODO: implement ex_18_input_queue (student routine; defined in solutions/).
+    ; TODO: write ex_18_input_queue in this file.
     call    ex_18_input_queue
     mov     ecx, eax
     call    ExitProcess

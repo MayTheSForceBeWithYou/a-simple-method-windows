@@ -15,7 +15,7 @@ EXTRN ex_04_shl_mul:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_04_shl_mul (student routine; defined in solutions/).
+    ; TODO: write ex_04_shl_mul in this file.
     call    ex_04_shl_mul
     mov     ecx, eax
     call    ExitProcess

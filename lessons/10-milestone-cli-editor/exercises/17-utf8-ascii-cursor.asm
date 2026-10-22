@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_17_utf8_ascii_cursor:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_17_utf8_ascii_cursor (student routine; defined in solutions/).
+    ; TODO: write ex_17_utf8_ascii_cursor in this file.
     call    ex_17_utf8_ascii_cursor
     mov     ecx, eax
     call    ExitProcess

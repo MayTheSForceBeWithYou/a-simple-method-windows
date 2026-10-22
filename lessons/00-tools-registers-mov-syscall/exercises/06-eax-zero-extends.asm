@@ -15,7 +15,7 @@ EXTRN ex_06_eax_zero_extends:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_06_eax_zero_extends (student routine; defined in solutions/).
+    ; TODO: write ex_06_eax_zero_extends in this file.
     call    ex_06_eax_zero_extends
     mov     ecx, eax
     call    ExitProcess

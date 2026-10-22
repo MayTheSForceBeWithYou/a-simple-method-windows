@@ -12,7 +12,7 @@ EXTRN ex_18_trampoline_depth:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_18_trampoline_depth (student routine; defined in solutions/).
+    ; TODO: write ex_18_trampoline_depth in this file.
     call    ex_18_trampoline_depth
     mov     ecx, eax
     call    ExitProcess

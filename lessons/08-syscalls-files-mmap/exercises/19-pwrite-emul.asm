@@ -25,7 +25,7 @@ EXTRN ex_19_pwrite_emul:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_19_pwrite_emul (student routine; defined in solutions/).
+    ; TODO: write ex_19_pwrite_emul in this file.
     call    ex_19_pwrite_emul
     mov     ecx, eax
     call    ExitProcess

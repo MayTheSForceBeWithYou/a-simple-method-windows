@@ -20,7 +20,7 @@ EXTRN ex_24_from_scratch_write_err:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_24_from_scratch_write_err (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_write_err in this file.
     call    ex_24_from_scratch_write_err
     mov     ecx, eax
     call    ExitProcess

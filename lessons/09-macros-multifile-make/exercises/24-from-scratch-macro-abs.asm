@@ -9,7 +9,7 @@ EXTRN ex_24_from_scratch_macro_abs:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_24_from_scratch_macro_abs (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_macro_abs in this file.
     call    ex_24_from_scratch_macro_abs
     mov     ecx, eax
     call    ExitProcess

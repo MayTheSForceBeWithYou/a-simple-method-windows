@@ -11,7 +11,7 @@ EXTRN ex_09_strcmp:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_09_strcmp (student routine; defined in solutions/).
+    ; TODO: write ex_09_strcmp in this file.
     call    ex_09_strcmp
     mov     ecx, eax
     call    ExitProcess

@@ -14,7 +14,7 @@ EXTRN ex_04_count_loop:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_04_count_loop (student routine; defined in solutions/).
+    ; TODO: write ex_04_count_loop in this file.
     call    ex_04_count_loop
     mov     ecx, eax
     call    ExitProcess

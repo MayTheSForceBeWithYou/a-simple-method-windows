@@ -17,7 +17,7 @@ EXTRN ex_03_macro_write:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_03_macro_write (student routine; defined in solutions/).
+    ; TODO: write ex_03_macro_write in this file.
     call    ex_03_macro_write
     mov     ecx, eax
     call    ExitProcess

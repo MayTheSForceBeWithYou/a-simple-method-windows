@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_10_insert_middle:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_10_insert_middle (student routine; defined in solutions/).
+    ; TODO: write ex_10_insert_middle in this file.
     call    ex_10_insert_middle
     mov     ecx, eax
     call    ExitProcess

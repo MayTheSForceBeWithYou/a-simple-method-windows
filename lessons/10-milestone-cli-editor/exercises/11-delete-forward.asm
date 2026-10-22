@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_11_delete_forward:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_11_delete_forward (student routine; defined in solutions/).
+    ; TODO: write ex_11_delete_forward in this file.
     call    ex_11_delete_forward
     mov     ecx, eax
     call    ExitProcess

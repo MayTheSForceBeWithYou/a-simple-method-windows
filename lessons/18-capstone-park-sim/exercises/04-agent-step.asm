@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_04_agent_step:PROC
 main PROC
-    ; TODO: implement ex_04_agent_step (student routine; defined in solutions/).
+    ; TODO: write ex_04_agent_step in this file.
     call    ex_04_agent_step
     mov     ecx, eax
     call    ExitProcess

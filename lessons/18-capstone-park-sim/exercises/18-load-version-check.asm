@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_load_version_check:PROC
 main PROC
-    ; TODO: implement ex_18_load_version_check (student routine; defined in solutions/).
+    ; TODO: write ex_18_load_version_check in this file.
     call    ex_18_load_version_check
     mov     ecx, eax
     call    ExitProcess

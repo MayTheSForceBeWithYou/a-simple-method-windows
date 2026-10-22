@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_offset_bpp:PROC
 main PROC
-    ; TODO: implement ex_19_debug_offset_bpp (student routine; defined in solutions/).
+    ; TODO: write ex_19_debug_offset_bpp in this file.
     call    ex_19_debug_offset_bpp
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_20_steering_seek:PROC
 main PROC
-    ; TODO: implement ex_20_steering_seek (student routine; defined in solutions/).
+    ; TODO: write ex_20_steering_seek in this file.
     call    ex_20_steering_seek
     mov     ecx, eax
     call    ExitProcess

@@ -25,7 +25,7 @@ EXTRN ex_10_len_equ:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_10_len_equ (student routine; defined in solutions/).
+    ; TODO: write ex_10_len_equ in this file.
     call    ex_10_len_equ
     mov     ecx, eax
     call    ExitProcess

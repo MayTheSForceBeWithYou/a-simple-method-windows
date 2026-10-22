@@ -19,7 +19,7 @@ EXTRN ex_22_stretch_file_copy_mem:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_22_stretch_file_copy_mem (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_file_copy_mem in this file.
     call    ex_22_stretch_file_copy_mem
     mov     ecx, eax
     call    ExitProcess

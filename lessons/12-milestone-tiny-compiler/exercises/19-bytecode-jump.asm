@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_19_bytecode_jump:PROC
 main PROC
-    ; TODO: implement ex_19_bytecode_jump (student routine; defined in solutions/).
+    ; TODO: write ex_19_bytecode_jump in this file.
     call    ex_19_bytecode_jump
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_ui_modal:PROC
 main PROC
-    ; TODO: implement ex_23_stretch_ui_modal (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_ui_modal in this file.
     call    ex_23_stretch_ui_modal
     mov     ecx, eax
     call    ExitProcess

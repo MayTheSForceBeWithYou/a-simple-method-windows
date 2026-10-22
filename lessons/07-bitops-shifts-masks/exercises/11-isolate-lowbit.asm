@@ -16,7 +16,7 @@ EXTRN ex_11_isolate_lowbit:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_11_isolate_lowbit (student routine; defined in solutions/).
+    ; TODO: write ex_11_isolate_lowbit in this file.
     call    ex_11_isolate_lowbit
     mov     ecx, eax
     call    ExitProcess

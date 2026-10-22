@@ -18,7 +18,7 @@ EXTRN ex_12_next_power_of_two_bit:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_12_next_power_of_two_bit (student routine; defined in solutions/).
+    ; TODO: write ex_12_next_power_of_two_bit in this file.
     call    ex_12_next_power_of_two_bit
     mov     ecx, eax
     call    ExitProcess

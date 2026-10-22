@@ -10,7 +10,7 @@ EXTRN ex_09_macro_pushregs:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_09_macro_pushregs (student routine; defined in solutions/).
+    ; TODO: write ex_09_macro_pushregs in this file.
     call    ex_09_macro_pushregs
     mov     ecx, eax
     call    ExitProcess

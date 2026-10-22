@@ -19,7 +19,7 @@ EXTRN ex_09_xor_checksum:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_09_xor_checksum (student routine; defined in solutions/).
+    ; TODO: write ex_09_xor_checksum in this file.
     call    ex_09_xor_checksum
     mov     ecx, eax
     call    ExitProcess

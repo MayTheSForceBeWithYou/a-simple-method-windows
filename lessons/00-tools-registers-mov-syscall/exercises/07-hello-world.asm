@@ -24,7 +24,7 @@ EXTRN ex_07_hello_world:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_07_hello_world (student routine; defined in solutions/).
+    ; TODO: write ex_07_hello_world in this file.
     call    ex_07_hello_world
     mov     ecx, eax
     call    ExitProcess

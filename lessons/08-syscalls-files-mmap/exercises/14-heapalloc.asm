@@ -1,4 +1,4 @@
-; 14-brk-stub.asm
+; 14-heapalloc.asm
 ;
 ; Windows doesn't have brk. Demonstrate VirtualAlloc instead, exit 0.
 ;
@@ -11,12 +11,12 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_14_brk_stub:PROC
+EXTRN ex_14_heapalloc:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_14_brk_stub (student routine; defined in solutions/).
-    call    ex_14_brk_stub
+    ; TODO: write ex_14_heapalloc in this file.
+    call    ex_14_heapalloc
     mov     ecx, eax
     call    ExitProcess
 main ENDP

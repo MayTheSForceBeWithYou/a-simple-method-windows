@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_error_span:PROC
 main PROC
-    ; TODO: implement ex_23_stretch_error_span (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_error_span in this file.
     call    ex_23_stretch_error_span
     mov     ecx, eax
     call    ExitProcess

@@ -14,7 +14,7 @@ EXTRN ex_15_exit_sum:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_15_exit_sum (student routine; defined in solutions/).
+    ; TODO: write ex_15_exit_sum in this file.
     call    ex_15_exit_sum
     mov     ecx, eax
     call    ExitProcess

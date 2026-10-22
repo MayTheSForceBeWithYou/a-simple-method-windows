@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_16_gap_move_left:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_16_gap_move_left (student routine; defined in solutions/).
+    ; TODO: write ex_16_gap_move_left in this file.
     call    ex_16_gap_move_left
     mov     ecx, eax
     call    ExitProcess

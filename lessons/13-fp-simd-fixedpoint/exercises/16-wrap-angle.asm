@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_16_wrap_angle:PROC
 main PROC
-    ; TODO: implement ex_16_wrap_angle (student routine; defined in solutions/).
+    ; TODO: write ex_16_wrap_angle in this file.
     call    ex_16_wrap_angle
     mov     ecx, eax
     call    ExitProcess

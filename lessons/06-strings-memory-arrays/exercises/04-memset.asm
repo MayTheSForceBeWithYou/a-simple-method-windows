@@ -11,7 +11,7 @@ EXTRN ex_04_memset:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_04_memset (student routine; defined in solutions/).
+    ; TODO: write ex_04_memset in this file.
     call    ex_04_memset
     mov     ecx, eax
     call    ExitProcess

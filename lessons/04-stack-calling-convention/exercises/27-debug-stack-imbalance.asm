@@ -10,7 +10,7 @@ EXTRN ex_27_debug_stack_imbalance:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_27_debug_stack_imbalance (student routine; defined in solutions/).
+    ; TODO: write ex_27_debug_stack_imbalance in this file.
     call    ex_27_debug_stack_imbalance
     mov     ecx, eax
     call    ExitProcess

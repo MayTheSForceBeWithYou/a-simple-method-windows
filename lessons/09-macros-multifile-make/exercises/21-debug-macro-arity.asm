@@ -13,7 +13,7 @@ ENDM
 
 main PROC
     ; TODO: Fix invocation: ExitStatus 4
-    ; TODO: implement ex_21_debug_macro_arity (student routine; defined in solutions/).
+    ; TODO: write ex_21_debug_macro_arity in this file.
     call    ex_21_debug_macro_arity
     mov     ecx, eax
     call    ExitProcess

@@ -8,7 +8,7 @@ EXTRN ex_14_multifile_sim_globals:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_14_multifile_sim_globals (student routine; defined in solutions/).
+    ; TODO: write ex_14_multifile_sim_globals in this file.
     call    ex_14_multifile_sim_globals
     mov     ecx, eax
     call    ExitProcess

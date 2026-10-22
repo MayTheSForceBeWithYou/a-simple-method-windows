@@ -14,7 +14,7 @@ EXTRN ex_03_neg:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_03_neg (student routine; defined in solutions/).
+    ; TODO: write ex_03_neg in this file.
     call    ex_03_neg
     mov     ecx, eax
     call    ExitProcess

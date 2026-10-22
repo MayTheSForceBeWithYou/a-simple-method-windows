@@ -11,7 +11,7 @@ EXTRN ex_12_strcat_lite:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_12_strcat_lite (student routine; defined in solutions/).
+    ; TODO: write ex_12_strcat_lite in this file.
     call    ex_12_strcat_lite
     mov     ecx, eax
     call    ExitProcess

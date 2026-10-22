@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_fixed_angle_step:PROC
 main PROC
-    ; TODO: implement ex_18_fixed_angle_step (student routine; defined in solutions/).
+    ; TODO: write ex_18_fixed_angle_step in this file.
     call    ex_18_fixed_angle_step
     mov     ecx, eax
     call    ExitProcess

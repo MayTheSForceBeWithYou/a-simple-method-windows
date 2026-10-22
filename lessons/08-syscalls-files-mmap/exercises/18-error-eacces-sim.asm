@@ -19,7 +19,7 @@ EXTRN ex_18_error_eacces_sim:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_18_error_eacces_sim (student routine; defined in solutions/).
+    ; TODO: write ex_18_error_eacces_sim in this file.
     call    ex_18_error_eacces_sim
     mov     ecx, eax
     call    ExitProcess

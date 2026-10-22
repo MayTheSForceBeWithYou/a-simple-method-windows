@@ -10,7 +10,7 @@ EXTRN ex_02_macro_exit:PROC
 
 main PROC
     ; TODO: Invoke ExitWith 7
-    ; TODO: implement ex_02_macro_exit (student routine; defined in solutions/).
+    ; TODO: write ex_02_macro_exit in this file.
     call    ex_02_macro_exit
     mov     ecx, eax
     call    ExitProcess

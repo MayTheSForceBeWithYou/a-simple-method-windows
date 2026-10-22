@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_peep_happy:PROC
 main PROC
-    ; TODO: implement ex_07_peep_happy (student routine; defined in solutions/).
+    ; TODO: write ex_07_peep_happy in this file.
     call    ex_07_peep_happy
     mov     ecx, eax
     call    ExitProcess

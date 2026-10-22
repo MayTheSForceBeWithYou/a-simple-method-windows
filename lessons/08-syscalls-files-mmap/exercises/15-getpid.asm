@@ -14,7 +14,7 @@ EXTRN ex_15_getpid:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_15_getpid (student routine; defined in solutions/).
+    ; TODO: write ex_15_getpid in this file.
     call    ex_15_getpid
     mov     ecx, eax
     call    ExitProcess

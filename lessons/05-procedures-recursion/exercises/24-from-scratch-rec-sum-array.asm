@@ -12,7 +12,7 @@ EXTRN ex_24_from_scratch_rec_sum_array:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_24_from_scratch_rec_sum_array (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_rec_sum_array in this file.
     call    ex_24_from_scratch_rec_sum_array
     mov     ecx, eax
     call    ExitProcess

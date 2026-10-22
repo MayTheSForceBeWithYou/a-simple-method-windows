@@ -11,7 +11,7 @@ EXTRN ex_11_strchr:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_11_strchr (student routine; defined in solutions/).
+    ; TODO: write ex_11_strchr in this file.
     call    ex_11_strchr
     mov     ecx, eax
     call    ExitProcess

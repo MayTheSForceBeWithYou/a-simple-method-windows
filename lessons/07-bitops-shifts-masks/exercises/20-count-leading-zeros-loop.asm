@@ -16,7 +16,7 @@ EXTRN ex_20_count_leading_zeros_loop:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_20_count_leading_zeros_loop (student routine; defined in solutions/).
+    ; TODO: write ex_20_count_leading_zeros_loop in this file.
     call    ex_20_count_leading_zeros_loop
     mov     ecx, eax
     call    ExitProcess

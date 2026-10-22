@@ -12,7 +12,7 @@ EXTRN ex_15_rec_strlen:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_15_rec_strlen (student routine; defined in solutions/).
+    ; TODO: write ex_15_rec_strlen in this file.
     call    ex_15_rec_strlen
     mov     ecx, eax
     call    ExitProcess

@@ -10,7 +10,7 @@ EXTRN ex_17_closure_sim:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_17_closure_sim (student routine; defined in solutions/).
+    ; TODO: write ex_17_closure_sim in this file.
     call    ex_17_closure_sim
     mov     ecx, eax
     call    ExitProcess

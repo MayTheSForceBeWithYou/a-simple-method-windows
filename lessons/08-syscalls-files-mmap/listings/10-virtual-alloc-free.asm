@@ -32,7 +32,7 @@ main PROC FRAME
     xor edx, edx
     mov r8d, 8000h
     call VirtualFree
-    test rax, rax
+    test eax, eax
     jz free_failed
 
     mov ecx, 42

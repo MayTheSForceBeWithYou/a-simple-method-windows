@@ -19,7 +19,7 @@ EXTRN ex_08_from_scratch_close:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_08_from_scratch_close (student routine; defined in solutions/).
+    ; TODO: write ex_08_from_scratch_close in this file.
     call    ex_08_from_scratch_close
     mov     ecx, eax
     call    ExitProcess

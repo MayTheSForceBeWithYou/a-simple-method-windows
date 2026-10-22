@@ -7,7 +7,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_02_insert_char:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_02_insert_char (student routine; defined in solutions/).
+    ; TODO: write ex_02_insert_char in this file.
     call    ex_02_insert_char
     mov     ecx, eax
     call    ExitProcess

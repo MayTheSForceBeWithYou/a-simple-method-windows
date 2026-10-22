@@ -10,7 +10,7 @@ EXTRN ex_01_define_const:PROC
 
 main PROC
     ; TODO: mov ecx, STATUS_OK; call ExitProcess
-    ; TODO: implement ex_01_define_const (student routine; defined in solutions/).
+    ; TODO: write ex_01_define_const in this file.
     call    ex_01_define_const
     mov     ecx, eax
     call    ExitProcess

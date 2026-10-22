@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_abs_fixed:PROC
 main PROC
-    ; TODO: implement ex_14_abs_fixed (student routine; defined in solutions/).
+    ; TODO: write ex_14_abs_fixed in this file.
     call    ex_14_abs_fixed
     mov     ecx, eax
     call    ExitProcess

@@ -11,7 +11,7 @@ EXTRN ex_18_debug_off_by_one_copy:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_18_debug_off_by_one_copy (student routine; defined in solutions/).
+    ; TODO: write ex_18_debug_off_by_one_copy in this file.
     call    ex_18_debug_off_by_one_copy
     mov     ecx, eax
     call    ExitProcess

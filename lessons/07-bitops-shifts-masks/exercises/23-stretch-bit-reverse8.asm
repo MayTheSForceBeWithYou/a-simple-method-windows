@@ -17,7 +17,7 @@ EXTRN ex_23_stretch_bit_reverse8:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_23_stretch_bit_reverse8 (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_bit_reverse8 in this file.
     call    ex_23_stretch_bit_reverse8
     mov     ecx, eax
     call    ExitProcess

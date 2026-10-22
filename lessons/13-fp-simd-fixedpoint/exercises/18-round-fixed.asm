@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_round_fixed:PROC
 main PROC
-    ; TODO: implement ex_18_round_fixed (student routine; defined in solutions/).
+    ; TODO: write ex_18_round_fixed in this file.
     call    ex_18_round_fixed
     mov     ecx, eax
     call    ExitProcess

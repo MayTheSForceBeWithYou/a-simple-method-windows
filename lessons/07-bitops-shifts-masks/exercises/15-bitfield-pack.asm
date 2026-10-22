@@ -15,7 +15,7 @@ EXTRN ex_15_bitfield_pack:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_15_bitfield_pack (student routine; defined in solutions/).
+    ; TODO: write ex_15_bitfield_pack in this file.
     call    ex_15_bitfield_pack
     mov     ecx, eax
     call    ExitProcess

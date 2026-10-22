@@ -18,7 +18,7 @@ EXTRN ex_18_mask_range:PROC
 main PROC
     ; TODO: Compute mask with bits 2-5 set
     
-    ; TODO: implement ex_18_mask_range (student routine; defined in solutions/).
+    ; TODO: write ex_18_mask_range in this file.
     call    ex_18_mask_range
     mov     ecx, eax
     call    ExitProcess

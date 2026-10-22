@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_floor_fixed:PROC
 main PROC
-    ; TODO: implement ex_17_floor_fixed (student routine; defined in solutions/).
+    ; TODO: write ex_17_floor_fixed in this file.
     call    ex_17_floor_fixed
     mov     ecx, eax
     call    ExitProcess

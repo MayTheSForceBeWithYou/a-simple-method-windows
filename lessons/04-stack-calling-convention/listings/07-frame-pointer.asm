@@ -11,14 +11,14 @@
 EXTRN ExitProcess:PROC
 
 ; Form 1: RBP is a real frame pointer for unwind (locals below [rbp-8]…).
-; .SETFRAME offset N must equal the stack allocation and match lea rbp,[rsp+N].
+; .SETFRAME offset N is a multiple of 16 and at most 240; N matches lea rbp,[rsp+N].
 compute_setframe PROC FRAME
     push rbp
     .pushreg rbp
     sub rsp, 48
-    lea rbp, [rsp+48]          ; N = 48 (multiple of 16, <= 240)
-    .setframe rbp, 48
     .allocstack 48
+    lea rbp, [rsp+48]
+    .setframe rbp, 48
     .endprolog
 
     mov rax, 42

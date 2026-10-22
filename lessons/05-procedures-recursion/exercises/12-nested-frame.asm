@@ -10,7 +10,7 @@ EXTRN ex_12_nested_frame:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_12_nested_frame (student routine; defined in solutions/).
+    ; TODO: write ex_12_nested_frame in this file.
     call    ex_12_nested_frame
     mov     ecx, eax
     call    ExitProcess

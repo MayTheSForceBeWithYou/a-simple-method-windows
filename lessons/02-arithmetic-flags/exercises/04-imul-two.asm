@@ -14,7 +14,7 @@ EXTRN ex_04_imul_two:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_04_imul_two (student routine; defined in solutions/).
+    ; TODO: write ex_04_imul_two in this file.
     call    ex_04_imul_two
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_mul_overflow:PROC
 main PROC
-    ; TODO: implement ex_19_debug_mul_overflow (student routine; defined in solutions/).
+    ; TODO: write ex_19_debug_mul_overflow in this file.
     call    ex_19_debug_mul_overflow
     mov     ecx, eax
     call    ExitProcess

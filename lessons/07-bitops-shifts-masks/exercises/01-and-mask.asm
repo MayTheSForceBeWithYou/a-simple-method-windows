@@ -16,7 +16,7 @@ EXTRN ex_01_and_mask:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_01_and_mask (student routine; defined in solutions/).
+    ; TODO: write ex_01_and_mask in this file.
     call    ex_01_and_mask
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_vec2_length2:PROC
 main PROC
-    ; TODO: implement ex_14_vec2_length2 (student routine; defined in solutions/).
+    ; TODO: write ex_14_vec2_length2 in this file.
     call    ex_14_vec2_length2
     mov     ecx, eax
     call    ExitProcess

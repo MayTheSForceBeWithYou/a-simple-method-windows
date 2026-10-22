@@ -18,7 +18,7 @@ EXTRN ex_19_debug_sign_shift:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_19_debug_sign_shift (student routine; defined in solutions/).
+    ; TODO: write ex_19_debug_sign_shift in this file.
     call    ex_19_debug_sign_shift
     mov     ecx, eax
     call    ExitProcess

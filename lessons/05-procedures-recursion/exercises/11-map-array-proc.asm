@@ -12,7 +12,7 @@ EXTRN ex_11_map_array_proc:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_11_map_array_proc (student routine; defined in solutions/).
+    ; TODO: write ex_11_map_array_proc in this file.
     call    ex_11_map_array_proc
     mov     ecx, eax
     call    ExitProcess

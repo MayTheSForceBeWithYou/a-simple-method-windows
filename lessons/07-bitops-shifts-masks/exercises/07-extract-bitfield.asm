@@ -17,7 +17,7 @@ EXTRN ex_07_extract_bitfield:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_07_extract_bitfield (student routine; defined in solutions/).
+    ; TODO: write ex_07_extract_bitfield in this file.
     call    ex_07_extract_bitfield
     mov     ecx, eax
     call    ExitProcess

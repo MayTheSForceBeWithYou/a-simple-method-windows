@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_multiplayer_stub:PROC
 main PROC
-    ; TODO: implement ex_23_stretch_multiplayer_stub (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_multiplayer_stub in this file.
     call    ex_23_stretch_multiplayer_stub
     mov     ecx, eax
     call    ExitProcess

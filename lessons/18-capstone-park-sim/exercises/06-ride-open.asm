@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_06_ride_open:PROC
 main PROC
-    ; TODO: implement ex_06_ride_open (student routine; defined in solutions/).
+    ; TODO: write ex_06_ride_open in this file.
     call    ex_06_ride_open
     mov     ecx, eax
     call    ExitProcess

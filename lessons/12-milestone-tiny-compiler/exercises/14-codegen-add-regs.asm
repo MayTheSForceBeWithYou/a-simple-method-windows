@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_codegen_add_regs:PROC
 main PROC
-    ; TODO: implement ex_14_codegen_add_regs (student routine; defined in solutions/).
+    ; TODO: write ex_14_codegen_add_regs in this file.
     call    ex_14_codegen_add_regs
     mov     ecx, eax
     call    ExitProcess

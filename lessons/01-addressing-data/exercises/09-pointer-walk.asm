@@ -22,7 +22,7 @@ main PROC
     ; TODO: INC RSI or ADD RSI, 1
     ; TODO: MOVZX RBX, BYTE PTR [RSI]   ; second byte
     ; TODO: ADD RAX, RBX and exit
-    ; TODO: implement ex_09_pointer_walk (student routine; defined in solutions/).
+    ; TODO: write ex_09_pointer_walk in this file.
     call    ex_09_pointer_walk
     mov     ecx, eax
     call    ExitProcess

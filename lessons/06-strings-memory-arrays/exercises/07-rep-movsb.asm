@@ -11,7 +11,7 @@ EXTRN ex_07_rep_movsb:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_07_rep_movsb (student routine; defined in solutions/).
+    ; TODO: write ex_07_rep_movsb in this file.
     call    ex_07_rep_movsb
     mov     ecx, eax
     call    ExitProcess

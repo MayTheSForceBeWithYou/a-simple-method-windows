@@ -21,7 +21,7 @@ main PROC
     ; TODO: Use LEA to load address of x into RBX
     ; TODO: Use MOV to load value from [RBX] into RAX
     ; TODO: Move RAX to RCX and exit
-    ; TODO: implement ex_04_mov_vs_lea (student routine; defined in solutions/).
+    ; TODO: write ex_04_mov_vs_lea in this file.
     call    ex_04_mov_vs_lea
     mov     ecx, eax
     call    ExitProcess

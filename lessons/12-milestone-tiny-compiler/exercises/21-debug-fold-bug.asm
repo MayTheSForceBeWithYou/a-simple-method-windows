@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_21_debug_fold_bug:PROC
 main PROC
-    ; TODO: implement ex_21_debug_fold_bug (student routine; defined in solutions/).
+    ; TODO: write ex_21_debug_fold_bug in this file.
     call    ex_21_debug_fold_bug
     mov     ecx, eax
     call    ExitProcess

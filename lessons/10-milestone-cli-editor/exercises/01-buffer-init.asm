@@ -7,7 +7,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 EXTRN ex_01_buffer_init:PROC
 main PROC
-    ; TODO: implement ex_01_buffer_init (student routine; defined in solutions/).
+    ; TODO: write ex_01_buffer_init in this file.
     call    ex_01_buffer_init
     mov     ecx, eax
     call    ExitProcess

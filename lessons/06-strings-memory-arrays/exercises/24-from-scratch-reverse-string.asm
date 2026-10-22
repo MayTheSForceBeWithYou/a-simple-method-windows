@@ -11,7 +11,7 @@ EXTRN ex_24_from_scratch_reverse_string:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_24_from_scratch_reverse_string (student routine; defined in solutions/).
+    ; TODO: write ex_24_from_scratch_reverse_string in this file.
     call    ex_24_from_scratch_reverse_string
     mov     ecx, eax
     call    ExitProcess

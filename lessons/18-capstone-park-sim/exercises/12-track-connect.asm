@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_12_track_connect:PROC
 main PROC
-    ; TODO: implement ex_12_track_connect (student routine; defined in solutions/).
+    ; TODO: write ex_12_track_connect in this file.
     call    ex_12_track_connect
     mov     ecx, eax
     call    ExitProcess

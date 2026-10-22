@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_08_from_scratch_token_buf:PROC
 main PROC
-    ; TODO: implement ex_08_from_scratch_token_buf (student routine; defined in solutions/).
+    ; TODO: write ex_08_from_scratch_token_buf in this file.
     call    ex_08_from_scratch_token_buf
     mov     ecx, eax
     call    ExitProcess

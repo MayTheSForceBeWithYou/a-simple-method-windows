@@ -19,7 +19,7 @@ EXTRN ex_10_open_dev_null:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_10_open_dev_null (student routine; defined in solutions/).
+    ; TODO: write ex_10_open_dev_null in this file.
     call    ex_10_open_dev_null
     mov     ecx, eax
     call    ExitProcess

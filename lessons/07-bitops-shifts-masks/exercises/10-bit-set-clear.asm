@@ -17,7 +17,7 @@ EXTRN ex_10_bit_set_clear:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_10_bit_set_clear (student routine; defined in solutions/).
+    ; TODO: write ex_10_bit_set_clear in this file.
     call    ex_10_bit_set_clear
     mov     ecx, eax
     call    ExitProcess

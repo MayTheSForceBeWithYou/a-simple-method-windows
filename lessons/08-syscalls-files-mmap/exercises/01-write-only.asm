@@ -24,7 +24,7 @@ EXTRN ex_01_write_only:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_01_write_only (student routine; defined in solutions/).
+    ; TODO: write ex_01_write_only in this file.
     call    ex_01_write_only
     mov     ecx, eax
     call    ExitProcess

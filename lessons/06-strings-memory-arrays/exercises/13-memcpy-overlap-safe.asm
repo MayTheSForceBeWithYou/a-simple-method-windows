@@ -11,7 +11,7 @@ EXTRN ex_13_memcpy_overlap_safe:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_13_memcpy_overlap_safe (student routine; defined in solutions/).
+    ; TODO: write ex_13_memcpy_overlap_safe in this file.
     call    ex_13_memcpy_overlap_safe
     mov     ecx, eax
     call    ExitProcess

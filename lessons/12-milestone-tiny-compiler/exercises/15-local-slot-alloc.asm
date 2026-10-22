@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_local_slot_alloc:PROC
 main PROC
-    ; TODO: implement ex_15_local_slot_alloc (student routine; defined in solutions/).
+    ; TODO: write ex_15_local_slot_alloc in this file.
     call    ex_15_local_slot_alloc
     mov     ecx, eax
     call    ExitProcess

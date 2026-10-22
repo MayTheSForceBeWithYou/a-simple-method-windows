@@ -14,7 +14,7 @@ EXTRN ex_18_default_rel_macro:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_18_default_rel_macro (student routine; defined in solutions/).
+    ; TODO: write ex_18_default_rel_macro in this file.
     call    ex_18_default_rel_macro
     mov     ecx, eax
     call    ExitProcess

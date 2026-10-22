@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_symbol_resolve:PROC
 main PROC
-    ; TODO: implement ex_23_stretch_symbol_resolve (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_symbol_resolve in this file.
     call    ex_23_stretch_symbol_resolve
     mov     ecx, eax
     call    ExitProcess

@@ -28,7 +28,7 @@ main ENDP
 
 bump PROC
     push rbx
-    sub rsp, 40
+    sub rsp, 32
     mov rbx, rcx
     cmp rcx, 0
     je bump_zero
@@ -39,7 +39,7 @@ bump PROC
 bump_zero:
     xor rax, rax
 bump_done:
-    add rsp, 40
+    add rsp, 32
     pop rbx
     ret
 bump ENDP

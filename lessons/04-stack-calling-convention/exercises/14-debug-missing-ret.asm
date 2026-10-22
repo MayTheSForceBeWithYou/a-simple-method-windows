@@ -10,7 +10,7 @@ EXTRN ex_14_debug_missing_ret:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_14_debug_missing_ret (student routine; defined in solutions/).
+    ; TODO: write ex_14_debug_missing_ret in this file.
     call    ex_14_debug_missing_ret
     mov     ecx, eax
     call    ExitProcess

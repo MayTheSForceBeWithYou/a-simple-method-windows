@@ -18,7 +18,7 @@ EXTRN ex_06_popcount_naive:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_06_popcount_naive (student routine; defined in solutions/).
+    ; TODO: write ex_06_popcount_naive in this file.
     call    ex_06_popcount_naive
     mov     ecx, eax
     call    ExitProcess

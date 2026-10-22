@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_06_symbol_slot:PROC
 main PROC
-    ; TODO: implement ex_06_symbol_slot (student routine; defined in solutions/).
+    ; TODO: write ex_06_symbol_slot in this file.
     call    ex_06_symbol_slot
     mov     ecx, eax
     call    ExitProcess

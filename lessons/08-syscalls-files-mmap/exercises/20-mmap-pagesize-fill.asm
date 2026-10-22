@@ -15,7 +15,7 @@ EXTRN ex_20_mmap_pagesize_fill:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_20_mmap_pagesize_fill (student routine; defined in solutions/).
+    ; TODO: write ex_20_mmap_pagesize_fill in this file.
     call    ex_20_mmap_pagesize_fill
     mov     ecx, eax
     call    ExitProcess

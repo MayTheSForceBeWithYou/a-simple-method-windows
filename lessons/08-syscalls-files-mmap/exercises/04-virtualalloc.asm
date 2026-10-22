@@ -1,4 +1,4 @@
-; 04-mmap-anon.asm
+; 04-virtualalloc.asm
 ;
 ; Allocate memory with VirtualAlloc, store 42, exit with that value.
 ;
@@ -13,12 +13,12 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_04_mmap_anon:PROC
+EXTRN ex_04_virtualalloc:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_04_mmap_anon (student routine; defined in solutions/).
-    call    ex_04_mmap_anon
+    ; TODO: write ex_04_virtualalloc in this file.
+    call    ex_04_virtualalloc
     mov     ecx, eax
     call    ExitProcess
 main ENDP

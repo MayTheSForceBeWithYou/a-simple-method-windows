@@ -14,7 +14,7 @@ EXTRN ex_08_caller_saved_reload:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_08_caller_saved_reload (student routine; defined in solutions/).
+    ; TODO: write ex_08_caller_saved_reload in this file.
     call    ex_08_caller_saved_reload
     mov     ecx, eax
     call    ExitProcess

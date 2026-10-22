@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_11_ll_push_front:PROC
 main PROC
-    ; TODO: implement ex_11_ll_push_front (student routine; defined in solutions/).
+    ; TODO: write ex_11_ll_push_front in this file.
     call    ex_11_ll_push_front
     mov     ecx, eax
     call    ExitProcess

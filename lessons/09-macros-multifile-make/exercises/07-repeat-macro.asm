@@ -8,7 +8,7 @@ EXTRN ex_07_repeat_macro:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_07_repeat_macro (student routine; defined in solutions/).
+    ; TODO: write ex_07_repeat_macro in this file.
     call    ex_07_repeat_macro
     mov     ecx, eax
     call    ExitProcess

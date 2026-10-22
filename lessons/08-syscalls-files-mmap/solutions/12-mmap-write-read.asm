@@ -21,7 +21,7 @@ ex_12_mmap_write_read PROC
     call VirtualAlloc
     
     ; Check for NULL (failure)
-    test rax, rax
+    test eax, eax
     jz L_f
     
     ; Write 99 at offset +100

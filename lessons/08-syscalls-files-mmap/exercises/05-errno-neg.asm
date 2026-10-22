@@ -20,7 +20,7 @@ EXTRN ex_05_errno_neg:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_05_errno_neg (student routine; defined in solutions/).
+    ; TODO: write ex_05_errno_neg in this file.
     call    ex_05_errno_neg
     mov     ecx, eax
     call    ExitProcess

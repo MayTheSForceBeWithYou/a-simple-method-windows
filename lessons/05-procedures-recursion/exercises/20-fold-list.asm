@@ -12,7 +12,7 @@ EXTRN ex_20_fold_list:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_20_fold_list (student routine; defined in solutions/).
+    ; TODO: write ex_20_fold_list in this file.
     call    ex_20_fold_list
     mov     ecx, eax
     call    ExitProcess

@@ -2,7 +2,7 @@
 ;
 ; VirtualAlloc 4096 bytes RW; store 42; exit 42.
 ;
-; Build: ml64 /c 04-mmap-anon.asm && link /OUT:04-mmap-anon.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-mmap-anon.obj kernel32.lib
+; Build: ml64 /c 04-virtualalloc.asm && link /OUT:04-virtualalloc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-virtualalloc.obj kernel32.lib
 ;
 ; Expected exit: 42
 
@@ -10,7 +10,7 @@ EXTERN VirtualAlloc:PROC
 EXTERN ExitProcess:PROC
 
 .code
-ex_04_mmap_anon PROC
+ex_04_virtualalloc PROC
     sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
@@ -38,10 +38,10 @@ L_fail:
     mov rcx, 2
     mov     eax, 2
     ret
-ex_04_mmap_anon ENDP
+ex_04_virtualalloc ENDP
 main PROC
     sub     rsp, 40
-    call    ex_04_mmap_anon
+    call    ex_04_virtualalloc
     mov     rcx, rax
     call    ExitProcess
 main ENDP

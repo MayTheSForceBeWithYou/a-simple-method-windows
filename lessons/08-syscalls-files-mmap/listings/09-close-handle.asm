@@ -40,7 +40,7 @@ have_handle:
 
     mov rcx, rbx
     call CloseHandle
-    test rax, rax
+    test eax, eax
     jz close_failed
 
     xor ecx, ecx

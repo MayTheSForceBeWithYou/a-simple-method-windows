@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_flip_flags:PROC
 main PROC
-    ; TODO: implement ex_17_flip_flags (student routine; defined in solutions/).
+    ; TODO: write ex_17_flip_flags in this file.
     call    ex_17_flip_flags
     mov     ecx, eax
     call    ExitProcess

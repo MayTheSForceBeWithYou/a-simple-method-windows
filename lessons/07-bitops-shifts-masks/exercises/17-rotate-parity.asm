@@ -16,7 +16,7 @@ EXTRN ex_17_rotate_parity:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_17_rotate_parity (student routine; defined in solutions/).
+    ; TODO: write ex_17_rotate_parity in this file.
     call    ex_17_rotate_parity
     mov     ecx, eax
     call    ExitProcess

@@ -18,7 +18,7 @@ EXTRN ex_21_debug_fd_leak_pattern:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_21_debug_fd_leak_pattern (student routine; defined in solutions/).
+    ; TODO: write ex_21_debug_fd_leak_pattern in this file.
     call    ex_21_debug_fd_leak_pattern
     mov     ecx, eax
     call    ExitProcess

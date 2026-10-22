@@ -14,7 +14,7 @@ EXTRN ex_03_exit_from_register:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_03_exit_from_register (student routine; defined in solutions/).
+    ; TODO: write ex_03_exit_from_register in this file.
     call    ex_03_exit_from_register
     mov     ecx, eax
     call    ExitProcess

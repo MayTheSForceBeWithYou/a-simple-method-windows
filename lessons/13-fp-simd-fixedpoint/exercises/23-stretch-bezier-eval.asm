@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_bezier_eval:PROC
 main PROC
-    ; TODO: implement ex_23_stretch_bezier_eval (student routine; defined in solutions/).
+    ; TODO: write ex_23_stretch_bezier_eval in this file.
     call    ex_23_stretch_bezier_eval
     mov     ecx, eax
     call    ExitProcess

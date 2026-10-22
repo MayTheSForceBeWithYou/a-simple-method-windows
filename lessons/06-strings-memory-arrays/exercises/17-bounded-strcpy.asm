@@ -11,7 +11,7 @@ EXTRN ex_17_bounded_strcpy:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_17_bounded_strcpy (student routine; defined in solutions/).
+    ; TODO: write ex_17_bounded_strcpy in this file.
     call    ex_17_bounded_strcpy
     mov     ecx, eax
     call    ExitProcess

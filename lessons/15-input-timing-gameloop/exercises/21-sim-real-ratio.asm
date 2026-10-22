@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_21_sim_real_ratio:PROC
 main PROC
-    ; TODO: implement ex_21_sim_real_ratio (student routine; defined in solutions/).
+    ; TODO: write ex_21_sim_real_ratio in this file.
     call    ex_21_sim_real_ratio
     mov     ecx, eax
     call    ExitProcess

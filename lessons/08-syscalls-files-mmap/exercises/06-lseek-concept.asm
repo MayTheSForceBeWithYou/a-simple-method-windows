@@ -14,7 +14,7 @@ EXTRN ex_06_lseek_concept:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_06_lseek_concept (student routine; defined in solutions/).
+    ; TODO: write ex_06_lseek_concept in this file.
     call    ex_06_lseek_concept
     mov     ecx, eax
     call    ExitProcess

@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_20_tile_autotile_mask:PROC
 main PROC
-    ; TODO: implement ex_20_tile_autotile_mask (student routine; defined in solutions/).
+    ; TODO: write ex_20_tile_autotile_mask in this file.
     call    ex_20_tile_autotile_mask
     mov     ecx, eax
     call    ExitProcess

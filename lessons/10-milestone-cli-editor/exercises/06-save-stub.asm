@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_06_save_stub:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_06_save_stub (student routine; defined in solutions/).
+    ; TODO: write ex_06_save_stub in this file.
     call    ex_06_save_stub
     mov     ecx, eax
     call    ExitProcess

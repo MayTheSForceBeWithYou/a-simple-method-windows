@@ -8,7 +8,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_04_delete_backspace:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_04_delete_backspace (student routine; defined in solutions/).
+    ; TODO: write ex_04_delete_backspace in this file.
     call    ex_04_delete_backspace
     mov     ecx, eax
     call    ExitProcess

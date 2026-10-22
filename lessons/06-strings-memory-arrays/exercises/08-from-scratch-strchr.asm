@@ -11,7 +11,7 @@ EXTRN ex_08_from_scratch_strchr:PROC
 main PROC
     sub     rsp, 32
     ; TODO: Implement
-    ; TODO: implement ex_08_from_scratch_strchr (student routine; defined in solutions/).
+    ; TODO: write ex_08_from_scratch_strchr in this file.
     call    ex_08_from_scratch_strchr
     mov     ecx, eax
     call    ExitProcess

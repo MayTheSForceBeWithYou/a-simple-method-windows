@@ -14,7 +14,7 @@ EXTRN ex_07_idiv_setup:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: implement ex_07_idiv_setup (student routine; defined in solutions/).
+    ; TODO: write ex_07_idiv_setup in this file.
     call    ex_07_idiv_setup
     mov     ecx, eax
     call    ExitProcess

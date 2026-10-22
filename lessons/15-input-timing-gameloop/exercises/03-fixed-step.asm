@@ -3,7 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_03_fixed_step:PROC
 main PROC
-    ; TODO: implement ex_03_fixed_step (student routine; defined in solutions/).
+    ; TODO: write ex_03_fixed_step in this file.
     call    ex_03_fixed_step
     mov     ecx, eax
     call    ExitProcess

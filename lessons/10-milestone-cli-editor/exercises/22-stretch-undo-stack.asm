@@ -7,7 +7,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_undo_stack:PROC
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_22_stretch_undo_stack (student routine; defined in solutions/).
+    ; TODO: write ex_22_stretch_undo_stack in this file.
     call    ex_22_stretch_undo_stack
     mov     ecx, eax
     call    ExitProcess

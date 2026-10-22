@@ -17,7 +17,7 @@ main PROC
     sub     rsp, 32                ; Shadow space required by ABI
     
     ; TODO: Set up exit code 7 in RCX and call ExitProcess
-    ; TODO: implement ex_02_exit_seven (student routine; defined in solutions/).
+    ; TODO: write ex_02_exit_seven in this file.
     call    ex_02_exit_seven
     mov     ecx, eax
     call    ExitProcess
