@@ -16,7 +16,7 @@ ex_11_mouse_delta PROC
     mov rbx, -2
     neg rbx
     add rax, rbx
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_11_mouse_delta ENDP

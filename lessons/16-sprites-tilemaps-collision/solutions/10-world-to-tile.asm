@@ -14,7 +14,7 @@ ex_10_world_to_tile PROC
     sub rsp, 40
     mov rax, 20
     shr rax, 3
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_world_to_tile ENDP

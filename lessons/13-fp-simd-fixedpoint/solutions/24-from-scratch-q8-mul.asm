@@ -12,7 +12,7 @@ ex_24_from_scratch_q8_mul PROC
     mov ebx, 2 SHL 8
     imul eax, ebx
     shr eax, 16
-        mov     eax, eax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_q8_mul ENDP

@@ -16,7 +16,7 @@ loop_start:
     dec rcx
     jmp loop_start
 loop_done:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_sum_loop ENDP

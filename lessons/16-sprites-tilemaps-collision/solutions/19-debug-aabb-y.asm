@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 ex_19_debug_aabb_y PROC
     sub rsp, 40
     ; a.y=0 a.h=2; b.y=1 b.h=2 overlap
-        mov     eax, 1
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_debug_aabb_y ENDP

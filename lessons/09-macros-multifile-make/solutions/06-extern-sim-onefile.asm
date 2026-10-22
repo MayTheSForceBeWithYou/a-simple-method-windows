@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 ex_06_extern_sim_onefile PROC
     sub rsp, 40
     call helper
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_extern_sim_onefile ENDP

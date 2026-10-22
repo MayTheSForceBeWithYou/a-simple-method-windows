@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_17_save_header PROC
     sub rsp, 40
-        mov     eax, 8
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_save_header ENDP

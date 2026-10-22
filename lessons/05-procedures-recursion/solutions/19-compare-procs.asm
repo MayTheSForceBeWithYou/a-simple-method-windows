@@ -10,7 +10,7 @@ ex_19_compare_procs PROC
     mov rcx, 3
     mov rdx, 5
     call cmp_i64
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_compare_procs ENDP

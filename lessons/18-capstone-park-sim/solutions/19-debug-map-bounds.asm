@@ -17,7 +17,7 @@ ex_19_debug_map_bounds PROC
     mov rax, r8
     dec rax
 bounds_ok:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_debug_map_bounds ENDP

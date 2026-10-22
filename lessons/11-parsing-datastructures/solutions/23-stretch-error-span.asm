@@ -12,7 +12,7 @@ err_off QWORD ?
 ex_23_stretch_error_span PROC
     sub rsp, 40
     mov QWORD PTR [err_off], 4
-        mov     eax, QWORD PTR [err_off]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_23_stretch_error_span ENDP

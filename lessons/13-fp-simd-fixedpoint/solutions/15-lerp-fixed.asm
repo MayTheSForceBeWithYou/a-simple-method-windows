@@ -18,7 +18,7 @@ ex_15_lerp_fixed PROC
     imul rax, rdx
     shr rax, 16
     shr rax, 16
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_lerp_fixed ENDP

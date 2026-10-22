@@ -20,7 +20,7 @@ ex_24_from_scratch_sim_integrate PROC
     mov BYTE PTR [map], 1
     inc QWORD PTR [peep_x]
     inc QWORD PTR [cash]
-        mov     eax, QWORD PTR [cash]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_sim_integrate ENDP

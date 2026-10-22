@@ -8,7 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_12_sse_movss_stub PROC
     sub rsp, 40
-        mov     eax, 1
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_sse_movss_stub ENDP

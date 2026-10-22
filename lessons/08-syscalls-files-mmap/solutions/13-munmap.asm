@@ -36,7 +36,7 @@ ex_13_munmap PROC
     jz L_f
     
     ; Success - exit 0
-        mov     eax, 0
+        mov     eax, ecx
     add     rsp, 40
     ret
 L_f:

@@ -7,7 +7,7 @@ ex_04_shl_mul PROC
     sub rsp, 40
     mov rax, 3
     shl rax, 3
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_shl_mul ENDP

@@ -21,7 +21,7 @@ check_hi:
     jl done_clip
     mov rax, 9
 done_clip:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_clip_rect ENDP

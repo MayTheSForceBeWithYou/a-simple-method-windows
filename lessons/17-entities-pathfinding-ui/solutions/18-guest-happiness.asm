@@ -16,7 +16,7 @@ ex_18_guest_happiness PROC
     jle happy_ok
     mov rax, 100
 happy_ok:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_guest_happiness ENDP

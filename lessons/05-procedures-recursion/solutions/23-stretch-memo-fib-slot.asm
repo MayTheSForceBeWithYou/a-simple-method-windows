@@ -18,7 +18,7 @@ clear_loop:
     loop clear_loop
     mov rcx, 8
     call fibm
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_23_stretch_memo_fib_slot ENDP

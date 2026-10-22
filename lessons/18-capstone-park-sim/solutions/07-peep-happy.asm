@@ -17,7 +17,7 @@ ex_07_peep_happy PROC
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_peep_happy ENDP

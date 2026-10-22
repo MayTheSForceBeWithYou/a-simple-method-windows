@@ -12,7 +12,7 @@ slots QWORD 4 DUP(?)
 ex_06_symbol_slot PROC
     sub rsp, 40
     mov QWORD PTR [slots], 42
-        mov     eax, QWORD PTR [slots]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_symbol_slot ENDP

@@ -13,7 +13,7 @@ ex_03_list_node PROC
     sub rsp, 40
     mov QWORD PTR [node], 9
     mov QWORD PTR [node+8], 0
-        mov     eax, QWORD PTR [node]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_list_node ENDP

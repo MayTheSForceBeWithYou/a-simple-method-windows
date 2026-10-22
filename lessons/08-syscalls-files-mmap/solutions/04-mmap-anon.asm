@@ -29,7 +29,7 @@ ex_04_mmap_anon PROC
     mov QWORD PTR [rbx], 42
     
     ; Exit with value from memory
-        mov     eax, [rbx]
+        mov     eax, ecx
     add     rsp, 40
     ret
 L_fail:

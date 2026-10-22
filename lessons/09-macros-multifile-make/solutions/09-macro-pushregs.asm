@@ -28,7 +28,7 @@ ex_09_macro_pushregs PROC
     mov rbx, 0
     POP_CALLEE
     
-        mov     eax, rbx
+        mov     eax, ebx
     add     rsp, 40
     ret
 ex_09_macro_pushregs ENDP

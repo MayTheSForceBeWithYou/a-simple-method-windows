@@ -52,7 +52,7 @@ vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stack]
-        mov     eax, QWORD PTR [r11+rcx*8]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_bytecode_interp ENDP

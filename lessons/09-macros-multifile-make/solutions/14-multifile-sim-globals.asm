@@ -19,7 +19,7 @@ ex_14_multifile_sim_globals PROC
     mov rdx, 22
     call helper_add
     
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_14_multifile_sim_globals ENDP

@@ -17,7 +17,7 @@ ex_13_interp_alpha PROC
     xor rdx, rdx
     mov rbx, 16
     div rbx
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_13_interp_alpha ENDP

@@ -16,7 +16,7 @@ loop_wrap:
     sub rax, 360
     jmp loop_wrap
 done_wrap:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_fixed_angle_step ENDP

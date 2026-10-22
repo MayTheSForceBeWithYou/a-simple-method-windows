@@ -13,7 +13,7 @@ ex_27_debug_stack_imbalance PROC
     .ALLOCSTACK 40
     .ENDPROLOG
     call two
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_27_debug_stack_imbalance ENDP

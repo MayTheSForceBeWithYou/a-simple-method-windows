@@ -15,7 +15,7 @@ ex_04_clamp_fixed PROC
     mov eax, ebx
 clamp_ok:
     shr eax, 16
-        mov     eax, eax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_clamp_fixed ENDP

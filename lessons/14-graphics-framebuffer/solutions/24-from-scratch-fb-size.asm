@@ -16,7 +16,7 @@ ex_24_from_scratch_fb_size PROC
     imul rax, 200
     imul rax, 4
     shr rax, 16
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_fb_size ENDP

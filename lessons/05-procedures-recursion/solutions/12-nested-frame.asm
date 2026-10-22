@@ -10,7 +10,7 @@ ex_12_nested_frame PROC
     mov rcx, 10
     mov rdx, 20
     call outer
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_nested_frame ENDP

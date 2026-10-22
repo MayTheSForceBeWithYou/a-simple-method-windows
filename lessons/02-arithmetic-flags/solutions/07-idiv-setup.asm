@@ -15,7 +15,7 @@ ex_07_idiv_setup PROC
     cqo
     mov rbx, 2
     idiv rbx
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_idiv_setup ENDP

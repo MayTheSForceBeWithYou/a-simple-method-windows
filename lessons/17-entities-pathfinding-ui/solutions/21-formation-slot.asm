@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_21_formation_slot PROC
     sub rsp, 40
-        mov     eax, 2
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_21_formation_slot ENDP

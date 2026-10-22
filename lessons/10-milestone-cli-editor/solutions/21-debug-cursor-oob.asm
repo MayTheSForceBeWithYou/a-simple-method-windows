@@ -27,7 +27,7 @@ ex_21_debug_cursor_oob PROC
     mov [cur], rax
     
 L_ok:
-        mov     eax, [cur]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_21_debug_cursor_oob ENDP

@@ -11,7 +11,7 @@ lut QWORD 0,1,0
 .code
 ex_23_stretch_sin_lut PROC
     sub rsp, 40
-        mov     eax, QWORD PTR [lut+8]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_23_stretch_sin_lut ENDP

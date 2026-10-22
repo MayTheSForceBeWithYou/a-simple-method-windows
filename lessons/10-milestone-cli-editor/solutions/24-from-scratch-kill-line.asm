@@ -52,7 +52,7 @@ L_cpy:
     
 L_done:
     mov [len], rdi
-        mov     eax, [len]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_kill_line ENDP

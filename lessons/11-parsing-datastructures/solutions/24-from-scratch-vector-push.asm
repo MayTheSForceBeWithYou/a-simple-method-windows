@@ -18,7 +18,7 @@ ex_24_from_scratch_vector_push PROC
     call push1
     call push1
     call push1
-        mov     eax, QWORD PTR [len]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_vector_push ENDP

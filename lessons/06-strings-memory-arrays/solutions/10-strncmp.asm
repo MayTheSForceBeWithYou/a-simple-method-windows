@@ -15,7 +15,7 @@ ex_10_strncmp PROC
     lea rdx, b
     mov r8, 2
     call strncmp_fn
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_strncmp ENDP

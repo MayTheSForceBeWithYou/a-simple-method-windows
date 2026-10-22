@@ -24,7 +24,7 @@ ex_17_bounded_strcpy PROC
     call strncpy_term
     lea rcx, dst
     call strlen_fn
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_bounded_strcpy ENDP

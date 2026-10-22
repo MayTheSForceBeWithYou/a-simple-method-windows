@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_07_panel_draw_stub PROC
     sub rsp, 40
-        mov     eax, 3
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_panel_draw_stub ENDP

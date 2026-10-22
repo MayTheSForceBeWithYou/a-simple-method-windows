@@ -21,7 +21,7 @@ ex_20_macro_with_params PROC
     
     ADD3 10, 20, 12
     
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_20_macro_with_params ENDP

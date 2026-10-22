@@ -9,7 +9,7 @@ ex_18_trampoline_depth PROC
     sub rsp, 40
     mov rcx, 8
     call bump
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_trampoline_depth ENDP

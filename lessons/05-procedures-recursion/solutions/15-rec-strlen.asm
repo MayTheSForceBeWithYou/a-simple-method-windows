@@ -12,7 +12,7 @@ ex_15_rec_strlen PROC
     sub rsp, 40
     lea rcx, s
     call rstrlen
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_rec_strlen ENDP

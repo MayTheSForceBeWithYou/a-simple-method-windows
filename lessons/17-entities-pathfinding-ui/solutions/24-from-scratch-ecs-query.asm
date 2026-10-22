@@ -27,7 +27,7 @@ query_next:
     inc r9
     jmp query_loop
 query_done:
-        mov     eax, r8
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_ecs_query ENDP

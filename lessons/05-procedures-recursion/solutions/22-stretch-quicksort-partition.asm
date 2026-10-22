@@ -14,7 +14,7 @@ ex_22_stretch_quicksort_partition PROC
     xor rdx, rdx
     mov r8, 3
     call partition
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_22_stretch_quicksort_partition ENDP

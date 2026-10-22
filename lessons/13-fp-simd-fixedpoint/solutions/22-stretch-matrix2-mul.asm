@@ -8,7 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_22_stretch_matrix2_mul PROC
     sub rsp, 40
-        mov     eax, 3
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_22_stretch_matrix2_mul ENDP

@@ -16,7 +16,7 @@ ex_12_strcat_lite PROC
     call strcat_fn
     lea rcx, dst
     call strlen_fn
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_strcat_lite ENDP

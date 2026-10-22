@@ -13,7 +13,7 @@ ex_17_closure_sim PROC
     lea r12, ctx
     mov rcx, 5
     call add_ctx
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_closure_sim ENDP

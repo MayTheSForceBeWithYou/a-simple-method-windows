@@ -20,7 +20,7 @@ ex_12_timestep_spiral PROC
     jbe clamp_ok
     mov rax, 3
 clamp_ok:
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_timestep_spiral ENDP

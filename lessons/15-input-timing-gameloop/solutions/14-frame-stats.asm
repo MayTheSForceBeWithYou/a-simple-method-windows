@@ -16,7 +16,7 @@ frames QWORD ?
 ex_14_frame_stats PROC
     sub rsp, 40
     mov QWORD PTR [frames], 60
-        mov     eax, [frames]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_14_frame_stats ENDP

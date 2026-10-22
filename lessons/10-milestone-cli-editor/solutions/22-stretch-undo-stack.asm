@@ -35,7 +35,7 @@ ex_22_stretch_undo_stack PROC
     ; Get top (which is now 1)
     mov rcx, [usp]
     dec rcx
-        mov     eax, [rdx+rcx*8]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_22_stretch_undo_stack ENDP

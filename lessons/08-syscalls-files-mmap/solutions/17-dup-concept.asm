@@ -34,7 +34,7 @@ ex_17_dup_concept PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, 0
+        mov     eax, ecx
     add     rsp, 56
     ret
 ex_17_dup_concept ENDP

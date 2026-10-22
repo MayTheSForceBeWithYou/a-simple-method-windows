@@ -16,7 +16,7 @@ cash QWORD ?
 ex_03_econ_tick PROC
     sub rsp, 40
     add QWORD PTR [cash], 5
-        mov     eax, [cash]
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_econ_tick ENDP

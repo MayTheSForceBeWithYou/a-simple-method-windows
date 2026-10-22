@@ -19,7 +19,7 @@ ex_09_nested_calls PROC
     mov rdx, rax
     pop rcx
     call add2
-        mov     eax, rax
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_nested_calls ENDP
