@@ -16,7 +16,6 @@ mov rax, 20
     mov rbx, 6
     div rbx
     mov rcx, rdx
-
     ret
 ex_08_div_remainder ENDP
 main PROC

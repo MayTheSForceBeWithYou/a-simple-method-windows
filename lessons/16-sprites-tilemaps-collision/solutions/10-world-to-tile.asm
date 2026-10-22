@@ -15,7 +15,6 @@ ex_10_world_to_tile PROC
 mov rax, 20
     shr rax, 3
     mov rcx, rax
-
     ret
 ex_10_world_to_tile ENDP
 main PROC

@@ -20,7 +20,9 @@ written DWORD ?
 .code
 
 ex_17_dup_concept PROC
-; Get stdout handle
+sub rsp, 56
+    
+    ; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     
@@ -34,11 +36,11 @@ ex_17_dup_concept PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_17_dup_concept ENDP
 main PROC
-    sub     rsp, 56
     call    ex_17_dup_concept
     mov     rcx, rax
     call    ExitProcess

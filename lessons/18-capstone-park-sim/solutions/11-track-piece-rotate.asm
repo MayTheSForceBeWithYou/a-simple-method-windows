@@ -19,7 +19,6 @@ mov QWORD PTR [dir], 3
     and rax, 3
     mov QWORD PTR [dir], rax
     mov rcx, rax
-
     ret
 ex_11_track_piece_rotate ENDP
 main PROC

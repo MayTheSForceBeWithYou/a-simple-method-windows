@@ -16,7 +16,9 @@ path BYTE "C:\", 0
 .code
 
 ex_18_error_eacces_sim PROC
-; CreateFileA - try to open root with write access
+sub rsp, 72
+    
+    ; CreateFileA - try to open root with write access
     lea rcx, path               ; lpFileName
     mov rdx, 40000000h          ; dwDesiredAccess = GENERIC_WRITE
     mov r8d, 0                  ; dwShareMode = 0
@@ -42,11 +44,11 @@ L_bad:
     mov rcx, 1
     
 L_o:
-    mov     eax, ecx
+    add     rsp, 72
+    mov     eax, 0
     ret
 ex_18_error_eacces_sim ENDP
 main PROC
-    sub     rsp, 72
     call    ex_18_error_eacces_sim
     mov     rcx, rax
     call    ExitProcess

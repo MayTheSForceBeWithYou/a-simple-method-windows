@@ -21,7 +21,6 @@ mov rax, 100
     mov rax, 3
 clamp_ok:
     mov rcx, rax
-
     ret
 ex_12_timestep_spiral ENDP
 main PROC

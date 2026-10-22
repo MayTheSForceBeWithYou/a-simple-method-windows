@@ -16,7 +16,6 @@ loop_ntz:
     inc rcx
     jmp loop_ntz
 done_ntz:
-
     ret
 ex_24_from_scratch_ntz ENDP
 main PROC

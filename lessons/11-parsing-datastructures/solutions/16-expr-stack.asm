@@ -33,7 +33,6 @@ mov QWORD PTR [sp_], 0
     mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
     mov rcx, rax
-
     ret
 ex_16_expr_stack ENDP
 main PROC

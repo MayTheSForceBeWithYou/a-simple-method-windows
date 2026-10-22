@@ -20,7 +20,6 @@ mov rax, 5
 in_range:
     xor rcx, rcx
 exit_proc:
-
     ret
 ex_06_clip_test ENDP
 main PROC

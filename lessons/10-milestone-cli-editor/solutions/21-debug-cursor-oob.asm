@@ -27,7 +27,6 @@ mov QWORD PTR [cur], 9
     
 L_ok:
     mov rcx, [cur]
-
     ret
 ex_21_debug_cursor_oob ENDP
 main PROC

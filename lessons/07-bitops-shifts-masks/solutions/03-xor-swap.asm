@@ -11,7 +11,6 @@ mov rax, 1
     xor rbx, rax
     xor rax, rbx
     mov rcx, rax
-
     ret
 ex_03_xor_swap ENDP
 main PROC

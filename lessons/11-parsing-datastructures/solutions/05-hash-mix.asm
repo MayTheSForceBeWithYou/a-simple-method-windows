@@ -13,7 +13,6 @@ mov rax, 5
     shl rbx, 3
     xor rax, rbx
     movzx rcx, al
-
     ret
 ex_05_hash_mix ENDP
 main PROC

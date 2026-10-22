@@ -8,7 +8,6 @@ ex_01_and_mask PROC
 mov rax, 0FFh
     and rax, 0Fh
     mov rcx, rax
-
     ret
 ex_01_and_mask ENDP
 main PROC

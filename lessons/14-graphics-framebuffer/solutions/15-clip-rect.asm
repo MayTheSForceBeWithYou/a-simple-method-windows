@@ -22,7 +22,6 @@ check_hi:
     mov rax, 9
 done_clip:
     mov rcx, rax
-
     ret
 ex_15_clip_rect ENDP
 main PROC

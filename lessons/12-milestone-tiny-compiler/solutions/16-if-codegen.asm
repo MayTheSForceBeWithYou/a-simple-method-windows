@@ -16,7 +16,6 @@ mov rax, 1
 else_branch:
     mov rcx, 9
 done:
-
     ret
 ex_16_if_codegen ENDP
 main PROC

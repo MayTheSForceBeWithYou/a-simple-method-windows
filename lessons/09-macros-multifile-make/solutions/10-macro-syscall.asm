@@ -26,7 +26,9 @@ hStdOut QWORD ?
 .code
 
 ex_10_macro_syscall PROC
-; Get stdout handle
+sub rsp, 56
+    
+    ; Get stdout handle
     mov rcx, -11
     CALL_FUNC GetStdHandle
     mov hStdOut, rax
@@ -42,11 +44,11 @@ ex_10_macro_syscall PROC
     ; Exit 0
     mov rcx, 0
     CALL_FUNC ExitProcess
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_10_macro_syscall ENDP
 main PROC
-    sub     rsp, 56
     call    ex_10_macro_syscall
     mov     rcx, rax
     call    ExitProcess

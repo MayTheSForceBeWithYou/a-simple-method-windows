@@ -18,7 +18,6 @@ mov rax, 3
     sub rbx, 2
     add rax, rbx
     mov rcx, rax
-
     ret
 ex_03_astar_h ENDP
 main PROC

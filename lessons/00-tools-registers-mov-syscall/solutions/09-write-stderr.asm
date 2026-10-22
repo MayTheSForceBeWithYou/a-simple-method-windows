@@ -21,7 +21,9 @@ hStdErr QWORD ?
 .code
 
 ex_09_write_stderr PROC
-; Get stderr handle
+sub rsp, 56
+    
+    ; Get stderr handle
     mov rcx, -12
     call GetStdHandle
     mov hStdErr, rax
@@ -36,11 +38,11 @@ ex_09_write_stderr PROC
     
     ; Exit 1
     mov rcx, 1
+    add     rsp, 56
     mov     eax, ecx
     ret
 ex_09_write_stderr ENDP
 main PROC
-    sub     rsp, 56
     call    ex_09_write_stderr
     mov     rcx, rax
     call    ExitProcess

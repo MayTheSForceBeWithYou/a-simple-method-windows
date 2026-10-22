@@ -17,7 +17,6 @@ mov rax, 5
     or rax, rbx
     mov rcx, rax
     mov rax,60
-
     ret
 ex_15_bitfield_pack ENDP
 main PROC

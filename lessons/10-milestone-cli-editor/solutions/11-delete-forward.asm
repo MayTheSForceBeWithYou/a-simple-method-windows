@@ -39,7 +39,6 @@ L_l:
 L_fin:
     dec QWORD PTR [len]
     mov rcx, [len]
-
     ret
 ex_11_delete_forward ENDP
 main PROC

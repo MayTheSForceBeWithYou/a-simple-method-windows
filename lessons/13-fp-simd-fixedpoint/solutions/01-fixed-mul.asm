@@ -17,7 +17,6 @@ mov eax, 2
     imul rax, rbx
     shr rax, 32
     mov rcx, rax
-
     ret
 ex_01_fixed_mul ENDP
 main PROC

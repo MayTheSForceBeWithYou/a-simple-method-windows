@@ -17,7 +17,6 @@ mov rax, 320
     imul rax, 4
     shr rax, 16
     mov rcx, rax
-
     ret
 ex_24_from_scratch_fb_size ENDP
 main PROC

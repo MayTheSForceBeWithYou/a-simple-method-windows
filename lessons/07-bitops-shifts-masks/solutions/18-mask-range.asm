@@ -10,7 +10,6 @@ mov rax, 1
     dec rax
     mov rcx, rax
     mov rax,60
-
     ret
 ex_18_mask_range ENDP
 main PROC

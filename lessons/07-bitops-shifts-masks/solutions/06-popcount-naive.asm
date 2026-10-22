@@ -18,7 +18,6 @@ loop_pop:
     shr rax, 1
     jmp loop_pop
 done_pop:
-
     ret
 ex_06_popcount_naive ENDP
 main PROC

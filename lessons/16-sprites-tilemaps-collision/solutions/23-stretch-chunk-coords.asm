@@ -15,7 +15,6 @@ ex_23_stretch_chunk_coords PROC
 mov rax, 40
     shr rax, 4
     mov rcx, rax
-
     ret
 ex_23_stretch_chunk_coords ENDP
 main PROC

@@ -16,7 +16,6 @@ mov eax, 10 SHL 16
 clamp_ok:
     shr eax, 16
     mov ecx, eax
-
     ret
 ex_04_clamp_fixed ENDP
 main PROC

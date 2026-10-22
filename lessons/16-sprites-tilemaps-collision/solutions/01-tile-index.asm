@@ -16,7 +16,6 @@ mov rax, 2
     imul rax, 10
     add rax, 3
     mov rcx, rax
-
     ret
 ex_01_tile_index ENDP
 main PROC

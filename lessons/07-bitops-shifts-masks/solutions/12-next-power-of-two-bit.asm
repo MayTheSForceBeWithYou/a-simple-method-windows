@@ -19,7 +19,6 @@ mov rax, 16
 not_pow2:
     xor rcx, rcx
 done_pow2:
-
     ret
 ex_12_next_power_of_two_bit ENDP
 main PROC

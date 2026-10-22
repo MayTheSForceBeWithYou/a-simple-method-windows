@@ -22,7 +22,6 @@ mov rax, 6
 nopad:
     xor rcx, rcx
 exit_proc:
-
     ret
 ex_05_frame_limit ENDP
 main PROC

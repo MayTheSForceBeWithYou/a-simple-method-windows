@@ -20,7 +20,7 @@ EXTERN ExitProcess:PROC
 
 ex_15_makefile_phony_doc PROC
 mov rcx, 0
-    mov     eax, ecx
+    mov     eax, 0
     ret
 ex_15_makefile_phony_doc ENDP
 main PROC

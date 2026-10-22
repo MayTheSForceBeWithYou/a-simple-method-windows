@@ -18,7 +18,6 @@ mov rax, 8
     mov rbx, 16
     div rbx
     mov rcx, rax
-
     ret
 ex_13_interp_alpha ENDP
 main PROC

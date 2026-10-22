@@ -19,7 +19,6 @@ mov eax, 0
     shr rax, 16
     shr rax, 16
     mov rcx, rax
-
     ret
 ex_15_lerp_fixed ENDP
 main PROC

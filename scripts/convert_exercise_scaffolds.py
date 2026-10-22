@@ -187,7 +187,19 @@ def parse_expected_exit(text: str) -> str:
     return "0"
 
 
+def body_needs_own_stack(body: str) -> bool:
+    return bool(
+        re.search(
+            r"\b(WriteFile|ReadFile|GetStdHandle|CreateFileA|VirtualAlloc)\b",
+            body,
+            re.I,
+        )
+    )
+
+
 def strip_stack_adjustments(body: str) -> str:
+    if body_needs_own_stack(body):
+        return body.strip()
     lines = []
     for line in body.splitlines():
         s = line.split(";", 1)[0].strip().lower()
@@ -195,6 +207,16 @@ def strip_stack_adjustments(body: str) -> str:
             continue
         lines.append(line)
     return "\n".join(lines).strip()
+
+
+def balance_stack_before_ret(body: str) -> str:
+    m = re.search(r"sub\s+rsp,\s*(\d+)", body, re.I)
+    if not m:
+        return body
+    n = m.group(1)
+    if re.search(rf"add\s+rsp,\s*{n}\b", body, re.I):
+        return body
+    return body.rstrip() + f"\n    add     rsp, {n}"
 
 
 def exit_value_from_main_inner(inner: str, fallback: str) -> str:
@@ -228,6 +250,9 @@ def convert_solution_text(text: str, sym: str) -> str:
     exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
     body = strip_stack_adjustments(inner)
     body = re.sub(r"(?im)^\s*call\s+ExitProcess\s*$", "", body)
+    if body_needs_own_stack(body) and not re.search(r"\bsub\s+rsp\b", body, re.I):
+        body = f"    sub     rsp, {stack}\n{body}"
+    body = balance_stack_before_ret(body)
     body = body.strip()
     if not body:
         body = "    ; student solution"
@@ -236,6 +261,8 @@ def convert_solution_text(text: str, sym: str) -> str:
         r"\bmov\s+eax\s*,", body, re.I
     ):
         tail = ""
+    elif re.search(r"\bmov\s+rcx\s*,\s*0\b", body, re.I):
+        tail = "    mov     eax, 0"
     elif re.search(r"\bmov\s+rcx\s*,", body, re.I) or re.search(
         r"\bmov\s+ecx\s*,", body, re.I
     ):
@@ -252,9 +279,12 @@ def convert_solution_text(text: str, sym: str) -> str:
 {tail_line}    ret
 {sym} ENDP
 """
+    if re.search(r"\bsub\s+rsp\b", body, re.I):
+        main_prolog = ""
+    else:
+        main_prolog = f"    sub     rsp, {stack}\n"
     new_main = f"""main PROC
-    sub     rsp, {stack}
-    call    {sym}
+{main_prolog}    call    {sym}
     mov     rcx, rax
     call    ExitProcess
 main ENDP"""

@@ -20,7 +20,6 @@ mov rax, 16000
     mov rbx, 16
     div rbx
     mov rcx, rax
-
     ret
 ex_19_debug_dt_units ENDP
 main PROC

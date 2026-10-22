@@ -19,7 +19,6 @@ mov eax, 6
     idiv rbx
     shr rax, 16
     mov rcx, rax
-
     ret
 ex_11_fixed_div ENDP
 main PROC

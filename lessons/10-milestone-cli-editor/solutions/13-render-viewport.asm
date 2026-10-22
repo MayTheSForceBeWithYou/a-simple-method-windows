@@ -20,7 +20,9 @@ written DWORD ?
 .code
 
 ex_13_render_viewport PROC
-; Get stdout handle
+sub rsp, 56
+    
+    ; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     
@@ -34,11 +36,11 @@ ex_13_render_viewport PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_13_render_viewport ENDP
 main PROC
-    sub     rsp, 56
     call    ex_13_render_viewport
     mov     rcx, rax
     call    ExitProcess

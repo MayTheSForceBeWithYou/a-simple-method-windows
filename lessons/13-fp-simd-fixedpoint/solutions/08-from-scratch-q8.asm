@@ -13,7 +13,6 @@ mov eax, (1 SHL 8)+(1 SHL 7)
     imul eax, ebx
     shr eax, 16
     mov ecx, eax
-
     ret
 ex_08_from_scratch_q8 ENDP
 main PROC

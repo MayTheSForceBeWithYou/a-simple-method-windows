@@ -8,7 +8,6 @@ ex_05_sar_sign PROC
 mov rax, -8
     sar rax, 1
     movzx rcx, al
-
     ret
 ex_05_sar_sign ENDP
 main PROC

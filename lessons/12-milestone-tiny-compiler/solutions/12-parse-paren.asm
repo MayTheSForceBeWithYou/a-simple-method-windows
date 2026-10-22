@@ -12,7 +12,6 @@ mov rax, 1
     add rax, 2
     imul rax, 3
     mov rcx, rax
-
     ret
 ex_12_parse_paren ENDP
 main PROC

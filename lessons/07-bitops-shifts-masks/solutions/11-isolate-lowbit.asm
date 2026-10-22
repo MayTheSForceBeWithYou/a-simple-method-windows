@@ -11,7 +11,6 @@ mov rax, 101100b
     and rax, rbx
     mov rcx, rax
     mov rax,60
-
     ret
 ex_11_isolate_lowbit ENDP
 main PROC

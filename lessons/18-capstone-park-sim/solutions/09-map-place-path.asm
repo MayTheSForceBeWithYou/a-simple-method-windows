@@ -22,7 +22,6 @@ mov rax, 3
     mov BYTE PTR [r11+rax], PATH
     lea r11, [map]
     movzx rcx, BYTE PTR [r11+rax]
-
     ret
 ex_09_map_place_path ENDP
 main PROC

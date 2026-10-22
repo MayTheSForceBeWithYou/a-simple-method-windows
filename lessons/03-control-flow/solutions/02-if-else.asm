@@ -14,7 +14,6 @@ mov rax, 5
 else_branch:
     mov rcx, 30
 done:
-
     ret
 ex_02_if_else ENDP
 main PROC

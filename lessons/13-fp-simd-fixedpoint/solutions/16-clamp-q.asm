@@ -18,7 +18,6 @@ clamp_hi:
     mov rax, 100
 clamp_ok:
     mov rcx, rax
-
     ret
 ex_16_clamp_q ENDP
 main PROC

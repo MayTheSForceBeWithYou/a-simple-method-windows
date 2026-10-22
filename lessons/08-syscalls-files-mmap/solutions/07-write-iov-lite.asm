@@ -22,7 +22,9 @@ hStdOut QWORD ?
 .code
 
 ex_07_write_iov_lite PROC
-; Get stdout handle
+sub rsp, 56
+    
+    ; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     mov hStdOut, rax
@@ -45,11 +47,11 @@ ex_07_write_iov_lite PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_07_write_iov_lite ENDP
 main PROC
-    sub     rsp, 56
     call    ex_07_write_iov_lite
     mov     rcx, rax
     call    ExitProcess

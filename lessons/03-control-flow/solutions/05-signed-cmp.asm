@@ -15,7 +15,6 @@ mov rax, -5
 less_than:
     mov rcx, 1
 done:
-
     ret
 ex_05_signed_cmp ENDP
 main PROC

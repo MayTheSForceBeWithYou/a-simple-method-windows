@@ -11,7 +11,6 @@ mov rax, 7
     xor rax, rbx
     mov rcx, rax
     mov rax,60
-
     ret
 ex_21_gray_code ENDP
 main PROC

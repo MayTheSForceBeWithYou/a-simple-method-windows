@@ -16,7 +16,6 @@ mov rax, 100000
     mul rbx
     mov rcx, rax
     and rcx, 255
-
     ret
 ex_06_mul_unsigned ENDP
 main PROC

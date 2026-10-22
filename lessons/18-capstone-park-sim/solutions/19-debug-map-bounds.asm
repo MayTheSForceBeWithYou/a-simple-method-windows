@@ -18,7 +18,6 @@ mov rax, 99
     dec rax
 bounds_ok:
     mov rcx, rax
-
     ret
 ex_19_debug_map_bounds ENDP
 main PROC

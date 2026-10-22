@@ -20,7 +20,9 @@ hStdOut QWORD ?
 .code
 
 ex_05_byte_store PROC
-; Store characters
+sub rsp, 56
+    
+    ; Store characters
     mov BYTE PTR [buf], 'O'
     mov BYTE PTR [buf+1], 'K'
     
@@ -39,11 +41,11 @@ ex_05_byte_store PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_05_byte_store ENDP
 main PROC
-    sub     rsp, 56
     call    ex_05_byte_store
     mov     rcx, rax
     call    ExitProcess

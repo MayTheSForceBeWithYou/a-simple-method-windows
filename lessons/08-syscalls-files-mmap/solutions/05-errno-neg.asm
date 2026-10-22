@@ -16,7 +16,9 @@ path BYTE "C:\this_file_should_not_exist_asm_course_xyzzy.txt", 0
 .code
 
 ex_05_errno_neg PROC
-; CreateFileA - try to open nonexistent file
+sub rsp, 72
+    
+    ; CreateFileA - try to open nonexistent file
     lea rcx, path               ; lpFileName
     mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
     mov r8d, 0                  ; dwShareMode = 0
@@ -29,11 +31,11 @@ ex_05_errno_neg PROC
     ; GetLastError is the Windows-native error; Linux used -errno.
     call GetLastError
     mov rcx, rax
+    add     rsp, 72
     mov     eax, ecx
     ret
 ex_05_errno_neg ENDP
 main PROC
-    sub     rsp, 72
     call    ex_05_errno_neg
     mov     rcx, rax
     call    ExitProcess

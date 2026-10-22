@@ -15,7 +15,9 @@ path BYTE "/no/such/asm_course_file", 0
 .code
 
 ex_03_open_fail PROC
-; CreateFileA
+sub rsp, 72
+    
+    ; CreateFileA
     lea rcx, path               ; lpFileName
     mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
     mov r8d, 0                  ; dwShareMode = 0
@@ -38,11 +40,11 @@ L_bad:
     mov rcx, 1
     
 L_out:
-    mov     eax, ecx
+    add     rsp, 72
+    mov     eax, 0
     ret
 ex_03_open_fail ENDP
 main PROC
-    sub     rsp, 72
     call    ex_03_open_fail
     mov     rcx, rax
     call    ExitProcess

@@ -20,7 +20,6 @@ mov rax, 10
     add rax, rbx
     and rax, 255
     mov rcx, rax
-
     ret
 ex_06_hash_cell ENDP
 main PROC

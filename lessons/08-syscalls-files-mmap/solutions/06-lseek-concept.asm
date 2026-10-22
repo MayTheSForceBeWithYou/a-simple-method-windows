@@ -14,7 +14,7 @@ ex_06_lseek_concept PROC
 ; Simulate offset calculation
     mov rcx, 0
     add rcx, 10
-    mov     eax, ecx
+    mov     eax, 0
     ret
 ex_06_lseek_concept ENDP
 main PROC

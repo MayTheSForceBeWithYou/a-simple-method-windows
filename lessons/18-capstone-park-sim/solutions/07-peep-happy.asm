@@ -18,7 +18,6 @@ mov rax, 120
     mov rax, 100
 clamp_ok:
     mov rcx, rax
-
     ret
 ex_07_peep_happy ENDP
 main PROC

@@ -17,7 +17,6 @@ mov rax, 5
     neg rbx
     add rax, rbx
     mov rcx, rax
-
     ret
 ex_11_mouse_delta ENDP
 main PROC

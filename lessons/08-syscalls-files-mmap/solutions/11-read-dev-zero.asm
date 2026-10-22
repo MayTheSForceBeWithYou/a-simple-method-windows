@@ -13,7 +13,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_11_read_dev_zero PROC
-; VirtualAlloc(NULL, 8, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+sub rsp, 40
+    
+    ; VirtualAlloc(NULL, 8, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
     mov rdx, 8          ; dwSize
     mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
@@ -47,11 +49,11 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, ecx
+    add     rsp, 40
+    mov     eax, 0
     ret
 ex_11_read_dev_zero ENDP
 main PROC
-    sub     rsp, 40
     call    ex_11_read_dev_zero
     mov     rcx, rax
     call    ExitProcess

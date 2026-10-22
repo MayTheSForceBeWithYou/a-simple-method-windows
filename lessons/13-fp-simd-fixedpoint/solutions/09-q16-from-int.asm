@@ -12,7 +12,6 @@ mov eax, 5
     shl eax, 16
     shr eax, 16
     mov ecx, eax
-
     ret
 ex_09_q16_from_int ENDP
 main PROC

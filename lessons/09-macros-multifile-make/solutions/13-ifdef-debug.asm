@@ -20,7 +20,7 @@ ex_13_ifdef_debug PROC
     ELSE
         mov rcx, 0
     ENDIF
-    mov     eax, ecx
+    mov     eax, 0
     ret
 ex_13_ifdef_debug ENDP
 main PROC

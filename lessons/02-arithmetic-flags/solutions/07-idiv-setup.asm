@@ -16,7 +16,6 @@ mov rax, 84
     mov rbx, 2
     idiv rbx
     mov rcx, rax
-
     ret
 ex_07_idiv_setup ENDP
 main PROC

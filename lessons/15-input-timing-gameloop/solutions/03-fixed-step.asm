@@ -17,7 +17,6 @@ mov rax, 50
     mov rbx, 16
     div rbx
     mov rcx, rax
-
     ret
 ex_03_fixed_step ENDP
 main PROC

@@ -16,7 +16,9 @@ path BYTE "NUL", 0
 .code
 
 ex_21_debug_fd_leak_pattern PROC
-; CreateFileA for NUL device
+sub rsp, 72
+    
+    ; CreateFileA for NUL device
     lea rcx, path               ; lpFileName
     mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
     mov r8d, 0                  ; dwShareMode = 0
@@ -43,11 +45,11 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, ecx
+    add     rsp, 72
+    mov     eax, 0
     ret
 ex_21_debug_fd_leak_pattern ENDP
 main PROC
-    sub     rsp, 72
     call    ex_21_debug_fd_leak_pattern
     mov     rcx, rax
     call    ExitProcess

@@ -14,7 +14,6 @@ ex_16_mov_imm_vs_reg PROC
 mov rax, 100
     mov rbx, rax
     mov rcx, rbx
-
     ret
 ex_16_mov_imm_vs_reg ENDP
 main PROC

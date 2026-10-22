@@ -12,7 +12,6 @@ mov rax, 3
     imul rax, 4
     add rax, 2
     mov rcx, rax
-
     ret
 ex_17_precedence ENDP
 main PROC

@@ -24,7 +24,6 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-
     ret
 ex_02_dt_accum ENDP
 main PROC

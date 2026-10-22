@@ -19,7 +19,6 @@ mov rax, 1
     or rax, rbx
     or rax, 3
     movzx rcx, al
-
     ret
 ex_02_pack_rgb ENDP
 main PROC

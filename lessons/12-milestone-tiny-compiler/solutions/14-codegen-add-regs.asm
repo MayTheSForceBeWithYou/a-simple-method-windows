@@ -18,7 +18,6 @@ mov QWORD PTR [v1], 10
     add rax, QWORD PTR [v2]
     mov QWORD PTR [v1], rax
     mov rcx, rax
-
     ret
 ex_14_codegen_add_regs ENDP
 main PROC

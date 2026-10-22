@@ -16,7 +16,6 @@ mov rax, 5
     cmp rax, rbx
     sete al
     movzx rcx, al
-
     ret
 ex_09_cmp_sete ENDP
 main PROC

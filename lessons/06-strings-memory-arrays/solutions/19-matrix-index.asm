@@ -18,7 +18,6 @@ mov rax, 1
     add rax, 2
     lea r11, [m]
     mov rcx, QWORD PTR [r11+rax*8]
-
     ret
 ex_19_matrix_index ENDP
 main PROC

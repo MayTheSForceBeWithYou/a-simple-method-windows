@@ -24,7 +24,6 @@ mov QWORD PTR [n1], 1
     mov QWORD PTR [head], rax
     mov rax, QWORD PTR [head]
     mov rcx, QWORD PTR [rax]
-
     ret
 ex_11_ll_push_front ENDP
 main PROC

@@ -17,7 +17,6 @@ mov rax, 90
     mov rax, 100
 happy_ok:
     mov rcx, rax
-
     ret
 ex_18_guest_happiness ENDP
 main PROC

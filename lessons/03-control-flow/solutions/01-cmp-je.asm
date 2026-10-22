@@ -15,7 +15,6 @@ mov rax, 10
 equal:
     mov rcx, 1
 done:
-
     ret
 ex_01_cmp_je ENDP
 main PROC

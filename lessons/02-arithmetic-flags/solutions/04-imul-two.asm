@@ -14,7 +14,6 @@ ex_04_imul_two PROC
 mov rax, 6
     imul rax, 7
     mov rcx, rax
-
     ret
 ex_04_imul_two ENDP
 main PROC

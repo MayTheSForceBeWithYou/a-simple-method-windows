@@ -36,7 +36,7 @@ L_fail:
     mov rcx, 1
     
 L_o:
-    mov     eax, ecx
+    mov     eax, 0
     ret
 ex_23_stretch_pipe_syscalls ENDP
 main PROC

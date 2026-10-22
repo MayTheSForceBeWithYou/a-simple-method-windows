@@ -15,7 +15,9 @@ srcinit BYTE 1, 2, 3, 4
 .code
 
 ex_22_stretch_file_copy_mem PROC
-; VirtualAlloc for destination
+sub rsp, 40
+    
+    ; VirtualAlloc for destination
     mov rcx, 0          ; lpAddress = NULL
     mov rdx, 4096       ; dwSize
     mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
@@ -44,11 +46,11 @@ ex_22_stretch_file_copy_mem PROC
     
     ; Exit with checksum
     mov rcx, rdi
-    mov     eax, ecx
+    add     rsp, 40
+    mov     eax, 0
     ret
 ex_22_stretch_file_copy_mem ENDP
 main PROC
-    sub     rsp, 40
     call    ex_22_stretch_file_copy_mem
     mov     rcx, rax
     call    ExitProcess

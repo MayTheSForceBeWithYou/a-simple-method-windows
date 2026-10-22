@@ -21,7 +21,9 @@ hStdOut QWORD ?
 .code
 
 ex_10_len_equ PROC
-; Get stdout handle
+sub rsp, 56
+    
+    ; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     mov hStdOut, rax
@@ -36,11 +38,11 @@ ex_10_len_equ PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, ecx
+    add     rsp, 56
+    mov     eax, 0
     ret
 ex_10_len_equ ENDP
 main PROC
-    sub     rsp, 56
     call    ex_10_len_equ
     mov     rcx, rax
     call    ExitProcess
