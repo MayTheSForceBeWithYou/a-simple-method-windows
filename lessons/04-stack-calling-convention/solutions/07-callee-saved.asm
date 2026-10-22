@@ -9,13 +9,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-ex_07_callee_saved PROC
-    sub rsp, 40
+ex_07_callee_saved PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
     mov rbx, 9
     call clobber_careful
-    mov rcx, rbx
     mov     eax, ebx
-    add     rsp, 40
+    add rsp, 32
+    pop rbx
     ret
 ex_07_callee_saved ENDP
 main PROC

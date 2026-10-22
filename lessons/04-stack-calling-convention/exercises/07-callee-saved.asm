@@ -11,11 +11,18 @@ EXTRN ExitProcess:PROC
 
 ; TODO: Implement helper that uses RBX but preserves it (PUSH/POP)
 
-main PROC
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
     sub     rsp, 32
-    mov rbx, 9
-    call helper
-    mov rcx, rbx               ; Should still be 9
-    call ExitProcess
+    .allocstack 32
+    .endprolog
+    mov     rbx, 9
+    call    helper
+    mov     rcx, rbx
+    add     rsp, 32
+    pop     rbx
+    sub     rsp, 32
+    call    ExitProcess
 main ENDP
 END

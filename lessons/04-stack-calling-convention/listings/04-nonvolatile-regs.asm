@@ -30,9 +30,12 @@ compute PROC FRAME
     ret
 compute ENDP
 
-main PROC
-    sub rsp, 40
+main PROC FRAME
     push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
     mov rbx, 99
     mov rcx, 32
     call compute
@@ -43,7 +46,9 @@ main PROC
 rbx_clobbered:
     mov rcx, 1
 exit_main:
+    add rsp, 32
     pop rbx
+    sub rsp, 32
     call ExitProcess
 main ENDP
 
