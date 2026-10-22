@@ -22,7 +22,7 @@ ex_05_frame_limit PROC
 nopad:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 2
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_frame_limit ENDP

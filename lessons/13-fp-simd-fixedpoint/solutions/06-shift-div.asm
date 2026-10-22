@@ -10,7 +10,7 @@ ex_06_shift_div PROC
     sub rsp, 40
     mov rcx, 20
     sar rcx, 2
-    mov     eax, 5
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_shift_div ENDP

@@ -21,7 +21,7 @@ ex_15_camera_cull PROC
 visible:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_camera_cull ENDP

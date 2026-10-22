@@ -44,7 +44,7 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 72
     ret
 ex_21_debug_fd_leak_pattern ENDP

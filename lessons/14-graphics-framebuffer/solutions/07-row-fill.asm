@@ -19,7 +19,7 @@ ex_07_row_fill PROC
     mov BYTE PTR [row+1], 9
     mov BYTE PTR [row+2], 9
     movzx rcx, BYTE PTR [row+1]
-    mov     eax, 9
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_row_fill ENDP

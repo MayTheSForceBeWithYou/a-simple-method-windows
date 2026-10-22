@@ -25,7 +25,7 @@ ex_12_vline PROC
     add rcx, rax
     movzx rax, BYTE PTR [fb+8]
     add rcx, rax
-    mov     eax, 6
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_vline ENDP

@@ -19,7 +19,7 @@ ex_02_pack_rgb PROC
     or rax, rbx
     or rax, 3
     movzx rcx, al
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_02_pack_rgb ENDP

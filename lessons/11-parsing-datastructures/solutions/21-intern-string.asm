@@ -24,7 +24,7 @@ ex_21_intern_string PROC
 not_equal:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_21_intern_string ENDP

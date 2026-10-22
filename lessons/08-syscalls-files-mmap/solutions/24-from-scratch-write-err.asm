@@ -40,7 +40,7 @@ L_ok:
     mov rcx, 1
     
 L_o:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 56
     ret
 ex_24_from_scratch_write_err ENDP

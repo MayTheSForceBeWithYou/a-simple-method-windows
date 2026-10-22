@@ -23,7 +23,7 @@ ex_16_repeat_delay PROC
 not_fire:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_16_repeat_delay ENDP

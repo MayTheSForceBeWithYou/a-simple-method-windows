@@ -20,7 +20,7 @@ ex_01_keymap PROC
 not_match:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_01_keymap ENDP

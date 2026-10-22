@@ -26,7 +26,7 @@ loop_clz:
 pad_clz:
     mov rcx, 16
 done_clz:
-    mov     eax, 8
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_20_count_leading_zeros_loop ENDP

@@ -20,7 +20,7 @@ ex_16_soa_sum PROC
     add rcx, QWORD PTR [ys]
     add rcx, QWORD PTR [ys+8]
     add rcx, QWORD PTR [ys+16]
-    mov     eax, 21
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_16_soa_sum ENDP

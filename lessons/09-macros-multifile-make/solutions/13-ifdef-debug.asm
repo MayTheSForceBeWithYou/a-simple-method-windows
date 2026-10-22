@@ -21,7 +21,7 @@ ex_13_ifdef_debug PROC
     ELSE
         mov rcx, 0
     ENDIF
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_13_ifdef_debug ENDP

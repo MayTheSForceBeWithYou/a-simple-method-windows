@@ -16,7 +16,7 @@ loop_ntz:
     inc rcx
     jmp loop_ntz
 done_ntz:
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_ntz ENDP

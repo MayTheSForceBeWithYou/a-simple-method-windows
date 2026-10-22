@@ -17,7 +17,7 @@ loop_walk:
     mov rsi, QWORD PTR [rsi+8]
     jmp loop_walk
 done_walk:
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_debug_null_deref_guard ENDP

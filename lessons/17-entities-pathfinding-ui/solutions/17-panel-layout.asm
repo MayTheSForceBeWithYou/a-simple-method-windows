@@ -13,7 +13,7 @@ ex_17_panel_layout PROC
     xor ecx, ecx
     add rcx, 12
     add rcx, 12
-    mov     eax, 24
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_panel_layout ENDP

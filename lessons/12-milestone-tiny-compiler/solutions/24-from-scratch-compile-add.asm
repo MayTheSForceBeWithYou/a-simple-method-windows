@@ -10,7 +10,7 @@ ex_24_from_scratch_compile_add PROC
     sub rsp, 40
     mov rcx, 40
     add rcx, 2
-    mov     eax, 42
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_compile_add ENDP

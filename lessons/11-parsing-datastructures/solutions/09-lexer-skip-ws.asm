@@ -20,7 +20,7 @@ loop_skip:
 done_skip:
     movzx rcx, BYTE PTR [rsi]
     sub rcx, '0'
-    mov     eax, 7
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_lexer_skip_ws ENDP

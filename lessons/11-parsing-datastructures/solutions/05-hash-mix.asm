@@ -13,7 +13,7 @@ ex_05_hash_mix PROC
     shl rbx, 3
     xor rax, rbx
     movzx rcx, al
-    mov     eax, 45
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_hash_mix ENDP

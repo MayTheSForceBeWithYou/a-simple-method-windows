@@ -18,7 +18,7 @@ ex_15_rd_expect PROC
 not_found:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_rd_expect ENDP

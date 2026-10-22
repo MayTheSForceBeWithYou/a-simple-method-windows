@@ -18,7 +18,7 @@ ex_01_soa_pos PROC
     sub rsp, 40
     mov rcx, [xs+8]
     add rcx, [ys+8]
-    mov     eax, 11
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_01_soa_pos ENDP

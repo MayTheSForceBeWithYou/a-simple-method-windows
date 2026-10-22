@@ -19,7 +19,7 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-    mov     eax, 10
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_08_from_scratch_loop_counter ENDP

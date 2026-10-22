@@ -16,7 +16,7 @@ ex_10_cmp_setne PROC
     cmp rax, rbx
     setne al
     movzx rcx, al
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_cmp_setne ENDP

@@ -17,7 +17,7 @@ ex_11_map_array_proc PROC
     add rcx, arr[8]
     add rcx, arr[16]
     add rcx, arr[24]
-    mov     eax, 14
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_11_map_array_proc ENDP

@@ -18,7 +18,7 @@ loop_pop:
     shr rax, 1
     jmp loop_pop
 done_pop:
-    mov     eax, 4
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_popcount_naive ENDP

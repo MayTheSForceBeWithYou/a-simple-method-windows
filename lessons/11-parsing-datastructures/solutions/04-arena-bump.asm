@@ -16,7 +16,7 @@ ex_04_arena_bump PROC
     add QWORD PTR [bump], 16
     mov rcx, QWORD PTR [bump]
     and rcx, 255
-    mov     eax, 32
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_arena_bump ENDP

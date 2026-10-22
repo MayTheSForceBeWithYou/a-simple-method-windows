@@ -18,7 +18,7 @@ ex_03_parse_let PROC
 not_l:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_parse_let ENDP

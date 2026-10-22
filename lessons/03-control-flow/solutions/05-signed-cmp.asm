@@ -16,7 +16,7 @@ ex_05_signed_cmp PROC
 less_than:
     mov rcx, 1
 done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_signed_cmp ENDP

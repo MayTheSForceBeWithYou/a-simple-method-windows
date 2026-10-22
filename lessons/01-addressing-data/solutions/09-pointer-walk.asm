@@ -27,7 +27,7 @@ ex_09_pointer_walk PROC
     inc rsi
     movzx rax, BYTE PTR [rsi]
     add rcx, rax
-    mov     eax, 10
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_pointer_walk ENDP

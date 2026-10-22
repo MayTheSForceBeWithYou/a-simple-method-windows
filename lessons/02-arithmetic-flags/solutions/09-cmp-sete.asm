@@ -16,7 +16,7 @@ ex_09_cmp_sete PROC
     cmp rax, rbx
     sete al
     movzx rcx, al
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_cmp_sete ENDP

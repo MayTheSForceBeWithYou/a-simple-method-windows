@@ -17,7 +17,7 @@ ex_17_flip_flags PROC
     sub rsp, 40
     mov rcx, HFLIP
     or rcx, VFLIP
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_flip_flags ENDP

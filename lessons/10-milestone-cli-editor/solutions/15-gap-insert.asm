@@ -25,7 +25,7 @@ ex_15_gap_insert PROC
     ; Calculate free space
     mov rcx, [gap_e]
     sub rcx, [gap_s]
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_gap_insert ENDP

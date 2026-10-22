@@ -20,7 +20,7 @@ ex_03_clear_buffer PROC
     xor rax, rax
     rep stosb
     movzx rcx, BYTE PTR [fb]
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_clear_buffer ENDP

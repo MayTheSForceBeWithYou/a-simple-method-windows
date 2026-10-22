@@ -22,7 +22,7 @@ ex_14_dirty_flag PROC
     mov BYTE PTR [dirty], 0
     
     movzx rcx, BYTE PTR [dirty]
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_14_dirty_flag ENDP

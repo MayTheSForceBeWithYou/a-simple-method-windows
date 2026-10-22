@@ -39,7 +39,7 @@ L_bad:
     mov rcx, 1
     
 L_out:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 72
     ret
 ex_03_open_fail ENDP

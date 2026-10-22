@@ -23,7 +23,7 @@ loop_len:
     inc rsi
     jmp loop_len
 done_len:
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_lex_ident_len ENDP

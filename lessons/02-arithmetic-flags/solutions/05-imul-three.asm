@@ -13,7 +13,7 @@ ex_05_imul_three PROC
     sub rsp, 40
     mov rcx, 6
     imul rcx, 7
-    mov     eax, 42
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_imul_three ENDP

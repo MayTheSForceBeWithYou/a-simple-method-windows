@@ -13,7 +13,7 @@ ex_06_rd_parse_num PROC
     sub rsp, 40
     movzx rcx, BYTE PTR [s]
     sub rcx, '0'
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_rd_parse_num ENDP

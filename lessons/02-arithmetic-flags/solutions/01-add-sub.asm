@@ -14,7 +14,7 @@ ex_01_add_sub PROC
     mov rcx, 100
     add rcx, 20
     sub rcx, 78
-    mov     eax, 42
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_01_add_sub ENDP

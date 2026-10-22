@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 ex_07_poll_stub PROC
     sub rsp, 40
     xor rcx, rcx
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_poll_stub ENDP

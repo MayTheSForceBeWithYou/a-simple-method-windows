@@ -23,7 +23,7 @@ loop_parse:
     inc rsi
     jmp loop_parse
 done_parse:
-    mov     eax, 42
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_lex_number ENDP

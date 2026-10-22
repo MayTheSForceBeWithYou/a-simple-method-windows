@@ -48,7 +48,7 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_11_read_dev_zero ENDP

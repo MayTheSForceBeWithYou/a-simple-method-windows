@@ -10,7 +10,7 @@ ex_04_codegen_add PROC
     sub rsp, 40
     mov rcx, 2
     add rcx, 3
-    mov     eax, 5
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_codegen_add ENDP

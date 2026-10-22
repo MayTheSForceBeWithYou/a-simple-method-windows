@@ -285,7 +285,7 @@ def convert_solution_text(text: str, sym: str) -> str:
     else:
         student = re.sub(
             r"(?im)^\s*call\s+ExitProcess\s*$",
-            f"    mov     eax, {exit_val}\n    ret",
+            "    mov     eax, ecx\n    ret",
             student,
             count=1,
         )

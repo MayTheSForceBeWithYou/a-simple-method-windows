@@ -26,7 +26,7 @@ loop_sum:
     mov rsi, QWORD PTR [rsi+8]
     jmp loop_sum
 done_sum:
-    mov     eax, 12
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_ll_sum ENDP

@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 ex_03_aabb_reject PROC
     sub rsp, 40
     xor rcx, rcx
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_aabb_reject ENDP

@@ -27,7 +27,7 @@ L_l:
     inc rcx
     
 L_d:
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_line_start_end ENDP

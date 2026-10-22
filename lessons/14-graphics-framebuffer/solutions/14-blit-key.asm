@@ -45,7 +45,7 @@ loop_end:
     lea r11, [dst]
     movzx rax, BYTE PTR [r11+3]
     add rcx, rax
-    mov     eax, 10
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_14_blit_key ENDP

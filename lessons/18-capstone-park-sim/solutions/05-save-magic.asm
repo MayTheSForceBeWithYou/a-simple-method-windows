@@ -16,7 +16,7 @@ magic BYTE "PK01"
 ex_05_save_magic PROC
     sub rsp, 40
     movzx rcx, BYTE PTR [magic]
-    mov     eax, 80
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_05_save_magic ENDP

@@ -20,7 +20,7 @@ ex_18_load_version_check PROC
 ver_bad:
     xor ecx, ecx
 ver_done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_load_version_check ENDP

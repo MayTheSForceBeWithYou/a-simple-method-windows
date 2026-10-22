@@ -26,7 +26,7 @@ count_next:
     inc rdx
     jmp count_loop
 count_done:
-    mov     eax, 4
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_20_count_char ENDP

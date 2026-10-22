@@ -16,7 +16,7 @@ ex_16_if_codegen PROC
 else_branch:
     mov rcx, 9
 done:
-    mov     eax, 7
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_16_if_codegen ENDP

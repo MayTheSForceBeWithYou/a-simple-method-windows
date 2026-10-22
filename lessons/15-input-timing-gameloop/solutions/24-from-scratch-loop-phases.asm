@@ -18,7 +18,7 @@ frame_loop:
     add rcx, 3
     dec rbx
     jnz frame_loop
-    mov     eax, 6
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_24_from_scratch_loop_phases ENDP

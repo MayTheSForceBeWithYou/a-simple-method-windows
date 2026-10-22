@@ -12,7 +12,7 @@ ex_14_sar_vs_shr PROC
     cmp rax, -2
     sete cl
     movzx rcx, cl
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_14_sar_vs_shr ENDP

@@ -15,7 +15,7 @@ loop_while:
     inc rcx
     jmp loop_while
 done_while:
-    mov     eax, 3
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_while_codegen ENDP

@@ -16,7 +16,7 @@ ex_09_xor_checksum PROC
     xor al, b[2]
     xor al, b[3]
     movzx rcx, al
-    mov     eax, 15
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_09_xor_checksum ENDP

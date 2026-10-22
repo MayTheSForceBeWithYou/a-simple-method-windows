@@ -14,7 +14,7 @@ ex_19_debug_offset_bpp PROC
     sub rsp, 40
     mov rcx, 2
     imul rcx, 4
-    mov     eax, 8
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_debug_offset_bpp ENDP

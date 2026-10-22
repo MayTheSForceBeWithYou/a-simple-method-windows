@@ -17,7 +17,7 @@ ex_06_ride_open PROC
     sub rsp, 40
     mov BYTE PTR [open], 1
     movzx rcx, BYTE PTR [open]
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_06_ride_open ENDP

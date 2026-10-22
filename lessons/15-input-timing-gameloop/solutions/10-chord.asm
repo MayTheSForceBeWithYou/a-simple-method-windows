@@ -21,7 +21,7 @@ ex_10_chord PROC
     movzx eax, BYTE PTR [w]
     and al, BYTE PTR [shift]
     movzx rcx, al
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_chord ENDP

@@ -42,7 +42,7 @@ L_put:
     inc QWORD PTR [len]
     
     movzx rcx, BYTE PTR [rdx+1]
-    mov     eax, 66
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_insert_middle ENDP

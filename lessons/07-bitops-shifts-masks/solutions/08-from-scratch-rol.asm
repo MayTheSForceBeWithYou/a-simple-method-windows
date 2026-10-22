@@ -8,7 +8,7 @@ ex_08_from_scratch_rol PROC
     mov al, 80h
     rol al, 1
     movzx rcx, al
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_08_from_scratch_rol ENDP

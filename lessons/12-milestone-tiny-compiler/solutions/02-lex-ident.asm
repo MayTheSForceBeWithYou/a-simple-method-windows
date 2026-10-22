@@ -18,7 +18,7 @@ ex_02_lex_ident PROC
 not_alpha:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_02_lex_ident ENDP

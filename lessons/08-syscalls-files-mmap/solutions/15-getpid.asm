@@ -17,7 +17,7 @@ ex_15_getpid PROC
     test rax, rax
     setz cl
     movzx rcx, cl
-    mov     eax, 0
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_getpid ENDP

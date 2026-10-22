@@ -14,7 +14,7 @@ ex_12_aabb_minkowski PROC
     sub rsp, 40
     mov rcx, 4
     add rcx, 2
-    mov     eax, 6
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_12_aabb_minkowski ENDP
