@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_20_alpha_stub PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 7
     add     rsp, 40
     ret
 ex_20_alpha_stub ENDP

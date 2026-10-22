@@ -34,7 +34,7 @@ ex_05_render_line PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, ecx
+        mov     eax, 0
     add     rsp, 56
     ret
 ex_05_render_line ENDP

@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_15_ui_button_press PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 1
     add     rsp, 40
     ret
 ex_15_ui_button_press ENDP

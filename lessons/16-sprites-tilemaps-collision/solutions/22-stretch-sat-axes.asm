@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_22_stretch_sat_axes PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 2
     add     rsp, 40
     ret
 ex_22_stretch_sat_axes ENDP

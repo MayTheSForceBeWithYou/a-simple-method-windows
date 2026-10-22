@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_13_sweep_hit_t PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 3
     add     rsp, 40
     ret
 ex_13_sweep_hit_t ENDP

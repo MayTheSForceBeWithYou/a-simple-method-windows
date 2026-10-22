@@ -37,7 +37,7 @@ ex_07_hello_world PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, ecx
+        mov     eax, 0
     add     rsp, 56
     ret
 ex_07_hello_world ENDP

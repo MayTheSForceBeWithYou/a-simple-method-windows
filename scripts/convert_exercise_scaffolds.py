@@ -270,7 +270,10 @@ def convert_solution_text(text: str, sym: str) -> str:
         elif reg in ("rbx", "ebx") or val_l in ("rbx", "ebx"):
             ret_setup = "    mov     eax, ebx\n    ret"
         elif reg in ("rcx", "ecx") and val_l not in ("rax", "eax"):
-            ret_setup = "    mov     eax, ecx\n    ret"
+            if re.match(r"^-?\d+$", val.strip()) or val.strip().endswith("b"):
+                ret_setup = f"    mov     eax, {val}\n    ret"
+            else:
+                ret_setup = "    mov     eax, ecx\n    ret"
         elif reg in ("rax", "eax"):
             ret_setup = f"    mov     eax, {val}\n    ret"
         else:

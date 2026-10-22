@@ -15,7 +15,7 @@ h BYTE "P6",10
 .code
 ex_23_stretch_ppm_header_len PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 3
     add     rsp, 40
     ret
 ex_23_stretch_ppm_header_len ENDP

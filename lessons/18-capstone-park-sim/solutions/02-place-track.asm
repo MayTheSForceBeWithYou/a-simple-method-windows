@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_02_place_track PROC
     sub rsp, 40
-        mov     eax, ecx
+        mov     eax, 3
     add     rsp, 40
     ret
 ex_02_place_track ENDP
