@@ -1,8 +1,8 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`d7cf480`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`383c573`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
 
-Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `d7cf480`.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `383c573`.
 
 **ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39708631683](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39708631683)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`).
 
@@ -18,7 +18,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `d7cf480`.
 | L04 `01-push-pop` header | NASM/SysV comment is gone. Quote is verbatim. |
 | L04 `04-nonvolatile-regs` | `main` is `push rbx` / `.pushreg rbx` / `sub rsp, 32` — aligned 1-push frame. `ExitProcess` is called with the frame still live (no teardown / no extra `sub rsp, 40`). Exit **42** (or **1** if clobbered). |
 | L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
-| L05 `04-recursive-sum` frame | `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32` / `mov rbx, rcx` / `add rax, rbx`. Aligned 1-push model. Shared `done:` is `add rsp, 32` / `pop rbx` / `ret`. Exit **15**. |
+| L05 `04-recursive-sum` frame | `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32` / `mov rbx, rcx` / `add rax, rbx`. Comment: `RSP ≡ 0 mod 16 at the call (entry 8 + push 8 + sub 32)`. Shared `done:` is `add rsp, 32` / `pop rbx` / `ret`. Exit **15**. |
 | L07 `01-bit-operations` | MASM hex `0FFh` / `0Fh`; OR path is `8` / `4`; `sub rsp, 40`; exit **12**. |
 | L07 `17-rgb-extract-no-mask` | Header `Expected exit: 65451` (`0FFABh`). Full 32-bit status; harness no longer keeps 171. |
 | L07 `10` / `11` / `15` / `16` comments | Hex in comments is now `h` suffix (`0F0h`, `055h`, `00F0h`, `0ABCDEFh`). |
@@ -70,7 +70,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `d7cf480`.
 
 ## CI-confirmed exits that used to be traces
 
-These three were fixed at `ec4d05c` and remain CI-green at `d7cf480`:
+These three were fixed at `ec4d05c` and remain CI-green at `383c573`:
 
 - **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
 - **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).
@@ -97,9 +97,6 @@ These three were fixed at `ec4d05c` and remain CI-green at `d7cf480`:
 
 ### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
 **Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
-
-### Lesson 05 — `04-recursive-sum.asm` comment wording
-Jack reworded at `d7cf480` to “RSP is 16-byte aligned at callee entry after `call`.” That is still not “0 at the `call`.” Prose states the arithmetic: entry 8 + push 8 + `sub rsp, 32` ⇒ 0 mod 16 at the `call`. Quote is verbatim.
 
 ### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
 **Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
@@ -130,7 +127,7 @@ BFS counts visits and does not store parents. Hit-test is the four-compare panel
 
 ## Pending on Jack (PR #5)
 
-- **L05 `04-recursive-sum`:** comment now says 16-byte aligned at callee entry after `call`. At the `call` instruction RSP is 0 mod 16; callee entry is 8.
+None.
 
 ## Remaining LISTING-PENDING (no matching Jack file)
 
