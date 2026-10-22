@@ -666,19 +666,28 @@ END
 
 ### PUBLIC data as a link object
 
-Listing `15-data-message` has no `main` and no `.CODE`. It is a data object: `PUBLIC message` and `message BYTE "Hello from data.asm", 0`. A driver would `EXTRN message:BYTE` (or a typed pointer to it) and link this `.obj`. No listing on this tree is that driver.
+Listing `15-data-message` exports `PUBLIC message` (`BYTE "Hello from data.asm", 0`) and is now a standalone executable: `.CODE`, `main`, `xor ecx, ecx` / `call ExitProcess`. Expected exit: **0**. A second object can still `EXTRN message:BYTE` and link this `.obj`.
 
 ```asm
 ; Listing 15: PUBLIC message in data module (LESSON.md block 15)
 ;
-; Link with a main that reads message if needed; exported for multifile demos.
+; Assembles standalone; message is exported for multifile demos.
+; Expected exit: 0
 
 .DATA
 PUBLIC message
 message BYTE "Hello from data.asm", 0
 
-END
+.CODE
+EXTRN ExitProcess:PROC
 
+main PROC
+    sub     rsp, 40
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
 ### add_two_numbers as a link object
@@ -738,13 +747,13 @@ main ENDP
 END
 ```
 
-`OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` sets `MY_ADDR EQU OFFSET msg` for a one-byte `"Z"` in `.DATA`, then `mov ecx, MY_ADDR` / `call ExitProcess`. The comment in that file claims exit 0 for a flat `.data` at the start of a segment. The process status is the low 32 bits of `OFFSET msg` as MASM emits it for that PE — not a hardcoded 0 in the source. `FRAME`, `sub rsp, 32`.
+`OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` sets `MY_ADDR EQU OFFSET msg` for a one-byte `"Z"` in `.DATA`. The `EQU` stays; the process status is the hardcoded `mov ecx, 0`, not `mov ecx, MY_ADDR`. The comment says `MY_ADDR` is 0 when `msg` is the first object in this `.data` segment. Expected exit: **0**. Frame: `PROC FRAME`, `sub rsp, 40`.
 
 ```asm
 ; Listing 18: MY_ADDR EQU OFFSET msg (LESSON.md block 18)
 ;
 ; Purpose: Assembly-time offset of a data label equals distance from segment base.
-; Expected exit: 0 (low byte of OFFSET msg for flat .data at start)
+; Expected exit: 0
 ; Expected stdout: (none)
 
 .DATA
@@ -759,8 +768,9 @@ main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
-    xor ecx, ecx
-    call ExitProcess
+    ; MY_ADDR (= OFFSET msg) is 0 when msg is the first object in this .data segment.
+    mov     ecx, 0
+    call    ExitProcess
 main ENDP
 
 END
@@ -966,7 +976,7 @@ Expected exit: **42** (`echo %ERRORLEVEL%`).
 
 - `EQU` binds a constant; `MACRO` pastes parameterized instructions; `REPT` duplicates a body at assembly time. None of those directives exist at run time. Listing `21-status-equ-zero` exits **0** from `STATUS_OK`. Listing `24-rept-counter-assign` increments RCX four times (`i = i + 1` is assemble-time only) and exits **4**. Listing `23-textequ-exit` pastes `mov rcx, 42` and exits **42**.
 - A label inside a macro needs `LOCAL` or a second expansion is A2005. Listing `09-twice-macro-local` exits 2; listing `02-macro-with-local` applies `AbsValue` twice and exits 9.
-- `PUBLIC` / `PROC` export; `EXTRN name:type` imports. Helper listings `05-multifile-helper`, `14-helper-add`, `15-data-message`, and `20-add-two-numbers` have no `main` — you link them with a driver.
+- `PUBLIC` / `PROC` export; `EXTRN name:type` imports. Helper listings `05-multifile-helper`, `14-helper-add`, and `20-add-two-numbers` have no `main` — you link them with a driver. Listing `15-data-message` still exports `message` and now has a `main` that exits **0**.
 - `ml64 /c` builds one object; `link /ENTRY:main /SUBSYSTEM:CONSOLE` combines objects and `kernel32.lib`. A missing `EXTRN` definition is a link error.
 - `INCLUDE` pastes a header. Listing `22-exit-code-include` pulls `EXIT_OK EQU 0` from `22-exit-code.inc` and exits **0**. `constants.inc` supplies `STD_OUTPUT_HANDLE EQU -11`; listing `13-stdio-constants-include` uses it and writes `ok` plus CRLF.
 - `lea rdx, msg` is RIP-relative in `ml64` without a `default rel` directive (listing `17-writefile-rip-relative`).

@@ -260,7 +260,7 @@ abs_rax ENDP
 END
 ```
 
-Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0 into `bfs_queue`, marks `visited[0]`, and starts `rbx = 1`. After `lea r10, bfs_queue` (and a RIP-relative `lea` for `visited`), each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store. RDI and RBX are saved: `push rdi` / `push rbx` / `sub rsp, 40`.
+Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0 into `bfs_queue`, marks `visited[0]`, and starts `rbx = 1`. After `lea r10, bfs_queue` (and a RIP-relative `lea` for `visited`), each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store. RDI and RBX are saved: `push rdi` / `push rbx` / `sub rsp, 40`. `ExitProcess` is called with that frame still live.
 
 ```asm
 ; Listing 08: BFS on a 5-node line; visit count
@@ -335,9 +335,6 @@ try_right:
     jmp     bfs_loop
 
 bfs_done:
-    add     rsp, 40
-    pop     rbx
-    pop     rdi
     mov     ecx, ebx
     call    ExitProcess
 main ENDP

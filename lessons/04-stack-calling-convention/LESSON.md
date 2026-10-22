@@ -45,7 +45,7 @@ main ENDP
 END
 ```
 
-The Jack file still carries a NASM/System V header note; that comment is omitted here so the quote matches the MS x64 code. `push` after `sub rsp, 40` moves RSP by 8; `pop` restores it before `call ExitProcess`.
+`push` after `sub rsp, 40` moves RSP by 8; `pop` restores it before `call ExitProcess`.
 
 ## Shadow space and argument registers
 
@@ -192,20 +192,27 @@ compute ENDP
 
 main PROC
     sub rsp, 40
-    
-    mov rbx, 99                ; Main's RBX value
+    push rbx
+    mov rbx, 99
     mov rcx, 32
-    call compute               ; RAX = 42, RBX still 99
-    
-    ; RBX should still be 99 (preserved by callee)
+    call compute
+    cmp rbx, 99
+    jne rbx_clobbered
     mov rcx, rax
+    jmp exit_main
+rbx_clobbered:
+    mov rcx, 1
+exit_main:
+    pop rbx
     call ExitProcess
 main ENDP
 
 END
 ```
 
-32+10=42 in RAX. Main's RBX stays 99 because `compute` pushed/popped it. `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog` is unwind info: no extra instructions, only metadata.
+32+10=42 in RAX. `main` now saves its own RBX, sets it to 99, and after `call compute` compares it to 99. If `compute` restored RBX, ECX becomes RAX (42). If not, the `rbx_clobbered` path exits **1**. `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog` is unwind info: no extra instructions, only metadata.
+
+The extra `push rbx` after `sub rsp, 40` leaves RSP ≡ 8 at `call compute` — misaligned. Quote the file as written; do not copy that prologue as the alignment model. The aligned 0-push frame is `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
 
 ## Alignment
 

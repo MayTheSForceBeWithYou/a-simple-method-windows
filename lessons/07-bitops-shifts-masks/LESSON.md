@@ -244,7 +244,7 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
     mov     al, 0Fh         ; al = 00001111 binary
-    not     al              ; al = 11110000 binary = 0xF0 = 240
+    not     al              ; al = 11110000 binary = 0F0h = 240
     
     movzx   ecx, al         ; Zero-extend to 32-bit for ExitProcess
     call    ExitProcess     ; Exit with 240
@@ -425,7 +425,7 @@ Listing `11-unpack-bitfield` starts from the packed value `055h` (the 85 produce
 ; Expected exit code: 2
 ; Expected stdout: (none)
 ;
-; Extracts field 'b' (bits 3-5, width 3) from packed value 0x55.
+; Extracts field 'b' (bits 3-5, width 3) from packed value 55h.
 ; To unpack: shift field to bit 0, then mask to width.
 
 .CODE
@@ -434,7 +434,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     rax, 055h       ; Packed value = 0b001_010_101 = 0x55
+    mov     rax, 055h       ; Packed value = 0b001_010_101 = 55h
     
     ; Extract 'b' (bits 3-5, width 3):
     shr     rax, 3          ; Shift bits 3-5 down to bits 0-2
@@ -620,7 +620,7 @@ Listing `15-count-leading-zeros` counts high-order zeros in a 16-bit value. It l
 ; Expected stdout: (none)
 ;
 ; Shifts left until bit 15 is set, counting shifts.
-; For 0x00F0 (binary 0000000011110000), there are 8 leading zeros.
+; For 00F0h (binary 0000000011110000), there are 8 leading zeros.
 
 .CODE
 
@@ -631,7 +631,7 @@ main PROC FRAME
     .pushreg rbx
     .endprolog
     
-    mov     ax, 0F0h        ; Value = 0x00F0 (8 leading zeros)
+    mov     ax, 0F0h        ; Value = 000F0h (8 leading zeros)
     xor     rbx, rbx        ; counter = 0
     
 clz_loop:
@@ -682,7 +682,7 @@ The prologue is unwind-aware: `main PROC FRAME`, then `push rbx` / `push r12` / 
 ;   Green: bits 8-15
 ;   Blue:  bits 0-7
 ;
-; Extracts each component from 0xABCDEF and exits with blue component.
+; Extracts each component from 0ABCDEFh and exits with blue component.
 
 .CODE
 
@@ -697,24 +697,24 @@ main PROC FRAME
     .pushreg r13
     .endprolog
     
-    mov     rax, 0ABCDEFh   ; color = 0xABCDEF
+    mov     rax, 0ABCDEFh   ; color = 0ABCDEFh
     
     ; Extract red (bits 16-23)
     mov     rbx, rax
     shr     rbx, 16         ; Shift bits 16-23 down to bits 0-7
     and     rbx, 0FFh       ; Mask to 8 bits
-    ; rbx = 0xAB = 171
+    ; rbx = 0ABh = 171
     
     ; Extract green (bits 8-15)
     mov     r12, rax
     shr     r12, 8
     and     r12, 0FFh
-    ; r12 = 0xCD = 205
+    ; r12 = 0CDh = 205
     
     ; Extract blue (bits 0-7)
     mov     r13, rax
     and     r13, 0FFh       ; No shift needed (already at bit 0)
-    ; r13 = 0xEF = 239
+    ; r13 = 0EFh = 239
     
     ; Exit with blue component
     mov     ecx, r13d
@@ -739,13 +739,13 @@ echo %ERRORLEVEL%
 
 A common mistake is to shift a field down and skip the mask. That looks fine when the bits above the field are already zero. Listing `17-rgb-extract-no-mask` loads `0FFABCDEFh` — the same `ABCDEF` payload with `0FFh` sitting above bit 23 — then shifts RBX right by 16 and never ANDs `0FFh`.
 
-After the shift, RBX holds `0FFABh`, not `0ABh`. `mov ecx, ebx` passes that polluted “red” to `ExitProcess`. The full status is `0FFABh` = 65451. The course harness, and the low 8 bits of the process status, are 171 (`0ABh`). Expected harness exit: **171**.
+After the shift, RBX holds `0FFABh`, not `0ABh`. `mov ecx, ebx` passes that polluted “red” to `ExitProcess`. The status is the full 32-bit value `0FFABh` = **65451**. The harness compares that DWORD; it does not keep only 171 (`0ABh`).
 
 ```asm
 ; Listing 17: RGB extract without mask (wrong reading from LESSON.md)
 ;
 ; Purpose: Shows why you must mask after shifting when high bits are set.
-; Expected exit: 171 (harness uses low 8 bits; ExitProcess code is 65451 / 0xFFAB)
+; Expected exit: 65451
 ; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo17-rgb-extract-no-mask.obj 17-rgb-extract-no-mask.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:17-rgb-extract-no-mask.exe 17-rgb-extract-no-mask.obj kernel32.lib
@@ -800,7 +800,7 @@ The mask `and rbx, 0FFh` after the shift is what makes a field extract independe
 
 - `and` keeps bits, `or` sets them, `xor` toggles them, `not` inverts all of them and does not update flags.
 - `shl` multiplies by 2^n; `shr` divides unsigned and fills with zeros; `sar` divides signed and copies the sign bit. Listing `07-sar-signed-divide` exits 252 because −4 truncated to a byte is `0FCh`.
-- Pack by masking to width, shifting to position, and OR-ing. Unpack by shifting to bit 0, then masking. A missing unpack mask leaves leftover high bits: listing `17-rgb-extract-no-mask` shifts `0FFABCDEFh` and leaves `0FFABh` (harness low 8 bits = 171).
+- Pack by masking to width, shifting to position, and OR-ing. Unpack by shifting to bit 0, then masking. A missing unpack mask leaves leftover high bits: listing `17-rgb-extract-no-mask` shifts `0FFABCDEFh` and leaves `0FFABh` = **65451**.
 - `rol` / `ror` wrap; shifts discard. Listing `12-rol-rotate` exits **1**; listing `18-ror-rotate` exits **128**. Shift counts are an immediate or `cl`.
 - `xor reg, reg` is the zero idiom. XOR-swap needs two distinct registers and is fragile; prefer `xchg`.
 - RGB in `0ABCDEFh` is red 171, green 205, blue 239. Listing `16-rgb-extraction` exits 239.

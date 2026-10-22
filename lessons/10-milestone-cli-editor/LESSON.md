@@ -463,13 +463,13 @@ END
 
 ```
 
-Listing `10-gap-empty-init` computes `gap_end - gap_start` (4096) and passes that value to `ExitProcess` in ECX. Windows reports a DWORD status; a harness that keeps only the low 8 bits sees `4096 & 0FFh = 0`. Expected exit through that harness: **0**. The arithmetic in RAX is still 4096.
+Listing `10-gap-empty-init` computes `gap_end - gap_start` (4096) and passes that value to `ExitProcess` in ECX. The harness compares the full 32-bit status. Expected exit: **4096**.
 
 ```asm
 ; Listing 10: Empty gap buffer (LESSON.md block 10)
 ;
 ; Purpose: Initialize empty gap; free space = gap_end - gap_start.
-; Expected exit code: 0 (4096 bytes free; harness uses low 8 bits)
+; Expected exit: 4096
 ; Expected stdout: (none)
 
 .DATA?
@@ -491,7 +491,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### Insert at the gap
@@ -1101,7 +1100,7 @@ The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It st
 | Delete-forward on `"ABCD"` exits 3 | Listings `03` and `08` start with `"ABC"`, delete `'B'`, and exit **2** |
 | Gap buffer removes every copy | Inserts **at the gap** are a store. Cursor motion still copies (listings `12`, `13`) |
 | Listing `11` only does arithmetic | It stores `'X'` at `buf[gap_start]` before incrementing |
-| Listing `10` exits 4096 | `ExitProcess` gets 4096 in ECX; a harness that keeps the low 8 bits reports 0 |
+| Listing `10` exits 4096 | `ExitProcess` gets 4096 in ECX; the harness compares that full 32-bit status |
 | Kill-line deletes the newline | Kill-line deletes **up to** the newline; the newline stays. No Jack listing; the drill is exercise 24 |
 | Save writes a computed 12 and exits 12 | Listing `17-save-length-prefix` writes magic + length with `CreateFileA` / `WriteFile` and exits **0** |
 | Magic word is `4544h` | Little-endian `"ED"` as a word is `4445h` (listing `18-load-validate-magic`) |
@@ -1121,7 +1120,7 @@ The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It st
 - An editor is a byte buffer plus a length and a cursor in `[0, length]`. Listing `01-buffer-append` exits 3 after three appends; listing `04-cursor-clamp` pulls a cursor of 9 back to 3.
 - Insert in the middle copies the tail rightward, then stores. `jle` stops at the cursor (listings `02`, `07`, exit 66). `jl` copies one extra slot (listing `20`, exit 3).
 - Delete-forward copies the tail left. Listings `03` and `08` turn `"ABC"` into `"AC"` and exit 2.
-- A gap buffer stores at `gap_start` (listing `11` writes `'X'` and exits 3 remaining). Moving the gap copies one byte (listings `12`, `13`). Listing `10` computes 4096 free bytes; a low-8-bit harness reports 0.
+- A gap buffer stores at `gap_start` (listing `11` writes `'X'` and exits 3 remaining). Moving the gap copies one byte (listings `12`, `13`). Listing `10` computes 4096 free bytes and exits **4096**.
 - Line start is a backward scan for `10` (listing `14` exits 3 on `"ab", 10, "cd"` at cursor 4). Kill-line leaves the newline: listing `21-kill-line` copies `"\ncd"` down and exits **3**.
 - Save is `CreateFileA` + `WriteFile` of `"ED01"` and an 8-byte length (listing `17` exits 0). Load checks `WORD PTR magic` against `4445h` (listing `18` exits 1 on a match).
 - Raw mode is `GetConsoleMode`, `and eax, NOT 6`, `SetConsoleMode`, then a restore (listing `19` exits 0).

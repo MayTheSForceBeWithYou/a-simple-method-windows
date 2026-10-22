@@ -213,14 +213,14 @@ main PROC
     sub rsp, 40                ; Shadow space
 
     ; Demonstrate zero-extension with 32-bit write
-    mov rax, -1                ; Fill RAX with all 1s (0xFFFFFFFFFFFFFFFF)
+    mov rax, -1                ; Fill RAX with all 1s (0FFFFFFFFFFFFFFFFh)
     mov eax, 42                ; Write to EAX zeros upper 32 bits
-                               ; RAX is now 0x000000000000002A (42)
+                               ; RAX is now 0000000000000002Ah (42)
 
     ; Demonstrate partial update with 8-bit write
     mov rax, -1                ; Fill RAX with all 1s again
     mov al, 42                 ; Write to AL leaves upper 56 bits unchanged
-                               ; RAX is now 0xFFFFFFFFFFFFFF2A
+                               ; RAX is now 0FFFFFFFFFFFFFF2Ah
 
     ; Exit with 42 (using zero-extending 32-bit write)
     mov ecx, 42                ; Zero-extends to RCX

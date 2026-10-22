@@ -44,7 +44,7 @@ Listing `01-q16-encode` loads 5, shifts left 16 (now `00050000h`), then `sar eax
 ; 01-q16-encode.asm: Encode integers in Q16.16 format
 ; Expected exit: 5
 ; Expected stdout: (none)
-; 5 << 16 = 0x50000, then >> 16 = 5, exit 5
+; 5 << 16 = 050000h, then >> 16 = 5, exit 5
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
@@ -311,7 +311,7 @@ END
 
 1. Listing `01-q16-encode`: what is EAX after `shl eax, 16` and before `sar eax, 16`? Why `sar` rather than `shr` if the encoded value were negative?
 2. Listing `02-q16-add`: what is EAX immediately after `add eax, ebx`, before the `shr`? What Q value is that?
-3. Listing `03-q16-mul`: if you deleted the second `shr rax, 16`, what would `ExitProcess` receive in ECX, and what would a harness that reports only the low 8 bits print?
+3. Listing `03-q16-mul`: if you deleted the second `shr rax, 16`, what would `ExitProcess` receive in ECX?
 4. You divide `1.0 / 2.0` in Q16.16 with `idiv` and no pre-shift of the dividend. What integer sits in RAX, and why is that not 0.5?
 5. Listing `05-tick-wrap`: what happens if EAX is 350 + 20 + 360 (two overflows) and you subtract 360 only once?
 
