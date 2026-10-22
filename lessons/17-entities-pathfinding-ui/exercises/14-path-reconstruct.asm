@@ -1,14 +1,11 @@
 ; Exercise: 14-path-reconstruct
 ;
-; Exercise 14: path reconstruct
 ; Path length 4; exit 4.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_14_path_reconstruct` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 4
 ;
-
-; 14-path-reconstruct: path reconstruct
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_14_path_reconstruct:PROC

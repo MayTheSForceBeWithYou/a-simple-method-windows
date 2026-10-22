@@ -1,6 +1,7 @@
-; Exercise 05: signed cmp (Win32 port) - SOLUTION
+; Exercise: 05-signed-cmp
+;
 ; Expected exit: 1
-
+;
 .CODE
 
 EXTRN ExitProcess:PROC

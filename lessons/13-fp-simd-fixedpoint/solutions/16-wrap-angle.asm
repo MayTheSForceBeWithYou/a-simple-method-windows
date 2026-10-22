@@ -1,9 +1,8 @@
-; Exercise 16: wrap angle
+; Exercise: 16-wrap-angle
+;
 ; Wrap 400 degrees modulo 360; exit 40.
 ; Expected exit: 40
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_16_wrap_angle PROC
     sub rsp, 40

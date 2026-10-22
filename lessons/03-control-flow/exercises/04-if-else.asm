@@ -1,21 +1,10 @@
 ; Exercise: 04-if-else
 ;
-; Exercise 04: if else
 ; If rax>10 exit 1 else exit 2. Set rax=11.
 ;
 ; Contract: implement `ex_04_if_else` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; Exercise 04: if else
-;
-; If rax>10 exit 1 else exit 2. Set rax=11.
-;
-; Build: ml64 /c 04-if-else.asm && link /OUT:04-if-else.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-if-else.obj kernel32.lib
-;
-; Expected exit: 1
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

@@ -1,16 +1,9 @@
-; Exercise 02: read stdin one
+; Exercise: 02-read-stdin-one
 ;
 ; STUB design: read 1 byte from stdin into buf; exit that byte (run with echo A | ). Solution exits 0 if read fails.
-;
-; Build: ml64 /c 02-read-stdin-one.asm && link /OUT:02-read-stdin-one.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-read-stdin-one.obj kernel32.lib
-;
-; Expected exit: 65
 ; Expected stdin: "A"
-
-EXTERN GetStdHandle:PROC
-EXTERN ReadFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 65
+;
 .data?
 b BYTE ?
 bytesRead DWORD ?

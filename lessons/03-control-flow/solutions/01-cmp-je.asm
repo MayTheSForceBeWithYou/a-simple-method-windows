@@ -1,6 +1,7 @@
-; Exercise 01: cmp je (Win32 port) - SOLUTION
+; Exercise: 01-cmp-je
+;
 ; Expected exit: 1
-
+;
 .CODE
 
 EXTRN ExitProcess:PROC

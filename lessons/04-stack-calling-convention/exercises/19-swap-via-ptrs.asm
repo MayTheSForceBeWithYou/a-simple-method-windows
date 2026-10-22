@@ -1,12 +1,10 @@
 ; Exercise: 19-swap-via-ptrs
 ;
-; Exercise 19: swap via ptrs
 ; swap(&a,&b). a=1,b=2; after swap exit a (2). MS x64 ABI.
 ;
-; Contract: implement `ex_19_swap_via_ptrs` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_19_swap_via_ptrs` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

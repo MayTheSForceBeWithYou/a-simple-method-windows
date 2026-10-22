@@ -1,14 +1,9 @@
-; Exercise 04: edge trigger
+; Exercise: 04-edge-trigger
 ;
 ; prev=0 cur=1 -> rising exit 1.
-;
-; Build: ml64 /c 04-edge-trigger.asm && link /OUT:04-edge-trigger.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-edge-trigger.obj kernel32.lib
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .code
 ex_04_edge_trigger PROC
     sub rsp, 40

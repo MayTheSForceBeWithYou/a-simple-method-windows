@@ -1,14 +1,11 @@
 ; Exercise: 09-clear-color
 ;
-; Exercise 09: clear color
 ; Clear 4 pixels to color 5; exit first.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_09_clear_color` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 5
 ;
-
-; 09-clear-color: clear color
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_09_clear_color:PROC

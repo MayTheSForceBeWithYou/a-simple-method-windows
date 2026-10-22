@@ -1,13 +1,10 @@
 ; Exercise: 14-codegen-add-regs
 ;
-; Exercise 14: codegen add regs
 ; v1=10 v2=32; add into v1; exit 42.
 ;
 ; Contract: implement `ex_14_codegen_add_regs` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
-
-; 14-codegen-add-regs.asm: Emit ADD rax, rbx, exit 0
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_14_codegen_add_regs:PROC

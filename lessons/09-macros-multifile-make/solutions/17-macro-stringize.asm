@@ -1,16 +1,9 @@
-; Exercise 17: macro stringize
+; Exercise: 17-macro-stringize
 ;
 ; MASM text macro: write 'Q' and newline exit 0.
-;
-; Build: ml64 /c 17-macro-stringize.asm && link /OUT:17-macro-stringize.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-macro-stringize.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "Q\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 msg BYTE "Q", 10
 

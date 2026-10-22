@@ -1,13 +1,8 @@
-; Exercise 01: token kind
+; Exercise: 01-token-kind
 ;
 ; Token kinds as equ; exit TK_NUM=1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
-TK_EOF EQU 0
-TK_NUM EQU 1
-
+;
 .code
 ex_01_token_kind PROC
     sub rsp, 40

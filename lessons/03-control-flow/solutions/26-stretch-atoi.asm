@@ -1,13 +1,8 @@
-; Exercise 26: stretch atoi
+; Exercise: 26-stretch-atoi
 ;
 ; STRETCH: parse "42" decimal ascii into rcx (42) with a loop.
-;
-; Build: ml64 /c 26-stretch-atoi.asm && link /OUT:26-stretch-atoi.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-stretch-atoi.obj kernel32.lib
-;
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "42", 0
 

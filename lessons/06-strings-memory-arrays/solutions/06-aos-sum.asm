@@ -1,9 +1,8 @@
-; Exercise 06: aos sum
+; Exercise: 06-aos-sum
+;
 ; AoS records {x,y}. Two ents (1,2), (3,4). Sum all=10.
 ; Expected exit: 10
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 rec QWORD 1,2, 3,4
 

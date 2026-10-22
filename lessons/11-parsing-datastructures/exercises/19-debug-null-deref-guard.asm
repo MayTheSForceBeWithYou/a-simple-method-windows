@@ -1,16 +1,10 @@
 ; Exercise: 19-debug-null-deref-guard
 ;
-; Exercise 19: debug null guard
 ; BUG: walks next without null check. Fix empty list sum=0.
 ;
 ; Contract: implement `ex_19_debug_null_deref_guard` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 19: debug null deref guard
-; BUG: walks next without null check. Fix empty list sum=0.
-; Expected exit: 0
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_null_deref_guard:PROC

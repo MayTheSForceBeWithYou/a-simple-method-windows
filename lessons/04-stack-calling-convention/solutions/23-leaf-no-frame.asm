@@ -1,12 +1,9 @@
-; Exercise 23: leaf no frame
+; Exercise: 23-leaf-no-frame
 ;
 ; Leaf mul3(rcx)=rcx*3 without prologue. Exit 42 for input 14.
-;
-; Expected exit: 42
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 42
+;
 .code
 ex_23_leaf_no_frame PROC FRAME
     sub rsp, 40

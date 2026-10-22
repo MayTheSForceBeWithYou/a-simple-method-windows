@@ -1,17 +1,11 @@
 ; Exercise: 19-debug-aabb-y
 ;
-; Exercise 19: debug aabb y
 ; BUG: used x test for y. Fix overlap on y; exit 1 for overlap.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_19_debug_aabb_y` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; Exercise 19: debug aabb y
-; BUG: overlap test uses X extents instead of Y. Boxes overlap on Y; exit 1.
-; Expected exit: 1
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_aabb_y:PROC

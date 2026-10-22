@@ -1,12 +1,10 @@
 ; Exercise: 09-fib-iter-proc
 ;
-; Exercise 09: fib iter proc
 ; Iterative fib(10)=55.
 ;
-; Contract: implement `ex_09_fib_iter_proc` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_09_fib_iter_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 55
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

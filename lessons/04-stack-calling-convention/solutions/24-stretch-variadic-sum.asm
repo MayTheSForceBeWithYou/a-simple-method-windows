@@ -1,12 +1,9 @@
-; Exercise 24: stretch variadic sum
+; Exercise: 24-stretch-variadic-sum
 ;
 ; STRETCH: sum_n(n, a,b,c,d) — n in rcx, remaining MS x64 args. sum_n(4,3,4,5,6)=18.
-;
-; Expected exit: 18
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 18
+;
 .code
 ex_24_stretch_variadic_sum PROC FRAME
     sub rsp, 40

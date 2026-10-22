@@ -1,14 +1,11 @@
 ; Exercise: 03-econ-tick
 ;
-; Exercise 03: econ tick
 ; cash+=5; exit cash 5.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_03_econ_tick` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 5
 ;
-
-; 03-econ-tick: econ tick
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_03_econ_tick:PROC

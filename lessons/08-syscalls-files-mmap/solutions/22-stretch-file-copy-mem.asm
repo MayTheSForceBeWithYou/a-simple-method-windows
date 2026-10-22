@@ -1,14 +1,8 @@
-; Exercise 22: stretch file copy mem
+; Exercise: 22-stretch-file-copy-mem
 ;
 ; STRETCH: copy 4 bytes between two VirtualAlloc regions; checksum 10 for 1,2,3,4.
-;
-; Build: ml64 /c 22-stretch-file-copy-mem.asm && link /OUT:22-stretch-file-copy-mem.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-file-copy-mem.obj kernel32.lib
-;
 ; Expected exit: 10
-
-EXTERN VirtualAlloc:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 srcinit BYTE 1, 2, 3, 4
 

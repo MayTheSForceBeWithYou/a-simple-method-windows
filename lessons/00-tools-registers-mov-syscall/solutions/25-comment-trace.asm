@@ -1,13 +1,8 @@
-; Exercise 25: comment trace
+; Exercise: 25-comment-trace
 ;
 ; Exit 9. Every instruction needs an end-of-line comment.
-;
-; Build: ml64 /c 25-comment-trace.asm && link /OUT:25-comment-trace.exe /ENTRY:main /SUBSYSTEM:CONSOLE 25-comment-trace.obj kernel32.lib
-;
 ; Expected exit: 9
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_25_comment_trace PROC
     sub rsp, 40 ; allocate shadow space for call

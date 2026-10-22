@@ -1,15 +1,8 @@
-; Exercise 05: byte store
+; Exercise: 05-byte-store
 ;
 ; buf: 3 bytes. Store "O" and "K", write both + newline. Exit 0.
-;
-; Build: ml64 /c 05-byte-store.asm && link /OUT:05-byte-store.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-byte-store.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 buf BYTE 0, 0, 13, 10
 

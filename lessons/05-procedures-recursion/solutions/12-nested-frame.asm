@@ -1,9 +1,8 @@
-; Exercise 12: nested frame
+; Exercise: 12-nested-frame
+;
 ; outer calls inner. inner returns rcx+rdx. outer adds 1. outer(10,20)=31.
 ; Expected exit: 31
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_12_nested_frame PROC
     sub rsp, 40

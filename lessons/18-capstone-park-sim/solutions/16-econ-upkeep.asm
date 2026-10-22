@@ -1,12 +1,9 @@
-; Exercise 16: econ upkeep
+; Exercise: 16-econ-upkeep
 ;
 ; cash -= 3; from 10 exit 7.
-;
-; Expected exit: 7
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 7
+;
 .data
 cash QWORD 0
 

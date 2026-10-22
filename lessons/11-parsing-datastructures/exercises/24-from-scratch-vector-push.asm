@@ -1,13 +1,10 @@
 ; Exercise: 24-from-scratch-vector-push
 ;
-; Exercise 24: from scratch vector push
 ; FROM SCRATCH: dynamic array len/cap; push 3 values; exit len 3.
 ;
 ; Contract: implement `ex_24_from_scratch_vector_push` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 24-from-scratch-vector-push
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_24_from_scratch_vector_push:PROC

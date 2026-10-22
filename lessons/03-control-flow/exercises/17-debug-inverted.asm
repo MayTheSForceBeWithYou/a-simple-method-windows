@@ -1,20 +1,10 @@
 ; Exercise: 17-debug-inverted
 ;
-; Exercise 17: debug inverted
 ; BUG: jl used where jg needed. rax=5 should take 'big' path exit 2.
 ;
 ; Contract: implement `ex_17_debug_inverted` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
-; Exercise 17: debug inverted
-;
-; BUG: jl used where jg needed. rax=5 should take 'big' path exit 2.
-;
-; Build: ml64 /c 17-debug-inverted.asm && link /OUT:17-debug-inverted.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-debug-inverted.obj kernel32.lib
-;
-; Expected exit: 2
-
 .CODE
 
 EXTRN ExitProcess:PROC

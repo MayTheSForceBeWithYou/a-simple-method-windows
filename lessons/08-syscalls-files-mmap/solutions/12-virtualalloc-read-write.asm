@@ -1,14 +1,8 @@
-; Exercise 12: mmap write read
+; Exercise: 12-virtualalloc-read-write
 ;
 ; VirtualAlloc 4096; write 99 at +100; read back; exit 99.
-;
-; Build: ml64 /c 12-virtualalloc-read-write.asm && link /OUT:12-virtualalloc-read-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-virtualalloc-read-write.obj kernel32.lib
-;
 ; Expected exit: 99
-
-EXTERN VirtualAlloc:PROC
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_12_virtualalloc_read_write PROC
     sub rsp, 40

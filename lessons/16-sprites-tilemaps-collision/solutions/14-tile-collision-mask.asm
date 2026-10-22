@@ -1,14 +1,9 @@
-; Exercise 14: tile collision mask
+; Exercise: 14-tile-collision-mask
 ;
 ; Flags bit0 solid bit1 platform; value 3; exit solid&1 =1.
-;
-; Build: ml64 /c 14-tile-collision-mask.asm && link /OUT:14-tile-collision-mask.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-tile-collision-mask.obj kernel32.lib
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data
 flags BYTE 3
 

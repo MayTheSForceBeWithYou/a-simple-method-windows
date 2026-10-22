@@ -1,13 +1,10 @@
 ; Exercise: 02-lexer-digit
 ;
-; Exercise 02: lexer digit
 ; If byte '7' is digit exit 1.
 ;
 ; Contract: implement `ex_02_lexer_digit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 02-lexer-digit
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_02_lexer_digit:PROC

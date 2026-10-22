@@ -1,14 +1,11 @@
 ; Exercise: 14-tile-collision-mask
 ;
-; Exercise 14: tile collision mask
 ; Flags bit0 solid bit1 platform; value 3; exit solid&1 =1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_14_tile_collision_mask` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 14-tile-collision-mask: tile collision mask
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_14_tile_collision_mask:PROC

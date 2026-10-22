@@ -1,10 +1,8 @@
-; Exercise 04: clamp fixed
+; Exercise: 04-clamp-fixed
 ;
 ; Clamp Q16.16 value 10<<16 to max 8<<16; exit 8.
 ; Expected exit: 8
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_04_clamp_fixed PROC
     sub rsp, 40

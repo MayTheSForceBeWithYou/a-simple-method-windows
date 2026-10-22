@@ -1,13 +1,10 @@
 ; Exercise: 21-intern-string
 ;
-; Exercise 21: intern string
 ; Intern table pointer equality: same slot; exit 1.
 ;
 ; Contract: implement `ex_21_intern_string` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 21-intern-string
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_21_intern_string:PROC

@@ -1,7 +1,7 @@
+; Exercise: 21-gray-code
+;
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_21_gray_code PROC
     sub rsp, 40

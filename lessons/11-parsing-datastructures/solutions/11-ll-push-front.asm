@@ -1,10 +1,8 @@
-; Exercise 11: ll push front
+; Exercise: 11-ll-push-front
 ;
 ; Push two nodes; head val=2; exit 2.
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 n1 QWORD 2 DUP(?)
 n2 QWORD 2 DUP(?)

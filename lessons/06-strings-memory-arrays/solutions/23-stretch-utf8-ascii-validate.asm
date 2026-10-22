@@ -1,12 +1,9 @@
-; Exercise 23: stretch ascii validate
+; Exercise: 23-stretch-utf8-ascii-validate
 ;
 ; STRETCH: validate all bytes <128 in "OK\n"; exit 1 if valid.
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data
 s BYTE "OK", 10, 0
 

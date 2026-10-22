@@ -1,9 +1,8 @@
-; Exercise 16: debug callee clobber
+; Exercise: 16-debug-callee-clobber
+;
 ; BUG fixed: preserve rbx. Exit 11.
 ; Expected exit: 11
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_16_debug_callee_clobber PROC
     sub rsp, 40

@@ -1,17 +1,11 @@
 ; Exercise: 19-debug-dt-units
 ;
-; Exercise 19: debug dt units
 ; BUG: mixed ms/us. Fix treat 16000us as 16ms steps of 16 -> 1 step; exit 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_19_debug_dt_units` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; Exercise 19: debug dt units
-; BUG: mixed ms/us. Fix treat 16000us as 16ms steps of 16 -> 1 step; exit 1.
-; Expected exit: 1
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_dt_units:PROC

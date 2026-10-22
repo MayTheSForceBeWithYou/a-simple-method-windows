@@ -1,12 +1,9 @@
-; Exercise 13: peep pathfind step
+; Exercise: 13-peep-pathfind-step
 ;
 ; Peep follows path; steps remaining 4; exit 4.
-;
-; Expected exit: 4
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 4
+;
 .data
 steps QWORD 0
 

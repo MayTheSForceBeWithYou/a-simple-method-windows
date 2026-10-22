@@ -1,14 +1,11 @@
 ; Exercise: 15-clip-rect
 ;
-; Exercise 15: clip rect
 ; Clip x to [0,w); x=-1 -> 0; exit 0.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_15_clip_rect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 15-clip-rect: clip rect
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_15_clip_rect:PROC

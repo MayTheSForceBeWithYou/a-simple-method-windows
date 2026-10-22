@@ -1,15 +1,8 @@
-; Exercise 08: two writes
+; Exercise: 08-two-writes
 ;
 ; Write "alpha\n" then "beta\n" with two write syscalls. Exit 0.
-;
-; Build: ml64 /c 08-two-writes.asm && link /OUT:08-two-writes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-two-writes.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 a BYTE "alpha", 13, 10
 a_len EQU $ - a

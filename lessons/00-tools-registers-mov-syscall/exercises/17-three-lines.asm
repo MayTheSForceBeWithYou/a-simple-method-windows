@@ -1,20 +1,10 @@
 ; Exercise: 17-three-lines
 ;
-; Exercise 17: three lines
 ; Print "one\n" "two\n" "three\n". Exit 0.
 ;
 ; Contract: implement `ex_17_three_lines` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 17: three lines
-;
-; Print "one\n" "two\n" "three\n". Exit 0.
-;
-; Build: ml64 /c 17-three-lines.asm && link /OUT:17-three-lines.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-three-lines.obj kernel32.lib
-;
-; Expected exit: 0
-
 .CODE
 
 EXTRN ExitProcess:PROC

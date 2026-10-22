@@ -1,14 +1,11 @@
 ; Exercise: 04-agent-step
 ;
-; Exercise 04: agent step
 ; agent x++; exit x.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_04_agent_step` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 04-agent-step: agent step
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_04_agent_step:PROC

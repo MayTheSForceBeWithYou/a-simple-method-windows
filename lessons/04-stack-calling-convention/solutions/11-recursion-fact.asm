@@ -1,9 +1,8 @@
-; Exercise 11: recursion fact
+; Exercise: 11-recursion-fact
+;
 ; Recursive fact(4)=24. MS x64 ABI.
 ; Expected exit: 24
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_11_recursion_fact PROC
     sub rsp, 40

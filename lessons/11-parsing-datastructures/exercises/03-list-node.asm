@@ -1,13 +1,10 @@
 ; Exercise: 03-list-node
 ;
-; Exercise 03: list node
 ; Node {dq val, next}; one node val 9; exit 9.
 ;
 ; Contract: implement `ex_03_list_node` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 9
 ;
-
-; 03-list-node
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_03_list_node:PROC

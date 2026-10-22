@@ -1,21 +1,10 @@
 ; Exercise: 15-rip-relative
 ;
-; Exercise 15: rip relative
 ; Use lea rdx,[msg] (RIP-relative by default in MASM x64) to write msg 'rip\n'. Exit 0.
 ;
 ; Contract: implement `ex_15_rip_relative` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 15: rip relative
-;
-; Use lea rdx,[msg] (RIP-relative by default in MASM x64) to write msg 'rip\n'. Exit 0.
-;
-; Build: ml64 /c 15-rip-relative.asm && link /OUT:15-rip-relative.exe /ENTRY:main /SUBSYSTEM:CONSOLE 15-rip-relative.obj kernel32.lib
-;
-; Expected exit: 0
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

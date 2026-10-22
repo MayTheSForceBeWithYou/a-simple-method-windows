@@ -1,18 +1,10 @@
 ; Exercise: 19-debug-sign-shift
 ;
-; Implement the student routine in this file.
+; Implement `ex_19_debug_sign_shift` in this file.
 ;
 ; Contract: implement `ex_19_debug_sign_shift` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 252
 ;
-
-; 19-debug-sign-shift.asm
-;
-; Debug a sign-extension bug when shifting.
-; Use MOVSX and SAR. Exit with low byte of result (255 for -1 >> 1).
-;
-; Expected exit: 255
-
 .CODE
 
 EXTRN ExitProcess:PROC

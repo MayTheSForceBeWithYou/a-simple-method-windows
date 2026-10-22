@@ -1,14 +1,11 @@
 ; Exercise: 03-clear-buffer
 ;
-; Exercise 03: clear buffer
 ; Clear 8 bytes to 0; exit first byte 0.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_03_clear_buffer` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 03-clear-buffer: clear buffer
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_03_clear_buffer:PROC

@@ -1,9 +1,8 @@
-; Exercise 19: swap via ptrs
+; Exercise: 19-swap-via-ptrs
+;
 ; swap(&a,&b). a=1,b=2; after swap exit a (2). MS x64 ABI.
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 a QWORD 1
 b QWORD 2

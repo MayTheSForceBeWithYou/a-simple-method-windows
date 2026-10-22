@@ -1,14 +1,11 @@
 ; Exercise: 23-stretch-ui-modal
 ;
-; Exercise 23: stretch ui modal
 ; STRETCH: modal stack depth 1; exit 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_23_stretch_ui_modal` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 23-stretch-ui-modal: stretch ui modal
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_ui_modal:PROC

@@ -1,13 +1,8 @@
-; Exercise 17: debug inverted
+; Exercise: 17-debug-inverted
 ;
 ; BUG: jl used where jg needed. rax=5 should take 'big' path exit 2.
-;
-; Build: ml64 /c 17-debug-inverted.asm && link /OUT:17-debug-inverted.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-debug-inverted.obj kernel32.lib
-;
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_17_debug_inverted PROC
     sub rsp, 40

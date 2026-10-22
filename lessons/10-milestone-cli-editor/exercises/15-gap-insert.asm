@@ -1,13 +1,10 @@
 ; Exercise: 15-gap-insert
 ;
-; Exercise 15: gap insert
 ; Gap buffer: gap_s=2 gap_e=6; insert shrinks gap; free space after insert one = 3; exit 3.
 ;
 ; Contract: implement `ex_15_gap_insert` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 15-gap-insert.asm: Insert in gap buffer (store at gap_start, inc gap_start), exit gap_start
 .DATA?
 buf DB 256 DUP(?)
 gap_start QWORD ?

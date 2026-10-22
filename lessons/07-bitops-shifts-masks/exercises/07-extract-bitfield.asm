@@ -1,23 +1,10 @@
 ; Exercise: 07-extract-bitfield
 ;
-; Implement the student routine in this file.
+; Implement `ex_07_extract_bitfield` in this file.
 ;
 ; Contract: implement `ex_07_extract_bitfield` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 12
 ;
-
-; 07-extract-bitfield.asm
-;
-; Extract a bitfield by shifting and masking.
-;
-; Task: Extract a 5-bit field starting at position 3 from value 01F8h.
-;       The field spans bits 3-7 and has value 31 (0b11111).
-;       Exit with the extracted value.
-;
-; Hint: To extract a field at position P with width W:
-;       1. Shift right by P to move field to bit 0
-;       2. Mask with (2^W - 1) to keep only W bits
-
 .CODE
 
 EXTRN ExitProcess:PROC

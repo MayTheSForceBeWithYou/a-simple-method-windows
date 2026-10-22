@@ -1,9 +1,8 @@
-; Exercise 21: rec binary digits
+; Exercise: 21-rec-binary-digits
+;
 ; popcount(0b1101)=3 via recursion. Exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_21_rec_binary_digits PROC
     sub rsp, 40

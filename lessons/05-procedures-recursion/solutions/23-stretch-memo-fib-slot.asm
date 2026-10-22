@@ -1,9 +1,8 @@
-; Exercise 23: stretch memo fib slot
+; Exercise: 23-stretch-memo-fib-slot
+;
 ; Memoized fib(8)=21. Exit 21.
 ; Expected exit: 21
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 memo QWORD 16 DUP(?)
 

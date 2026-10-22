@@ -1,10 +1,8 @@
-; Exercise 03: list node
+; Exercise: 03-list-node
 ;
 ; Node {dq val, next}; one node val 9; exit 9.
 ; Expected exit: 9
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 node QWORD 2 DUP(?)
 

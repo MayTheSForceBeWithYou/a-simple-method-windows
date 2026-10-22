@@ -1,13 +1,8 @@
-; Exercise 02: je equal
+; Exercise: 02-je-equal
 ;
 ; rax=3,rbx=3. If equal exit 1 else 0.
-;
-; Build: ml64 /c 02-je-equal.asm && link /OUT:02-je-equal.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-je-equal.obj kernel32.lib
-;
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_02_je_equal PROC
     sub rsp, 40

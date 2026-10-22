@@ -1,9 +1,8 @@
-; Exercise 11: strchr
+; Exercise: 11-strchr
+;
 ; Find 'l' in 'hello' -> index 2.
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "hello", 0
 

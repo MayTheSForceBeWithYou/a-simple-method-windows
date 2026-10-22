@@ -1,15 +1,10 @@
 ; Exercise: 19-extern-declare
 ;
-; Exercise 19: extern declare
 ; EXTERN for multi-file; local call exit 9.
 ;
 ; Contract: implement `ex_19_extern_declare` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 9
 ;
-
-; 19-extern-declare.asm
-; Single file, define helper returning 9, exit 9.
-
 .CODE
 
 EXTRN ExitProcess:PROC

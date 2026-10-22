@@ -1,16 +1,10 @@
 ; Exercise: 05-makefile-note
 ;
-; Exercise 05: makefile note
 ; Single-file stand-in: exit 0. (Real multi-file would use build script.)
 ;
 ; Contract: implement `ex_05_makefile_note` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 05-makefile-note.asm
-; Single file, exit 0. Comment mentions multi-file build.
-; Task: Simple exit 0 with comment about build process.
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_05_makefile_note:PROC

@@ -1,14 +1,11 @@
 ; Exercise: 15-camera-cull
 ;
-; Exercise 15: camera cull
 ; Sprite x=100 cam=50 view_w=40 -> culled; exit 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_15_camera_cull` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 15-camera-cull: camera cull
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_15_camera_cull:PROC

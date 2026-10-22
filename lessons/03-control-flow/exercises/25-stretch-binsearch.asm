@@ -1,21 +1,10 @@
 ; Exercise: 25-stretch-binsearch
 ;
-; Exercise 25: stretch binsearch
 ; STRETCH: sorted QWORD 1,3,5,7,9. Binary search for 7; exit index 3.
 ;
 ; Contract: implement `ex_25_stretch_binsearch` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; Exercise 25: stretch binsearch
-;
-; STRETCH: sorted QWORD 1,3,5,7,9. Binary search for 7; exit index 3.
-;
-; Build: ml64 /c 25-stretch-binsearch.asm && link /OUT:25-stretch-binsearch.exe /ENTRY:main /SUBSYSTEM:CONSOLE 25-stretch-binsearch.obj kernel32.lib
-;
-; Expected exit: 3
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

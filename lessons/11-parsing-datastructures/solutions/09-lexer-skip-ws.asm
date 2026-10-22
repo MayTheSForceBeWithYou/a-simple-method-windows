@@ -1,10 +1,8 @@
-; Exercise 09: lexer skip ws
+; Exercise: 09-lexer-skip-ws
 ;
 ; Skip spaces before digit in "  7"; exit value 7.
 ; Expected exit: 7
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "  7", 0
 

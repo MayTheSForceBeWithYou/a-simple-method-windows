@@ -1,21 +1,10 @@
 ; Exercise: 26-abs-via-neg
 ;
-; Exercise 26: abs via neg
 ; rax=-42. Absolute value via neg. Exit 42.
 ;
 ; Contract: implement `ex_26_abs_via_neg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
-
-; Exercise 26: abs via neg
-;
-; rax=-42. Absolute value via neg. Exit 42.
-;
-; Build: ml64 /c 26-abs-via-neg.asm && link /OUT:26-abs-via-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-abs-via-neg.obj kernel32.lib
-;
-; Expected exit: 42
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

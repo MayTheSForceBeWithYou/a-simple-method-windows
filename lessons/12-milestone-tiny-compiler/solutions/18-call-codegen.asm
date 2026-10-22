@@ -1,10 +1,8 @@
-; Exercise 18: call codegen
+; Exercise: 18-call-codegen
 ;
 ; Compile call: function returns 11; exit 11.
 ; Expected exit: 11
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_18_call_codegen PROC
     sub rsp, 40

@@ -1,9 +1,8 @@
-; Exercise 12: next power check
+; Exercise: 12-next-power-of-two-bit
+;
 ; Test if 16 is power of two; exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_12_next_power_of_two_bit PROC
     sub rsp, 40

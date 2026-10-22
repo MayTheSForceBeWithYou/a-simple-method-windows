@@ -1,14 +1,9 @@
-; Exercise 26: print via helper
+; Exercise: 26-print-via-helper
 ;
 ; Helper write_str(rcx=buf, rdx=len). Print "abi\n"; exit 0.
-;
-; Expected exit: 0
 ; Expected stdout: "abi\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 msg BYTE "abi", 13, 10
 msg_len EQU $ - msg

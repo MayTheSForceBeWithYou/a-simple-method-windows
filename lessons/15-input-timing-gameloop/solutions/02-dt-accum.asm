@@ -1,14 +1,9 @@
-; Exercise 02: dt accum
+; Exercise: 02-dt-accum
 ;
 ; accum+=dt; if >= step then tick++; exit ticks 2 for accum sim.
-;
-; Build: ml64 /c 02-dt-accum.asm && link /OUT:02-dt-accum.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-dt-accum.obj kernel32.lib
-;
-; Expected exit: 2
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 2
+;
 .code
 ex_02_dt_accum PROC
     sub rsp, 40

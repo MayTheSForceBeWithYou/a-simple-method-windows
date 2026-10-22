@@ -1,16 +1,9 @@
-; Exercise 07: hello world
+; Exercise: 07-hello-world
 ;
 ; Write "Hello, world\n" to stdout, then exit 0.
-;
-; Build: ml64 /c 07-hello-world.asm && link /OUT:07-hello-world.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-hello-world.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "Hello, world\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 msg BYTE "Hello, world", 13, 10
 msg_len EQU $ - msg

@@ -1,10 +1,8 @@
-; Exercise 19: debug q shift
+; Exercise: 19-debug-q-shift
 ;
 ; BUG: forgot >>16 after Q mul. Fix 2*3 Q mul -> 6.
 ; Expected exit: 6
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_19_debug_q_shift PROC
     sub rsp, 40

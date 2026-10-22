@@ -1,10 +1,10 @@
-; Exercise 15: getpid
+; Exercise: 15-getpid
 ;
-; Call GetCurrentProcessId. Exit 0 if the PID is nonzero, else 1.
+; GetCurrentProcessId; exit 0 if the pid is nonzero, else 1.
 ;
-; Contract: implement `ex_15_getpid`; return exit code in EAX.
+; Contract: implement `ex_15_getpid` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
-
+;
 .CODE
 
 EXTRN GetCurrentProcessId:PROC

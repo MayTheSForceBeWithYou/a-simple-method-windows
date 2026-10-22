@@ -1,13 +1,10 @@
 ; Exercise: 17-precedence
 ;
-; Exercise 17: precedence
 ; Encode * binds tighter: 2+3*4 = 14; exit 14.
 ;
 ; Contract: implement `ex_17_precedence` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 14
 ;
-
-; 17-precedence
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_17_precedence:PROC

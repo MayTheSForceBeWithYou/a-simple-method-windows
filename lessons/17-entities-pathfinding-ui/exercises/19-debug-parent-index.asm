@@ -1,17 +1,11 @@
 ; Exercise: 19-debug-parent-index
 ;
-; Exercise 19: debug parent index
 ; BUG: parent[i] wrong. Fix reconstruct step count exit 2.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_19_debug_parent_index` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
-; Exercise 19: debug parent index
-; BUG: parent table uses wrong index when reconstructing path. Expect 2 steps.
-; Expected exit: 2
-
 .DATA
 parent DWORD 0, 0, 1, 2
 goal DWORD 3

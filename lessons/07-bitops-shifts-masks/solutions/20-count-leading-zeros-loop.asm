@@ -1,9 +1,8 @@
-; Exercise 20: clz loop
+; Exercise: 20-count-leading-zeros-loop
+;
 ; Count leading zeros in 000F0h (16-bit) -> 8.
 ; Expected exit: 8
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 val WORD 00F0h
 

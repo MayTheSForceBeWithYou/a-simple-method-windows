@@ -1,7 +1,7 @@
+; Exercise: 03-xor-swap
+;
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_03_xor_swap PROC
     sub rsp, 40

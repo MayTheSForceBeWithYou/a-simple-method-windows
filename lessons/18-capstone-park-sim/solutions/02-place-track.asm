@@ -1,14 +1,9 @@
-; Exercise 02: place track
+; Exercise: 02-place-track
 ;
 ; Track piece type 3; exit 3.
-;
-; Build: ml64 /c 02-place-track.asm && link /OUT:02-place-track.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-place-track.obj kernel32.lib
-;
-; Expected exit: 3
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 3
+;
 .code
 ex_02_place_track PROC
     sub rsp, 40

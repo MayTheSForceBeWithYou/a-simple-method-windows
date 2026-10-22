@@ -1,12 +1,9 @@
-; Exercise 17: panel layout
+; Exercise: 17-panel-layout
 ;
 ; Stack y += h+pad; h=10 pad=2 twice from 0 -> 24; exit 24.
-;
-; Expected exit: 24
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 24
+;
 .code
 ex_17_panel_layout PROC
     sub rsp, 40

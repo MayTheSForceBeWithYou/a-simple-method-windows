@@ -1,15 +1,8 @@
-; Exercise 11: read dev zero
+; Exercise: 11-read-nul
 ;
 ; Allocate zero-filled memory with VirtualAlloc; read 8 bytes; sum should be 0; exit 0.
-;
-; Build: ml64 /c 11-read-nul.asm && link /OUT:11-read-nul.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-read-nul.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN VirtualAlloc:PROC
-EXTERN VirtualFree:PROC
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_11_read_nul PROC
     sub rsp, 40

@@ -1,14 +1,11 @@
 ; Exercise: 05-render-line
 ;
-; Exercise 05: render line
 ; Print buffer 'ed\n'; exit 0.
 ; Expected stdout: "ed\n"
 ;
 ; Contract: implement `ex_05_render_line` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 05-render-line.asm: Write buffer to stdout, exit 0
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?

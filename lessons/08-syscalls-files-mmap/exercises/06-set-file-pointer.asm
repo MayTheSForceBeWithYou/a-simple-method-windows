@@ -1,21 +1,10 @@
 ; Exercise: 06-set-file-pointer
 ;
-; Exercise 06: lseek concept
 ; Without real file: simulate offset add; exit 10.
 ;
 ; Contract: implement `ex_06_set_file_pointer` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 10
 ;
-
-; 06-set-file-pointer.asm
-;
-; Arithmetic offset calculation (not actual SetFilePointer call).
-;
-; Task: Start with offset 5, add 5, exit with 10.
-;       Demonstrates offset arithmetic without Win32 API.
-;
-; Hint: This is a trivial arithmetic drill, not a real file operation.
-
 .CODE
 
 EXTRN ExitProcess:PROC

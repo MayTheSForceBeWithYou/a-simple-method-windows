@@ -1,14 +1,9 @@
-; Exercise 12: vline
+; Exercise: 12-vline
 ;
 ; Vertical with stride 4; plot 3 pixels; sum=6 if value 2.
-;
-; Build: ml64 /c 12-vline.asm && link /OUT:12-vline.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-vline.obj kernel32.lib
-;
-; Expected exit: 6
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 6
+;
 .data?
 fb BYTE 16 DUP(?)
 

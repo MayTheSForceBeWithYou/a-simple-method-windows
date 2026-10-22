@@ -1,17 +1,11 @@
 ; Exercise: 14-memchr
 ;
-; Exercise 14: memchr
 ; Find 7 in bytes 3,5,7,9; index 2.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_14_memchr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
-; Exercise 14: 14-memchr (Win32 port)
-; Find 7 in bytes 3,5,7,9; index 2.
-; Build: ml64 /c /Fo14-memchr.obj 14-memchr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:14-memchr.exe 14-memchr.obj kernel32.lib
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_14_memchr:PROC

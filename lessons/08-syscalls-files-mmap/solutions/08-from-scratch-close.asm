@@ -1,15 +1,8 @@
-; Exercise 08: from scratch close
+; Exercise: 08-from-scratch-close
 ;
 ; FROM SCRATCH: open NUL (Windows null device) read-only; close handle; exit 0 on success.
-;
-; Build: ml64 /c 08-from-scratch-close.asm && link /OUT:08-from-scratch-close.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-from-scratch-close.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN CreateFileA:PROC
-EXTERN CloseHandle:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 path BYTE "NUL", 0
 

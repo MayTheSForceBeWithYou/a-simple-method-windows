@@ -1,13 +1,8 @@
-; Exercise 22: is prime lite
+; Exercise: 22-is-prime-lite
 ;
 ; Trial divide n=11 by 2..sqrt-ish (2..10). Exit 1 if prime else 0.
-;
-; Build: ml64 /c 22-is-prime-lite.asm && link /OUT:22-is-prime-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-is-prime-lite.obj kernel32.lib
-;
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_22_is_prime_lite PROC
     sub rsp, 40

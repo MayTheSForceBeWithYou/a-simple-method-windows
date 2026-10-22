@@ -1,9 +1,8 @@
-; Exercise 14: sar vs shr
+; Exercise: 14-sar-vs-shr
+;
 ; For -4: sar 1 vs shr 1; exit (sar_result == -2) as 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_14_sar_vs_shr PROC
     sub rsp, 40

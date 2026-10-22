@@ -1,12 +1,9 @@
-; Exercise 23: stretch ui modal
+; Exercise: 23-stretch-ui-modal
 ;
 ; STRETCH: modal stack depth 1; exit 1.
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data
 modal_depth QWORD 0
 

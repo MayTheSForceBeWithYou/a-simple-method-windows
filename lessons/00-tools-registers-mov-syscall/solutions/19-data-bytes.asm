@@ -1,15 +1,8 @@
-; Exercise 19: data bytes
+; Exercise: 19-data-bytes
 ;
 ; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
-;
-; Build: ml64 /c 19-data-bytes.asm && link /OUT:19-data-bytes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-data-bytes.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 msg BYTE 048h, 069h, 00Dh, 00Ah
 msg_len EQU $ - msg

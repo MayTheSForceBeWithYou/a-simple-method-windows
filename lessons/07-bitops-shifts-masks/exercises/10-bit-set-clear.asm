@@ -1,24 +1,10 @@
 ; Exercise: 10-bit-set-clear
 ;
-; Exercise 10: bit set clear
 ; Set bit 3, then clear it; exit 0.
 ;
 ; Contract: implement `ex_10_bit_set_clear` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 10-bit-set-clear.asm
-;
-; Set and clear specific bits using OR and AND.
-;
-; Task: Start with RAX = 0FFh (all low 8 bits set).
-;       Clear bit 2 (turn it off).
-;       Exit with the result (should be 0FBh = 251).
-;
-; Hint: To clear bit N, AND with ~(1 << N).
-;       In MASM, you can compute the mask: NOT 4 = NOT (1 << 2).
-;       Or directly: AND with 0FBh (which is 0FFh with bit 2 cleared).
-
 .CODE
 
 EXTRN ExitProcess:PROC

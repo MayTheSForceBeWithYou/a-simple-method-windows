@@ -1,17 +1,8 @@
-; Exercise 19: pwrite emul
+; Exercise: 19-overlapped-write
 ;
 ; Emulate pwrite via SetFilePointerEx+WriteFile on NUL: open, seek end, write. Exit 0 on success.
-;
-; Build: ml64 /c 19-overlapped-write.asm && link /OUT:19-overlapped-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-overlapped-write.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN CreateFileA:PROC
-EXTERN SetFilePointerEx:PROC
-EXTERN WriteFile:PROC
-EXTERN CloseHandle:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 path BYTE "NUL", 0
 msg BYTE "x"

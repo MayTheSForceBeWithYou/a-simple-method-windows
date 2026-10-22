@@ -1,9 +1,8 @@
-; Exercise 24: from scratch normalize2
+; Exercise: 24-from-scratch-normalize2
+;
 ; Length of (3,4) vector; exit 5.
 ; Expected exit: 5
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_24_from_scratch_normalize2 PROC
     sub rsp, 40

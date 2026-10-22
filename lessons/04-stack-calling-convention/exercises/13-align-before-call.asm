@@ -1,12 +1,10 @@
 ; Exercise: 13-align-before-call
 ;
-; Exercise 13: align before call
 ; Stack alignment check. MS x64 requires 16-byte alignment before call.
 ;
-; Contract: implement `ex_13_align_before_call` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_13_align_before_call` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

@@ -1,13 +1,10 @@
 ; Exercise: 09-lexer-skip-ws
 ;
-; Exercise 09: lexer skip ws
 ; Skip spaces before digit in "  7"; exit value 7.
 ;
 ; Contract: implement `ex_09_lexer_skip_ws` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 7
 ;
-
-; 09-lexer-skip-ws
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_09_lexer_skip_ws:PROC

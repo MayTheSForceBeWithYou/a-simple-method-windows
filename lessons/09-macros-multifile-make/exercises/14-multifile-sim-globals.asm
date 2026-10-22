@@ -1,15 +1,10 @@
 ; Exercise: 14-multifile-sim-globals
 ;
-; Exercise 14: multifile sim globals
 ; Simulate module: PUBLIC helper_add; call with 20,22 exit 42.
 ;
 ; Contract: implement `ex_14_multifile_sim_globals` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
-
-; 14-multifile-sim-globals.asm
-; Single-file simulation of PUBLIC, return 42.
-
 .CODE
 
 EXTRN ExitProcess:PROC

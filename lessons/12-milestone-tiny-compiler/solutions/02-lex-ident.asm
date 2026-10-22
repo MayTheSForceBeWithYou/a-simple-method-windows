@@ -1,10 +1,8 @@
-; Exercise 02: lex ident
+; Exercise: 02-lex-ident
 ;
 ; Accept first char alpha; 'a' -> 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_02_lex_ident PROC
     sub rsp, 40

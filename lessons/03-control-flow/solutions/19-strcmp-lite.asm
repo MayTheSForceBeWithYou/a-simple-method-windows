@@ -1,13 +1,8 @@
-; Exercise 19: strcmp lite
+; Exercise: 19-strcmp-lite
 ;
 ; Compare 'ab' and 'ab' bytewise; exit 0 if equal else 1. Should exit 0.
-;
-; Build: ml64 /c 19-strcmp-lite.asm && link /OUT:19-strcmp-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-strcmp-lite.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 a BYTE "ab", 0
 b BYTE "ab", 0

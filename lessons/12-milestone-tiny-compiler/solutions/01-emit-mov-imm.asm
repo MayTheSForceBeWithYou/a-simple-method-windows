@@ -1,10 +1,8 @@
-; Exercise 01: emit mov imm
+; Exercise: 01-emit-mov-imm
 ;
 ; Compiler-ish: 'emit' by writing value 42 to out cell; exit 42.
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 outv QWORD ?
 

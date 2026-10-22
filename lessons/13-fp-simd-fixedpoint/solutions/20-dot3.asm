@@ -1,10 +1,8 @@
-; Exercise 20: dot3
+; Exercise: 20-dot3
 ;
 ; dot (1,2,3)*(4,5,6)=32; exit 32.
 ; Expected exit: 32
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_20_dot3 PROC
     sub rsp, 40

@@ -1,14 +1,11 @@
 ; Exercise: 06-path-step
 ;
-; Exercise 06: path step
 ; Follow next cell delta x+1; exit 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_06_path_step` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 06-path-step: path step
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_06_path_step:PROC

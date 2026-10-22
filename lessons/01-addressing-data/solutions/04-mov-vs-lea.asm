@@ -1,13 +1,8 @@
-; Exercise 04: mov vs lea
+; Exercise: 04-mov-vs-lea
 ;
 ; Label x QWORD 99. lea rbx,[x] then mov rcx,[rbx]. Exit with 99. Comment which is address vs load.
-;
-; Build: ml64 /c 04-mov-vs-lea.asm && link /OUT:04-mov-vs-lea.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-mov-vs-lea.obj kernel32.lib
-;
 ; Expected exit: 99
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 x QWORD 99
 

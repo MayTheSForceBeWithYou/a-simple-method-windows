@@ -1,12 +1,9 @@
-; Exercise 21: scenario goal
+; Exercise: 21-scenario-goal
 ;
 ; Guests>=100 goal; guests=100; exit 1 success.
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data
 guests QWORD 0
 

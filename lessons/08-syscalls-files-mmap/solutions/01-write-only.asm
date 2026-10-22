@@ -1,16 +1,9 @@
-; Exercise 01: write only
+; Exercise: 01-write-only
 ;
 ; Review write; print 'io\n'; exit 0.
-;
-; Build: ml64 /c 01-write-only.asm && link /OUT:01-write-only.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-write-only.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "io\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 msg BYTE "io", 10
 msg_len EQU $ - msg

@@ -1,14 +1,9 @@
-; Exercise 24: from scratch overlap area
+; Exercise: 24-from-scratch-overlap-area
 ;
 ; FROM SCRATCH: overlap width 2 height 3 area 6; exit 6.
-;
-; Build: ml64 /c 24-from-scratch-overlap-area.asm && link /OUT:24-from-scratch-overlap-area.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-overlap-area.obj kernel32.lib
-;
-; Expected exit: 6
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 6
+;
 .code
 ex_24_from_scratch_overlap_area PROC
     sub rsp, 40

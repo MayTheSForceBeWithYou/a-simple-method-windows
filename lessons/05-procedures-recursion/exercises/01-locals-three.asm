@@ -1,12 +1,10 @@
 ; Exercise: 01-locals-three
 ;
-; Exercise 01: locals three
 ; Function with 3 qword locals. sum_locals(10)=10+11+12=33.
 ;
-; Contract: implement `ex_01_locals_three` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_01_locals_three` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 33
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

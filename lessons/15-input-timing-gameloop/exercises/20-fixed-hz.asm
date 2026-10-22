@@ -1,14 +1,11 @@
 ; Exercise: 20-fixed-hz
 ;
-; Exercise 20: fixed hz
 ; 60 Hz -> step ns approx store 16666667&0FFh; exit low byte or exit 60 as hz.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_20_fixed_hz` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 60
 ;
-
-; 20-fixed-hz: fixed hz
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_20_fixed_hz:PROC

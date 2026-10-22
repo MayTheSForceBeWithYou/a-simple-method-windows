@@ -1,12 +1,10 @@
 ; Exercise: 03-rec-sum
 ;
-; Exercise 03: rec sum
 ; sum_to(n)=n+(n-1)+...+1 recursive. sum_to(5)=15.
 ;
-; Contract: implement `ex_03_rec_sum` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_03_rec_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

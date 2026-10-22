@@ -1,15 +1,10 @@
 ; Exercise: 12-strstr-macro-label
 ;
-; Exercise 12: macro local labels
 ; MACRO TWICE with inc instructions; exit 2.
 ;
 ; Contract: implement `ex_12_strstr_macro_label` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
-; 12-strstr-macro-label.asm
-; TWICE macro with two INC, no label collision, exit 2.
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_12_strstr_macro_label:PROC

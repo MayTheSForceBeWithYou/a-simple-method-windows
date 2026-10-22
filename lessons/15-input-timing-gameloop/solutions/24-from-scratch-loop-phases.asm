@@ -1,14 +1,9 @@
-; Exercise 24: from scratch loop phases
+; Exercise: 24-from-scratch-loop-phases
 ;
 ; FROM SCRATCH: phases input,update,render counted; 3 phases * 2 frames = 6; exit 6.
-;
-; Build: ml64 /c 24-from-scratch-loop-phases.asm && link /OUT:24-from-scratch-loop-phases.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-loop-phases.obj kernel32.lib
-;
-; Expected exit: 6
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 6
+;
 .code
 ex_24_from_scratch_loop_phases PROC
     sub rsp, 40

@@ -1,13 +1,10 @@
 ; Exercise: 04-arena-bump
 ;
-; Exercise 04: arena bump
 ; Bump allocate 16 then 16; offset 32; exit 32&255.
 ;
 ; Contract: implement `ex_04_arena_bump` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 32
 ;
-
-; 04-arena-bump
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_04_arena_bump:PROC

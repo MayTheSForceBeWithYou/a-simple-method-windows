@@ -1,13 +1,8 @@
-; Exercise 28: from scratch expr
+; Exercise: 28-from-scratch-expr
 ;
 ; FROM SCRATCH: exit status = (12*12 - 100) / 4 + 1 = 12. Show work with idiv.
-;
-; Build: ml64 /c 28-from-scratch-expr.asm && link /OUT:28-from-scratch-expr.exe /ENTRY:main /SUBSYSTEM:CONSOLE 28-from-scratch-expr.obj kernel32.lib
-;
 ; Expected exit: 12
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_28_from_scratch_expr PROC
     sub rsp, 40

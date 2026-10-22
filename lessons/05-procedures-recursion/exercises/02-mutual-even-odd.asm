@@ -1,12 +1,10 @@
 ; Exercise: 02-mutual-even-odd
 ;
-; Exercise 02: mutual even odd
 ; is_even/is_odd mutual recursion. is_even(4)->1; exit 1.
 ;
-; Contract: implement `ex_02_mutual_even_odd` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_02_mutual_even_odd` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

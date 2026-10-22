@@ -1,9 +1,8 @@
-; Exercise 18: max3 proc
+; Exercise: 18-max3-proc
+;
 ; max3(3,9,7)=9. MS x64 ABI.
 ; Expected exit: 9
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_18_max3_proc PROC
     sub rsp, 40

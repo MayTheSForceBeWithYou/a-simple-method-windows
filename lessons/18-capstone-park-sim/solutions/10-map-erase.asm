@@ -1,12 +1,9 @@
-; Exercise 10: map erase
+; Exercise: 10-map-erase
 ;
 ; Erase cell to EMPTY=0; exit 0.
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data?
 map BYTE 256 DUP(0)
 

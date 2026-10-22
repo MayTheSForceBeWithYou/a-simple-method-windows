@@ -1,9 +1,8 @@
-; Exercise 14: mutual parity count
+; Exercise: 14-mutual-parity-count
+;
 ; is_even(6)=1. MS x64 ABI.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_14_mutual_parity_count PROC
     sub rsp, 40

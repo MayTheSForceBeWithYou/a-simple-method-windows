@@ -1,7 +1,7 @@
+; Exercise: 05-sar-sign
+;
 ; Expected exit: 252
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_05_sar_sign PROC
     sub rsp, 40

@@ -1,12 +1,10 @@
 ; Exercise: 04-six-args-sum
 ;
-; Exercise 04: six args sum
 ; sum6(a..f): first 4 in regs, 5th and 6th on stack. Pass 1..6; exit 21.
 ;
-; Contract: implement `ex_04_six_args_sum` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_04_six_args_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 21
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

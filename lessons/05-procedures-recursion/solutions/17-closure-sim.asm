@@ -1,9 +1,8 @@
-; Exercise 17: closure sim
+; Exercise: 17-closure-sim
+;
 ; Context in r12 (nonvolatile). add_ctx(5)=5+10=15.
 ; Expected exit: 15
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 ctx QWORD 10
 

@@ -1,10 +1,8 @@
-; Exercise 11: fixed div
+; Exercise: 11-fixed-div
 ;
 ; Q16: (6<<16)/(2<<16) via (a<<16)/b style: ((6<<16)<<16)/(2<<16) careful. Simpler int: 6/2=3 exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_11_fixed_div PROC
     sub rsp, 40

@@ -1,10 +1,10 @@
 ; Exercise: 07-callee-saved
 ;
-; Caller puts 9 in RBX. Callee must preserve RBX. Exit RBX (9).
+; Caller puts 9 in rbx. Callee must preserve rbx. Exit rbx (9). (rbx is nonvolatile on Windows)
 ;
-; Contract: implement `ex_07_callee_saved` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_07_callee_saved` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 9
-
+;
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_07_callee_saved:PROC

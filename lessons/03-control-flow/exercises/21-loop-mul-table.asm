@@ -1,21 +1,10 @@
 ; Exercise: 21-loop-mul-table
 ;
-; Exercise 21: loop mul table
 ; Compute 7*8 via repeated addition loop. Exit 56.
 ;
 ; Contract: implement `ex_21_loop_mul_table` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 56
 ;
-
-; Exercise 21: loop mul table
-;
-; Compute 7*8 via repeated addition loop. Exit 56.
-;
-; Build: ml64 /c 21-loop-mul-table.asm && link /OUT:21-loop-mul-table.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-loop-mul-table.obj kernel32.lib
-;
-; Expected exit: 56
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

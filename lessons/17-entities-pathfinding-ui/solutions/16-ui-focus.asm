@@ -1,12 +1,9 @@
-; Exercise 16: ui focus
+; Exercise: 16-ui-focus
 ;
 ; Tab cycles focus index mod 3; from 2 -> 0; exit 0.
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 focus QWORD 0
 

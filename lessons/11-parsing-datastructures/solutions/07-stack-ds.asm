@@ -1,10 +1,8 @@
-; Exercise 07: stack ds
+; Exercise: 07-stack-ds
 ;
 ; Push 1,2 pop to rdi; exit 2.
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 stk QWORD 8 DUP(?)
 sp_ QWORD ?

@@ -1,18 +1,10 @@
 ; Exercise: 23-debug-stdout-fd
 ;
-; Exercise 23: debug stdout fd
 ; BUG HUNT: handle is wrong. Fix to stdout.
 ;
 ; Contract: implement `ex_23_debug_stdout_fd` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 23: debug stdout fd
-;
-; BUG HUNT: Write "Hi\n" to stdout; wrong length/register setup.
-;
-; Expected exit: 0
-
 .DATA
 msg BYTE "Hi", 13, 10
 msg_len EQU $ - msg

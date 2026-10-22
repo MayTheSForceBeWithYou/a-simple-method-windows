@@ -1,12 +1,10 @@
 ; Exercise: 06-ack-lite
 ;
-; Exercise 06: ack lite
 ; ack(1,1) = 3. MS x64 ABI.
 ;
-; Contract: implement `ex_06_ack_lite` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_06_ack_lite` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

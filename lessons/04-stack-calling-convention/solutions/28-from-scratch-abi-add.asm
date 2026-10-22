@@ -1,12 +1,9 @@
-; Exercise 28: from scratch abi add
+; Exercise: 28-from-scratch-abi-add
 ;
 ; FROM SCRATCH: add3(a,b,c) = a+b+c with MS x64 regs; exit 42 for 10,20,12.
-;
-; Expected exit: 42
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 42
+;
 .code
 ex_28_from_scratch_abi_add PROC FRAME
     sub rsp, 40

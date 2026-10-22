@@ -1,17 +1,9 @@
-; Exercise 20: tile autotile mask
+; Exercise: 20-tile-autotile-mask
 ;
 ; Neighbor mask N|E = 5; exit 5.
-;
-; Build: ml64 /c 20-tile-autotile-mask.asm && link /OUT:20-tile-autotile-mask.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-tile-autotile-mask.obj kernel32.lib
-;
-; Expected exit: 5
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
-N EQU 1
-E EQU 4
-
+; Expected exit: 5
+;
 .code
 ex_20_tile_autotile_mask PROC
     sub rsp, 40

@@ -1,13 +1,10 @@
 ; Exercise: 17-floor-fixed
 ;
-; Exercise 17: floor fixed
 ; Floor Q16.16 3.75 (3<<16 + 49152); exit 3.
 ;
 ; Contract: implement `ex_17_floor_fixed` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 17-floor-fixed.asm: Floor Q16.16 (clear frac bits), exit int
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_17_floor_fixed:PROC

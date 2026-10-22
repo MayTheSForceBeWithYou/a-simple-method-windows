@@ -1,12 +1,9 @@
-; Exercise 24: from scratch ecs query
+; Exercise: 24-from-scratch-ecs-query
 ;
 ; FROM SCRATCH: count entities with mask POS; 3 of 4; exit 3.
-;
-; Expected exit: 3
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 3
+;
 .data
 masks BYTE 1,1,1,0
 

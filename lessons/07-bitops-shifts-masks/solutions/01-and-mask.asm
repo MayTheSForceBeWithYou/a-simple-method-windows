@@ -1,7 +1,7 @@
+; Exercise: 01-and-mask
+;
 ; Expected exit: 15
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_01_and_mask PROC
     sub rsp, 40

@@ -1,10 +1,8 @@
-; Exercise 04: codegen add
+; Exercise: 04-codegen-add
 ;
 ; Fold 2+3 at compile-time; exit 5.
 ; Expected exit: 5
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_04_codegen_add PROC
     sub rsp, 40

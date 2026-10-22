@@ -1,12 +1,11 @@
 ; Exercise: 17-void-side-effect
 ;
-; Exercise 17: void side effect
 ; Write '!' and newline. MS x64 ABI.
+; Expected stdout: "!\n"
 ;
-; Contract: implement `ex_17_void_side_effect` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_17_void_side_effect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

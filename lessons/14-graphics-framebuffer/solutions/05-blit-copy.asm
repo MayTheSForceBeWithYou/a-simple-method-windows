@@ -1,14 +1,9 @@
-; Exercise 05: blit copy
+; Exercise: 05-blit-copy
 ;
 ; Copy 4 bytes src->dst; sum exit 10.
-;
-; Build: ml64 /c 05-blit-copy.asm && link /OUT:05-blit-copy.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-blit-copy.obj kernel32.lib
-;
-; Expected exit: 10
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 10
+;
 .data
 src BYTE 1,2,3,4
 

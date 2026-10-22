@@ -1,14 +1,11 @@
 ; Exercise: 16-pitch-bytes
 ;
-; Exercise 16: pitch bytes
 ; pitch=width*4 aligned up to 16: width=5 -> 20 align 32? 20; exit 20.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_16_pitch_bytes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 20
 ;
-
-; 16-pitch-bytes: pitch bytes
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_16_pitch_bytes:PROC

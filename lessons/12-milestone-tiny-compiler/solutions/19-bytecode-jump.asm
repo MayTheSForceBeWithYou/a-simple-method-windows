@@ -1,10 +1,8 @@
-; Exercise 19: bytecode jump
+; Exercise: 19-bytecode-jump
 ;
 ; Bytecode: JMP +2 over LOAD 99, LOAD 5, HALT; exit 5.
 ; Expected exit: 5
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 vmcode BYTE 3,2, 1,99, 1,5, 0
 

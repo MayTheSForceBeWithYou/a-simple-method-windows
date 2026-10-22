@@ -1,9 +1,8 @@
-; Exercise 09: xor checksum
+; Exercise: 09-xor-checksum
+;
 ; XOR-fold bytes 1,2,4,8 -> 15.
 ; Expected exit: 15
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 b BYTE 1,2,4,8
 

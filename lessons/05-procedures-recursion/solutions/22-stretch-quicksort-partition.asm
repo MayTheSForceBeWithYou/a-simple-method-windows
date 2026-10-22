@@ -1,9 +1,8 @@
-; Exercise 22: stretch partition
+; Exercise: 22-stretch-quicksort-partition
+;
 ; Lomuto partition for [1,5,2,4]. Returns pivot index. Exit pivot index (2 or 3 depending).
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 arr QWORD 1,5,2,4
 

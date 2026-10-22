@@ -1,12 +1,9 @@
-; Exercise 22: stretch itoa
+; Exercise: 22-stretch-itoa
 ;
 ; STRETCH: itoa 123 into buffer; return length 3.
-;
-; Expected exit: 3
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 3
+;
 .data?
 buf BYTE 16 DUP(?)
 

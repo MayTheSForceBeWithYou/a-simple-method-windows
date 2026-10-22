@@ -1,14 +1,11 @@
 ; Exercise: 03-astar-h
 ;
-; Exercise 03: astar h
 ; Manhattan |3-1|+|4-2|=4.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_03_astar_h` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 4
 ;
-
-; 03-astar-h: astar h
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_03_astar_h:PROC

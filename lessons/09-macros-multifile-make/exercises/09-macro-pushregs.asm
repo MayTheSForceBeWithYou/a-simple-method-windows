@@ -1,15 +1,10 @@
 ; Exercise: 09-macro-pushregs
 ;
-; Exercise 09: macro pushregs
 ; MACRO PUSH_CALLEE / POP_CALLEE for rbx r12; exit 5.
 ;
 ; Contract: implement `ex_09_macro_pushregs` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 5
 ;
-
-; 09-macro-pushregs.asm
-; Macro pushes RBX, R12; pop in reverse order; exit 5.
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_09_macro_pushregs:PROC

@@ -1,21 +1,10 @@
 ; Exercise: 24-overwrite-data
 ;
-; Exercise 24: overwrite data
 ; msg BYTE 'x',CR,LF. Change first byte to 'Y' in place, write 3 bytes, exit 0.
 ;
 ; Contract: implement `ex_24_overwrite_data` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 24: overwrite data
-;
-; msg BYTE 'x',CR,LF. Change first byte to 'Y' in place, write 3 bytes, exit 0.
-;
-; Build: ml64 /c 24-overwrite-data.asm && link /OUT:24-overwrite-data.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-overwrite-data.obj kernel32.lib
-;
-; Expected exit: 0
-
-
 .CODE
 
 EXTRN ExitProcess:PROC

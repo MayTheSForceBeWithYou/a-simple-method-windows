@@ -1,12 +1,9 @@
-; Exercise 20: steering seek
+; Exercise: 20-steering-seek
 ;
 ; Seek desired vel = target-pos; (10-3)=7; exit 7.
-;
-; Expected exit: 7
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 7
+;
 .code
 ex_20_steering_seek PROC
     sub rsp, 40

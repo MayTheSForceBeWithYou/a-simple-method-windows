@@ -1,12 +1,9 @@
-; Exercise 23: stretch multiplayer stub
+; Exercise: 23-stretch-multiplayer-stub
 ;
 ; STRETCH: net tick id 2; exit 2. (local stub)
-;
-; Expected exit: 2
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 2
+;
 .data
 tick_id QWORD 0
 

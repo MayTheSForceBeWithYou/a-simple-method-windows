@@ -1,9 +1,8 @@
-; Exercise 10: gcd proc
+; Exercise: 10-gcd-proc
+;
 ; gcd(48,18)=6 Euclid recursive.
 ; Expected exit: 6
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_10_gcd_proc PROC
     sub rsp, 40

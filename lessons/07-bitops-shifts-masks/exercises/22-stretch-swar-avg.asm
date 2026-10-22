@@ -1,22 +1,10 @@
 ; Exercise: 22-stretch-swar-avg
 ;
-; Implement the student routine in this file.
+; Implement `ex_22_stretch_swar_avg` in this file.
 ;
 ; Contract: implement `ex_22_stretch_swar_avg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 150
 ;
-
-; 22-stretch-swar-avg.asm (stretch)
-;
-; Compute average of two unsigned bytes without overflow using SWAR technique.
-;
-; Task: Compute average of 200 and 180 using formula: (a & b) + ((a ^ b) >> 1).
-;       This avoids overflow from (a + b) / 2 when a + b > 255.
-;       Exit with the average (should be 190).
-;
-; Hint: This SWAR (SIMD Within A Register) trick splits the sum into
-;       shared bits (a & b) and differing bits ((a ^ b) >> 1).
-
 .CODE
 
 EXTRN ExitProcess:PROC

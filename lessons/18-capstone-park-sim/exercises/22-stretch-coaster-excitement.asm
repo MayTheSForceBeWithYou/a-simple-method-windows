@@ -1,14 +1,11 @@
 ; Exercise: 22-stretch-coaster-excitement
 ;
-; Exercise 22: stretch coaster excitement
 ; STRETCH: excitement score 42; exit 42.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_22_stretch_coaster_excitement` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
-
-; 22-stretch-coaster-excitement: stretch coaster excitement
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_coaster_excitement:PROC

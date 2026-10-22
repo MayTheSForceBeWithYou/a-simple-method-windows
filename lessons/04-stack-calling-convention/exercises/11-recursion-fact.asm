@@ -1,12 +1,10 @@
 ; Exercise: 11-recursion-fact
 ;
-; Exercise 11: recursion fact
 ; Recursive fact(4)=24. MS x64 ABI.
 ;
-; Contract: implement `ex_11_recursion_fact` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_11_recursion_fact` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 24
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

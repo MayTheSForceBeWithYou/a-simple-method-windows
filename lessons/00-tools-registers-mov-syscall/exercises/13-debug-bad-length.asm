@@ -1,18 +1,10 @@
 ; Exercise: 13-debug-bad-length
 ;
-; Exercise 13: debug bad length
 ; BUG HUNT: Writes "Hi\n" but length parameter too short. Fix via EQU.
 ;
 ; Contract: implement `ex_13_debug_bad_length` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 13: debug bad length
-;
-; BUG HUNT: Writes "Hi\n" but length parameter too short. Fix via EQU.
-;
-; Expected exit: 0
-
 .DATA
 msg BYTE "Hi", 13, 10
 msg_len EQU $ - msg

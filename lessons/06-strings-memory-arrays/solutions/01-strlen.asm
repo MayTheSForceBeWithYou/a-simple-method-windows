@@ -1,9 +1,8 @@
-; Exercise 01: strlen
+; Exercise: 01-strlen
+;
 ; strlen('hello')=5.
 ; Expected exit: 5
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "hello", 0
 

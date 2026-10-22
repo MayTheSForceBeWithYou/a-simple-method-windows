@@ -1,13 +1,10 @@
 ; Exercise: 20-sqrt-newton-stub
 ;
-; Exercise 20: sqrt newton stub
 ; Integer sqrt of 9 via one Newton step from 5; exit 3.
 ;
 ; Contract: implement `ex_20_sqrt_newton_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 20-sqrt-newton-stub.asm: Stub: Newton sqrt iteration, exit approx
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_20_sqrt_newton_stub:PROC

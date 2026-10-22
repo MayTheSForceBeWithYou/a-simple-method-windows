@@ -1,13 +1,10 @@
 ; Exercise: 07-emit-syscall-exit
 ;
-; Exercise 07: emit syscall exit
 ; Hand-written 'codegen' template exits status 0.
 ;
 ; Contract: implement `ex_07_emit_syscall_exit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 07-emit-syscall-exit.asm: Emit exit syscall sequence, exit 0
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_07_emit_syscall_exit:PROC

@@ -1,7 +1,7 @@
+; Exercise: 13-shl-shl-combine
+;
 ; Expected exit: 171
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_13_shl_shl_combine PROC
     sub rsp, 40

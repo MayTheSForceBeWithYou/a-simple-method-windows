@@ -1,14 +1,11 @@
 ; Exercise: 04-ui-hit
 ;
-; Exercise 04: ui hit
 ; Point in panel -> 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_04_ui_hit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 04-ui-hit: ui hit
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_04_ui_hit:PROC

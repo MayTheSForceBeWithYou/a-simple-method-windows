@@ -1,15 +1,8 @@
-; Exercise 21: stretch banner
+; Exercise: 21-stretch-banner
 ;
 ; STRETCH: Print a 3-line ASCII banner, exit 0.
-;
-; Build: ml64 /c 21-stretch-banner.asm && link /OUT:21-stretch-banner.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-stretch-banner.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 banner BYTE "============", 13, 10
        BYTE "  ASM 00 OK ", 13, 10

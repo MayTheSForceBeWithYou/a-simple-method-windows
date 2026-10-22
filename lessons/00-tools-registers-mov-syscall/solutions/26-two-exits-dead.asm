@@ -1,15 +1,8 @@
-; Exercise 26: two exits dead
+; Exercise: 26-two-exits-dead
 ;
 ; Write "alive\n", exit 0, then dead exit 99 after (unreachable).
-;
-; Build: ml64 /c 26-two-exits-dead.asm && link /OUT:26-two-exits-dead.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-two-exits-dead.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 msg BYTE "alive", 13, 10
 msg_len EQU $ - msg

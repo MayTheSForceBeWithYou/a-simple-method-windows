@@ -1,9 +1,8 @@
-; Exercise 13: neg fixed
+; Exercise: 13-neg-fixed
+;
 ; Negate Q16.16 value -2.0; exit 2 (integer part of +2.0).
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_13_neg_fixed PROC
     sub rsp, 40

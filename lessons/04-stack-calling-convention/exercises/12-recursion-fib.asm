@@ -1,12 +1,10 @@
 ; Exercise: 12-recursion-fib
 ;
-; Exercise 12: recursion fib
 ; Naive fib(7)=13. MS x64 ABI.
 ;
-; Contract: implement `ex_12_recursion_fib` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_12_recursion_fib` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 13
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

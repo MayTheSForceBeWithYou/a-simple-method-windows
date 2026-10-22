@@ -1,13 +1,8 @@
-; Exercise 02: insert char
+; Exercise: 02-insert-char
 ;
 ; Insert 'A' at end; len=1; exit 1.
-;
-; Build: ml64 /c 02-insert-char.asm && link /OUT:02-insert-char.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-insert-char.obj kernel32.lib
-;
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 buf BYTE 64 DUP(?)
 len QWORD ?

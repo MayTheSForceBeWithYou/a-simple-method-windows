@@ -1,9 +1,8 @@
-; Exercise 05: save r12
+; Exercise: 05-save-r12
+;
 ; Use r12 in callee; must push/pop. r12=42 preserved. Exit 42.
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_05_save_r12 PROC
     sub rsp, 40

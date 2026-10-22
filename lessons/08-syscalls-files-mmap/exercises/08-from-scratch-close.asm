@@ -1,21 +1,10 @@
 ; Exercise: 08-from-scratch-close
 ;
-; Exercise 08: from scratch close
 ; FROM SCRATCH: open NUL (Windows null device) read-only; close handle; exit 0 on success.
 ;
 ; Contract: implement `ex_08_from_scratch_close` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 08-from-scratch-close.asm (from scratch)
-;
-; Open NUL device, close it, exit 0.
-;
-; Task: CreateFileA("NUL", GENERIC_READ, ..., OPEN_EXISTING, ...),
-;       CloseHandle, exit 0.
-;
-; Hint: "NUL" is Windows null device (like /dev/null or /dev/zero).
-
 .DATA
 filename DB "NUL", 0
 

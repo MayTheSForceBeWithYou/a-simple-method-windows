@@ -1,7 +1,7 @@
+; Exercise: 22-stretch-swar-avg
+;
 ; Expected exit: 150
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_22_stretch_swar_avg PROC
     sub rsp, 40

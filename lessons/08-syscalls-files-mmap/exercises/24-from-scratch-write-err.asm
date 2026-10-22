@@ -1,21 +1,10 @@
 ; Exercise: 24-from-scratch-write-err
 ;
-; Exercise 24: from scratch write err
 ; FROM SCRATCH: write to invalid handle=-1; expect error; exit 1.
 ;
 ; Contract: implement `ex_24_from_scratch_write_err` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 24-from-scratch-write-err.asm (from scratch)
-;
-; Try to write to an invalid handle, detect error, exit 1.
-;
-; Task: Call WriteFile with handle = INVALID_HANDLE_VALUE (-1),
-;       check return value (should be 0 = failure), exit 1.
-;
-; Hint: WriteFile returns 0 on error. Check return value in EAX.
-
 .DATA
 message DB "Test"
 message_len EQU $ - message

@@ -1,13 +1,10 @@
 ; Exercise: 20-queue-ring
 ;
-; Exercise 20: queue ring
 ; Ring buffer cap 4; enqueue 7,8; dequeue; exit 7.
 ;
 ; Contract: implement `ex_20_queue_ring` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 7
 ;
-
-; 20-queue-ring
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_20_queue_ring:PROC

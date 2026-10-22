@@ -1,14 +1,11 @@
 ; Exercise: 07-row-fill
 ;
-; Exercise 07: row fill
 ; Fill 3 pixels with 9; exit mid.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_07_row_fill` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 9
 ;
-
-; 07-row-fill: row fill
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_07_row_fill:PROC

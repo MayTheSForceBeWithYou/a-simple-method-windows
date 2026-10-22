@@ -1,22 +1,10 @@
 ; Exercise: 09-write-stderr
 ;
-; Exercise 09: write stderr
 ; Write "error\n" to stderr (fd 2), exit 1.
 ;
 ; Contract: implement `ex_09_write_stderr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; Exercise 09: write stderr (Win32 port)
-;
-; Write "Error\n" to stderr (not stdout).
-;
-; Build: ml64 /c /Fo09-write-stderr.obj 09-write-stderr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-write-stderr.exe 09-write-stderr.obj kernel32.lib
-; Run: 09-write-stderr.exe 2>&1
-;
-; Expected output: (to stderr) Error\n
-; Expected exit: 0
-; Expected stdout: (none)
 .DATA
 msg DB "Error", 13, 10
 msg_len EQU $ - msg

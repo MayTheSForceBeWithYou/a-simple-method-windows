@@ -1,14 +1,11 @@
 ; Exercise: 01-tile-index
 ;
-; Exercise 01: tile index
 ; idx=y*map_w+x; y=2 x=3 w=10; exit 23.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_01_tile_index` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 23
 ;
-
-; 01-tile-index: tile index
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_01_tile_index:PROC

@@ -1,13 +1,8 @@
-; Exercise 06: prologue locals
+; Exercise: 06-prologue-locals
 ;
 ; Function stores local = rcx+1 on stack frame; returns it. Call with 41; exit 42.
-;
-; Build: ml64 /c 06-prologue-locals.asm && link /OUT:06-prologue-locals.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-prologue-locals.obj kernel32.lib
-;
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_06_prologue_locals PROC
     sub rsp, 40

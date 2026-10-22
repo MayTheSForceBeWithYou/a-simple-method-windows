@@ -1,14 +1,11 @@
 ; Exercise: 17-save-header
 ;
-; Exercise 17: save header
 ; Write magic+version size 8; exit 8.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_17_save_header` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 8
 ;
-
-; 17-save-header: save header
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_17_save_header:PROC

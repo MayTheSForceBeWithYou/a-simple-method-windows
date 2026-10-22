@@ -1,14 +1,9 @@
-; Exercise 01: map cell
+; Exercise: 01-map-cell
 ;
 ; Set cell type path=1; exit 1.
-;
-; Build: ml64 /c 01-map-cell.asm && link /OUT:01-map-cell.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-map-cell.obj kernel32.lib
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data?
 map BYTE 256 DUP(?)
 

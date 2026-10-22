@@ -1,10 +1,8 @@
-; Exercise 20: queue ring
+; Exercise: 20-queue-ring
 ;
 ; Ring buffer cap 4; enqueue 7,8; dequeue; exit 7.
 ; Expected exit: 7
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 q QWORD 4 DUP(?)
 head QWORD ?

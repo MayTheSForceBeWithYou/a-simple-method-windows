@@ -1,9 +1,8 @@
-; Exercise 10: bit set clear
+; Exercise: 10-bit-set-clear
+;
 ; Set bit 3, then clear it; exit 0.
 ; Expected exit: 0
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_10_bit_set_clear PROC
     sub rsp, 40

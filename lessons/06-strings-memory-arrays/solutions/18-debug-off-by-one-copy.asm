@@ -1,12 +1,9 @@
-; Exercise 18: debug off by one copy
+; Exercise: 18-debug-off-by-one-copy
 ;
 ; BUG: copies n bytes but forgets NUL. Fix strcpy of "ok"; strlen=2.
-;
-; Expected exit: 2
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 2
+;
 .data
 src BYTE "ok", 0
 

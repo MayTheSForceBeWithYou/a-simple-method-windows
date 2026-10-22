@@ -1,15 +1,8 @@
-; Exercise 18: error eacces sim
+; Exercise: 18-error-eacces-sim
 ;
 ; Try to open "C:\" with write access; if fail exit 1 else close exit 0. Expect 1 often.
-;
-; Build: ml64 /c 18-error-eacces-sim.asm && link /OUT:18-error-eacces-sim.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-error-eacces-sim.obj kernel32.lib
-;
 ; Expected exit: 1
-
-EXTERN CreateFileA:PROC
-EXTERN CloseHandle:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 path BYTE "C:\", 0
 

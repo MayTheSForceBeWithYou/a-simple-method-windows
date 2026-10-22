@@ -1,23 +1,10 @@
 ; Exercise: 08-from-scratch-rol
 ;
-; Implement the student routine in this file.
+; Implement `ex_08_from_scratch_rol` in this file.
 ;
 ; Contract: implement `ex_08_from_scratch_rol` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 08-from-scratch-rol.asm (from scratch)
-;
-; Use ROL (rotate left) to move bits without losing them.
-;
-; Task: Load 081h (binary 10000001) into AL.
-;       Rotate left by 1 bit.
-;       Exit with the result (should be 003h = 3, binary 00000011).
-;
-; Hint: ROL shifts bits left, but the bit that exits the MSB
-;       re-enters at the LSB. No bit is lost.
-;       After rotating 10000001 left by 1, you get 00000011.
-
 .CODE
 
 EXTRN ExitProcess:PROC

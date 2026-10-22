@@ -1,14 +1,11 @@
 ; Exercise: 11-component-mask
 ;
-; Exercise 11: component mask
 ; Has POS|VEL = 3; exit 3.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_11_component_mask` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 11-component-mask: component mask
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_11_component_mask:PROC

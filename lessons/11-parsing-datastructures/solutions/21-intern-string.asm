@@ -1,10 +1,8 @@
-; Exercise 21: intern string
+; Exercise: 21-intern-string
 ;
 ; Intern table pointer equality: same slot; exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 a BYTE "hi", 0
 

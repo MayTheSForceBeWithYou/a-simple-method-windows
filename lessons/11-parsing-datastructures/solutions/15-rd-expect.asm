@@ -1,10 +1,8 @@
-; Exercise 15: rd expect
+; Exercise: 15-rd-expect
 ;
 ; Expect char "(" present; exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "(1)", 0
 

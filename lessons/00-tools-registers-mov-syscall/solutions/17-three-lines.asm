@@ -1,15 +1,8 @@
-; Exercise 17: three lines
+; Exercise: 17-three-lines
 ;
 ; Print "one\n" "two\n" "three\n". Exit 0.
-;
-; Build: ml64 /c 17-three-lines.asm && link /OUT:17-three-lines.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-three-lines.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 l1 BYTE "one", 13, 10
 n1 EQU $ - l1

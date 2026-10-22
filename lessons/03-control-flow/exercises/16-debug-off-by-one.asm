@@ -1,20 +1,10 @@
 ; Exercise: 16-debug-off-by-one
 ;
-; Exercise 16: debug off by one
 ; BUG: loop runs 0..n inclusive summing 1..5 as 0..5. Fix to sum 1..5 = 15.
 ;
 ; Contract: implement `ex_16_debug_off_by_one` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
 ;
-
-; Exercise 16: debug off by one
-;
-; BUG: loop runs 0..n inclusive summing 1..5 as 0..5. Fix to sum 1..5 = 15.
-;
-; Build: ml64 /c 16-debug-off-by-one.asm && link /OUT:16-debug-off-by-one.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-debug-off-by-one.obj kernel32.lib
-;
-; Expected exit: 15
-
 .CODE
 
 EXTRN ExitProcess:PROC

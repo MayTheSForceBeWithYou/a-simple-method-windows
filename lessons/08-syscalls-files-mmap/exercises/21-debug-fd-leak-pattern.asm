@@ -1,17 +1,10 @@
 ; Exercise: 21-debug-fd-leak-pattern
 ;
-; Exercise 21: debug fd pattern
 ; BUG: wrong handle for close. Fix open NUL and close; exit 0.
 ;
 ; Contract: implement `ex_21_debug_fd_leak_pattern` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 21-debug-fd-leak-pattern.asm
-;
-; Fix bug: Open file, forget to close it (intentional leak pattern for debugging).
-; Expected exit: 0
-
 .DATA
 filename DB "NUL", 0
 

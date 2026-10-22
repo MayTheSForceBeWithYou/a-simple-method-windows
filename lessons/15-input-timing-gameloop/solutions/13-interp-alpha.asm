@@ -1,14 +1,9 @@
-; Exercise 13: interp alpha
+; Exercise: 13-interp-alpha
 ;
 ; alpha = accum/step with accum=8 step=16 -> 0.5 as Q16 08000h>>15 =1? Use alpha in 0..100 =50; exit 50.
-;
-; Build: ml64 /c 13-interp-alpha.asm && link /OUT:13-interp-alpha.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-interp-alpha.obj kernel32.lib
-;
-; Expected exit: 50
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 50
+;
 .code
 ex_13_interp_alpha PROC
     sub rsp, 40

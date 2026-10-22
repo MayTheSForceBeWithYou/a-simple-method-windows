@@ -1,9 +1,8 @@
-; Exercise 13: align before call
+; Exercise: 13-align-before-call
+;
 ; Stack alignment check. MS x64 requires 16-byte alignment before call.
 ; Expected exit: 0
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_13_align_before_call PROC
     sub rsp, 40

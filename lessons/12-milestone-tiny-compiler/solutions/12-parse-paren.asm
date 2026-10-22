@@ -1,10 +1,8 @@
-; Exercise 12: parse paren
+; Exercise: 12-parse-paren
 ;
 ; (1+2)*3 = 9; exit 9.
 ; Expected exit: 9
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_12_parse_paren PROC
     sub rsp, 40

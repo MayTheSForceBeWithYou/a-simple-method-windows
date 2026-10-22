@@ -1,13 +1,8 @@
-; Exercise 10: factorial iter proc
+; Exercise: 10-factorial-iter-proc
 ;
 ; fact(n) iterative as procedure. fact(5)=120; exit 120.
-;
-; Build: ml64 /c 10-factorial-iter-proc.asm && link /OUT:10-factorial-iter-proc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-factorial-iter-proc.obj kernel32.lib
-;
 ; Expected exit: 120
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_10_factorial_iter_proc PROC
     sub rsp, 40

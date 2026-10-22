@@ -1,20 +1,10 @@
 ; Exercise: 19-debug-lea-load
 ;
-; Exercise 19: debug lea load
 ; BUG: used lea to 'load' value. Fix to mov from memory; x QWORD 55; exit 55.
 ;
 ; Contract: implement `ex_19_debug_lea_load` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 55
 ;
-
-; Exercise 19: debug lea load
-;
-; BUG: used lea to 'load' value. Fix to mov from memory; x QWORD 55; exit 55.
-;
-; Build: ml64 /c 19-debug-lea-load.asm && link /OUT:19-debug-lea-load.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-lea-load.obj kernel32.lib
-;
-; Expected exit: 55
-
 .DATA
 x QWORD 55
 

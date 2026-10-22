@@ -1,12 +1,9 @@
-; Exercise 25: stretch call depth
+; Exercise: 25-stretch-call-depth
 ;
 ; STRETCH: bump(rcx) calls itself depth times adding 1 each return. bump(5) returns 5.
-;
-; Expected exit: 5
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 5
+;
 .code
 ex_25_stretch_call_depth PROC FRAME
     sub rsp, 40

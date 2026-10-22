@@ -1,10 +1,8 @@
-; Exercise 03: parse let
+; Exercise: 03-parse-let
 ;
 ; Recognize keyword first letter 'l' of let; exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 kw BYTE "let", 0
 

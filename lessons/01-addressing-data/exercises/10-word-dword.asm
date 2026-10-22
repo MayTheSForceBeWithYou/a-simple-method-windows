@@ -1,21 +1,10 @@
 ; Exercise: 10-word-dword
 ;
-; Exercise 10: word dword
 ; WORD 01122h, DWORD 033445566h. Load low byte of the word into cl via BYTE PTR [label], exit.
 ;
 ; Contract: implement `ex_10_word_dword` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 34
 ;
-
-; Exercise 10: word dword (Win32 port)
-;
-; Buffer in .DATA?. Store WORD 256, then load as DWORD (upper bits zero). Exit with it.
-;
-; Build: ml64 /c /Fo10-word-dword.obj 10-word-dword.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-word-dword.exe 10-word-dword.obj kernel32.lib
-; Run: 10-word-dword.exe & echo %ERRORLEVEL%
-;
-; Expected exit: 0 (256 is > 255, will be 0 in low byte)
-
 .DATA?
 buffer DQ ?
 

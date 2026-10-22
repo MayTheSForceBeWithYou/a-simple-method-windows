@@ -1,12 +1,10 @@
 ; Exercise: 06-prologue-locals
 ;
-; Exercise 06: prologue locals
 ; Function stores local = rcx+1 on stack frame; returns it. Call with 41; exit 42.
 ;
-; Contract: implement `ex_06_prologue_locals` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_06_prologue_locals` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

@@ -1,23 +1,11 @@
 ; Exercise: 07-hello-world
 ;
-; Exercise 07: hello world
 ; Write "Hello, world\n" to stdout, then exit 0.
 ; Expected stdout: "Hello, world\n"
 ;
 ; Contract: implement `ex_07_hello_world` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; Exercise 07: hello world (Win32 port)
-;
-; Write "Hello, world\n" to stdout, then exit 0.
-;
-; Build: ml64 /c /Fo07-hello-world.obj 07-hello-world.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-hello-world.exe 07-hello-world.obj kernel32.lib
-; Run: 07-hello-world.exe
-;
-; Expected output: Hello, world\n
-; Expected exit: 0
-; Expected stdout: (none)
 .DATA
 msg DB "Hello, world", 13, 10
 msg_len EQU $ - msg

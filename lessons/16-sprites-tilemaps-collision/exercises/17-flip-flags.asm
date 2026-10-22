@@ -1,14 +1,11 @@
 ; Exercise: 17-flip-flags
 ;
-; Exercise 17: flip flags
 ; HFLIP|VFLIP = 3; exit 3.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_17_flip_flags` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 17-flip-flags: flip flags
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_17_flip_flags:PROC

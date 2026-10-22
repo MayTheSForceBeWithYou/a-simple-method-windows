@@ -1,10 +1,8 @@
-; Exercise 14: arena align
+; Exercise: 14-arena-align
 ;
 ; Bump 1 then align to 8; bump becomes 8; exit 8.
 ; Expected exit: 8
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 bump QWORD ?
 

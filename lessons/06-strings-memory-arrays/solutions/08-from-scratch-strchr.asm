@@ -1,9 +1,8 @@
-; Exercise 08: from scratch strchr
+; Exercise: 08-from-scratch-strchr
+;
 ; strchr 'c' in 'abcd' -> index 2.
 ; Expected exit: 2
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "abcd", 0
 

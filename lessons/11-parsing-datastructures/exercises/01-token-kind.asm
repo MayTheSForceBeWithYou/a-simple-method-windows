@@ -1,13 +1,10 @@
 ; Exercise: 01-token-kind
 ;
-; Exercise 01: token kind
 ; Token kinds as equ; exit TK_NUM=1.
 ;
 ; Contract: implement `ex_01_token_kind` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 01-token-kind
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_01_token_kind:PROC

@@ -1,10 +1,8 @@
-; Exercise 10: token buffer
+; Exercise: 10-token-buffer
 ;
 ; Lexeme copy "let" into tok; len=3 exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 src BYTE "let", 0
 

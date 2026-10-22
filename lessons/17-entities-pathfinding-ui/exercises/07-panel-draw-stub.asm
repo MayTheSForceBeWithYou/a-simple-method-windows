@@ -1,14 +1,11 @@
 ; Exercise: 07-panel-draw-stub
 ;
-; Exercise 07: panel draw stub
 ; Draw count 3 widgets; exit 3.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_07_panel_draw_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 07-panel-draw-stub: panel draw stub
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_07_panel_draw_stub:PROC

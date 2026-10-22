@@ -1,16 +1,9 @@
-; Exercise 07: write iov lite
+; Exercise: 07-write-iov-lite
 ;
 ; Two writes simulating writev; print 'A\nB\n'; exit 0.
-;
-; Build: ml64 /c 07-write-iov-lite.asm && link /OUT:07-write-iov-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-write-iov-lite.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "A\nB\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 a BYTE "A", 10
 b BYTE "B", 10

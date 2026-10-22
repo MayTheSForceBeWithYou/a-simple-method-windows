@@ -1,9 +1,8 @@
-; Exercise 17: floor fixed
+; Exercise: 17-floor-fixed
+;
 ; Floor Q16.16 3.75 (3<<16 + 49152); exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_17_floor_fixed PROC
     sub rsp, 40

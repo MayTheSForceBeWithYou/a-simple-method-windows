@@ -1,14 +1,9 @@
-; Exercise 13: rect fill
+; Exercise: 13-rect-fill
 ;
 ; Fill 2x2 rect with 3; sum=12.
-;
-; Build: ml64 /c 13-rect-fill.asm && link /OUT:13-rect-fill.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-rect-fill.obj kernel32.lib
-;
-; Expected exit: 12
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 12
+;
 .data?
 fb BYTE 16 DUP(?)
 

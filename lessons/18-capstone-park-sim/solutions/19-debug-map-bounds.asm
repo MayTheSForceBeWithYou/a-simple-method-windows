@@ -1,12 +1,9 @@
-; Exercise 19: debug map bounds
+; Exercise: 19-debug-map-bounds
 ;
 ; BUG: no bounds check. Clamp x=99 to w-1=7; exit 7.
-;
-; Expected exit: 7
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 7
+;
 .code
 ex_19_debug_map_bounds PROC
     sub rsp, 40

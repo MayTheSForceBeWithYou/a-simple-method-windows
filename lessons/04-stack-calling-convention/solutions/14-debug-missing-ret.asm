@@ -1,9 +1,8 @@
-; Exercise 14: debug missing ret
+; Exercise: 14-debug-missing-ret
+;
 ; BUG fixed: added ret. Exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_14_debug_missing_ret PROC
     sub rsp, 40

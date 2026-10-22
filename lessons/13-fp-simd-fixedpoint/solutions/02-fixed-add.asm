@@ -1,10 +1,8 @@
-; Exercise 02: fixed add
+; Exercise: 02-fixed-add
 ;
 ; 1.5 + 2.5 in Q16.16; exit 4.
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_02_fixed_add PROC
     sub rsp, 40

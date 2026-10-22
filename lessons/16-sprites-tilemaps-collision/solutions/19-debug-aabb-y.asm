@@ -1,14 +1,9 @@
-; Exercise 19: debug aabb y
+; Exercise: 19-debug-aabb-y
 ;
 ; BUG: used x test for y. Fix overlap on y; exit 1 for overlap.
-;
-; Build: ml64 /c 19-debug-aabb-y.asm && link /OUT:19-debug-aabb-y.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-aabb-y.obj kernel32.lib
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .code
 ex_19_debug_aabb_y PROC
     sub rsp, 40

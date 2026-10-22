@@ -1,14 +1,9 @@
-; Exercise 23: stretch haptic stub
+; Exercise: 23-stretch-haptic-stub
 ;
 ; STRETCH: rumble frames remaining 2; exit 2.
-;
-; Build: ml64 /c 23-stretch-haptic-stub.asm && link /OUT:23-stretch-haptic-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-haptic-stub.obj kernel32.lib
-;
-; Expected exit: 2
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 2
+;
 .data?
 rumble QWORD ?
 

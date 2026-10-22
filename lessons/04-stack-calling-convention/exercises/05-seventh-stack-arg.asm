@@ -1,12 +1,10 @@
 ; Exercise: 05-seventh-stack-arg
 ;
-; Exercise 05: seventh stack arg
 ; sum7 uses 7th arg on stack. Pass 1..7; exit 28.
 ;
-; Contract: implement `ex_05_seventh_stack_arg` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_05_seventh_stack_arg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 28
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

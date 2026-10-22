@@ -1,12 +1,9 @@
-; Exercise 11: track piece rotate
+; Exercise: 11-track-piece-rotate
 ;
 ; Rotate piece dir 0..3; 3+1 -> 0; exit 0.
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 dir QWORD 0
 

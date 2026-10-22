@@ -1,14 +1,8 @@
-; Exercise 14: brk query
+; Exercise: 14-heapalloc
 ;
 ; Windows equivalent: HeapAlloc/HeapFree from process heap. Exit 0 if heap exists.
-;
-; Build: ml64 /c 14-heapalloc.asm && link /OUT:14-heapalloc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-heapalloc.obj kernel32.lib
-;
 ; Expected exit: 0
-
-EXTERN GetProcessHeap:PROC
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_14_heapalloc PROC
     sub rsp, 40

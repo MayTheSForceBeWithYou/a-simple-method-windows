@@ -1,10 +1,10 @@
 ; Exercise: 23-stretch-createpipe
 ;
-; CreatePipe, write "ABC" through the pipe, read it back; exit 3 (byte count).
+; CreatePipe, write "ABC", read back; exit byte count (3).
 ;
-; Contract: implement `ex_23_stretch_createpipe` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_23_stretch_createpipe` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
-
+;
 .CODE
 
 EXTRN ExitProcess:PROC

@@ -1,6 +1,7 @@
-; Exercise 04: count loop (Win32 port) - SOLUTION
+; Exercise: 04-count-loop
+;
 ; Expected exit: 5
-
+;
 .CODE
 
 EXTRN ExitProcess:PROC

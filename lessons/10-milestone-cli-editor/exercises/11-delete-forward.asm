@@ -1,13 +1,10 @@
 ; Exercise: 11-delete-forward
 ;
-; Exercise 11: delete forward
 ; "ABCD" cur=1 delete -> "ACD"; len=3 exit 3.
 ;
 ; Contract: implement `ex_11_delete_forward` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 11-delete-forward.asm: Delete at cursor=1 in "ABC", exit len (2)
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?

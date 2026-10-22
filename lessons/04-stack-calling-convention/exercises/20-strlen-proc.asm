@@ -1,12 +1,10 @@
 ; Exercise: 20-strlen-proc
 ;
-; Exercise 20: strlen proc
 ; strlen('assembly')=8. MS x64 ABI.
 ;
-; Contract: implement `ex_20_strlen_proc` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_20_strlen_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 8
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

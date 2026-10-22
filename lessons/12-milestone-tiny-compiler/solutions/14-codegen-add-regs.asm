@@ -1,10 +1,8 @@
-; Exercise 14: codegen add regs
+; Exercise: 14-codegen-add-regs
 ;
 ; v1=10 v2=32; add into v1; exit 42.
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 v1 QWORD ?
 v2 QWORD ?

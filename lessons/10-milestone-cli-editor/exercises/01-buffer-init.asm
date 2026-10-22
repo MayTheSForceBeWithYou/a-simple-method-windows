@@ -1,13 +1,10 @@
 ; Exercise: 01-buffer-init
 ;
-; Exercise 01: buffer init
 ; Allocate 64 byte buffer; store length 0 in len; exit len.
 ;
 ; Contract: implement `ex_01_buffer_init` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 01-buffer-init.asm: Initialize buffer (len=0, cur=0), exit 0
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?

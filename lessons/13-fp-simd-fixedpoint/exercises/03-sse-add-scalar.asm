@@ -1,13 +1,10 @@
 ; Exercise: 03-sse-add-scalar
 ;
-; Exercise 03: sse add scalar
 ; Use addss if available — fallback integer exit 5 as stub if we keep pure GP: exit 5.
 ;
 ; Contract: implement `ex_03_sse_add_scalar` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 5
 ;
-
-; 03-sse-add-scalar.asm: Stub: scalar add (no SSE), exit sum
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_03_sse_add_scalar:PROC

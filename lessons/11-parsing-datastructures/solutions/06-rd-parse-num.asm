@@ -1,10 +1,8 @@
-; Exercise 06: rd parse num
+; Exercise: 06-rd-parse-num
 ;
 ; Parse '3' into value; exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "3", 0
 

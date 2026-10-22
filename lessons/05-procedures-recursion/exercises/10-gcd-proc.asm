@@ -1,12 +1,10 @@
 ; Exercise: 10-gcd-proc
 ;
-; Exercise 10: gcd proc
 ; gcd(48,18)=6 Euclid recursive.
 ;
-; Contract: implement `ex_10_gcd_proc` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_10_gcd_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 6
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

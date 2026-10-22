@@ -1,14 +1,11 @@
 ; Exercise: 07-poll-stub
 ;
-; Exercise 07: poll stub
 ; No event -> exit 0.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_07_poll_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 07-poll-stub: poll stub
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_07_poll_stub:PROC

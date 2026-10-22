@@ -1,10 +1,8 @@
-; Exercise 09: lex number
+; Exercise: 09-lex-number
 ;
 ; Parse "42" into int; exit 42.
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "42", 0
 

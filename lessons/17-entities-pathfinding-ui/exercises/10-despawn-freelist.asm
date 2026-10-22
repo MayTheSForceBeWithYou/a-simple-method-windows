@@ -1,14 +1,11 @@
 ; Exercise: 10-despawn-freelist
 ;
-; Exercise 10: despawn freelist
 ; Free id 3 onto freelist top; exit 3.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_10_despawn_freelist` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 10-despawn-freelist: despawn freelist
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_10_despawn_freelist:PROC

@@ -1,14 +1,9 @@
-; Exercise 17: vsync stub
+; Exercise: 17-vsync-stub
 ;
 ; Frame ready flag clear; exit 0.
-;
-; Build: ml64 /c 17-vsync-stub.asm && link /OUT:17-vsync-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-vsync-stub.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data?
 ready BYTE ?
 

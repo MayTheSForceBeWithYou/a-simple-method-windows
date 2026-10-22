@@ -1,16 +1,10 @@
 ; Exercise: 19-debug-q-shift
 ;
-; Exercise 19: debug q shift
 ; BUG: forgot >>16 after Q mul. Fix 2*3 Q mul -> 6.
 ;
 ; Contract: implement `ex_19_debug_q_shift` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 6
 ;
-
-; Exercise 19: debug q shift
-; BUG: forgot >>16 after Q mul. Fix 2*3 Q mul -> 6.
-; Expected exit: 6
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_q_shift:PROC

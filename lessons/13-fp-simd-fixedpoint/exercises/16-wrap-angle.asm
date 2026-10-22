@@ -1,13 +1,10 @@
 ; Exercise: 16-wrap-angle
 ;
-; Exercise 16: wrap angle
 ; Wrap 400 degrees modulo 360; exit 40.
 ;
 ; Contract: implement `ex_16_wrap_angle` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 40
 ;
-
-; 16-wrap-angle.asm: Wrap angle modulo 360, exit wrapped
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_16_wrap_angle:PROC

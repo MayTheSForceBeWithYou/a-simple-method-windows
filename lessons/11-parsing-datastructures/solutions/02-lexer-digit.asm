@@ -1,10 +1,8 @@
-; Exercise 02: lexer digit
+; Exercise: 02-lexer-digit
 ;
 ; If byte '7' is digit exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_02_lexer_digit PROC
     sub rsp, 40

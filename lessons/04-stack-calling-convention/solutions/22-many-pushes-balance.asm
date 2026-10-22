@@ -1,12 +1,9 @@
-; Exercise 22: many pushes balance
+; Exercise: 22-many-pushes-balance
 ;
 ; Push 1,2,3; call sum_top3 that reads [rsp+8],[rsp+16],[rsp+24] after call. Exit 6.
-;
-; Expected exit: 6
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 6
+;
 .code
 ex_22_many_pushes_balance PROC
     push 1

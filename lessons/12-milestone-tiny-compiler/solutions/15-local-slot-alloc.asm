@@ -1,10 +1,8 @@
-; Exercise 15: local slot alloc
+; Exercise: 15-local-slot-alloc
 ;
 ; Allocate 3 locals; next_slot=3; exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 next_slot QWORD ?
 

@@ -1,9 +1,8 @@
-; Exercise 20: fold list
+; Exercise: 20-fold-list
+;
 ; Null-terminated list [3,4,5,0]. fold_add = 12.
 ; Expected exit: 12
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 lst QWORD 3,4,5,0
 

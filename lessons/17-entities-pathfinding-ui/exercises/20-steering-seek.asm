@@ -1,14 +1,11 @@
 ; Exercise: 20-steering-seek
 ;
-; Exercise 20: steering seek
 ; Seek desired vel = target-pos; (10-3)=7; exit 7.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_20_steering_seek` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 7
 ;
-
-; 20-steering-seek: steering seek
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_20_steering_seek:PROC

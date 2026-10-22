@@ -1,9 +1,8 @@
-; Exercise 20: sqrt newton stub
+; Exercise: 20-sqrt-newton-stub
+;
 ; Integer sqrt of 9 via one Newton step from 5; exit 3.
 ; Expected exit: 3
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_20_sqrt_newton_stub PROC
     sub rsp, 40

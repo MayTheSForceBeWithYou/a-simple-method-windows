@@ -1,14 +1,11 @@
 ; Exercise: 02-aabb-overlap
 ;
-; Exercise 02: aabb overlap
 ; Overlap test true -> 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_02_aabb_overlap` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 02-aabb-overlap: aabb overlap
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_02_aabb_overlap:PROC

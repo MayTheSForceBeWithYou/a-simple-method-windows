@@ -1,12 +1,9 @@
-; Exercise 18: guest happiness
+; Exercise: 18-guest-happiness
 ;
 ; Clamp happiness add 20 from 90 -> 100; exit 100.
-;
-; Expected exit: 100
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 100
+;
 .code
 ex_18_guest_happiness PROC
     sub rsp, 40

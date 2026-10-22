@@ -1,9 +1,8 @@
-; Exercise 11: map array proc
+; Exercise: 11-map-array-proc
+;
 ; apply_inc: for {1,2,3,4}, +=1 each. Sum=2+3+4+5=14.
 ; Expected exit: 14
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 arr QWORD 1,2,3,4
 

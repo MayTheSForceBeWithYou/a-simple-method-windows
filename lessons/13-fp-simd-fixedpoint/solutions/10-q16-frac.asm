@@ -1,10 +1,8 @@
-; Exercise 10: q16 frac
+; Exercise: 10-q16-frac
 ;
 ; 0.5 in Q16.16 is 1<<15; add two -> 1.0; exit 1.
 ; Expected exit: 1
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_10_q16_frac PROC
     sub rsp, 40

@@ -1,13 +1,8 @@
-; Exercise 29: from scratch factorial loop
+; Exercise: 29-from-scratch-factorial-loop
 ;
 ; FROM SCRATCH: 6! with a counted loop = 720. Exit 720&255=208.
-;
-; Build: ml64 /c 29-from-scratch-factorial-loop.asm && link /OUT:29-from-scratch-factorial-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 29-from-scratch-factorial-loop.obj kernel32.lib
-;
 ; Expected exit: 208
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_29_from_scratch_factorial_loop PROC
     sub rsp, 40

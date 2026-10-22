@@ -1,13 +1,10 @@
 ; Exercise: 15-rd-expect
 ;
-; Exercise 15: rd expect
 ; Expect char "(" present; exit 1.
 ;
 ; Contract: implement `ex_15_rd_expect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 15-rd-expect
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_15_rd_expect:PROC

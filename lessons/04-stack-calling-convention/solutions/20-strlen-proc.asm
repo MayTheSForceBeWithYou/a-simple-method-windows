@@ -1,9 +1,8 @@
-; Exercise 20: strlen proc
+; Exercise: 20-strlen-proc
+;
 ; strlen('assembly')=8. MS x64 ABI.
 ; Expected exit: 8
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 s BYTE "assembly", 0
 

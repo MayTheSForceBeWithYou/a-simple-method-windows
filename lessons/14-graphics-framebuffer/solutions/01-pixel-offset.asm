@@ -1,14 +1,9 @@
-; Exercise 01: pixel offset
+; Exercise: 01-pixel-offset
 ;
 ; offset=y*stride+x*4; y=2,x=3,stride=40; exit offset&255.
-;
-; Build: ml64 /c 01-pixel-offset.asm && link /OUT:01-pixel-offset.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-pixel-offset.obj kernel32.lib
-;
-; Expected exit: 92
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 92
+;
 .code
 ex_01_pixel_offset PROC
     sub rsp, 40

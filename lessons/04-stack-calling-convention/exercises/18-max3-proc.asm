@@ -1,12 +1,10 @@
 ; Exercise: 18-max3-proc
 ;
-; Exercise 18: max3 proc
 ; max3(3,9,7)=9. MS x64 ABI.
 ;
-; Contract: implement `ex_18_max3_proc` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_18_max3_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 9
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

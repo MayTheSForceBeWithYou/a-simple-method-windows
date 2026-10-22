@@ -1,14 +1,9 @@
-; Exercise 03: fixed step
+; Exercise: 03-fixed-step
 ;
 ; step=16ms units; 50ms -> 3 steps; exit 3.
-;
-; Build: ml64 /c 03-fixed-step.asm && link /OUT:03-fixed-step.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-fixed-step.obj kernel32.lib
-;
-; Expected exit: 3
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 3
+;
 .code
 ex_03_fixed_step PROC
     sub rsp, 40

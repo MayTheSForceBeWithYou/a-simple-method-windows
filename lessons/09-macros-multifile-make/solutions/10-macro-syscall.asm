@@ -1,21 +1,9 @@
-; Exercise 10: macro syscall
+; Exercise: 10-macro-syscall
 ;
 ; MACRO CALL_FUNC for calling ExitProcess; Print "K\n" exit 0.
-;
-; Build: ml64 /c 10-macro-syscall.asm && link /OUT:10-macro-syscall.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-macro-syscall.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "K\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
-; Simple macro to encapsulate function calls
-CALL_FUNC MACRO func
-    call func
-ENDM
-
+; Expected exit: 0
+;
 .data
 msg BYTE "K", 10
 

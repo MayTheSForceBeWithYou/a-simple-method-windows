@@ -1,20 +1,10 @@
 ; Exercise: 24-register-widths
 ;
-; Exercise 24: register widths
 ; rax=01111222233334444h; mov ax,0ABCDh; exit with movzx rcx,al (205).
 ;
 ; Contract: implement `ex_24_register_widths` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 205
 ;
-
-; Exercise 24: register widths
-;
-; rax=01111222233334444h; mov ax,0ABCDh; exit with movzx rcx,al (205).
-;
-; Build: ml64 /c 24-register-widths.asm && link /OUT:24-register-widths.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-register-widths.obj kernel32.lib
-;
-; Expected exit: 205
-
 .CODE
 
 EXTRN ExitProcess:PROC

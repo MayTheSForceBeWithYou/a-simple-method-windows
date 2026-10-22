@@ -1,14 +1,11 @@
 ; Exercise: 04-edge-trigger
 ;
-; Exercise 04: edge trigger
 ; prev=0 cur=1 -> rising exit 1.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_04_edge_trigger` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 04-edge-trigger: edge trigger
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_04_edge_trigger:PROC

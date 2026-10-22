@@ -1,9 +1,8 @@
-; Exercise 15: debug wrong arg reg
+; Exercise: 15-debug-wrong-arg-reg
+;
 ; BUG fixed: use rdx. add(2,40)=42. MS x64 ABI.
 ; Expected exit: 42
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_15_debug_wrong_arg_reg PROC
     sub rsp, 40

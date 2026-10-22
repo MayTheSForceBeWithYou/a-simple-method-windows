@@ -1,22 +1,10 @@
 ; Exercise: 09-xor-checksum
 ;
-; Exercise 09: xor checksum
 ; XOR-fold bytes 1,2,4,8 -> 15.
 ;
 ; Contract: implement `ex_09_xor_checksum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
 ;
-
-; 09-xor-checksum.asm
-;
-; Compute a simple XOR checksum of a sequence of bytes.
-;
-; Task: XOR together the bytes: 012h, 034h, 056h, 078h.
-;       Exit with the checksum.
-;
-; Hint: Start with a zero accumulator, then XOR each byte into it.
-;       12 ^ 34 ^ 56 ^ 78 = ... (compute or test to verify)
-
 .DATA
 bytes DB 12h, 34h, 56h, 78h
 bytes_len EQU $ - bytes

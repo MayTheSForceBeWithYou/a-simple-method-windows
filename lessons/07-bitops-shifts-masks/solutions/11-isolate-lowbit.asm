@@ -1,7 +1,7 @@
+; Exercise: 11-isolate-lowbit
+;
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_11_isolate_lowbit PROC
     sub rsp, 40

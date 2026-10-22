@@ -1,12 +1,10 @@
 ; Exercise: 04-tree-sum-flat
 ;
-; Exercise 04: tree sum flat
 ; Binary heap array [1,2,3,4,5]. Recursively sum. Exit 15.
 ;
-; Contract: implement `ex_04_tree_sum_flat` (MS x64). Return exit code in EAX.
+; Contract: implement `ex_04_tree_sum_flat` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
 ;
-
 .CODE
 
 EXTRN ExitProcess:PROC

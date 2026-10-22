@@ -1,9 +1,8 @@
-; Exercise 03: memcmp
+; Exercise: 03-memcmp
+;
 ; memcmp 3 bytes; equal -> 0.
 ; Expected exit: 0
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 a BYTE 1,2,3
 b BYTE 1,2,3

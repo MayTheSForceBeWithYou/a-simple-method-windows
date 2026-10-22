@@ -1,12 +1,9 @@
-; Exercise 18: load version check
+; Exercise: 18-load-version-check
 ;
 ; version==1 ok exit 1.
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data
 ver QWORD 1
 

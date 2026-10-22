@@ -1,14 +1,9 @@
-; Exercise 06: ride open
+; Exercise: 06-ride-open
 ;
 ; flag open=1; exit 1.
-;
-; Build: ml64 /c 06-ride-open.asm && link /OUT:06-ride-open.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-ride-open.obj kernel32.lib
-;
-; Expected exit: 1
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 1
+;
 .data?
 open BYTE ?
 

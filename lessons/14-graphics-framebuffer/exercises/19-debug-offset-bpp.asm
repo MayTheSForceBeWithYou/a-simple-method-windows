@@ -1,17 +1,11 @@
 ; Exercise: 19-debug-offset-bpp
 ;
-; Exercise 19: debug offset bpp
 ; BUG: used *3 for RGBA8888. Fix *4; x=2 offset=8; exit 8.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_19_debug_offset_bpp` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 8
 ;
-
-; Exercise 19: debug offset bpp
-; BUG: used *3 for RGBA8888. Fix *4; x=2 offset=8; exit 8.
-; Expected exit: 8
-
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_19_debug_offset_bpp:PROC

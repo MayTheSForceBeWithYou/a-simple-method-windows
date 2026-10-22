@@ -1,9 +1,8 @@
-; Exercise 05: array reverse
+; Exercise: 05-array-reverse
+;
 ; Reverse [1,2,3,4] in place; exit first=4.
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .data
 arr QWORD 1,2,3,4
 

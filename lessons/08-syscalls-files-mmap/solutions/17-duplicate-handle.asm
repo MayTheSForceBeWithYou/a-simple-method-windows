@@ -1,16 +1,9 @@
-; Exercise 17: dup concept
+; Exercise: 17-duplicate-handle
 ;
 ; Without DuplicateHandle: write to stdout; exit 0. Documents handle reuse.
-;
-; Build: ml64 /c 17-duplicate-handle.asm && link /OUT:17-duplicate-handle.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-duplicate-handle.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: "d\n"
-
-EXTERN GetStdHandle:PROC
-EXTERN WriteFile:PROC
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data
 msg BYTE "d", 10
 

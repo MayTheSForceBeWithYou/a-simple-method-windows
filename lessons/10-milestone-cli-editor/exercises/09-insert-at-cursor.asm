@@ -1,13 +1,10 @@
 ; Exercise: 09-insert-at-cursor
 ;
-; Exercise 09: insert at cursor
 ; Buffer empty; cursor 0; insert "X"; len=1 cursor=1; exit cursor.
 ;
 ; Contract: implement `ex_09_insert_at_cursor` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 1
 ;
-
-; 09-insert-at-cursor.asm: Insert 'X' at cursor=0 in empty buffer, exit 1
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?

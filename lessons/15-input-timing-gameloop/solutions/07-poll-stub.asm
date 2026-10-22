@@ -1,14 +1,9 @@
-; Exercise 07: poll stub
+; Exercise: 07-poll-stub
 ;
 ; No event -> exit 0.
-;
-; Build: ml64 /c 07-poll-stub.asm && link /OUT:07-poll-stub.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-poll-stub.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .code
 ex_07_poll_stub PROC
     sub rsp, 40

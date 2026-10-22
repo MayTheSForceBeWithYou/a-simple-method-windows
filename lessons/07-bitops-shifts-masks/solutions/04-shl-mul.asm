@@ -1,7 +1,7 @@
+; Exercise: 04-shl-mul
+;
 ; Expected exit: 24
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_04_shl_mul PROC
     sub rsp, 40

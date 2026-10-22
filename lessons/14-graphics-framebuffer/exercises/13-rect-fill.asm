@@ -1,14 +1,11 @@
 ; Exercise: 13-rect-fill
 ;
-; Exercise 13: rect fill
 ; Fill 2x2 rect with 3; sum=12.
 ; Expected stdout: (none)
 ;
 ; Contract: implement `ex_13_rect_fill` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 12
 ;
-
-; 13-rect-fill: rect fill
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_13_rect_fill:PROC

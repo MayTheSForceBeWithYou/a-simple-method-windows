@@ -1,10 +1,8 @@
-; Exercise 16: clamp q
+; Exercise: 16-clamp-q
 ;
 ; Clamp -3 to [0,100]; exit 0.
 ; Expected exit: 0
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_16_clamp_q PROC
     sub rsp, 40

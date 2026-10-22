@@ -1,13 +1,10 @@
 ; Exercise: 10-token-buffer
 ;
-; Exercise 10: token buffer
 ; Lexeme copy "let" into tok; len=3 exit 3.
 ;
 ; Contract: implement `ex_10_token_buffer` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 3
 ;
-
-; 10-token-buffer
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_10_token_buffer:PROC

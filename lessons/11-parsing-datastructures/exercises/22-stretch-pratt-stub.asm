@@ -1,13 +1,10 @@
 ; Exercise: 22-stretch-pratt-stub
 ;
-; Exercise 22: stretch pratt stub
 ; STRETCH: binding power for + is 10, for * is 20; exit 20.
 ;
 ; Contract: implement `ex_22_stretch_pratt_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 20
 ;
-
-; 22-stretch-pratt-stub
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_pratt_stub:PROC

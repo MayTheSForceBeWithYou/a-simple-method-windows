@@ -1,16 +1,11 @@
 ; Exercise: 10-macro-syscall
 ;
-; Exercise 10: macro syscall
 ; MACRO CALL_FUNC for calling ExitProcess; Print "K\n" exit 0.
 ; Expected stdout: "K\n"
 ;
 ; Contract: implement `ex_10_macro_syscall` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 10-macro-syscall.asm
-; Zero-arg macro writes "K\n", exit 0.
-
 .DATA
 msg DB "K", 13, 10
 msgLen EQU $ - msg

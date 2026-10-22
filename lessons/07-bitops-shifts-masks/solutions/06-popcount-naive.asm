@@ -1,9 +1,8 @@
-; Exercise 06: popcount naive
+; Exercise: 06-popcount-naive
+;
 ; Popcount of 0b101101 = 4.
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_06_popcount_naive PROC
     sub rsp, 40

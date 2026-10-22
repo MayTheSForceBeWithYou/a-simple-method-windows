@@ -1,15 +1,8 @@
-; Exercise 23: stretch create pipe
+; Exercise: 23-stretch-createpipe
 ;
 ; CreatePipe, write "ABC", read back; exit byte count (3).
-;
 ; Expected exit: 3
-
-EXTERN CreatePipe:PROC
-EXTERN WriteFile:PROC
-EXTERN ReadFile:PROC
-EXTERN CloseHandle:PROC
-EXTERN ExitProcess:PROC
-
+;
 .data
 payload BYTE "ABC"
 

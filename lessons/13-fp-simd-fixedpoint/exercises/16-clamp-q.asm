@@ -1,13 +1,10 @@
 ; Exercise: 16-clamp-q
 ;
-; Exercise 16: clamp q
 ; Clamp -3 to [0,100]; exit 0.
 ;
 ; Contract: implement `ex_16_clamp_q` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
 ;
-
-; 16-clamp-q
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_16_clamp_q:PROC

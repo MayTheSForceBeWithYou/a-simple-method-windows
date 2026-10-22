@@ -1,9 +1,8 @@
-; Exercise 18: round fixed
+; Exercise: 18-round-fixed
+;
 ; Round Q16.16 3.75 to 4.
 ; Expected exit: 4
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_18_round_fixed PROC
     sub rsp, 40

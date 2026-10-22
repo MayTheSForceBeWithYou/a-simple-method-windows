@@ -1,10 +1,8 @@
-; Exercise 23: stretch symbol resolve
+; Exercise: 23-stretch-symbol-resolve
 ;
 ; STRETCH: symbol table maps name hash to addr 020h; exit 020h=32.
 ; Expected exit: 32
-
-EXTERN ExitProcess:PROC
-
+;
 .data?
 sym QWORD ?
 

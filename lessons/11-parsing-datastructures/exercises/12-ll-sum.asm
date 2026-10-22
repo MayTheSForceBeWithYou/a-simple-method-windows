@@ -1,13 +1,10 @@
 ; Exercise: 12-ll-sum
 ;
-; Exercise 12: ll sum
 ; List 3->4->5; sum=12.
 ;
 ; Contract: implement `ex_12_ll_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 12
 ;
-
-; 12-ll-sum
 .CODE
 EXTRN ExitProcess:PROC
 EXTRN ex_12_ll_sum:PROC

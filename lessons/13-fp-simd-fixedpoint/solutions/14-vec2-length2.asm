@@ -1,10 +1,8 @@
-; Exercise 14: vec2 length2
+; Exercise: 14-vec2-length2
 ;
 ; length^2 of (3,4)=25; exit 25.
 ; Expected exit: 25
-
-EXTERN ExitProcess:PROC
-
+;
 .code
 ex_14_vec2_length2 PROC
     sub rsp, 40

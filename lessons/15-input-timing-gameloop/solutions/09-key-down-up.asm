@@ -1,14 +1,9 @@
-; Exercise 09: key down up
+; Exercise: 09-key-down-up
 ;
 ; Track key state: down sets, up clears; exit 0.
-;
-; Build: ml64 /c 09-key-down-up.asm && link /OUT:09-key-down-up.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-key-down-up.obj kernel32.lib
-;
-; Expected exit: 0
 ; Expected stdout: (none)
-
-EXTERN ExitProcess:PROC
-
+; Expected exit: 0
+;
 .data?
 key_w BYTE ?
 

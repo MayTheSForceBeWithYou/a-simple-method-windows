@@ -1,21 +1,10 @@
 ; Exercise: 18-mod-via-div
 ;
-; Exercise 18: mod via div
 ; Compute 42 % 5 using div; exit remainder 2.
 ;
 ; Contract: implement `ex_18_mod_via_div` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 2
 ;
-
-; Exercise 18: mod via div
-;
-; Compute 42 % 5 using div; exit remainder 2.
-;
-; Build: ml64 /c 18-mod-via-div.asm && link /OUT:18-mod-via-div.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-mod-via-div.obj kernel32.lib
-;
-; Expected exit: 2
-
-
 .CODE
 
 EXTRN ExitProcess:PROC
