@@ -1164,4 +1164,4 @@ The exercises use MASM and the Win32 APIs from lessons 00–09.
 
 **File and state:** save stub, exit 0. Load stub sets a length. Dirty set then clear, exit 0. Length-prefix image via `CreateFileA` / `WriteFile`. Magic word `4445h`. Undo-stack push/pop arithmetic. A byte flag cleared to model `ENABLE_LINE_INPUT` (the raw-mode listing above calls `SetConsoleMode` for real).
 
-Refer to `exercises/10-milestone-cli-editor/README.md` for expected exit codes.
+Expected exits are in each file header under `exercises/` (there is no `exercises/10-milestone-cli-editor/README.md`).

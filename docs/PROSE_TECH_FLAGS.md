@@ -51,7 +51,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 | L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment says the same. |
 | L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
 | L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
-| L08 exercise names | Renamed: `04-virtualalloc`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `23-stretch-createpipe`. No `exercises/08-…/README.md`. |
+| L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. L08 names: `04-virtualalloc`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `23-stretch-createpipe`. |
 | L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
 | L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
@@ -98,7 +98,7 @@ These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
 **Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
 ### Lesson 05 — `04-recursive-sum.asm` comment wording
-**Why unchanged:** The new comment says `RSP mod 16 == 8 before nested call`. That is the nested callee’s incoming RSP after `call` pushes RIP. At the `call` instruction RSP is 0 mod 16. Prose teaches the call-site rule.
+Jack’s comment is the callee’s view on entry (`RSP mod 16 == 8` after `call` pushes RIP). Prose teaches RSP ≡ 0 at the `call`. Same alignment, eight bytes apart.
 
 ### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
 **Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
