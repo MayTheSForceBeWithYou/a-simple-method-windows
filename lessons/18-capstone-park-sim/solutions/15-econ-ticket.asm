@@ -1,9 +1,12 @@
-; Exercise: 15-econ-ticket
+; Exercise 15: econ ticket
 ;
 ; cash += ticket 15; from 0 exit 15.
-; Expected stdout: (none)
-; Expected exit: 15
 ;
+; Expected exit: 15
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 cash QWORD 0
 

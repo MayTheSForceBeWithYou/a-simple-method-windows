@@ -1,8 +1,13 @@
-; Exercise: 02-call-ret-leaf
+; Exercise 02: call ret leaf
 ;
 ; Write leaf answer that returns 42 in rax. call it; exit with that.
-; Expected exit: 42
 ;
+; Build: ml64 /c 02-call-ret-leaf.asm && link /OUT:02-call-ret-leaf.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-call-ret-leaf.obj kernel32.lib
+;
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_02_call_ret_leaf PROC
     sub rsp, 40

@@ -1,8 +1,13 @@
-; Exercise: 04-six-args-sum
+; Exercise 04: six args sum
 ;
 ; sum6(a..f): first 4 in regs, 5th and 6th on stack. Pass 1..6; exit 21.
-; Expected exit: 21
 ;
+; Build: ml64 /c 04-six-args-sum.asm && link /OUT:04-six-args-sum.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-six-args-sum.obj kernel32.lib
+;
+; Expected exit: 21
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_04_six_args_sum PROC
     sub rsp, 56 ; 32 shadow + 16 for args 5-6

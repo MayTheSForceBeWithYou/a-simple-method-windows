@@ -1,8 +1,15 @@
-; Exercise: 13-virtualfree
+; Exercise 13: munmap
 ;
 ; VirtualAlloc then VirtualFree; exit 0 if VirtualFree succeeds.
-; Expected exit: 0
 ;
+; Build: ml64 /c 13-virtualfree.asm && link /OUT:13-virtualfree.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-virtualfree.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN VirtualAlloc:PROC
+EXTERN VirtualFree:PROC
+EXTERN ExitProcess:PROC
+
 .code
 ex_13_virtualfree PROC
     sub rsp, 40

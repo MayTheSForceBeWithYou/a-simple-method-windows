@@ -1,8 +1,19 @@
-; Exercise: 02-rodata-string
+; Exercise 02: rodata string
 ;
 ; Put "rodata\n" in .const (read-only data), write it, exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 02-rodata-string.asm && link /OUT:02-rodata-string.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-rodata-string.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+.const
+msg BYTE "rodata", 13, 10
+msg_len EQU $ - msg
+
 .data?
 written DWORD ?
 hStdOut QWORD ?

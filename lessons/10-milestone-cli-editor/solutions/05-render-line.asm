@@ -1,9 +1,16 @@
-; Exercise: 05-render-line
+; Exercise 05: render line
 ;
 ; Print buffer 'ed\n'; exit 0.
-; Expected stdout: "ed\n"
-; Expected exit: 0
 ;
+; Build: ml64 /c 05-render-line.asm && link /OUT:05-render-line.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-render-line.obj kernel32.lib
+;
+; Expected exit: 0
+; Expected stdout: "ed\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE "ed", 10
 

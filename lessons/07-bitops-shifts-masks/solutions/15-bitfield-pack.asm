@@ -1,7 +1,7 @@
-; Exercise: 15-bitfield-pack
-;
 ; Expected exit: 85
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_15_bitfield_pack PROC
     sub rsp, 40

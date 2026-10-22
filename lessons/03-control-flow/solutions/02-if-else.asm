@@ -1,7 +1,6 @@
-; Exercise: 02-if-else
-;
+; Exercise 02: if else (Win32 port) - SOLUTION
 ; Expected exit: 20
-;
+
 .CODE
 
 EXTRN ExitProcess:PROC

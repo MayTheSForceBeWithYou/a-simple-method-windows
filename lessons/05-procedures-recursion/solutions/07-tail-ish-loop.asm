@@ -1,8 +1,9 @@
-; Exercise: 07-tail-ish-loop
-;
+; Exercise 07: tail ish loop
 ; sum_to loop (tail form). sum_to(6)=21.
 ; Expected exit: 21
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_07_tail_ish_loop PROC
     sub rsp, 40

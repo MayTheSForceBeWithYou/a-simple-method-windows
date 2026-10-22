@@ -1,8 +1,9 @@
-; Exercise: 24-from-scratch-ntz
-;
+; Exercise 24: from scratch ntz
 ; Number of trailing zeros in 0b1011000 = 3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_24_from_scratch_ntz PROC
     sub rsp, 40

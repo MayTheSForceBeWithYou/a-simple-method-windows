@@ -1,9 +1,12 @@
-; Exercise: 17-void-side-effect
-;
+; Exercise 17: void side effect
 ; Write '!' and newline. MS x64 ABI.
-; Expected stdout: "!\n"
 ; Expected exit: 0
-;
+; Expected stdout: "!\n"
+
+EXTERN ExitProcess:PROC
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+
 .data
 buf BYTE 0, 10
 

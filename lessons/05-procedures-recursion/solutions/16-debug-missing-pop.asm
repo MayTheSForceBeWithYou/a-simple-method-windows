@@ -1,8 +1,9 @@
-; Exercise: 16-debug-missing-pop
-;
+; Exercise 16: debug missing pop
 ; BUG fixed: balanced stack. fact(3)=6.
 ; Expected exit: 6
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_16_debug_missing_pop PROC
     sub rsp, 40

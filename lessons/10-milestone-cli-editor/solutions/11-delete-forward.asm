@@ -1,8 +1,13 @@
-; Exercise: 11-delete-forward
+; Exercise 11: delete forward
 ;
 ; "ABCD" cur=1 delete -> "ACD"; len=3 exit 3.
-; Expected exit: 3
 ;
+; Build: ml64 /c 11-delete-forward.asm && link /OUT:11-delete-forward.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-delete-forward.obj kernel32.lib
+;
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE "ABCD", 0
 

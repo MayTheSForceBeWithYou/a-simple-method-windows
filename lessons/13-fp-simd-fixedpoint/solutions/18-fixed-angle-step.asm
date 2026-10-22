@@ -1,8 +1,10 @@
-; Exercise: 18-fixed-angle-step
+; Exercise 18: fixed angle step
 ;
 ; Angle += delta; wrap 360; 350+20 -> 10; exit 10.
 ; Expected exit: 10
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_18_fixed_angle_step PROC
     sub rsp, 40

@@ -1,8 +1,9 @@
-; Exercise: 10-strncmp
-;
+; Exercise 10: strncmp
 ; strncmp first 2 of "abx","abz" -> 0 (equal for n=2).
 ; Expected exit: 0
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 a BYTE "abx", 0
 b BYTE "abz", 0

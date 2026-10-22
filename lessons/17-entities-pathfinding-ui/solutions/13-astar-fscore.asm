@@ -1,9 +1,12 @@
-; Exercise: 13-astar-fscore
+; Exercise 13: astar fscore
 ;
 ; f=g+h; g=3 h=4; exit 7.
-; Expected stdout: (none)
-; Expected exit: 7
 ;
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_13_astar_fscore PROC
     sub rsp, 40

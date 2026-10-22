@@ -1,8 +1,9 @@
-; Exercise: 21-atan2-stub
-;
+; Exercise 21: atan2 stub
 ; Stub: angle for (0,1) as 90 degrees; exit 90.
 ; Expected exit: 90
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_21_atan2_stub PROC
     sub rsp, 40

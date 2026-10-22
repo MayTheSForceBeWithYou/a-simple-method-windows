@@ -1,8 +1,10 @@
-; Exercise: 05-hash-mix
+; Exercise 05: hash mix
 ;
 ; x=5; x^=x<<3; exit low byte.
 ; Expected exit: 45
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_05_hash_mix PROC
     sub rsp, 40

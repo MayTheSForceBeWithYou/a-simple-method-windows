@@ -1,8 +1,10 @@
-; Exercise: 07-simd-lane-sum-stub
+; Exercise 07: simd lane sum stub
 ;
 ; Sum 4 bytes as if SIMD lanes; exit 10.
 ; Expected exit: 10
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 v BYTE 1,2,3,4
 

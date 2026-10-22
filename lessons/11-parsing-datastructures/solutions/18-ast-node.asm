@@ -1,8 +1,10 @@
-; Exercise: 18-ast-node
+; Exercise 18: ast node
 ;
 ; AST node kind=1 left=2 right=3; exit kind+left+right=6.
 ; Expected exit: 6
-;
+
+EXTERN ExitProcess:PROC
+
 .data?
 node QWORD 3 DUP(?)
 

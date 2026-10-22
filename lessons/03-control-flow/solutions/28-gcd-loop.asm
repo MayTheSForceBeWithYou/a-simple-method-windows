@@ -1,8 +1,13 @@
-; Exercise: 28-gcd-loop
+; Exercise 28: gcd loop
 ;
 ; Euclid GCD(48,18)=6. Exit 6.
-; Expected exit: 6
 ;
+; Build: ml64 /c 28-gcd-loop.asm && link /OUT:28-gcd-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 28-gcd-loop.obj kernel32.lib
+;
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_28_gcd_loop PROC
     sub rsp, 40

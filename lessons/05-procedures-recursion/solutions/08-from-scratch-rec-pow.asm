@@ -1,8 +1,9 @@
-; Exercise: 08-from-scratch-rec-pow
-;
+; Exercise 08: from scratch rec pow
 ; pow(base,exp) recursive. pow(2,5)=32.
 ; Expected exit: 32
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_08_from_scratch_rec_pow PROC
     sub rsp, 40

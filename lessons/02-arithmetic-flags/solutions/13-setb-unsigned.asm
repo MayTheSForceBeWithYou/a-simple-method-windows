@@ -1,8 +1,13 @@
-; Exercise: 13-setb-unsigned
+; Exercise 13: setb unsigned
 ;
 ; rax=1, rbx=2. cmp; setb al; exit 1 (below unsigned).
-; Expected exit: 1
 ;
+; Build: ml64 /c 13-setb-unsigned.asm && link /OUT:13-setb-unsigned.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-setb-unsigned.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_13_setb_unsigned PROC
     sub rsp, 40

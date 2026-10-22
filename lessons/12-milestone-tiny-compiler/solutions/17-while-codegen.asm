@@ -1,8 +1,10 @@
-; Exercise: 17-while-codegen
+; Exercise 17: while codegen
 ;
 ; while i<3 i++; exit i=3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_17_while_codegen PROC
     sub rsp, 40

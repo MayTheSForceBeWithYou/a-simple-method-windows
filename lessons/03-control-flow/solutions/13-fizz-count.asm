@@ -1,8 +1,13 @@
-; Exercise: 13-fizz-count
+; Exercise 13: fizz count
 ;
 ; AoC-lite: count numbers 1..20 divisible by 3 (6). Exit 6.
-; Expected exit: 6
 ;
+; Build: ml64 /c 13-fizz-count.asm && link /OUT:13-fizz-count.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-fizz-count.obj kernel32.lib
+;
+; Expected exit: 6
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_13_fizz_count PROC
     sub rsp, 40

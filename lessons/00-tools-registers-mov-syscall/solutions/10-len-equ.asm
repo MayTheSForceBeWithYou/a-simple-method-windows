@@ -1,8 +1,15 @@
-; Exercise: 10-len-equ
+; Exercise 10: len equ
 ;
 ; Define string "equ works\n" with BYTE; length via EQU $ - label. Write it; exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 10-len-equ.asm && link /OUT:10-len-equ.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-len-equ.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "equ works", 13, 10
 msg_len EQU $ - msg

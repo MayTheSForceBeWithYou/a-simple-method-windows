@@ -1,9 +1,12 @@
-; Exercise: 17-bounded-strcpy
+; Exercise 17: bounded strcpy
 ;
 ; Copy at most 3 chars + NUL from "abcdef" into 4-byte dst; strlen dst=3.
-; Expected stdout: (none)
-; Expected exit: 3
 ;
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 src BYTE "abcdef", 0
 

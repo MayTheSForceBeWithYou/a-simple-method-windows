@@ -1,8 +1,13 @@
-; Exercise: 10-insert-middle
+; Exercise 10: insert middle
 ;
 ; buf "AC" len2 cur1; insert B -> "ABC"; exit middle byte 66.
-; Expected exit: 66
 ;
+; Build: ml64 /c 10-insert-middle.asm && link /OUT:10-insert-middle.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-insert-middle.obj kernel32.lib
+;
+; Expected exit: 66
+
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE "AC", 0, 0, 0, 0
 

@@ -1,8 +1,14 @@
-; Exercise: 03-open-fail
+; Exercise 03: open fail
 ;
 ; open nonexistent path; if CreateFileA returns INVALID_HANDLE_VALUE exit 1 else 0. Expect 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 03-open-fail.asm && link /OUT:03-open-fail.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-open-fail.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN CreateFileA:PROC
+EXTERN ExitProcess:PROC
+
 .data
 path BYTE "/no/such/asm_course_file", 0
 

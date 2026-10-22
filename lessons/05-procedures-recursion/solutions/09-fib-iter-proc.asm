@@ -1,8 +1,9 @@
-; Exercise: 09-fib-iter-proc
-;
+; Exercise 09: fib iter proc
 ; Iterative fib(10)=55.
 ; Expected exit: 55
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_09_fib_iter_proc PROC
     sub rsp, 40

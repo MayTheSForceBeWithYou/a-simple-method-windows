@@ -1,8 +1,9 @@
-; Exercise: 03-rec-sum
-;
+; Exercise 03: rec sum
 ; sum_to(n)=n+(n-1)+...+1 recursive. sum_to(5)=15.
 ; Expected exit: 15
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_03_rec_sum PROC
     sub rsp, 40

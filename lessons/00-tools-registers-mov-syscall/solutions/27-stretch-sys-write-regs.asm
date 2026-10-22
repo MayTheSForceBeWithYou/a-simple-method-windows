@@ -1,8 +1,15 @@
-; Exercise: 27-stretch-sys-write-regs
+; Exercise 27: stretch sys write regs
 ;
 ; Print "syscall\n" using write API. Exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 27-stretch-sys-write-regs.asm && link /OUT:27-stretch-sys-write-regs.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-stretch-sys-write-regs.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "syscall", 13, 10
 msg_len EQU $ - msg

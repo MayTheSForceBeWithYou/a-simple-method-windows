@@ -1,8 +1,13 @@
-; Exercise: 06-eax-zero-extends
+; Exercise 06: eax zero extends
 ;
 ; Set rax to all 0FFh bytes, then mov eax, 1. Exit with rcx=rax (should be 1).
-; Expected exit: 1
 ;
+; Build: ml64 /c 06-eax-zero-extends.asm && link /OUT:06-eax-zero-extends.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-eax-zero-extends.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_06_eax_zero_extends PROC
     sub rsp, 40

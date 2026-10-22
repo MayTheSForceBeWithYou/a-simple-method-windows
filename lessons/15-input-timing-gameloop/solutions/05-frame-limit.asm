@@ -1,9 +1,14 @@
-; Exercise: 05-frame-limit
+; Exercise 05: frame limit
 ;
 ; If frame_time < min, pad; return pad amount 2.
-; Expected stdout: (none)
-; Expected exit: 2
 ;
+; Build: ml64 /c 05-frame-limit.asm && link /OUT:05-frame-limit.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-frame-limit.obj kernel32.lib
+;
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_05_frame_limit PROC
     sub rsp, 40

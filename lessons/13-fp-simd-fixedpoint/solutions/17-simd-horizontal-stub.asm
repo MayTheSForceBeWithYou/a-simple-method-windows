@@ -1,8 +1,10 @@
-; Exercise: 17-simd-horizontal-stub
+; Exercise 17: simd horizontal stub
 ;
 ; Sum 4 lanes {1,2,3,4}=10 without SSE.
 ; Expected exit: 10
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 v DWORD 1,2,3,4
 

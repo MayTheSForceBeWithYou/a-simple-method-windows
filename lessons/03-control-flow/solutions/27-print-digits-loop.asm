@@ -1,8 +1,15 @@
-; Exercise: 27-print-digits-loop
+; Exercise 27: print digits loop
 ;
 ; Print "01234\n" using a loop that stores digits into a buffer then one write. Exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 27-print-digits-loop.asm && link /OUT:27-print-digits-loop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-print-digits-loop.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data?
 buf BYTE 6 DUP(?)
 written DWORD ?

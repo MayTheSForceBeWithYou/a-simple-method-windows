@@ -1,8 +1,13 @@
-; Exercise: 03-jne-branch
+; Exercise 03: jne branch
 ;
 ; rax=1,rbx=2. jne -> exit 5; if equal would exit 0.
-; Expected exit: 5
 ;
+; Build: ml64 /c 03-jne-branch.asm && link /OUT:03-jne-branch.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-jne-branch.obj kernel32.lib
+;
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_03_jne_branch PROC
     sub rsp, 40

@@ -1,9 +1,12 @@
-; Exercise: 21-abi-quiz-exit
+; Exercise 21: abi quiz exit
 ;
 ; MS x64: args in rcx,rdx,r8,r9. identity4 returns arg4 (r9). Exit 4.
-; Expected stdout: (none)
-; Expected exit: 4
 ;
+; Expected exit: 4
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_21_abi_quiz_exit PROC FRAME
     sub rsp, 40

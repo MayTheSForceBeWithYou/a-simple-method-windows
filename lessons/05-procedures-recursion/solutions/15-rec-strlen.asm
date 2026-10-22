@@ -1,8 +1,9 @@
-; Exercise: 15-rec-strlen
-;
+; Exercise 15: rec strlen
 ; Recursive strlen("abcd")=4.
 ; Expected exit: 4
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 s BYTE "abcd", 0
 

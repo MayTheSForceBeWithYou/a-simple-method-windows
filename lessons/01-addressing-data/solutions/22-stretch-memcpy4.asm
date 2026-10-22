@@ -1,8 +1,13 @@
-; Exercise: 22-stretch-memcpy4
+; Exercise 22: stretch memcpy4
 ;
 ; STRETCH: src BYTE 1,2,3,4. dst BYTE 4 DUP(?). Copy 4 bytes via register loads/stores. Sum dst into rcx (10).
-; Expected exit: 10
 ;
+; Build: ml64 /c 22-stretch-memcpy4.asm && link /OUT:22-stretch-memcpy4.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-memcpy4.obj kernel32.lib
+;
+; Expected exit: 10
+
+EXTERN ExitProcess:PROC
+
 .data
 src BYTE 1, 2, 3, 4
 

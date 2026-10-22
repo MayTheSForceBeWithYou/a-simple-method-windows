@@ -1,8 +1,9 @@
-; Exercise: 19-debug-mul-overflow
-;
+; Exercise 19: debug mul overflow
 ; Q16.16 multiply 2.0 * 3.0; exit 6.
 ; Expected exit: 6
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_19_debug_mul_overflow PROC
     sub rsp, 40

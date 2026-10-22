@@ -1,8 +1,9 @@
-; Exercise: 09-strcmp
-;
+; Exercise 09: strcmp
 ; strcmp "abc","abd" -> 1.
 ; Expected exit: 1
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 a BYTE "abc", 0
 b BYTE "abd", 0

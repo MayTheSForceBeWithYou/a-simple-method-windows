@@ -1,8 +1,14 @@
-; Exercise: 20-allocation-granularity
+; Exercise 20: mmap pagesize fill
 ;
 ; Fill first 16 bytes of VirtualAlloc with 1; sum=16; exit 16.
-; Expected exit: 16
 ;
+; Build: ml64 /c 20-allocation-granularity.asm && link /OUT:20-allocation-granularity.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-allocation-granularity.obj kernel32.lib
+;
+; Expected exit: 16
+
+EXTERN VirtualAlloc:PROC
+EXTERN ExitProcess:PROC
+
 .code
 ex_20_allocation_granularity PROC
     sub rsp, 40

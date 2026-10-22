@@ -1,8 +1,13 @@
-; Exercise: 07-scaled-index
+; Exercise 07: scaled index
 ;
 ; arr QWORD 5,10,15,20. Set r8=2, load arr[r8] with [arr+r8*8] into rcx, exit (15).
-; Expected exit: 15
 ;
+; Build: ml64 /c 07-scaled-index.asm && link /OUT:07-scaled-index.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-scaled-index.obj kernel32.lib
+;
+; Expected exit: 15
+
+EXTERN ExitProcess:PROC
+
 .data
 arr QWORD 5, 10, 15, 20
 

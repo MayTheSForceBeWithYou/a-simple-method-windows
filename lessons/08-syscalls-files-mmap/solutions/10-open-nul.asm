@@ -1,8 +1,15 @@
-; Exercise: 10-open-nul
+; Exercise 10: open dev null
 ;
 ; open NUL (Windows null device) write-only; on success close and exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 10-open-nul.asm && link /OUT:10-open-nul.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-open-nul.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN CreateFileA:PROC
+EXTERN CloseHandle:PROC
+EXTERN ExitProcess:PROC
+
 .data
 path BYTE "NUL", 0
 

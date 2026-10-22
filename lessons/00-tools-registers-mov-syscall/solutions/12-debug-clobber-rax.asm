@@ -1,8 +1,15 @@
-; Exercise: 12-debug-clobber-rax
+; Exercise 12: debug clobber rax
 ;
 ; BUG HUNT: Should write "X\n" then exit 0. Register set wrong before write. Fix.
-; Expected exit: 0
 ;
+; Build: ml64 /c 12-debug-clobber-rax.asm && link /OUT:12-debug-clobber-rax.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-debug-clobber-rax.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "X", 13, 10
 msg_len EQU $ - msg

@@ -1,9 +1,12 @@
-; Exercise: 20-count-char
+; Exercise 20: count char
 ;
 ; Count 's' in 'mississippi' -> 4.
-; Expected stdout: (none)
-; Expected exit: 4
 ;
+; Expected exit: 4
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 s BYTE "mississippi", 0
 

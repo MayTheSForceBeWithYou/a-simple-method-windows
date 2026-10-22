@@ -1,9 +1,14 @@
-; Exercise: 07-row-fill
+; Exercise 07: row fill
 ;
 ; Fill 3 pixels with 9; exit mid.
-; Expected stdout: (none)
-; Expected exit: 9
 ;
+; Build: ml64 /c 07-row-fill.asm && link /OUT:07-row-fill.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-row-fill.obj kernel32.lib
+;
+; Expected exit: 9
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 row BYTE 3 DUP(?)
 

@@ -1,8 +1,15 @@
-; Exercise: 14-print-A
+; Exercise 14: print A
 ;
 ; Write "A\n". Exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 14-print-A.asm && link /OUT:14-print-A.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-print-A.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "A", 13, 10
 msg_len EQU $ - msg

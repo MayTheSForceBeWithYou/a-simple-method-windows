@@ -1,8 +1,10 @@
-; Exercise: 24-from-scratch-vector-push
+; Exercise 24: from scratch vector push
 ;
 ; FROM SCRATCH: dynamic array len/cap; push 3 values; exit len 3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .data?
 data QWORD 8 DUP(?)
 len QWORD ?

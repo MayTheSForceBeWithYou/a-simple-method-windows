@@ -1,8 +1,13 @@
-; Exercise: 05-imul-three
+; Exercise 05: imul three
 ;
 ; Set rcx=6 then imul rcx,7. Exit 42.
-; Expected exit: 42
 ;
+; Build: ml64 /c 05-imul-three.asm && link /OUT:05-imul-three.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-imul-three.obj kernel32.lib
+;
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_05_imul_three PROC
     sub rsp, 40

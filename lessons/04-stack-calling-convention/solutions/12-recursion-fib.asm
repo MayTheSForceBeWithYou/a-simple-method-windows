@@ -1,8 +1,9 @@
-; Exercise: 12-recursion-fib
-;
+; Exercise 12: recursion fib
 ; Naive fib(7)=13. MS x64 ABI.
 ; Expected exit: 13
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_12_recursion_fib PROC
     sub rsp, 40

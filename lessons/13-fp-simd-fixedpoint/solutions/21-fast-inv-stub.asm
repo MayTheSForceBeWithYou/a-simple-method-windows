@@ -1,8 +1,10 @@
-; Exercise: 21-fast-inv-stub
+; Exercise 21: fast inv stub
 ;
 ; Integer reciprocal stub for 1/2 of 10 -> 5; exit 5.
 ; Expected exit: 5
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_21_fast_inv_stub PROC
     sub rsp, 40

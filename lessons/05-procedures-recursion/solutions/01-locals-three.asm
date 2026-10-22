@@ -1,8 +1,9 @@
-; Exercise: 01-locals-three
-;
+; Exercise 01: locals three
 ; Function with 3 qword locals. sum_locals(10)=10+11+12=33.
 ; Expected exit: 33
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_01_locals_three PROC
     sub rsp, 40

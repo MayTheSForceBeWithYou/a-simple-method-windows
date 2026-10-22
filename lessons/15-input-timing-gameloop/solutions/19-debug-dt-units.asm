@@ -1,9 +1,14 @@
-; Exercise: 19-debug-dt-units
+; Exercise 19: debug dt units
 ;
 ; BUG: mixed ms/us. Fix treat 16000us as 16ms steps of 16 -> 1 step; exit 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Build: ml64 /c 19-debug-dt-units.asm && link /OUT:19-debug-dt-units.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-debug-dt-units.obj kernel32.lib
+;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_19_debug_dt_units PROC
     sub rsp, 40

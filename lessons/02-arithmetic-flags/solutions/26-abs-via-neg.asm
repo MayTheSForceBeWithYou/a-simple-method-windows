@@ -1,8 +1,13 @@
-; Exercise: 26-abs-via-neg
+; Exercise 26: abs via neg
 ;
 ; rax=-42. Absolute value via neg. Exit 42.
-; Expected exit: 42
 ;
+; Build: ml64 /c 26-abs-via-neg.asm && link /OUT:26-abs-via-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 26-abs-via-neg.obj kernel32.lib
+;
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_26_abs_via_neg PROC
     sub rsp, 40

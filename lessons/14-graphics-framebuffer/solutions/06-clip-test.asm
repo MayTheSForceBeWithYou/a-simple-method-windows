@@ -1,9 +1,14 @@
-; Exercise: 06-clip-test
+; Exercise 06: clip test
 ;
 ; x=5 w=4 -> outside exit 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Build: ml64 /c 06-clip-test.asm && link /OUT:06-clip-test.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-clip-test.obj kernel32.lib
+;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_06_clip_test PROC
     sub rsp, 40

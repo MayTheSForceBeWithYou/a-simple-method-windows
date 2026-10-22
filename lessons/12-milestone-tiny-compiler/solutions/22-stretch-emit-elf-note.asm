@@ -1,8 +1,10 @@
-; Exercise: 22-stretch-emit-elf-note
+; Exercise 22: stretch emit elf note
 ;
 ; STRETCH: document emitting ELF; exit header size stub 64.
 ; Expected exit: 64
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_22_stretch_emit_elf_note PROC
     sub rsp, 40

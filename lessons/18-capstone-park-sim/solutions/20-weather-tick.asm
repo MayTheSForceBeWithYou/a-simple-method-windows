@@ -1,9 +1,12 @@
-; Exercise: 20-weather-tick
+; Exercise 20: weather tick
 ;
 ; Rain intensity 0..3 cycle; from 3 -> 0; exit 0.
-; Expected stdout: (none)
-; Expected exit: 0
 ;
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 rain QWORD 0
 

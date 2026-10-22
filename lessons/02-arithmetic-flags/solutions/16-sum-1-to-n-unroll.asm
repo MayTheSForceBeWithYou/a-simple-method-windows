@@ -1,8 +1,13 @@
-; Exercise: 16-sum-1-to-n-unroll
+; Exercise 16: sum 1 to n unroll
 ;
 ; Without jumps: sum 1+2+...+8 into rcx (36) using add chain; exit.
-; Expected exit: 36
 ;
+; Build: ml64 /c 16-sum-1-to-n-unroll.asm && link /OUT:16-sum-1-to-n-unroll.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-sum-1-to-n-unroll.obj kernel32.lib
+;
+; Expected exit: 36
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_16_sum_1_to_n_unroll PROC
     sub rsp, 40

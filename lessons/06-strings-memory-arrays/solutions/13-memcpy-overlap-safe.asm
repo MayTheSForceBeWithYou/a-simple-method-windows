@@ -1,9 +1,12 @@
-; Exercise: 13-memcpy-overlap-safe
+; Exercise 13: memcpy forward
 ;
 ; Copy 8 bytes forward non-overlap; checksum low byte sum of dst. src 1..8 sum=36.
-; Expected stdout: (none)
-; Expected exit: 36
 ;
+; Expected exit: 36
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 src BYTE 1,2,3,4,5,6,7,8
 

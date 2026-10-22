@@ -1,8 +1,15 @@
-; Exercise: 23-debug-stdout-fd
+; Exercise 23: debug stdout fd
 ;
 ; BUG HUNT: handle is wrong. Fix to stdout.
-; Expected exit: 0
 ;
+; Build: ml64 /c 23-debug-stdout-fd.asm && link /OUT:23-debug-stdout-fd.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-debug-stdout-fd.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "visible", 13, 10
 msg_len EQU $ - msg

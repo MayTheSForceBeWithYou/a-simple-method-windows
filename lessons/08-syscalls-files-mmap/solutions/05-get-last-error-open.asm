@@ -1,8 +1,15 @@
-; Exercise: 05-get-last-error-open
+; Exercise 05: errno neg
 ;
 ; On failed CreateFileA, exit with GetLastError (ERROR_FILE_NOT_FOUND=2).
-; Expected exit: 2
 ;
+; Build: ml64 /c 05-get-last-error-open.asm && link /OUT:05-get-last-error-open.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-get-last-error-open.obj kernel32.lib
+;
+; Expected exit: 2
+
+EXTERN CreateFileA:PROC
+EXTERN GetLastError:PROC
+EXTERN ExitProcess:PROC
+
 .data
 path BYTE "C:\this_file_should_not_exist_asm_course_xyzzy.txt", 0
 

@@ -1,9 +1,12 @@
-; Exercise: 24-from-scratch-reverse-string
+; Exercise 24: from scratch reverse string
 ;
 ; FROM SCRATCH: reverse "asm" in place; first byte should be "m"=109.
-; Expected stdout: (none)
-; Expected exit: 109
 ;
+; Expected exit: 109
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 s BYTE "asm", 0
 

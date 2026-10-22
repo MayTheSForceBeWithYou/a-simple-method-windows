@@ -1,8 +1,15 @@
-; Exercise: 21-debug-fd-leak-pattern
+; Exercise 21: debug fd pattern
 ;
 ; BUG: wrong handle for close. Fix open NUL and close; exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 21-debug-fd-leak-pattern.asm && link /OUT:21-debug-fd-leak-pattern.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-debug-fd-leak-pattern.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN CreateFileA:PROC
+EXTERN CloseHandle:PROC
+EXTERN ExitProcess:PROC
+
 .data
 path BYTE "NUL", 0
 

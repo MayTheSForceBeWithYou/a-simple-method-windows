@@ -1,9 +1,14 @@
-; Exercise: 03-aabb-reject
+; Exercise 03: aabb reject
 ;
 ; No overlap -> 0.
-; Expected stdout: (none)
-; Expected exit: 0
 ;
+; Build: ml64 /c 03-aabb-reject.asm && link /OUT:03-aabb-reject.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-aabb-reject.obj kernel32.lib
+;
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_03_aabb_reject PROC
     sub rsp, 40

@@ -1,7 +1,7 @@
-; Exercise: 18-mask-range
-;
 ; Expected exit: 31
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_18_mask_range PROC
     sub rsp, 40

@@ -1,8 +1,10 @@
-; Exercise: 12-ll-sum
+; Exercise 12: ll sum
 ;
 ; List 3->4->5; sum=12.
 ; Expected exit: 12
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 n3 QWORD 5, 0
 n2 QWORD 4, 0

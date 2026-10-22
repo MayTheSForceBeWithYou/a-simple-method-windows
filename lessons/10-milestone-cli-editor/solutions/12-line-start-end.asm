@@ -1,8 +1,13 @@
-; Exercise: 12-line-start-end
+; Exercise 12: line start end
 ;
 ; In "ab\ncd" find line start for cur=4 (index of c)->3; exit 3.
-; Expected exit: 3
 ;
+; Build: ml64 /c 12-line-start-end.asm && link /OUT:12-line-start-end.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-line-start-end.obj kernel32.lib
+;
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE "ab", 10, "cd", 0
 

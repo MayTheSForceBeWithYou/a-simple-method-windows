@@ -1,8 +1,9 @@
-; Exercise: 15-aos-scale
-;
+; Exercise 15: aos scale
 ; {3,4}*2 -> {6,8}; sum=14.
 ; Expected exit: 14
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 ent QWORD 3,4
 

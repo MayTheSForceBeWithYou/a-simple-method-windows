@@ -1,8 +1,10 @@
-; Exercise: 19-debug-null-deref-guard
+; Exercise 19: debug null guard
 ;
 ; BUG: walks next without null check. Fix empty list sum=0.
 ; Expected exit: 0
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_19_debug_null_deref_guard PROC
     sub rsp, 40

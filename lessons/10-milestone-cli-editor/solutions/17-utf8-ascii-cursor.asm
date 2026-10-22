@@ -1,8 +1,13 @@
-; Exercise: 17-utf8-ascii-cursor
+; Exercise 17: utf8 ascii cursor
 ;
 ; ASCII-only: moving right increments cursor by 1; exit 5 after 5 moves.
-; Expected exit: 5
 ;
+; Build: ml64 /c 17-utf8-ascii-cursor.asm && link /OUT:17-utf8-ascii-cursor.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-utf8-ascii-cursor.obj kernel32.lib
+;
+; Expected exit: 5
+
+EXTERN ExitProcess:PROC
+
 .data?
 cur QWORD ?
 

@@ -1,9 +1,14 @@
-; Exercise: 07-peep-happy
+; Exercise 07: peep happy
 ;
 ; happiness clamp 0..100; set 120->100.
-; Expected stdout: (none)
-; Expected exit: 100
 ;
+; Build: ml64 /c 07-peep-happy.asm && link /OUT:07-peep-happy.exe /ENTRY:main /SUBSYSTEM:CONSOLE 07-peep-happy.obj kernel32.lib
+;
+; Expected exit: 100
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_07_peep_happy PROC
     sub rsp, 40

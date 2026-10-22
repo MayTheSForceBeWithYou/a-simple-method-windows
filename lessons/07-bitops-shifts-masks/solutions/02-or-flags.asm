@@ -1,8 +1,9 @@
-; Exercise: 02-or-flags
-;
+; Exercise 02: or flags
 ; Set bits 0 and 2; exit 5.
 ; Expected exit: 5
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_02_or_flags PROC
     sub rsp, 40

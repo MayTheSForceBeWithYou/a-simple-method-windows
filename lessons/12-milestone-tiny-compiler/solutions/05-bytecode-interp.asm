@@ -1,8 +1,10 @@
-; Exercise: 05-bytecode-interp
+; Exercise 05: bytecode interp
 ;
 ; Bytes: LOAD 4, LOAD 5, ADD, HALT. Exit 9.
 ; Expected exit: 9
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 vmcode BYTE 1,4, 1,5, 2, 0
 

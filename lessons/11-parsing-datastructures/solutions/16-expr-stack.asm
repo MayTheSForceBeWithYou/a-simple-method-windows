@@ -1,8 +1,10 @@
-; Exercise: 16-expr-stack
+; Exercise 16: expr stack
 ;
 ; Shunting: push 2,3, add -> 5; exit 5.
 ; Expected exit: 5
-;
+
+EXTERN ExitProcess:PROC
+
 .data?
 stk QWORD 8 DUP(?)
 sp_ QWORD ?

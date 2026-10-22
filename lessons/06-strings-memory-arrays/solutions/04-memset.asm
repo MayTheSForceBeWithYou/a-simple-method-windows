@@ -1,8 +1,9 @@
-; Exercise: 04-memset
-;
+; Exercise 04: memset
 ; memset 4 bytes to 7; sum=28.
 ; Expected exit: 28
-;
+
+EXTERN ExitProcess:PROC
+
 .data?
 buf BYTE 4 DUP(?)
 

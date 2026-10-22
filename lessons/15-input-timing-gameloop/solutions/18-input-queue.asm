@@ -1,9 +1,14 @@
-; Exercise: 18-input-queue
+; Exercise 18: input queue
 ;
 ; Enqueue event 9; dequeue; exit 9.
-; Expected stdout: (none)
-; Expected exit: 9
 ;
+; Build: ml64 /c 18-input-queue.asm && link /OUT:18-input-queue.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-input-queue.obj kernel32.lib
+;
+; Expected exit: 9
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 q QWORD 4 DUP(?)
 h QWORD ?

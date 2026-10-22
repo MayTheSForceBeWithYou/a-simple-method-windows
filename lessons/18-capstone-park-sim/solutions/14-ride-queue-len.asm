@@ -1,9 +1,12 @@
-; Exercise: 14-ride-queue-len
+; Exercise 14: ride queue len
 ;
 ; Queue length 7; exit 7.
-; Expected stdout: (none)
-; Expected exit: 7
 ;
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 qlen QWORD 0
 

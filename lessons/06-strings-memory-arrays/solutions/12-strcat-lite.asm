@@ -1,8 +1,9 @@
-; Exercise: 12-strcat-lite
-;
+; Exercise 12: strcat lite
 ; dst="Hi", append "!", final length=3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 dst BYTE "Hi", 0, 0, 0, 0
 src BYTE "!", 0

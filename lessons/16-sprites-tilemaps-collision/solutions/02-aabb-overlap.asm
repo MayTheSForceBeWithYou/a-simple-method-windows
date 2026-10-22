@@ -1,9 +1,14 @@
-; Exercise: 02-aabb-overlap
+; Exercise 02: aabb overlap
 ;
 ; Overlap test true -> 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Build: ml64 /c 02-aabb-overlap.asm && link /OUT:02-aabb-overlap.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-aabb-overlap.obj kernel32.lib
+;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_02_aabb_overlap PROC
     sub rsp, 40

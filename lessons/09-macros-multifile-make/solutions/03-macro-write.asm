@@ -1,9 +1,19 @@
-; Exercise: 03-macro-write
+; Exercise 03: macro write
 ;
 ; Macro write_stdout msg,len; print 'M\n'.
-; Expected stdout: "M\n"
-; Expected exit: 0
 ;
+; Build: ml64 /c 03-macro-write.asm && link /OUT:03-macro-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-macro-write.obj kernel32.lib
+;
+; Expected exit: 0
+; Expected stdout: "M\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
+; MASM macro for writing to stdout
+write_stdout MACRO msg, len
+    LOCAL written, hStdOut
     .data?
     written DWORD ?
     hStdOut QWORD ?

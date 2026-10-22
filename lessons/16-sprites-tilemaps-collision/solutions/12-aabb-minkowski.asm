@@ -1,9 +1,14 @@
-; Exercise: 12-aabb-minkowski
+; Exercise 12: aabb minkowski
 ;
 ; Minkowski expand by 1; width 4->6; exit 6.
-; Expected stdout: (none)
-; Expected exit: 6
 ;
+; Build: ml64 /c 12-aabb-minkowski.asm && link /OUT:12-aabb-minkowski.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-aabb-minkowski.obj kernel32.lib
+;
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_12_aabb_minkowski PROC
     sub rsp, 40

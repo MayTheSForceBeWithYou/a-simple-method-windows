@@ -1,8 +1,10 @@
-; Exercise: 01-fixed-mul
+; Exercise 01: fixed mul
 ;
 ; Q16.16: 2.0 * 3.0 -> 6.0; represent 2<<16 etc; result>>16 exit 6.
 ; Expected exit: 6
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_01_fixed_mul PROC
     sub rsp, 40

@@ -1,8 +1,9 @@
-; Exercise: 13-variadic-max
-;
+; Exercise 13: variadic max
 ; max_n(n, ...) MS x64: rcx=count, args on stack. max(3, 5,1,9)=9.
 ; Expected exit: 9
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_13_variadic_max PROC
     sub rsp, 72

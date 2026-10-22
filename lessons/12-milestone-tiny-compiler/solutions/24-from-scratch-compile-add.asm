@@ -1,8 +1,10 @@
-; Exercise: 24-from-scratch-compile-add
+; Exercise 24: from scratch compile add
 ;
 ; FROM SCRATCH: compile-time eval of 40+2; exit 42.
 ; Expected exit: 42
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_24_from_scratch_compile_add PROC
     sub rsp, 40

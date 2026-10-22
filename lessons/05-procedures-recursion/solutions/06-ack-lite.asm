@@ -1,8 +1,9 @@
-; Exercise: 06-ack-lite
-;
+; Exercise 06: ack lite
 ; ack(1,1) = 3. MS x64 ABI.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_06_ack_lite PROC
     sub rsp, 40

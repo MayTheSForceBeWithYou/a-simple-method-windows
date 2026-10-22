@@ -1,7 +1,7 @@
-; Exercise: 19-debug-sign-shift
-;
 ; Expected exit: 252
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_19_debug_sign_shift PROC
     sub rsp, 40

@@ -1,8 +1,9 @@
-; Exercise: 19-compare-procs
-;
+; Exercise 19: compare procs
 ; cmp_i64(3,5) returns 0 for less, 1 for eq, 2 for greater. Exit 0.
 ; Expected exit: 0
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_19_compare_procs PROC
     sub rsp, 40

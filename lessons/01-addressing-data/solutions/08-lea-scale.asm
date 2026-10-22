@@ -1,8 +1,13 @@
-; Exercise: 08-lea-scale
+; Exercise 08: lea scale
 ;
 ; Without memory load: rbx=100, r8=3. lea rcx,[rbx+r8*4] (112), exit.
-; Expected exit: 112
 ;
+; Build: ml64 /c 08-lea-scale.asm && link /OUT:08-lea-scale.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-lea-scale.obj kernel32.lib
+;
+; Expected exit: 112
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_08_lea_scale PROC
     sub rsp, 40

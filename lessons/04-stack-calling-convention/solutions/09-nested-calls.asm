@@ -1,8 +1,13 @@
-; Exercise: 09-nested-calls
+; Exercise 09: nested calls
 ;
 ; double(x)=x*2; add(a,b)=a+b. Compute add(double(10),double(11))=42. MS x64 ABI.
-; Expected exit: 42
 ;
+; Build: ml64 /c 09-nested-calls.asm && link /OUT:09-nested-calls.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-nested-calls.obj kernel32.lib
+;
+; Expected exit: 42
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_09_nested_calls PROC
     sub rsp, 40

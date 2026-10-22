@@ -1,8 +1,15 @@
-; Exercise: 19-extern-declare
+; Exercise 19: extern declare
 ;
 ; EXTERN for multi-file; local call exit 9.
-; Expected exit: 9
 ;
+; Build: ml64 /c 19-extern-declare.asm && link /OUT:19-extern-declare.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-extern-declare.obj kernel32.lib
+;
+; Expected exit: 9
+
+EXTERN ExitProcess:PROC
+
+; In multi-file: EXTERN foo:PROC / PUBLIC foo
+
 .code
 ex_19_extern_declare PROC
     sub rsp, 40

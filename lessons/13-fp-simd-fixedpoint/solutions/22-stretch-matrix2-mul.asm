@@ -1,8 +1,10 @@
-; Exercise: 22-stretch-matrix2-mul
+; Exercise 22: stretch matrix2 mul
 ;
 ; STRETCH: 2x2 identity * (3,4) -> 3; exit 3 (x).
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_22_stretch_matrix2_mul PROC
     sub rsp, 40

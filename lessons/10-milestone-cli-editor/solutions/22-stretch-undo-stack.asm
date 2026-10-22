@@ -1,8 +1,13 @@
-; Exercise: 22-stretch-undo-stack
+; Exercise 22: stretch undo stack
 ;
 ; STRETCH: push op code 1 then 2; pop once; exit top 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 22-stretch-undo-stack.asm && link /OUT:22-stretch-undo-stack.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-undo-stack.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
 .data?
 ustk QWORD 8 DUP(?)
 usp QWORD ?

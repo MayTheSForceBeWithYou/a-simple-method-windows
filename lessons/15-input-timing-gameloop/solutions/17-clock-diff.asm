@@ -1,9 +1,14 @@
-; Exercise: 17-clock-diff
+; Exercise 17: clock diff
 ;
 ; t1-t0 = 40; exit 40.
-; Expected stdout: (none)
-; Expected exit: 40
 ;
+; Build: ml64 /c 17-clock-diff.asm && link /OUT:17-clock-diff.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-clock-diff.obj kernel32.lib
+;
+; Expected exit: 40
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_17_clock_diff PROC
     sub rsp, 40

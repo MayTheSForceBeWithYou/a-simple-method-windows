@@ -1,9 +1,14 @@
-; Exercise: 11-hline
+; Exercise 11: hline
 ;
 ; Horizontal line y=0 x=0..2 set 1; sum first 3=3.
-; Expected stdout: (none)
-; Expected exit: 3
 ;
+; Build: ml64 /c 11-hline.asm && link /OUT:11-hline.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-hline.obj kernel32.lib
+;
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 fb BYTE 8 DUP(?)
 

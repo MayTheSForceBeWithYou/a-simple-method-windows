@@ -1,9 +1,14 @@
-; Exercise: 22-stretch-ring-drop
+; Exercise 22: stretch ring drop
 ;
 ; STRETCH: input ring full drops; dropped count 1; exit 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Build: ml64 /c 22-stretch-ring-drop.asm && link /OUT:22-stretch-ring-drop.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-ring-drop.obj kernel32.lib
+;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 dropped QWORD ?
 

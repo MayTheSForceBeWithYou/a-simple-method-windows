@@ -1,8 +1,15 @@
-; Exercise: 09-write-stderr
+; Exercise 09: write stderr
 ;
 ; Write "error\n" to stderr (fd 2), exit 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 09-write-stderr.asm && link /OUT:09-write-stderr.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-write-stderr.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "error", 13, 10
 msg_len EQU $ - msg

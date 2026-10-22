@@ -1,8 +1,10 @@
-; Exercise: 13-codegen-mov
+; Exercise 13: codegen mov
 ;
 ; Emit conceptual: store imm 42 into slot; exit 42.
 ; Expected exit: 42
-;
+
+EXTERN ExitProcess:PROC
+
 .data?
 slot QWORD ?
 

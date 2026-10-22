@@ -1,8 +1,10 @@
-; Exercise: 16-if-codegen
+; Exercise 16: if codegen
 ;
 ; if 1 then 7 else 9; exit 7.
 ; Expected exit: 7
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_16_if_codegen PROC
     sub rsp, 40

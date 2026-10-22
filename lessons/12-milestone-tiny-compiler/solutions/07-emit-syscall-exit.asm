@@ -1,8 +1,10 @@
-; Exercise: 07-emit-syscall-exit
+; Exercise 07: emit syscall exit
 ;
 ; Hand-written 'codegen' template exits status 0.
 ; Expected exit: 0
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_07_emit_syscall_exit PROC
     sub rsp, 40

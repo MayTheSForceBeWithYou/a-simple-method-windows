@@ -1,8 +1,13 @@
-; Exercise: 11-assign-macro
+; Exercise 11: assign macro
 ;
 ; Use = (MASM assignment) with REPT loop; exit 4 after 4 incs.
-; Expected exit: 4
 ;
+; Build: ml64 /c 11-assign-macro.asm && link /OUT:11-assign-macro.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-assign-macro.obj kernel32.lib
+;
+; Expected exit: 4
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_11_assign_macro PROC
     sub rsp, 40

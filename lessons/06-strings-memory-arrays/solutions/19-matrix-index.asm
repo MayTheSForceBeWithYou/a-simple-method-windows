@@ -1,9 +1,12 @@
-; Exercise: 19-matrix-index
+; Exercise 19: matrix index
 ;
 ; Row-major 3x3; get (r=1,c=2) from 1..9 matrix -> 6.
-; Expected stdout: (none)
-; Expected exit: 6
 ;
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 m QWORD 1,2,3,4,5,6,7,8,9
 

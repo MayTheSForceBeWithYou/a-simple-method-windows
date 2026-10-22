@@ -1,9 +1,16 @@
-; Exercise: 09-write-len-check
+; Exercise 09: write len check
 ;
 ; write "Z\n"; if written==2 exit 0 else 1.
-; Expected stdout: "Z\n"
-; Expected exit: 0
 ;
+; Build: ml64 /c 09-write-len-check.asm && link /OUT:09-write-len-check.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-write-len-check.obj kernel32.lib
+;
+; Expected exit: 0
+; Expected stdout: "Z\n"
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "Z", 10
 

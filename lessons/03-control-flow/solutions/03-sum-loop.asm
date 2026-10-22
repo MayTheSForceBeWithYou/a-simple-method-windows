@@ -1,7 +1,6 @@
-; Exercise: 03-sum-loop
-;
+; Exercise 03: sum loop (Win32 port) - SOLUTION
 ; Expected exit: 55
-;
+
 .CODE
 
 EXTRN ExitProcess:PROC

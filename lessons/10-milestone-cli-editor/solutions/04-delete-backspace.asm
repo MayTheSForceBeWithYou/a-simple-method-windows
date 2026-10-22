@@ -1,8 +1,13 @@
-; Exercise: 04-delete-backspace
+; Exercise 04: delete backspace
 ;
 ; len=2; backspace; exit len 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 04-delete-backspace.asm && link /OUT:04-delete-backspace.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-delete-backspace.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
 .data?
 len QWORD ?
 

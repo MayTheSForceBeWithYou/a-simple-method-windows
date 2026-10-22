@@ -1,8 +1,10 @@
-; Exercise: 17-precedence
+; Exercise 17: precedence
 ;
 ; Encode * binds tighter: 2+3*4 = 14; exit 14.
 ; Expected exit: 14
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_17_precedence PROC
     sub rsp, 40

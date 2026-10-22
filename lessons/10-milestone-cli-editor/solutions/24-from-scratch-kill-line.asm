@@ -1,8 +1,13 @@
-; Exercise: 24-from-scratch-kill-line
+; Exercise 24: from scratch kill line
 ;
 ; FROM SCRATCH: "ab\ncd" kill from cur=0 to newline -> len becomes 3 ("\ncd"); exit 3.
-; Expected exit: 3
 ;
+; Build: ml64 /c 24-from-scratch-kill-line.asm && link /OUT:24-from-scratch-kill-line.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-kill-line.obj kernel32.lib
+;
+; Expected exit: 3
+
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE "ab", 10, "cd", 0
 

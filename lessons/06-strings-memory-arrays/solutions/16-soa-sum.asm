@@ -1,9 +1,12 @@
-; Exercise: 16-soa-sum
+; Exercise 16: soa sum
 ;
 ; SoA xs={1,2,3} ys={4,5,6}; sum all 21.
-; Expected stdout: (none)
-; Expected exit: 21
 ;
+; Expected exit: 21
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 xs QWORD 1,2,3
 ys QWORD 4,5,6

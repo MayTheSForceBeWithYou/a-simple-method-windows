@@ -1,8 +1,14 @@
-; Exercise: 24-from-scratch-write-err
+; Exercise 24: from scratch write err
 ;
 ; FROM SCRATCH: write to invalid handle=-1; expect error; exit 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 24-from-scratch-write-err.asm && link /OUT:24-from-scratch-write-err.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-from-scratch-write-err.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "x"
 

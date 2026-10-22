@@ -1,9 +1,12 @@
-; Exercise: 14-memchr
+; Exercise 14: memchr
 ;
 ; Find 7 in bytes 3,5,7,9; index 2.
-; Expected stdout: (none)
-; Expected exit: 2
 ;
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 buf BYTE 3,5,7,9
 

@@ -1,7 +1,7 @@
-; Exercise: 08-from-scratch-rol
-;
 ; Expected exit: 1
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_08_from_scratch_rol PROC
     sub rsp, 40

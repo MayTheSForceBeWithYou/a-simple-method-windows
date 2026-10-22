@@ -1,9 +1,14 @@
-; Exercise: 03-clear-buffer
+; Exercise 03: clear buffer
 ;
 ; Clear 8 bytes to 0; exit first byte 0.
-; Expected stdout: (none)
-; Expected exit: 0
 ;
+; Build: ml64 /c 03-clear-buffer.asm && link /OUT:03-clear-buffer.exe /ENTRY:main /SUBSYSTEM:CONSOLE 03-clear-buffer.obj kernel32.lib
+;
+; Expected exit: 0
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 fb BYTE 8 DUP(?)
 

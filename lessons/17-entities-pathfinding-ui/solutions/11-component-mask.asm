@@ -1,9 +1,15 @@
-; Exercise: 11-component-mask
+; Exercise 11: component mask
 ;
 ; Has POS|VEL = 3; exit 3.
-; Expected stdout: (none)
-; Expected exit: 3
 ;
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+POS EQU 1
+VEL EQU 2
+
 .code
 ex_11_component_mask PROC
     sub rsp, 40

@@ -1,9 +1,14 @@
-; Exercise: 22-stretch-sat-axes
+; Exercise 22: stretch sat axes
 ;
 ; STRETCH: SAT axis count for AABB=2; exit 2.
-; Expected stdout: (none)
-; Expected exit: 2
 ;
+; Build: ml64 /c 22-stretch-sat-axes.asm && link /OUT:22-stretch-sat-axes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-sat-axes.obj kernel32.lib
+;
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_22_stretch_sat_axes PROC
     sub rsp, 40

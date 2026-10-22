@@ -1,8 +1,9 @@
-; Exercise: 07-rep-movsb
-;
+; Exercise 07: rep movsb
 ; Copy 5 bytes [1..5]; sum=15.
 ; Expected exit: 15
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 src BYTE 1,2,3,4,5
 

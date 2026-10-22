@@ -115,9 +115,8 @@ def main():
     for ex in sorted(ROOT.glob("*/exercises/*.asm")):
         if reconcile_exercise(ex):
             changed.append(ex)
-    for sol in sorted(ROOT.glob("*/solutions/*.asm")):
-        if reconcile_solution(sol):
-            changed.append(sol)
+    # Solutions: header-only pass must not strip EXTERN/.code declarations.
+    # Use reconcile_solution only when explicitly needed (not in bulk CI pass).
     for p in changed:
         print(p.relative_to(ROOT.parent))
     print(f"Changed {len(changed)} files")

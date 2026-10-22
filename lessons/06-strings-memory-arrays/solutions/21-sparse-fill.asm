@@ -1,9 +1,12 @@
-; Exercise: 21-sparse-fill
+; Exercise 21: sparse fill
 ;
 ; Fill every other byte in 8-byte buf with 1; sum=4.
-; Expected stdout: (none)
-; Expected exit: 4
 ;
+; Expected exit: 4
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 buf BYTE 8 DUP(0)
 

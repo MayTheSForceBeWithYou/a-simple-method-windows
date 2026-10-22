@@ -1,8 +1,9 @@
-; Exercise: 22-stretch-color-interp
-;
+; Exercise 22: stretch color interp
 ; Lerp 0..100 at t=0.5 in Q16.16; exit 50.
 ; Expected exit: 50
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_22_stretch_color_interp PROC
     sub rsp, 40

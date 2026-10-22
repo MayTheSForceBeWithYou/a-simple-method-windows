@@ -1,8 +1,14 @@
-; Exercise: 04-virtualalloc
+; Exercise 04: mmap anon
 ;
 ; VirtualAlloc 4096 bytes RW; store 42; exit 42.
-; Expected exit: 42
 ;
+; Build: ml64 /c 04-virtualalloc.asm && link /OUT:04-virtualalloc.exe /ENTRY:main /SUBSYSTEM:CONSOLE 04-virtualalloc.obj kernel32.lib
+;
+; Expected exit: 42
+
+EXTERN VirtualAlloc:PROC
+EXTERN ExitProcess:PROC
+
 .code
 ex_04_virtualalloc PROC
     sub rsp, 40

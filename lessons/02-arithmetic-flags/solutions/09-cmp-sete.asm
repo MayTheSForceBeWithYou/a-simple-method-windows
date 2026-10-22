@@ -1,8 +1,13 @@
-; Exercise: 09-cmp-sete
+; Exercise 09: cmp sete
 ;
 ; rax=5, rbx=5. cmp; sete al; movzx rcx,al; exit 1.
-; Expected exit: 1
 ;
+; Build: ml64 /c 09-cmp-sete.asm && link /OUT:09-cmp-sete.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-cmp-sete.obj kernel32.lib
+;
+; Expected exit: 1
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_09_cmp_sete PROC
     sub rsp, 40

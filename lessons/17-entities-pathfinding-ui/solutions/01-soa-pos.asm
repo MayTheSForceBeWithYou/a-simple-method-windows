@@ -1,9 +1,14 @@
-; Exercise: 01-soa-pos
+; Exercise 01: soa pos
 ;
 ; xs[1]=5 ys[1]=6; exit xs+ys 11.
-; Expected stdout: (none)
-; Expected exit: 11
 ;
+; Build: ml64 /c 01-soa-pos.asm && link /OUT:01-soa-pos.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-soa-pos.obj kernel32.lib
+;
+; Expected exit: 11
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 xs QWORD 0,5,0
 ys QWORD 0,6,0

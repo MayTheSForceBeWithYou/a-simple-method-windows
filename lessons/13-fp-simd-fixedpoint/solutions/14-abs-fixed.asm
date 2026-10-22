@@ -1,8 +1,9 @@
-; Exercise: 14-abs-fixed
-;
+; Exercise 14: abs fixed
 ; Absolute value of Q16.16 -3.0; exit 3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_14_abs_fixed PROC
     sub rsp, 40

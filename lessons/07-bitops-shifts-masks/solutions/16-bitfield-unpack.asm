@@ -1,7 +1,7 @@
-; Exercise: 16-bitfield-unpack
-;
 ; Expected exit: 2
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_16_bitfield_unpack PROC
     sub rsp, 40

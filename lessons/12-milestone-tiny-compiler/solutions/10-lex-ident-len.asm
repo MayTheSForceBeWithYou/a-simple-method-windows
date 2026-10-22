@@ -1,8 +1,10 @@
-; Exercise: 10-lex-ident-len
+; Exercise 10: lex ident len
 ;
 ; Ident "foo" length 3; exit 3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 s BYTE "foo", 0
 

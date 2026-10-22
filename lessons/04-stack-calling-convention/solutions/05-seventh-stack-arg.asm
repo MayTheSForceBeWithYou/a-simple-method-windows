@@ -1,8 +1,13 @@
-; Exercise: 05-seventh-stack-arg
+; Exercise 05: seventh stack arg
 ;
 ; sum7 uses 7th arg on stack. Pass 1..7; exit 28.
-; Expected exit: 28
 ;
+; Build: ml64 /c 05-seventh-stack-arg.asm && link /OUT:05-seventh-stack-arg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-seventh-stack-arg.obj kernel32.lib
+;
+; Expected exit: 28
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_05_seventh_stack_arg PROC
     sub rsp, 56        ; 32 shadow + 24 (16 for args 5-6, 8 for arg 7, round to 16)

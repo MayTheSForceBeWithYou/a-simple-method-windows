@@ -1,8 +1,10 @@
-; Exercise: 15-lerp-fixed
+; Exercise 15: lerp fixed
 ;
 ; lerp(0,10,0.5) ~5 with Q16 t=1<<15; exit 5.
 ; Expected exit: 5
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_15_lerp_fixed PROC
     sub rsp, 40

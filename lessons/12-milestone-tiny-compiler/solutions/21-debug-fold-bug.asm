@@ -1,8 +1,10 @@
-; Exercise: 21-debug-fold-bug
+; Exercise 21: debug fold bug
 ;
 ; BUG: 2*3+4 computed as 2*(3+4). Fix to 10.
 ; Expected exit: 10
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_21_debug_fold_bug PROC
     sub rsp, 40

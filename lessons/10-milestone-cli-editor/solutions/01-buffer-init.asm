@@ -1,8 +1,13 @@
-; Exercise: 01-buffer-init
+; Exercise 01: buffer init
 ;
 ; Allocate 64 byte buffer; store length 0 in len; exit len.
-; Expected exit: 0
 ;
+; Build: ml64 /c 01-buffer-init.asm && link /OUT:01-buffer-init.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-buffer-init.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
 .data?
 buf BYTE 64 DUP(?)
 len QWORD ?

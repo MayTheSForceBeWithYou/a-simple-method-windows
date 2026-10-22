@@ -1,9 +1,12 @@
-; Exercise: 24-from-scratch-sim-integrate
+; Exercise 24: from scratch sim integrate
 ;
 ; FROM SCRATCH: one tick: place path, peep step, cash+=1; exit cash 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 peep_x QWORD 0
 cash QWORD 0

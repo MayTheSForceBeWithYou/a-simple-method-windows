@@ -1,8 +1,15 @@
-; Exercise: 28-from-scratch-echo-lit
+; Exercise 28: from scratch echo lit
 ;
 ; FROM SCRATCH: Print "masm+link\n" and exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 28-from-scratch-echo-lit.asm && link /OUT:28-from-scratch-echo-lit.exe /ENTRY:main /SUBSYSTEM:CONSOLE 28-from-scratch-echo-lit.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "masm+link", 13, 10
 msg_len EQU $ - msg

@@ -1,8 +1,13 @@
-; Exercise: 20-clamp
+; Exercise 20: clamp
 ;
 ; x=150. Clamp to [0,100]. Exit 100.
-; Expected exit: 100
 ;
+; Build: ml64 /c 20-clamp.asm && link /OUT:20-clamp.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-clamp.obj kernel32.lib
+;
+; Expected exit: 100
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_20_clamp PROC
     sub rsp, 40

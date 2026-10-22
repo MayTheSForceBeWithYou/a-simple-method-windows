@@ -1,9 +1,14 @@
-; Exercise: 11-mouse-delta
+; Exercise 11: mouse delta
 ;
 ; dx=5 dy=-2; manhattan 7; exit 7.
-; Expected stdout: (none)
-; Expected exit: 7
 ;
+; Build: ml64 /c 11-mouse-delta.asm && link /OUT:11-mouse-delta.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-mouse-delta.obj kernel32.lib
+;
+; Expected exit: 7
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_11_mouse_delta PROC
     sub rsp, 40

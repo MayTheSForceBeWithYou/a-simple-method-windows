@@ -1,8 +1,15 @@
-; Exercise: 18-reuse-regs-safely
+; Exercise 18: reuse regs safely
 ;
 ; Write "ok\n", then exit 0. Re-load parameters after write (registers may be clobbered).
-; Expected exit: 0
 ;
+; Build: ml64 /c 18-reuse-regs-safely.asm && link /OUT:18-reuse-regs-safely.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-reuse-regs-safely.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "ok", 13, 10
 msg_len EQU $ - msg

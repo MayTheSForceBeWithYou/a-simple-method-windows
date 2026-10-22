@@ -1,9 +1,14 @@
-; Exercise: 10-chord
+; Exercise 10: chord
 ;
 ; W and Shift both down -> run=1; exit 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Build: ml64 /c 10-chord.asm && link /OUT:10-chord.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-chord.obj kernel32.lib
+;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data?
 w BYTE ?
 shift BYTE ?

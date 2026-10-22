@@ -1,8 +1,13 @@
-; Exercise: 24-nested-loops
+; Exercise 24: nested loops
 ;
 ; Count pairs (i,j) with 0<=i<3, 0<=j<4 (12). Exit 12.
-; Expected exit: 12
 ;
+; Build: ml64 /c 24-nested-loops.asm && link /OUT:24-nested-loops.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-nested-loops.obj kernel32.lib
+;
+; Expected exit: 12
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_24_nested_loops PROC
     sub rsp, 40

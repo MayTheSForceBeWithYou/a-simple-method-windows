@@ -1,8 +1,9 @@
-; Exercise: 02-strcpy
-;
+; Exercise 02: strcpy
 ; Copy 'yo' to bss; exit length=2.
 ; Expected exit: 2
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 src BYTE "yo", 0
 

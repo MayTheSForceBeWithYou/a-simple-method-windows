@@ -1,9 +1,12 @@
-; Exercise: 24-from-scratch-rec-sum-array
+; Exercise 24: from scratch rec sum array
 ;
 ; FROM SCRATCH: rec_sum(arr,n) sums n qwords. {2,3,4} n=3 -> 9.
-; Expected stdout: (none)
-; Expected exit: 9
 ;
+; Expected exit: 9
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 arr QWORD 2,3,4
 

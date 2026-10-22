@@ -1,8 +1,9 @@
-; Exercise: 02-mutual-even-odd
-;
+; Exercise 02: mutual even odd
 ; is_even/is_odd mutual recursion. is_even(4)->1; exit 1.
 ; Expected exit: 1
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_02_mutual_even_odd PROC
     sub rsp, 40

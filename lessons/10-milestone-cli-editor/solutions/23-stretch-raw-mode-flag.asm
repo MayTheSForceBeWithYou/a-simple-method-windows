@@ -1,8 +1,13 @@
-; Exercise: 23-stretch-raw-mode-flag
+; Exercise 23: stretch raw mode flag
 ;
 ; STRETCH: raw_mode byte set/clear; exit 0 after restore.
-; Expected exit: 0
 ;
+; Build: ml64 /c 23-stretch-raw-mode-flag.asm && link /OUT:23-stretch-raw-mode-flag.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-raw-mode-flag.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN ExitProcess:PROC
+
 .data?
 raw BYTE ?
 

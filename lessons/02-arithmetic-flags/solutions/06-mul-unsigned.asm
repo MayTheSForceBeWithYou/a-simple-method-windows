@@ -1,8 +1,13 @@
-; Exercise: 06-mul-unsigned
+; Exercise 06: mul unsigned
 ;
 ; rax=100000, rbx=3; mul rbx; exit with low 8 bits of rax. Product 300000, status 300000&255=224.
-; Expected exit: 224
 ;
+; Build: ml64 /c 06-mul-unsigned.asm && link /OUT:06-mul-unsigned.exe /ENTRY:main /SUBSYSTEM:CONSOLE 06-mul-unsigned.obj kernel32.lib
+;
+; Expected exit: 224
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_06_mul_unsigned PROC
     sub rsp, 40

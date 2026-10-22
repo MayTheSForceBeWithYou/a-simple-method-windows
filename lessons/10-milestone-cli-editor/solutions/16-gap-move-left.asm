@@ -1,8 +1,13 @@
-; Exercise: 16-gap-move-left
+; Exercise 16: gap move left
 ;
 ; Move gap left: gap_s=3 gap_e=5 -> move left once gap_s=2 gap_e=4; exit gap_s.
-; Expected exit: 2
 ;
+; Build: ml64 /c 16-gap-move-left.asm && link /OUT:16-gap-move-left.exe /ENTRY:main /SUBSYSTEM:CONSOLE 16-gap-move-left.obj kernel32.lib
+;
+; Expected exit: 2
+
+EXTERN ExitProcess:PROC
+
 .data?
 gap_s QWORD ?
 gap_e QWORD ?

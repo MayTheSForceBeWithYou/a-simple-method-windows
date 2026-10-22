@@ -1,8 +1,15 @@
-; Exercise: 24-overwrite-data
+; Exercise 24: overwrite data
 ;
 ; msg BYTE 'x',CR,LF. Change first byte to 'Y' in place, write 3 bytes, exit 0.
-; Expected exit: 0
 ;
+; Build: ml64 /c 24-overwrite-data.asm && link /OUT:24-overwrite-data.exe /ENTRY:main /SUBSYSTEM:CONSOLE 24-overwrite-data.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN GetStdHandle:PROC
+EXTERN WriteFile:PROC
+EXTERN ExitProcess:PROC
+
 .data
 msg BYTE "x", 13, 10
 

@@ -1,8 +1,9 @@
-; Exercise: 04-tree-sum-flat
-;
+; Exercise 04: tree sum flat
 ; Binary heap array [1,2,3,4,5]. Recursively sum. Exit 15.
 ; Expected exit: 15
-;
+
+EXTERN ExitProcess:PROC
+
 .data
 heap QWORD 1,2,3,4,5
 heap_n EQU 5

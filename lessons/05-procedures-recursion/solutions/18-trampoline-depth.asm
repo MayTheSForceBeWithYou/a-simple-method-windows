@@ -1,8 +1,9 @@
-; Exercise: 18-trampoline-depth
-;
+; Exercise 18: trampoline depth
 ; bump(8) recursive count. Exit 8.
 ; Expected exit: 8
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_18_trampoline_depth PROC
     sub rsp, 40

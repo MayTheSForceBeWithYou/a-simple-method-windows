@@ -1,7 +1,7 @@
-; Exercise: 07-extract-bitfield
-;
 ; Expected exit: 12
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_07_extract_bitfield PROC
     sub rsp, 40

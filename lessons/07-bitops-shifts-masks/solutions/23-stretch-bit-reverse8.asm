@@ -1,9 +1,12 @@
-; Exercise: 23-stretch-bit-reverse8
+; Exercise 23: stretch bit reverse 8
 ;
 ; Reverse bits of 080h -> 001h; exit 1.
-; Expected stdout: (none)
-; Expected exit: 1
 ;
+; Expected exit: 1
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 v BYTE 80h
 

@@ -1,8 +1,10 @@
-; Exercise: 09-q16-from-int
+; Exercise 09: q16 from int
 ;
 ; Convert 5 to Q16.16; >>16 back exit 5.
 ; Expected exit: 5
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_09_q16_from_int PROC
     sub rsp, 40

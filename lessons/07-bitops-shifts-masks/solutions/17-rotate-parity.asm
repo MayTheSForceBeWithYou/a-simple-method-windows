@@ -1,7 +1,7 @@
-; Exercise: 17-rotate-parity
-;
 ; Expected exit: 128
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_17_rotate_parity PROC
     sub rsp, 40

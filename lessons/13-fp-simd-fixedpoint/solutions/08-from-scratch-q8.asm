@@ -1,8 +1,10 @@
-; Exercise: 08-from-scratch-q8
+; Exercise 08: from scratch q8
 ;
 ; FROM SCRATCH: Q8.8 1.5*2 exit integer 3.
 ; Expected exit: 3
-;
+
+EXTERN ExitProcess:PROC
+
 .code
 ex_08_from_scratch_q8 PROC
     sub rsp, 40

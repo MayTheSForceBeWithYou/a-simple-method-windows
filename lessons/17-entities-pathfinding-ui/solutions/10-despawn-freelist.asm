@@ -1,9 +1,12 @@
-; Exercise: 10-despawn-freelist
+; Exercise 10: despawn freelist
 ;
 ; Free id 3 onto freelist top; exit 3.
-; Expected stdout: (none)
-; Expected exit: 3
 ;
+; Expected exit: 3
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
 .data
 free_top QWORD 0
 
