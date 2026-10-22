@@ -16,9 +16,8 @@ ex_18_guest_happiness PROC
     jle happy_ok
     mov rax, 100
 happy_ok:
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_18_guest_happiness ENDP
 main PROC
     sub     rsp, 40

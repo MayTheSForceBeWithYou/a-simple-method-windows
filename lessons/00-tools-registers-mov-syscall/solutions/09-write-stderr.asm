@@ -36,8 +36,7 @@ ex_09_write_stderr PROC
     call WriteFile
     
     ; Exit 1
-    call ExitProcess
-    mov     eax, 1
+        mov     eax, 1
     add     rsp, 56
     ret
 ex_09_write_stderr ENDP

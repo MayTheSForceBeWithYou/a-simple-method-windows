@@ -13,8 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_22_stretch_flow_field PROC
     sub rsp, 40
-    call ExitProcess
-    mov     eax, 4
+        mov     eax, 4
     add     rsp, 40
     ret
 ex_22_stretch_flow_field ENDP

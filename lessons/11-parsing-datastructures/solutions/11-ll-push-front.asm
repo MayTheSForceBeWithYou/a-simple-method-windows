@@ -23,8 +23,7 @@ ex_11_ll_push_front PROC
     lea rax, n2
     mov QWORD PTR [head], rax
     mov rax, QWORD PTR [head]
-    mov rcx, QWORD PTR [rax]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_11_ll_push_front ENDP

@@ -16,9 +16,8 @@ ex_14_arena_align PROC
     add rax, 7
     and rax, NOT 7
     mov QWORD PTR [bump], rax
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_14_arena_align ENDP
 main PROC
     sub     rsp, 40

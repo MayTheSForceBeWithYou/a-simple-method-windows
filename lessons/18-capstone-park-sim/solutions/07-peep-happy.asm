@@ -17,9 +17,8 @@ ex_07_peep_happy PROC
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_07_peep_happy ENDP
 main PROC
     sub     rsp, 40

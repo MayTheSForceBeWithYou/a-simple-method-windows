@@ -12,8 +12,7 @@ slot QWORD ?
 ex_13_codegen_mov PROC
     sub rsp, 40
     mov QWORD PTR [slot], 42
-    mov rcx, QWORD PTR [slot]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_13_codegen_mov ENDP

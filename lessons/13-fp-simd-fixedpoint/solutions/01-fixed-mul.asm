@@ -16,9 +16,8 @@ ex_01_fixed_mul PROC
     movsxd rbx, ebx
     imul rax, rbx
     shr rax, 32
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_01_fixed_mul ENDP
 main PROC
     sub     rsp, 40

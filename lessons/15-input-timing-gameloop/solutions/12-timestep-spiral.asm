@@ -20,9 +20,8 @@ ex_12_timestep_spiral PROC
     jbe clamp_ok
     mov rax, 3
 clamp_ok:
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_12_timestep_spiral ENDP
 main PROC
     sub     rsp, 40

@@ -16,8 +16,7 @@ ex_07_scaled_index PROC
     sub rsp, 40
     mov r8, 2
     lea r11, [arr]
-    mov rcx, QWORD PTR [r11+r8*8]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_scaled_index ENDP

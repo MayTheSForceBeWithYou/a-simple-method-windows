@@ -16,9 +16,8 @@ loop_start:
     dec rcx
     jmp loop_start
 loop_done:
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_03_sum_loop ENDP
 main PROC
     sub     rsp, 40

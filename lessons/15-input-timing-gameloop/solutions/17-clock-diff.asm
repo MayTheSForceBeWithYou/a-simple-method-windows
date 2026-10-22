@@ -15,9 +15,8 @@ ex_17_clock_diff PROC
     mov rax, 100
     mov rbx, 60
     sub rax, rbx
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_17_clock_diff ENDP
 main PROC
     sub     rsp, 40

@@ -21,8 +21,7 @@ tick_loop:
     inc QWORD PTR [tick]
     jmp tick_loop
 tick_done:
-    mov rcx, [tick]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_08_from_scratch_tick ENDP

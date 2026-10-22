@@ -15,9 +15,8 @@ ex_03_memcmp PROC
     lea rdx, b
     mov r8, 3
     call memcmp_fn
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_03_memcmp ENDP
 main PROC
     sub     rsp, 40

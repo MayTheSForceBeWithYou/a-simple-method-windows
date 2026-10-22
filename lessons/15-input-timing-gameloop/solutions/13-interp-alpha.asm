@@ -17,9 +17,8 @@ ex_13_interp_alpha PROC
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_13_interp_alpha ENDP
 main PROC
     sub     rsp, 40

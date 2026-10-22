@@ -18,9 +18,8 @@ clear_loop:
     loop clear_loop
     mov rcx, 8
     call fibm
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_23_stretch_memo_fib_slot ENDP
 main PROC
     sub     rsp, 40

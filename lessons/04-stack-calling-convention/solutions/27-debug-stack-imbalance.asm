@@ -13,9 +13,8 @@ ex_27_debug_stack_imbalance PROC
     .ALLOCSTACK 40
     .ENDPROLOG
     call two
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_27_debug_stack_imbalance ENDP
 main PROC
     sub     rsp, 40

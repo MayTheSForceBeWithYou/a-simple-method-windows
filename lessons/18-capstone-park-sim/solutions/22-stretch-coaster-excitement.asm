@@ -13,8 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_22_stretch_coaster_excitement PROC
     sub rsp, 40
-    call ExitProcess
-    mov     eax, 42
+        mov     eax, 42
     add     rsp, 40
     ret
 ex_22_stretch_coaster_excitement ENDP

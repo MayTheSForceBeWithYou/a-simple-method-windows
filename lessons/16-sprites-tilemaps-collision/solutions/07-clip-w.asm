@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_07_clip_w PROC
     sub rsp, 40
-    call ExitProcess
-    mov     eax, 2
+        mov     eax, 2
     add     rsp, 40
     ret
 ex_07_clip_w ENDP

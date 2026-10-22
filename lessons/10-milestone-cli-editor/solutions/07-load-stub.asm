@@ -16,8 +16,7 @@ ex_07_load_stub PROC
     sub rsp, 40
     
     mov QWORD PTR [len], 3
-    mov rcx, [len]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_load_stub ENDP

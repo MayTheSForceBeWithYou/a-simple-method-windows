@@ -39,8 +39,7 @@ L_l:
     
 L_fin:
     dec QWORD PTR [len]
-    mov rcx, [len]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_11_delete_forward ENDP

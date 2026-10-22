@@ -11,9 +11,8 @@ ex_17_precedence PROC
     mov rax, 3
     imul rax, 4
     add rax, 2
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_17_precedence ENDP
 main PROC
     sub     rsp, 40

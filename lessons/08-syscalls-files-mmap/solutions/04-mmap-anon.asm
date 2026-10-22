@@ -29,15 +29,14 @@ ex_04_mmap_anon PROC
     mov QWORD PTR [rbx], 42
     
     ; Exit with value from memory
-    mov rcx, [rbx]
-    call ExitProcess
-    
-L_fail:
-    ; Exit 2 on allocation failure
-    call ExitProcess
-    mov     eax, 2
+        mov     eax, ecx
     add     rsp, 40
     ret
+L_fail:
+    ; Exit 2 on allocation failure
+    mov rcx, 2
+    call ExitProcess
+
 ex_04_mmap_anon ENDP
 main PROC
     sub     rsp, 40

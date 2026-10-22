@@ -10,8 +10,7 @@ ex_21_gray_code PROC
     shr rbx, 1
     xor rax, rbx
     mov rcx, rax
-    call ExitProcess
-    mov     eax, 60
+        mov     eax, 60
     add     rsp, 40
     ret
 ex_21_gray_code ENDP

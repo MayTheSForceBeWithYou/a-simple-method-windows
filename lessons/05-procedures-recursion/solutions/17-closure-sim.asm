@@ -13,9 +13,8 @@ ex_17_closure_sim PROC
     lea r12, ctx
     mov rcx, 5
     call add_ctx
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_17_closure_sim ENDP
 main PROC
     sub     rsp, 40

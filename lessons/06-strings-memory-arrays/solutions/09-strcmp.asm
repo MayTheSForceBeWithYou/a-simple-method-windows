@@ -14,9 +14,8 @@ ex_09_strcmp PROC
     lea rcx, a
     lea rdx, b
     call strcmp_fn
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_09_strcmp ENDP
 main PROC
     sub     rsp, 40

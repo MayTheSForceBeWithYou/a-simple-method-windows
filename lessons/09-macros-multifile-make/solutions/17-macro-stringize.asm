@@ -34,8 +34,7 @@ ex_17_macro_stringize PROC
     call WriteFile
     
     ; Exit 0
-    call ExitProcess
-    mov     eax, 0
+        mov     eax, 0
     add     rsp, 56
     ret
 ex_17_macro_stringize ENDP

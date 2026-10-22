@@ -8,8 +8,7 @@ ex_19_debug_sign_shift PROC
     mov rax, -16
     sar rax, 2
     movzx rcx, al
-    call ExitProcess
-    mov     eax, 60
+        mov     eax, 60
     add     rsp, 40
     ret
 ex_19_debug_sign_shift ENDP

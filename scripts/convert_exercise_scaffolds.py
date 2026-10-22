@@ -264,60 +264,6 @@ def main_stack_reserve(inner: str) -> str:
     return m.group(1) if m else "40"
 
 
-def rewrite_exitprocess_in_body(body: str) -> str:
-    lines = body.splitlines()
-    for i in range(len(lines) - 1, -1, -1):
-        if not re.match(r"^\s*call\s+ExitProcess\s*$", lines[i], re.I):
-            continue
-        j = i - 1
-        while j >= 0 and (not lines[j].strip() or lines[j].strip().startswith(";")):
-            j -= 1
-        ret_lines: list[str] = ["    mov     eax, ecx", "    ret"]
-        if j >= 0:
-            prev = lines[j].strip()
-            m = re.match(r"mov\s+(rcx|rax|ecx|eax)\s*,\s*(.+)", prev, re.I)
-            if m:
-                reg, val = m.group(1).lower(), m.group(2).strip()
-                val_l = val.lower()
-                complex_src = "[" in val or "ptr" in val_l
-                if complex_src:
-                    ret_lines = ["    mov     eax, ecx", "    ret"]
-                elif val_l in ("rax", "eax"):
-                    lines.pop(j)
-                    ret_lines = ["    ret"]
-                elif reg in ("rcx", "ecx"):
-                    if re.match(r"^-?\d+$", val) or val.endswith("b"):
-                        lines.pop(j)
-                        ret_lines = [f"    mov     eax, {val}", "    ret"]
-                    elif val_l in (
-                        "rbx",
-                        "rdx",
-                        "rsi",
-                        "rdi",
-                        "r8",
-                        "r9",
-                        "r10",
-                        "r11",
-                        "r12",
-                        "r13",
-                        "r14",
-                        "r15",
-                    ):
-                        lines.pop(j)
-                        ret_lines = [
-                            f"    mov     eax, {reg32_for_eax(val)}",
-                            "    ret",
-                        ]
-                    else:
-                        ret_lines = ["    mov     eax, ecx", "    ret"]
-                elif reg in ("rax", "eax"):
-                    lines.pop(j)
-                    ret_lines = [f"    mov     eax, {val}", "    ret"]
-        lines[i : i + 1] = ret_lines
-        break
-    return "\n".join(lines)
-
-
 def convert_solution_text(text: str, sym: str) -> str:
     if proc_defined(text, sym) and re.search(
         rf"\bcall\s+{sym}\b", text, re.I
@@ -334,7 +280,44 @@ def convert_solution_text(text: str, sym: str) -> str:
     stack = main_stack_reserve(inner)
     exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
 
-    student = rewrite_exitprocess_in_body(inner)
+    student = inner
+    exit_m = re.search(
+        r"mov\s+(rcx|rax|ecx|eax)\s*,\s*([^\n;]+)\s*\n\s*call\s+ExitProcess",
+        student,
+        re.I,
+    )
+    if exit_m:
+        reg, val = exit_m.group(1).lower(), exit_m.group(2).strip()
+        val_l = val.lower()
+        if val_l in ("rax", "eax"):
+            ret_setup = "    ret"
+        elif reg in ("rbx", "ebx") or val_l in ("rbx", "ebx"):
+            ret_setup = "    mov     eax, ebx\n    ret"
+        elif reg in ("rcx", "ecx") and val_l not in ("rax", "eax"):
+            if re.match(r"^-?\d+$", val.strip()) or val.strip().endswith("b"):
+                ret_setup = f"    mov     eax, {val}\n    ret"
+            elif re.match(r"^r?(ax|bx|cx|dx|si|di|ip|sp|[0-9]{1,2}b?)$", val_l):
+                ret_setup = f"    mov     eax, {reg32_for_eax(val)}\n    ret"
+            else:
+                ret_setup = "    mov     eax, ecx\n    ret"
+        elif reg in ("rax", "eax"):
+            ret_setup = f"    mov     eax, {val}\n    ret"
+        else:
+            ret_setup = f"    mov     eax, {val}\n    ret"
+        student = re.sub(
+            r"mov\s+(rcx|rax|ecx|eax)\s*,\s*[^\n]+\s*\n\s*call\s+ExitProcess",
+            ret_setup,
+            student,
+            count=1,
+            flags=re.I,
+        )
+    else:
+        student = re.sub(
+            r"(?im)^\s*call\s+ExitProcess\s*$",
+            "    mov     eax, ecx\n    ret",
+            student,
+            count=1,
+        )
 
     student = balance_stack_before_ret(student)
     proc = f"{sym} PROC\n{student}\n{sym} ENDP\n"

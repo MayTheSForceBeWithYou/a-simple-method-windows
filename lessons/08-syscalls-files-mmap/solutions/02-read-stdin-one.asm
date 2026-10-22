@@ -43,8 +43,7 @@ ex_02_read_stdin_one PROC
     
 L_fail:
     ; Exit 0 on failure
-    call ExitProcess
-    mov     eax, 0
+        mov     eax, 0
     add     rsp, 56
     ret
 ex_02_read_stdin_one ENDP

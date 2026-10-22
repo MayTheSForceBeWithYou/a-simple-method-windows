@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_21_sim_real_ratio PROC
     sub rsp, 40
-    call ExitProcess
-    mov     eax, 50
+        mov     eax, 50
     add     rsp, 40
     ret
 ex_21_sim_real_ratio ENDP

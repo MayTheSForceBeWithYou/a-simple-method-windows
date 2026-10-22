@@ -19,8 +19,7 @@ ex_03_cursor_move PROC
     inc QWORD PTR [cursor]
     dec QWORD PTR [cursor]
     
-    mov rcx, [cursor]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_03_cursor_move ENDP

@@ -28,8 +28,7 @@ ex_09_macro_pushregs PROC
     mov rbx, 0
     POP_CALLEE
     
-    call ExitProcess
-    mov     eax, ebx
+        mov     eax, ebx
     add     rsp, 40
     ret
 ex_09_macro_pushregs ENDP

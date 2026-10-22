@@ -23,9 +23,8 @@ ex_18_debug_off_by_one_copy PROC
     call strcpy
     lea rcx, dst
     call strlen_fn
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_18_debug_off_by_one_copy ENDP
 main PROC
     sub     rsp, 40

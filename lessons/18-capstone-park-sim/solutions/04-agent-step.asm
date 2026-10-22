@@ -16,8 +16,7 @@ ax_ QWORD ?
 ex_04_agent_step PROC
     sub rsp, 40
     inc QWORD PTR [ax_]
-    mov rcx, [ax_]
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_agent_step ENDP

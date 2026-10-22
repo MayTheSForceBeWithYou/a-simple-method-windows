@@ -17,9 +17,8 @@ ex_03_astar_h PROC
     mov rbx, 4
     sub rbx, 2
     add rax, rbx
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_03_astar_h ENDP
 main PROC
     sub     rsp, 40

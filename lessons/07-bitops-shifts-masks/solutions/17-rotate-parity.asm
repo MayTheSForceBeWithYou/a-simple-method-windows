@@ -8,8 +8,7 @@ ex_17_rotate_parity PROC
     mov al, 01h
     ror al, 1
     movzx rcx, al
-    call ExitProcess
-    mov     eax, 60
+        mov     eax, 60
     add     rsp, 40
     ret
 ex_17_rotate_parity ENDP

@@ -13,9 +13,8 @@ ex_06_eax_zero_extends PROC
     sub rsp, 40
     mov rax, 0FFFFFFFFFFFFFFFFh
     mov eax, 1
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_06_eax_zero_extends ENDP
 main PROC
     sub     rsp, 40

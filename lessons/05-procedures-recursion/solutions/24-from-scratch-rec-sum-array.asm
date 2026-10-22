@@ -18,9 +18,8 @@ ex_24_from_scratch_rec_sum_array PROC
     lea rcx, arr
     mov rdx, 3
     call rec_sum
-    call ExitProcess
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC
     sub     rsp, 40

@@ -11,8 +11,7 @@ TK_NUM EQU 1
 .code
 ex_01_token_kind PROC
     sub rsp, 40
-    mov rcx, TK_NUM
-    mov     eax, ecx
+        mov     eax, ecx
     add     rsp, 40
     ret
 ex_01_token_kind ENDP

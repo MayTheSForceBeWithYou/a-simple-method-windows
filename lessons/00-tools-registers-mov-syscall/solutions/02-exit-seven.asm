@@ -11,8 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 ex_02_exit_seven PROC
     sub rsp, 40
-    call ExitProcess
-    mov     eax, 7
+        mov     eax, 7
     add     rsp, 40
     ret
 ex_02_exit_seven ENDP
