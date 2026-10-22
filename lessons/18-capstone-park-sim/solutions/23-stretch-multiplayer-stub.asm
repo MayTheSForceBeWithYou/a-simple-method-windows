@@ -15,7 +15,7 @@ tick_id QWORD 0
 ex_23_stretch_multiplayer_stub PROC
 mov QWORD PTR [tick_id], 2
     mov rcx, QWORD PTR [tick_id]
-    mov     eax, QWORD PTR [tick_id]
+    mov     eax, ecx
     ret
 ex_23_stretch_multiplayer_stub ENDP
 main PROC

@@ -18,7 +18,7 @@ mov rax, 120
     mov rax, 100
 clamp_ok:
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_07_peep_happy ENDP
 main PROC

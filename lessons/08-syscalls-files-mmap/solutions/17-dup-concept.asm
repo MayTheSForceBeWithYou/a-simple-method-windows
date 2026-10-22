@@ -34,7 +34,7 @@ ex_17_dup_concept PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_17_dup_concept ENDP
 main PROC

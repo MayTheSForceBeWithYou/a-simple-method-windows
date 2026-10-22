@@ -11,7 +11,7 @@ mov rax, 101100b
     and rax, rbx
     mov rcx, rax
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_11_isolate_lowbit ENDP
 main PROC

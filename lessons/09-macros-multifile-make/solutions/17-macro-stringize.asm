@@ -34,7 +34,7 @@ ex_17_macro_stringize PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_17_macro_stringize ENDP
 main PROC

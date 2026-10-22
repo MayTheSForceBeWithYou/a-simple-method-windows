@@ -22,7 +22,7 @@ mov BYTE PTR [paused], 1
     inc QWORD PTR [updates]
 skip_update:
     mov rcx, [updates]
-    mov     eax, [updates]
+    mov     eax, ecx
     ret
 ex_15_pause_flag ENDP
 main PROC

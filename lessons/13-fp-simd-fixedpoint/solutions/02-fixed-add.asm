@@ -13,7 +13,7 @@ mov eax, (1 SHL 16)+(1 SHL 15)
     add eax, ebx
     shr eax, 16
     mov ecx, eax
-    ; return value already in EAX/RAX
+
     ret
 ex_02_fixed_add ENDP
 main PROC

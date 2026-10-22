@@ -19,7 +19,7 @@ mov rax, 2
     add rax, rbx
     and rax, 255
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_01_pixel_offset ENDP
 main PROC

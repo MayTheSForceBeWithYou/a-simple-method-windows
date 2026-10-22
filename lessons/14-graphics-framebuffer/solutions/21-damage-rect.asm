@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_21_damage_rect PROC
 mov rcx, 16
-    mov     eax, 16
+    mov     eax, ecx
     ret
 ex_21_damage_rect ENDP
 main PROC

@@ -9,7 +9,7 @@ mov al, 01h
     ror al, 1
     movzx rcx, al
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_17_rotate_parity ENDP
 main PROC

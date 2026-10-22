@@ -18,7 +18,7 @@ mov al, 'a'
 not_alpha:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_02_lex_ident ENDP
 main PROC

@@ -14,7 +14,7 @@ mov rax, 5
 else_branch:
     mov rcx, 30
 done:
-    ; return value already in EAX/RAX
+
     ret
 ex_02_if_else ENDP
 main PROC

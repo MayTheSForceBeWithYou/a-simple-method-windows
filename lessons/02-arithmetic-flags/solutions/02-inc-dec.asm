@@ -16,7 +16,7 @@ mov rax, 5
     inc rax
     dec rax
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_02_inc_dec ENDP
 main PROC

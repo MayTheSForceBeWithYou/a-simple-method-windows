@@ -17,7 +17,7 @@ rumble QWORD ?
 ex_23_stretch_haptic_stub PROC
 mov QWORD PTR [rumble], 2
     mov rcx, [rumble]
-    mov     eax, [rumble]
+    mov     eax, ecx
     ret
 ex_23_stretch_haptic_stub ENDP
 main PROC

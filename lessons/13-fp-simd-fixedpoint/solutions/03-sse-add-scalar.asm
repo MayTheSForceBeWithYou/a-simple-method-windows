@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_03_sse_add_scalar PROC
 mov rcx, 5
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_03_sse_add_scalar ENDP
 main PROC

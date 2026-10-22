@@ -9,7 +9,7 @@ mov rax, 0ABCDh
     shr rax, 4
     and rax, 0Fh
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_07_extract_bitfield ENDP
 main PROC

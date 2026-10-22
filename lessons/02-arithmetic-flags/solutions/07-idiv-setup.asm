@@ -16,7 +16,7 @@ mov rax, 84
     mov rbx, 2
     idiv rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_07_idiv_setup ENDP
 main PROC

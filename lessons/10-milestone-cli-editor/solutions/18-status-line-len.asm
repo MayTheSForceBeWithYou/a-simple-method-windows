@@ -16,7 +16,7 @@ len QWORD ?
 ex_18_status_line_len PROC
 mov QWORD PTR [len], 12
     mov rcx, [len]
-    mov     eax, [len]
+    mov     eax, ecx
     ret
 ex_18_status_line_len ENDP
 main PROC

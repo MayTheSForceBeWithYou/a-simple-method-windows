@@ -22,7 +22,7 @@ check_hi:
     mov rax, 9
 done_clip:
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_15_clip_rect ENDP
 main PROC

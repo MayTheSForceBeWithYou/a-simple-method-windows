@@ -15,7 +15,7 @@ mov rax, -5
 less_than:
     mov rcx, 1
 done:
-    ; return value already in EAX/RAX
+
     ret
 ex_05_signed_cmp ENDP
 main PROC

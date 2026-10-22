@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_21_sprite_batch_count PROC
 mov rcx, 8
-    mov     eax, 8
+    mov     eax, ecx
     ret
 ex_21_sprite_batch_count ENDP
 main PROC

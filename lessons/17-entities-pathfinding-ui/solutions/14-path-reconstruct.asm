@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_14_path_reconstruct PROC
 mov rcx, 4
-    mov     eax, 4
+    mov     eax, ecx
     ret
 ex_14_path_reconstruct ENDP
 main PROC

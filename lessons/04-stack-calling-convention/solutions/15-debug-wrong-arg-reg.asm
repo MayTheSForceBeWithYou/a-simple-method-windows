@@ -11,7 +11,7 @@ mov rcx, 2
     mov rdx, 40
     call add2
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_15_debug_wrong_arg_reg ENDP
 main PROC

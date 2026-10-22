@@ -21,7 +21,7 @@ mov QWORD PTR [len], 2
     
 L_o:
     mov rcx, [len]
-    mov     eax, [len]
+    mov     eax, ecx
     ret
 ex_04_delete_backspace ENDP
 main PROC

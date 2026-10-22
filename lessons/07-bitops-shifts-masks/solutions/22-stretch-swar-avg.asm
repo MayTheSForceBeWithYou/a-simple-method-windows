@@ -13,7 +13,7 @@ mov eax, 200
     shr eax, 1
     add eax, ecx
     movzx rcx, ax
-    ; return value already in EAX/RAX
+
     ret
 ex_22_stretch_swar_avg ENDP
 main PROC

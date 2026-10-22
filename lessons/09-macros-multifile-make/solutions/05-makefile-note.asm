@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_05_makefile_note PROC
 mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_05_makefile_note ENDP
 main PROC

@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_20_dot3 PROC
 mov rcx, 1*4+2*5+3*6
-    mov     eax, 1*4+2*5+3*6
+    mov     eax, ecx
     ret
 ex_20_dot3 ENDP
 main PROC

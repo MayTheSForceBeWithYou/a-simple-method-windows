@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_13_sweep_hit_t PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_13_sweep_hit_t ENDP
 main PROC

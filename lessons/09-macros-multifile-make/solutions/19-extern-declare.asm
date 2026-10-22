@@ -15,7 +15,7 @@ EXTERN ExitProcess:PROC
 ex_19_extern_declare PROC
 call foo
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_19_extern_declare ENDP
 main PROC

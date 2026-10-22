@@ -42,7 +42,7 @@ ex_10_macro_syscall PROC
     ; Exit 0
     mov rcx, 0
     CALL_FUNC ExitProcess
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_10_macro_syscall ENDP
 main PROC

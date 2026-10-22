@@ -14,7 +14,7 @@ mov rax, 3
     imul rbx, rbx
     add rax, rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_14_vec2_length2 ENDP
 main PROC

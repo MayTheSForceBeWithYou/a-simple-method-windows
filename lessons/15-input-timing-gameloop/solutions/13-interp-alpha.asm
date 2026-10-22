@@ -18,7 +18,7 @@ mov rax, 8
     mov rbx, 16
     div rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_13_interp_alpha ENDP
 main PROC

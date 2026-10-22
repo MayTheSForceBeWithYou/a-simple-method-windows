@@ -25,7 +25,7 @@ rev_loop:
     dec r9d
     jnz rev_loop
     mov ecx, r8d
-    mov     eax, r8d
+    mov     eax, ecx
     ret
 ex_23_stretch_bit_reverse8 ENDP
 main PROC

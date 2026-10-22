@@ -19,7 +19,7 @@ mov rax, 1
     or rax, rbx
     or rax, 3
     movzx rcx, al
-    ; return value already in EAX/RAX
+
     ret
 ex_02_pack_rgb ENDP
 main PROC

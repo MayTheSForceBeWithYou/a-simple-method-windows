@@ -10,7 +10,7 @@ mov rax, 0Ah
     or rax, 0Bh
     mov rcx, rax
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_13_shl_shl_combine ENDP
 main PROC

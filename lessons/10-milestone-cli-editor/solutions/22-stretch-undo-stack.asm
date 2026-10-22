@@ -35,7 +35,7 @@ mov QWORD PTR [usp], 0
     mov rcx, [usp]
     dec rcx
     mov rcx, [rdx+rcx*8]
-    mov     eax, [rdx+rcx*8]
+    mov     eax, ecx
     ret
 ex_22_stretch_undo_stack ENDP
 main PROC

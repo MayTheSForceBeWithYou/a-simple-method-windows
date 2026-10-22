@@ -17,7 +17,7 @@ mov rax, 5
     or rax, rbx
     mov rcx, rax
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_15_bitfield_pack ENDP
 main PROC

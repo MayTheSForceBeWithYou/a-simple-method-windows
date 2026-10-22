@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_02_place_track PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_02_place_track ENDP
 main PROC

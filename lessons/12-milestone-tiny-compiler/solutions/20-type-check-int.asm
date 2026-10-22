@@ -11,7 +11,7 @@ TY_INT EQU 1
 
 ex_20_type_check_int PROC
 mov rcx, TY_INT
-    mov     eax, TY_INT
+    mov     eax, ecx
     ret
 ex_20_type_check_int ENDP
 main PROC

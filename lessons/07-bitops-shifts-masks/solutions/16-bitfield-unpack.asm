@@ -10,7 +10,7 @@ mov rax, 01010101b
     and rax, 7
     mov rcx, rax
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_16_bitfield_unpack ENDP
 main PROC

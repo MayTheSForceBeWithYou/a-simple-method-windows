@@ -17,7 +17,7 @@ mov QWORD PTR [bump], 1
     and rax, NOT 7
     mov QWORD PTR [bump], rax
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_14_arena_align ENDP
 main PROC

@@ -14,7 +14,7 @@ lea rcx, s
     mov rdx, 'l'
     call strchr_idx
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_11_strchr ENDP
 main PROC

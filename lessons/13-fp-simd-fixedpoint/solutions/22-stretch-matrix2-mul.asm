@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_matrix2_mul PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_22_stretch_matrix2_mul ENDP
 main PROC

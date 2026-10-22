@@ -19,7 +19,7 @@ lea rcx, dst
     lea rcx, dst
     call strlen_fn
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_02_strcpy ENDP
 main PROC

@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_pratt_stub PROC
 mov rcx, 20
-    mov     eax, 20
+    mov     eax, ecx
     ret
 ex_22_stretch_pratt_stub ENDP
 main PROC

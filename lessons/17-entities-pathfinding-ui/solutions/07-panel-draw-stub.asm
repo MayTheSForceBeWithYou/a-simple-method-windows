@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_07_panel_draw_stub PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_07_panel_draw_stub ENDP
 main PROC

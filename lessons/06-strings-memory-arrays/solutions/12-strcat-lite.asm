@@ -17,7 +17,7 @@ lea rcx, dst
     lea rcx, dst
     call strlen_fn
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_12_strcat_lite ENDP
 main PROC

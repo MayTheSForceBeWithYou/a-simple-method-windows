@@ -25,7 +25,7 @@ mov QWORD PTR [sp_], 0
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
     mov rcx, QWORD PTR [r11+rcx*8]
-    mov     eax, QWORD PTR [r11+rcx*8]
+    mov     eax, ecx
     ret
 ex_07_stack_ds ENDP
 main PROC

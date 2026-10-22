@@ -37,7 +37,7 @@ ex_07_hello_world PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_07_hello_world ENDP
 main PROC

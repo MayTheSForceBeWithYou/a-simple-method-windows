@@ -15,7 +15,7 @@ lea rcx, arr
     mov r8, 3
     call partition
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_22_stretch_quicksort_partition ENDP
 main PROC

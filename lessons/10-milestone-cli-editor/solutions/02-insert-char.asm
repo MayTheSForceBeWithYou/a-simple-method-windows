@@ -22,7 +22,7 @@ mov QWORD PTR [len], 0
     inc QWORD PTR [len]
     
     mov rcx, [len]
-    mov     eax, [len]
+    mov     eax, ecx
     ret
 ex_02_insert_char ENDP
 main PROC

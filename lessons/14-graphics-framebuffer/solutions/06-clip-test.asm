@@ -20,7 +20,7 @@ mov rax, 5
 in_range:
     xor rcx, rcx
 exit_proc:
-    ; return value already in EAX/RAX
+
     ret
 ex_06_clip_test ENDP
 main PROC

@@ -22,7 +22,7 @@ L_l:
     loop L_l
     
     mov rcx, [cur]
-    mov     eax, [cur]
+    mov     eax, ecx
     ret
 ex_17_utf8_ascii_cursor ENDP
 main PROC

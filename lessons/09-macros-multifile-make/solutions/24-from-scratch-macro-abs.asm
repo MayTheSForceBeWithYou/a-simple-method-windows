@@ -22,7 +22,7 @@ ENDM
 ex_24_from_scratch_macro_abs PROC
 mov rcx, -9
     ABS rcx
-    mov     eax, 9
+    mov     eax, ecx
     ret
 ex_24_from_scratch_macro_abs ENDP
 main PROC

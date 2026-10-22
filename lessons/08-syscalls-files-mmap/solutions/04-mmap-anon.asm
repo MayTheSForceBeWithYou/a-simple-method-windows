@@ -33,7 +33,7 @@ ex_04_mmap_anon PROC
 L_fail:
     ; Exit 2 on allocation failure
     mov rcx, 2
-    mov     eax, [rbx]
+    mov     eax, ecx
     ret
 ex_04_mmap_anon ENDP
 main PROC

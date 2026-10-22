@@ -20,7 +20,7 @@ mov QWORD PTR [gap_s], 0
     
     mov rcx, [gap_e]
     sub rcx, [gap_s]
-    mov     eax, 8
+    mov     eax, ecx
     ret
 ex_08_from_scratch_gap_start ENDP
 main PROC

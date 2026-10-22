@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_06_path_step PROC
 mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_06_path_step ENDP
 main PROC

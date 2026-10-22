@@ -19,7 +19,7 @@ mov rcx, 20
     call helper_add
     
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_14_multifile_sim_globals ENDP
 main PROC

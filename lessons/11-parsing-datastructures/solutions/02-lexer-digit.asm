@@ -18,7 +18,7 @@ mov al, '7'
 not_digit:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_02_lexer_digit ENDP
 main PROC

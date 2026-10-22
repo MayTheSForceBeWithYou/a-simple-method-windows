@@ -39,7 +39,7 @@ L_l:
 L_fin:
     dec QWORD PTR [len]
     mov rcx, [len]
-    ; return value already in EAX/RAX
+
     ret
 ex_11_delete_forward ENDP
 main PROC

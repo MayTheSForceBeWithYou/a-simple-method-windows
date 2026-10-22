@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_08_from_scratch_guest_target PROC
 mov rcx, 7
-    mov     eax, 7
+    mov     eax, ecx
     ret
 ex_08_from_scratch_guest_target ENDP
 main PROC

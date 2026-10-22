@@ -28,7 +28,7 @@ L_z:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_14_brk_stub ENDP
 main PROC

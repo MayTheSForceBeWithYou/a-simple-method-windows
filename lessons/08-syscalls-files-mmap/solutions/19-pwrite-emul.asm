@@ -68,7 +68,7 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_19_pwrite_emul ENDP
 main PROC

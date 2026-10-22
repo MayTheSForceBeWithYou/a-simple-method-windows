@@ -20,7 +20,7 @@ mov al, 'W'
 not_match:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_01_keymap ENDP
 main PROC

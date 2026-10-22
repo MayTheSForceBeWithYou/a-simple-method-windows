@@ -16,7 +16,7 @@ lea rcx, a
     mov r8, 3
     call memcmp_fn
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_03_memcmp ENDP
 main PROC

@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 ex_02_aabb_overlap PROC
 ; a[0,0,2,2] b[1,1,3,3]
     mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_02_aabb_overlap ENDP
 main PROC

@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_flow_field PROC
 mov rcx, 4
-    mov     eax, 4
+    mov     eax, ecx
     ret
 ex_22_stretch_flow_field ENDP
 main PROC

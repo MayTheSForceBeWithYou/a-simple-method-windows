@@ -20,7 +20,7 @@ cmp QWORD PTR [ver], 1
 ver_bad:
     xor ecx, ecx
 ver_done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_18_load_version_check ENDP
 main PROC

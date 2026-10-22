@@ -12,7 +12,7 @@ TK_NUM EQU 1
 
 ex_01_token_kind PROC
 mov rcx, TK_NUM
-    mov     eax, TK_NUM
+    mov     eax, ecx
     ret
 ex_01_token_kind ENDP
 main PROC

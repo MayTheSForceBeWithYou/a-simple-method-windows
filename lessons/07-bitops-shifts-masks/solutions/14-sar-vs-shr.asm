@@ -12,7 +12,7 @@ mov rax, -4
     cmp rax, -2
     sete cl
     movzx rcx, cl
-    ; return value already in EAX/RAX
+
     ret
 ex_14_sar_vs_shr ENDP
 main PROC

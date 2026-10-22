@@ -17,7 +17,7 @@ mov rax, 50
     mov rbx, 16
     div rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_03_fixed_step ENDP
 main PROC

@@ -15,7 +15,7 @@ ex_08_from_scratch_token_buf PROC
 mov BYTE PTR [lex], 'x'
     mov QWORD PTR [n], 1
     mov rcx, QWORD PTR [n]
-    mov     eax, QWORD PTR [n]
+    mov     eax, ecx
     ret
 ex_08_from_scratch_token_buf ENDP
 main PROC

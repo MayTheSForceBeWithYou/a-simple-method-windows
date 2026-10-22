@@ -17,7 +17,7 @@ ENDIF
 
 ex_04_include_guard_sim PROC
 mov rcx, ANSWER
-    mov     eax, ANSWER
+    mov     eax, ecx
     ret
 ex_04_include_guard_sim ENDP
 main PROC

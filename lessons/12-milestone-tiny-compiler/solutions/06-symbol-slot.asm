@@ -13,7 +13,7 @@ slots QWORD 4 DUP(?)
 ex_06_symbol_slot PROC
 mov QWORD PTR [slots], 42
     mov rcx, QWORD PTR [slots]
-    mov     eax, QWORD PTR [slots]
+    mov     eax, ecx
     ret
 ex_06_symbol_slot ENDP
 main PROC

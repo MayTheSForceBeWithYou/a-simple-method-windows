@@ -16,7 +16,7 @@ len QWORD ?
 ex_07_load_stub PROC
 mov QWORD PTR [len], 3
     mov rcx, [len]
-    mov     eax, [len]
+    mov     eax, ecx
     ret
 ex_07_load_stub ENDP
 main PROC

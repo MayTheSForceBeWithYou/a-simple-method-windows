@@ -12,7 +12,7 @@ mov rax, 1
     add rax, 2
     imul rax, 3
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_08_from_scratch_const_fold ENDP
 main PROC

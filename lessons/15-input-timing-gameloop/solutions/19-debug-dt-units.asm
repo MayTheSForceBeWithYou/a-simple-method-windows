@@ -20,7 +20,7 @@ mov rax, 16000
     mov rbx, 16
     div rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_19_debug_dt_units ENDP
 main PROC

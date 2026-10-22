@@ -18,7 +18,7 @@ cmp BYTE PTR [kw], 'l'
 not_l:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_03_parse_let ENDP
 main PROC

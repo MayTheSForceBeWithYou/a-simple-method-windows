@@ -16,7 +16,7 @@ lea rcx, a
     mov r8, 2
     call strncmp_fn
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_10_strncmp ENDP
 main PROC

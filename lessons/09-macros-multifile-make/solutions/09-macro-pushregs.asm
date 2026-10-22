@@ -28,7 +28,7 @@ mov rbx, 5
     POP_CALLEE
     
     mov rcx, rbx
-    mov     eax, rbx
+    mov     eax, ecx
     ret
 ex_09_macro_pushregs ENDP
 main PROC

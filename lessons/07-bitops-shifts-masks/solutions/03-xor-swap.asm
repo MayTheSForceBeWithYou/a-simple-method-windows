@@ -11,7 +11,7 @@ mov rax, 1
     xor rbx, rax
     xor rax, rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_03_xor_swap ENDP
 main PROC

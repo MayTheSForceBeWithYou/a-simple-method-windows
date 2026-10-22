@@ -24,7 +24,7 @@ lea rax, a
 not_equal:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_21_intern_string ENDP
 main PROC

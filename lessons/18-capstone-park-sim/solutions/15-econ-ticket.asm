@@ -15,7 +15,7 @@ cash QWORD 0
 ex_15_econ_ticket PROC
 add QWORD PTR [cash], 15
     mov rcx, QWORD PTR [cash]
-    mov     eax, QWORD PTR [cash]
+    mov     eax, ecx
     ret
 ex_15_econ_ticket ENDP
 main PROC

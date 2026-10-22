@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_15_ui_button_press PROC
 mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_15_ui_button_press ENDP
 main PROC

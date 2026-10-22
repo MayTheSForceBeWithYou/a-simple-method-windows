@@ -21,7 +21,7 @@ mov rax, 100
 visible:
     xor rcx, rcx
 exit_proc:
-    ; return value already in EAX/RAX
+
     ret
 ex_15_camera_cull ENDP
 main PROC

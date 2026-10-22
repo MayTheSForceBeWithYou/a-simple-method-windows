@@ -20,7 +20,7 @@ mov rax, 1
     add rax, 1
     lea r11, [map]
     movzx rcx, BYTE PTR [r11+rax]
-    ; return value already in EAX/RAX
+
     ret
 ex_09_tile_at ENDP
 main PROC

@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_12_bfs_queue PROC
 mov rcx, 5
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_12_bfs_queue ENDP
 main PROC

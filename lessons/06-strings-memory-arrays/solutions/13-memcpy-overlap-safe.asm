@@ -34,7 +34,7 @@ sum_loop:
     jmp sum_loop
 sum_done:
     mov rcx, r9
-    mov     eax, r9
+    mov     eax, ecx
     ret
 ex_13_memcpy_overlap_safe ENDP
 main PROC

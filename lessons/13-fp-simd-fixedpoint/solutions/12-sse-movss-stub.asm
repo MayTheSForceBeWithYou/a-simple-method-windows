@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_12_sse_movss_stub PROC
 mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_12_sse_movss_stub ENDP
 main PROC

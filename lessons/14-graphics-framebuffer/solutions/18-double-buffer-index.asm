@@ -19,7 +19,7 @@ mov QWORD PTR [idx], 0
     xor QWORD PTR [idx], 1
     xor QWORD PTR [idx], 1
     mov rcx, [idx]
-    mov     eax, [idx]
+    mov     eax, ecx
     ret
 ex_18_double_buffer_index ENDP
 main PROC

@@ -21,7 +21,7 @@ mov QWORD PTR [focus], 2
     div r8
     mov QWORD PTR [focus], rdx
     mov rcx, rdx
-    ; return value already in EAX/RAX
+
     ret
 ex_16_ui_focus ENDP
 main PROC

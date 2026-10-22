@@ -15,7 +15,7 @@ modal_depth QWORD 0
 ex_23_stretch_ui_modal PROC
 inc QWORD PTR [modal_depth]
     mov rcx, QWORD PTR [modal_depth]
-    mov     eax, QWORD PTR [modal_depth]
+    mov     eax, ecx
     ret
 ex_23_stretch_ui_modal ENDP
 main PROC

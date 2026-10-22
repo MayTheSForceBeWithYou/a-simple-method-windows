@@ -11,7 +11,7 @@ mov rax, 7
     xor rax, rbx
     mov rcx, rax
     mov rax,60
-    ; return value already in EAX/RAX
+
     ret
 ex_21_gray_code ENDP
 main PROC

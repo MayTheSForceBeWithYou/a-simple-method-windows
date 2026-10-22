@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 ex_06_extern_sim_onefile PROC
 call helper
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_06_extern_sim_onefile ENDP
 main PROC

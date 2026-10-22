@@ -14,7 +14,7 @@ ex_03_neg PROC
 mov rcx, 5
     neg rcx
     add rcx, 10
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_03_neg ENDP
 main PROC

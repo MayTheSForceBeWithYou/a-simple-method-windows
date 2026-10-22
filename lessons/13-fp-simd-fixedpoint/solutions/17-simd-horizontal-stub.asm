@@ -16,7 +16,7 @@ mov eax, DWORD PTR [v]
     add eax, DWORD PTR [v+8]
     add eax, DWORD PTR [v+12]
     mov ecx, eax
-    ; return value already in EAX/RAX
+
     ret
 ex_17_simd_horizontal_stub ENDP
 main PROC

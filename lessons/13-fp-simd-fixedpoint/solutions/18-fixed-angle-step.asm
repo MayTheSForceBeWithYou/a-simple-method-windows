@@ -17,7 +17,7 @@ loop_wrap:
     jmp loop_wrap
 done_wrap:
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_18_fixed_angle_step ENDP
 main PROC

@@ -17,7 +17,7 @@ mov QWORD PTR [rain], 3
     inc QWORD PTR [rain]
     and QWORD PTR [rain], 3
     mov rcx, QWORD PTR [rain]
-    mov     eax, QWORD PTR [rain]
+    mov     eax, ecx
     ret
 ex_20_weather_tick ENDP
 main PROC

@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_17_save_header PROC
 mov rcx, 8
-    mov     eax, 8
+    mov     eax, ecx
     ret
 ex_17_save_header ENDP
 main PROC

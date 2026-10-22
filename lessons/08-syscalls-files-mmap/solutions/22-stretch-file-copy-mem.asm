@@ -44,7 +44,7 @@ ex_22_stretch_file_copy_mem PROC
     
     ; Exit with checksum
     mov rcx, rdi
-    mov     eax, rdi
+    mov     eax, ecx
     ret
 ex_22_stretch_file_copy_mem ENDP
 main PROC

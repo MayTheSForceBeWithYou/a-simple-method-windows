@@ -18,7 +18,7 @@ mov eax, 2
     shr rax, 16
     shr rax, 16
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_19_debug_q_shift ENDP
 main PROC

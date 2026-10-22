@@ -27,7 +27,7 @@ mov QWORD PTR [head], 0
     lea r11, [q]
     mov rcx, QWORD PTR [r11+rcx*8]
     inc QWORD PTR [head]
-    mov     eax, 7
+    mov     eax, ecx
     ret
 ex_20_queue_ring ENDP
 main PROC

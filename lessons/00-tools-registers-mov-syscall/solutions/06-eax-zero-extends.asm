@@ -14,7 +14,7 @@ ex_06_eax_zero_extends PROC
 mov rax, 0FFFFFFFFFFFFFFFFh
     mov eax, 1
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_06_eax_zero_extends ENDP
 main PROC

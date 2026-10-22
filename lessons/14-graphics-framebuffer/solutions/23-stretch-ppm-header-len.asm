@@ -16,7 +16,7 @@ h BYTE "P6",10
 
 ex_23_stretch_ppm_header_len PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_23_stretch_ppm_header_len ENDP
 main PROC

@@ -42,7 +42,7 @@ ex_02_read_stdin_one PROC
 L_fail:
     ; Exit 0 on failure
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_02_read_stdin_one ENDP
 main PROC

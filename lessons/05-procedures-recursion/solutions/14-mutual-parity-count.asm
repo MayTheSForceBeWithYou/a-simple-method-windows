@@ -10,7 +10,7 @@ ex_14_mutual_parity_count PROC
 mov rcx, 6
     call is_even
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_14_mutual_parity_count ENDP
 main PROC

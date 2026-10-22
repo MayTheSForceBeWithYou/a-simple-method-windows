@@ -19,7 +19,7 @@ mov QWORD PTR [cursor], 0
     dec QWORD PTR [cursor]
     
     mov rcx, [cursor]
-    mov     eax, [cursor]
+    mov     eax, ecx
     ret
 ex_03_cursor_move ENDP
 main PROC

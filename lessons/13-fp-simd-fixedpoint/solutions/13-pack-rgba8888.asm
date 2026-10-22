@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 ex_13_pack_rgba8888 PROC
 mov eax, 255
     mov ecx, eax
-    ; return value already in EAX/RAX
+
     ret
 ex_13_pack_rgba8888 ENDP
 main PROC

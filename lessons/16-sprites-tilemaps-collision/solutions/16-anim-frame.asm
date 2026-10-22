@@ -20,7 +20,7 @@ mov rax, 10
     mov rbx, 3
     div rbx
     mov rcx, rdx
-    ; return value already in EAX/RAX
+
     ret
 ex_16_anim_frame ENDP
 main PROC

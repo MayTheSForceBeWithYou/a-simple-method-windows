@@ -24,7 +24,7 @@ ex_18_debug_off_by_one_copy PROC
     lea rcx, dst
     call strlen_fn
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_18_debug_off_by_one_copy ENDP
 main PROC

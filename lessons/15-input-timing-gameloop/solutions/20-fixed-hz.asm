@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_20_fixed_hz PROC
 mov rcx, 60
-    mov     eax, 60
+    mov     eax, ecx
     ret
 ex_20_fixed_hz ENDP
 main PROC

@@ -22,7 +22,7 @@ mov rax, 1
     mov BYTE PTR [r11+rax], 9
     lea r11, [fb]
     movzx rcx, BYTE PTR [r11+rax]
-    ; return value already in EAX/RAX
+
     ret
 ex_10_put_pixel ENDP
 main PROC

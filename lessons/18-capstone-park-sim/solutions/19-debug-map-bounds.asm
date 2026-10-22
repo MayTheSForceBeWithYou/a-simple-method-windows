@@ -18,7 +18,7 @@ mov rax, 99
     dec rax
 bounds_ok:
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_19_debug_map_bounds ENDP
 main PROC

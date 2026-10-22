@@ -24,7 +24,7 @@ L_n:
     xor rcx, rcx
     
 L_o:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_20_load_validate_magic ENDP
 main PROC

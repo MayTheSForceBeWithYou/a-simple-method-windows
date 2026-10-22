@@ -28,7 +28,7 @@ val_ok:
 val_bad:
     xor ecx, ecx
 val_done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_23_stretch_utf8_ascii_validate ENDP
 main PROC

@@ -17,7 +17,7 @@ mov r10, 5
     pop r10
     add rax, r10
     mov rcx, rax
-    mov     eax, rax
+
     ret
 ex_08_caller_saved_reload ENDP
 main PROC

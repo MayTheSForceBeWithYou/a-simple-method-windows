@@ -16,7 +16,7 @@ x QWORD 99
 ex_04_mov_vs_lea PROC
 lea rbx, [x]        ; rbx = address of x
     mov rcx, [rbx]      ; rcx = contents at address in rbx (99)
-    mov     eax, 99
+    mov     eax, ecx
     ret
 ex_04_mov_vs_lea ENDP
 main PROC

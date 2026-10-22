@@ -38,7 +38,7 @@ L_bad:
     mov rcx, 1
     
 L_out:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_03_open_fail ENDP
 main PROC

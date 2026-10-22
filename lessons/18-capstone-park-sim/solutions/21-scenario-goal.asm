@@ -21,7 +21,7 @@ mov QWORD PTR [guests], 100
 goal_no:
     xor ecx, ecx
 goal_done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_21_scenario_goal ENDP
 main PROC

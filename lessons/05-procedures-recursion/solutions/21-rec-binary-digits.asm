@@ -10,7 +10,7 @@ ex_21_rec_binary_digits PROC
 mov rcx, 1101b
     call poprec
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_21_rec_binary_digits ENDP
 main PROC

@@ -29,7 +29,7 @@ ex_05_errno_neg PROC
     ; GetLastError is the Windows-native error; Linux used -errno.
     call GetLastError
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_05_errno_neg ENDP
 main PROC

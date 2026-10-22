@@ -20,7 +20,7 @@ mov al, 5
     mov rcx, 4
     rep stosb
     movzx rcx, BYTE PTR [fb]
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_09_clear_color ENDP
 main PROC

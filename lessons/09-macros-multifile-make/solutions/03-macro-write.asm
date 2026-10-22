@@ -43,7 +43,7 @@ write_stdout m, 2
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_03_macro_write ENDP
 main PROC

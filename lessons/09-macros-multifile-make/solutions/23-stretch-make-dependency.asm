@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 
 ex_23_stretch_make_dependency PROC
 mov rcx, 3
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_23_stretch_make_dependency ENDP
 main PROC

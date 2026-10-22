@@ -14,7 +14,7 @@ ex_03_list_node PROC
 mov QWORD PTR [node], 9
     mov QWORD PTR [node+8], 0
     mov rcx, QWORD PTR [node]
-    mov     eax, QWORD PTR [node]
+    mov     eax, ecx
     ret
 ex_03_list_node ENDP
 main PROC

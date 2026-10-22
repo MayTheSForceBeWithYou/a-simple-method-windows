@@ -23,7 +23,7 @@ mov QWORD PTR [held], 3
 not_fire:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_16_repeat_delay ENDP
 main PROC

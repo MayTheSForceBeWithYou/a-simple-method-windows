@@ -16,7 +16,7 @@ mov rax, 5
     cmp rax, rbx
     sete al
     movzx rcx, al
-    ; return value already in EAX/RAX
+
     ret
 ex_09_cmp_sete ENDP
 main PROC

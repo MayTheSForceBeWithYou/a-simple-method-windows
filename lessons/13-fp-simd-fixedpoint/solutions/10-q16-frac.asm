@@ -13,7 +13,7 @@ mov eax, 1
     add eax, eax
     shr eax, 16
     mov ecx, eax
-    ; return value already in EAX/RAX
+
     ret
 ex_10_q16_frac ENDP
 main PROC

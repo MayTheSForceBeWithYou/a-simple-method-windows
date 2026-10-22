@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 
 ex_02_exit_seven PROC
 mov rcx, 7
-    mov     eax, 7
+    mov     eax, ecx
     ret
 ex_02_exit_seven ENDP
 main PROC

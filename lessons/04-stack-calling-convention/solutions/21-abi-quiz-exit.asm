@@ -18,7 +18,7 @@ ex_21_abi_quiz_exit PROC
     mov r9, 4
     call identity4
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_21_abi_quiz_exit ENDP
 main PROC

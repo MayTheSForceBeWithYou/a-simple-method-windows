@@ -35,7 +35,7 @@ ex_01_write_only PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_01_write_only ENDP
 main PROC

@@ -34,7 +34,7 @@ ex_13_render_viewport PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_13_render_viewport ENDP
 main PROC

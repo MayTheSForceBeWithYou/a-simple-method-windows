@@ -16,7 +16,7 @@ mov rax, 100000
     mul rbx
     mov rcx, rax
     and rcx, 255
-    ; return value already in EAX/RAX
+
     ret
 ex_06_mul_unsigned ENDP
 main PROC

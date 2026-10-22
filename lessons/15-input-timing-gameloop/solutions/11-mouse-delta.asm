@@ -17,7 +17,7 @@ mov rax, 5
     neg rbx
     add rax, rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_11_mouse_delta ENDP
 main PROC

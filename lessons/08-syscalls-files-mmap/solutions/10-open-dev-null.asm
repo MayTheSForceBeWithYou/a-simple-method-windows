@@ -43,7 +43,7 @@ L_e:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_10_open_dev_null ENDP
 main PROC

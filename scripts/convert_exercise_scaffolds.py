@@ -232,24 +232,24 @@ def convert_solution_text(text: str, sym: str) -> str:
     if not body:
         body = "    ; student solution"
 
-    tail = f"    mov     eax, {exit_val}"
-    if re.search(r"\bmov\s+eax\s*,", body, re.I) or re.search(
-        r"\bmov\s+rax\s*,", body, re.I
+    if re.search(r"\b(add|mov)\s+rax\b", body, re.I) or re.search(
+        r"\bmov\s+eax\s*,", body, re.I
     ):
-        tail = "    ; return value already in EAX/RAX"
-    elif re.search(r"\bmov\s+ecx\s*,", body, re.I) or re.search(
-        r"\bmov\s+rcx\s*,", body, re.I
+        tail = ""
+    elif re.search(r"\bmov\s+rcx\s*,", body, re.I) or re.search(
+        r"\bmov\s+ecx\s*,", body, re.I
     ):
-        if exit_val in body:
-            tail = f"    mov     eax, {exit_val}"
-        else:
-            tail = "    mov     eax, ecx"
+        tail = "    mov     eax, ecx"
+    elif re.search(r"\bmov\s+rbx\b", body, re.I):
+        tail = "    mov     eax, ebx"
+    else:
+        tail = f"    mov     eax, {exit_val}"
 
+    tail_line = f"{tail}\n" if tail else ""
     proc = f"""
 {sym} PROC
 {body}
-{tail}
-    ret
+{tail_line}    ret
 {sym} ENDP
 """
     new_main = f"""main PROC

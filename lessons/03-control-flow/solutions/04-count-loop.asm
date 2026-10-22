@@ -16,7 +16,7 @@ loop_start:
     jmp loop_start
 loop_done:
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_04_count_loop ENDP
 main PROC

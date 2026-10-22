@@ -11,7 +11,7 @@ mov rcx, 3
     mov rdx, 5
     call cmp_i64
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_19_compare_procs ENDP
 main PROC

@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_11_sprite_layer PROC
 mov rcx, 2
-    mov     eax, 2
+    mov     eax, ecx
     ret
 ex_11_sprite_layer ENDP
 main PROC

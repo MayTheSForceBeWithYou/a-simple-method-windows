@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 
 ex_06_save_stub PROC
 mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_06_save_stub ENDP
 main PROC

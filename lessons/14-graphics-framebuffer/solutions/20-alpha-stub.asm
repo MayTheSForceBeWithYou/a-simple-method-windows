@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_20_alpha_stub PROC
 mov rcx, 7
-    mov     eax, 7
+    mov     eax, ecx
     ret
 ex_20_alpha_stub ENDP
 main PROC

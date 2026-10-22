@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_04_ui_hit PROC
 mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_04_ui_hit ENDP
 main PROC

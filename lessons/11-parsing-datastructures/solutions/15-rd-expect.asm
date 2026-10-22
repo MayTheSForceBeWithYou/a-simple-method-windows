@@ -18,7 +18,7 @@ cmp BYTE PTR [s], '('
 not_found:
     xor rcx, rcx
 done:
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_15_rd_expect ENDP
 main PROC

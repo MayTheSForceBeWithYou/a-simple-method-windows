@@ -16,7 +16,7 @@ mov rax, 100
     mov rbx, 60
     sub rax, rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_17_clock_diff ENDP
 main PROC

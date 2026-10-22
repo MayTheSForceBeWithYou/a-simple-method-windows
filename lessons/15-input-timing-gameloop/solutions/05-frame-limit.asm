@@ -22,7 +22,7 @@ mov rax, 6
 nopad:
     xor rcx, rcx
 exit_proc:
-    ; return value already in EAX/RAX
+
     ret
 ex_05_frame_limit ENDP
 main PROC

@@ -10,7 +10,7 @@ EXTERN ExitProcess:PROC
 ex_18_call_codegen PROC
 call f
     mov rcx, rax
-    mov     eax, rax
+    mov     eax, ecx
     ret
 ex_18_call_codegen ENDP
 main PROC

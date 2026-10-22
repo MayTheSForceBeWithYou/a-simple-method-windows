@@ -15,7 +15,7 @@ mov rax, 10
 equal:
     mov rcx, 1
 done:
-    ; return value already in EAX/RAX
+
     ret
 ex_01_cmp_je ENDP
 main PROC

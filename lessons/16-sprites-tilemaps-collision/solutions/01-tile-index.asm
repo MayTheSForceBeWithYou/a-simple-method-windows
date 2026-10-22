@@ -16,7 +16,7 @@ mov rax, 2
     imul rax, 10
     add rax, 3
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_01_tile_index ENDP
 main PROC

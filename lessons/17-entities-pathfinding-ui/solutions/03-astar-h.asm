@@ -18,7 +18,7 @@ mov rax, 3
     sub rbx, 2
     add rax, rbx
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_03_astar_h ENDP
 main PROC

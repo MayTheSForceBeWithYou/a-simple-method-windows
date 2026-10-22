@@ -33,7 +33,7 @@ ex_12_mmap_write_read PROC
 L_f:
     ; Exit 2 on allocation failure
     mov rcx, 2
-    mov     eax, 2
+    mov     eax, ecx
     ret
 ex_12_mmap_write_read ENDP
 main PROC

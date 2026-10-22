@@ -25,7 +25,7 @@ mov rcx, [t]
     lea r11, [q]
     mov rcx, [r11+rcx*8]
     inc QWORD PTR [h]
-    mov     eax, 9
+    mov     eax, ecx
     ret
 ex_18_input_queue ENDP
 main PROC

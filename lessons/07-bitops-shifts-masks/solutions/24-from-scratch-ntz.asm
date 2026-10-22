@@ -16,7 +16,7 @@ loop_ntz:
     inc rcx
     jmp loop_ntz
 done_ntz:
-    ; return value already in EAX/RAX
+
     ret
 ex_24_from_scratch_ntz ENDP
 main PROC

@@ -16,7 +16,7 @@ mov rax, 20
     mov rbx, 6
     div rbx
     mov rcx, rdx
-    ; return value already in EAX/RAX
+
     ret
 ex_08_div_remainder ENDP
 main PROC

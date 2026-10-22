@@ -23,7 +23,7 @@ mov eax, 0
 not_rising:
     xor rcx, rcx
 exit_proc:
-    ; return value already in EAX/RAX
+
     ret
 ex_04_edge_trigger ENDP
 main PROC

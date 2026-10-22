@@ -16,7 +16,7 @@ quit QWORD 1
 
 ex_06_quit_flag PROC
 mov rcx, [quit]
-    mov     eax, [quit]
+    mov     eax, ecx
     ret
 ex_06_quit_flag ENDP
 main PROC

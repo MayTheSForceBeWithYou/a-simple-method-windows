@@ -14,7 +14,7 @@ lea rcx, arr
     mov rdx, 4
     call rev_array
     mov rcx, arr
-    mov     eax, arr
+    mov     eax, ecx
     ret
 ex_05_array_reverse ENDP
 main PROC

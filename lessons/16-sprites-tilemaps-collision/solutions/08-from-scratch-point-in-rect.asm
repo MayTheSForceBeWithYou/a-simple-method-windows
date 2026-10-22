@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 ex_08_from_scratch_point_in_rect PROC
 ; p(2,2) in [0,0,5,5]
     mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_08_from_scratch_point_in_rect ENDP
 main PROC

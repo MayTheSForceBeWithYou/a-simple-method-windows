@@ -24,7 +24,7 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-    ; return value already in EAX/RAX
+
     ret
 ex_02_dt_accum ENDP
 main PROC

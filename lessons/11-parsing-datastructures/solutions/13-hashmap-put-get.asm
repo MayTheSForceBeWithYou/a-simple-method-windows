@@ -13,7 +13,7 @@ slots QWORD 4 DUP(?)
 ex_13_hashmap_put_get PROC
 mov QWORD PTR [slots+16], 42
     mov rcx, QWORD PTR [slots+16]
-    mov     eax, QWORD PTR [slots+16]
+    mov     eax, ecx
     ret
 ex_13_hashmap_put_get ENDP
 main PROC

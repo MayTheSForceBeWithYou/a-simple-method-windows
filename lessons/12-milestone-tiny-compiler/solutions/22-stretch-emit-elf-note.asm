@@ -9,7 +9,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_emit_elf_note PROC
 mov rcx, 64
-    mov     eax, 64
+    mov     eax, ecx
     ret
 ex_22_stretch_emit_elf_note ENDP
 main PROC

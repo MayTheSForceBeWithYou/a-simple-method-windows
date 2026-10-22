@@ -21,7 +21,7 @@ mov BYTE PTR [map], 1
     inc QWORD PTR [peep_x]
     inc QWORD PTR [cash]
     mov rcx, QWORD PTR [cash]
-    mov     eax, QWORD PTR [cash]
+    mov     eax, ecx
     ret
 ex_24_from_scratch_sim_integrate ENDP
 main PROC

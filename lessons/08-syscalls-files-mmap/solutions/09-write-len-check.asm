@@ -45,7 +45,7 @@ L_bad:
     mov rcx, 1
     
 L_o:
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_09_write_len_check ENDP
 main PROC

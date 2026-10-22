@@ -15,7 +15,7 @@ ex_10_world_to_tile PROC
 mov rax, 20
     shr rax, 3
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_10_world_to_tile ENDP
 main PROC

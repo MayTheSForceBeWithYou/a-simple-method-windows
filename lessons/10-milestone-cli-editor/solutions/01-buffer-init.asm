@@ -17,7 +17,7 @@ len QWORD ?
 ex_01_buffer_init PROC
 mov QWORD PTR [len], 0
     mov rcx, [len]
-    mov     eax, [len]
+    mov     eax, ecx
     ret
 ex_01_buffer_init ENDP
 main PROC

@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_bresenham_count PROC
 mov rcx, 4
-    mov     eax, 4
+    mov     eax, ecx
     ret
 ex_22_stretch_bresenham_count ENDP
 main PROC

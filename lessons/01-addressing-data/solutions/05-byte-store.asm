@@ -39,7 +39,7 @@ ex_05_byte_store PROC
     
     ; Exit 0
     mov rcx, 0
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_05_byte_store ENDP
 main PROC

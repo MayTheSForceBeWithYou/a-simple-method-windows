@@ -8,7 +8,7 @@ ex_01_and_mask PROC
 mov rax, 0FFh
     and rax, 0Fh
     mov rcx, rax
-    ; return value already in EAX/RAX
+
     ret
 ex_01_and_mask ENDP
 main PROC

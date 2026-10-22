@@ -17,7 +17,7 @@ mov QWORD PTR [node], 1
     mov rcx, QWORD PTR [node]
     add rcx, QWORD PTR [node+8]
     add rcx, QWORD PTR [node+16]
-    mov     eax, 6
+    mov     eax, ecx
     ret
 ex_18_ast_node ENDP
 main PROC

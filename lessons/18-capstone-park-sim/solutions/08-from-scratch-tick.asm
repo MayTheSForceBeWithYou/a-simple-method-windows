@@ -22,7 +22,7 @@ tick_loop:
     jmp tick_loop
 tick_done:
     mov rcx, [tick]
-    mov     eax, [tick]
+    mov     eax, ecx
     ret
 ex_08_from_scratch_tick ENDP
 main PROC

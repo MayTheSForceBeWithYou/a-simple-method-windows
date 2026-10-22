@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 ex_03_exit_from_register PROC
 mov rbx, 42
     mov rcx, rbx
-    mov     eax, rbx
+    mov     eax, ecx
     ret
 ex_03_exit_from_register ENDP
 main PROC

@@ -36,7 +36,7 @@ ex_09_write_stderr PROC
     
     ; Exit 1
     mov rcx, 1
-    mov     eax, 1
+    mov     eax, ecx
     ret
 ex_09_write_stderr ENDP
 main PROC

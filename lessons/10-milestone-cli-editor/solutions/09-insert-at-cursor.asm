@@ -27,7 +27,7 @@ mov QWORD PTR [len], 0
     inc QWORD PTR [cur]
     
     mov rcx, [cur]
-    mov     eax, [cur]
+    mov     eax, ecx
     ret
 ex_09_insert_at_cursor ENDP
 main PROC

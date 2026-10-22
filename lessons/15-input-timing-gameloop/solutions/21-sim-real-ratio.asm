@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 
 ex_21_sim_real_ratio PROC
 mov rcx, 50
-    mov     eax, 50
+    mov     eax, ecx
     ret
 ex_21_sim_real_ratio ENDP
 main PROC

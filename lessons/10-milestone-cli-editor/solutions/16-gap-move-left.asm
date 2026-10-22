@@ -22,7 +22,7 @@ mov QWORD PTR [gap_s], 3
     dec QWORD PTR [gap_e]
     
     mov rcx, [gap_s]
-    mov     eax, [gap_s]
+    mov     eax, ecx
     ret
 ex_16_gap_move_left ENDP
 main PROC

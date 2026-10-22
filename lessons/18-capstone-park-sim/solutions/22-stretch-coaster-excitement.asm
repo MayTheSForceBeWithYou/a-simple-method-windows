@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 
 ex_22_stretch_coaster_excitement PROC
 mov rcx, 42
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_22_stretch_coaster_excitement ENDP
 main PROC

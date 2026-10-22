@@ -40,7 +40,7 @@ ex_13_munmap PROC
 L_f:
     ; Failure - exit 1
     mov rcx, 1
-    mov     eax, 0
+    mov     eax, ecx
     ret
 ex_13_munmap ENDP
 main PROC
