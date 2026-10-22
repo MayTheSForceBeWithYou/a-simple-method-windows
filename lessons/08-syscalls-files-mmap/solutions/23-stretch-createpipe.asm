@@ -22,7 +22,7 @@ bytesRead DWORD ?
 
 .code
 ex_23_stretch_createpipe PROC
-    sub rsp, 88
+    sub rsp, 80
     
     lea rcx, hRead
     lea rdx, hWrite
@@ -72,7 +72,7 @@ L_fail:
     mov eax, 1
 
 L_done:
-    add rsp, 88
+    add rsp, 80
     ret
 ex_23_stretch_createpipe ENDP
 main PROC

@@ -35,9 +35,9 @@ sum7 PROC
     add rax, rdx
     add rax, r8
     add rax, r9
-    add rax, QWORD PTR [rsp+32]
     add rax, QWORD PTR [rsp+40]
     add rax, QWORD PTR [rsp+48]
+    add rax, QWORD PTR [rsp+56]
     ret
 sum7 ENDP
 END
