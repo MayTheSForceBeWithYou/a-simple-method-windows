@@ -22,7 +22,7 @@ main PROC FRAME
     mov     rcx, rbx
     add     rsp, 32
     pop     rbx
-    sub     rsp, 32
+    sub     rsp, 40
     call    ExitProcess
 main ENDP
 END

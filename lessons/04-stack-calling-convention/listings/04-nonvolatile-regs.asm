@@ -48,7 +48,7 @@ rbx_clobbered:
 exit_main:
     add rsp, 32
     pop rbx
-    sub rsp, 32
+    sub rsp, 40                ; Shadow + align (RSP was 16-aligned after pop)
     call ExitProcess
 main ENDP
 
