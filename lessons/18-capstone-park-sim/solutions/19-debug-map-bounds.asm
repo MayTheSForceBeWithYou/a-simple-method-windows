@@ -10,15 +10,15 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_debug_map_bounds PROC
-sub rsp, 40
-    mov rax, 99
+mov rax, 99
     mov r8, 8
     cmp rax, r8
     jl bounds_ok
     mov rax, r8
     dec rax
 bounds_ok:
-    mov     eax, 7
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_19_debug_map_bounds ENDP
 main PROC

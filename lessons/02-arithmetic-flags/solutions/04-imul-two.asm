@@ -11,10 +11,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_04_imul_two PROC
-sub rsp, 40
-    mov rax, 6
+mov rax, 6
     imul rax, 7
-    mov     eax, 42
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_04_imul_two ENDP
 main PROC

@@ -13,8 +13,7 @@ s BYTE "OK", 10, 0
 .code
 
 ex_23_stretch_utf8_ascii_validate PROC
-sub rsp, 40
-    lea rdx, s
+lea rdx, s
 val_loop:
     movzx rax, BYTE PTR [rdx]
     test rax, rax

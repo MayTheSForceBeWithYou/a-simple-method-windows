@@ -14,8 +14,7 @@ bytes BYTE 1, 2, 3, 4
 .code
 
 ex_09_pointer_walk PROC
-sub rsp, 40
-    lea rsi, [bytes]
+lea rsi, [bytes]
     xor rcx, rcx
     movzx rax, BYTE PTR [rsi]
     add rcx, rax

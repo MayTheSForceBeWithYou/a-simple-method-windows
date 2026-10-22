@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_loop_counter PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
 loop_start:
     cmp rcx, 10
     jge loop_done

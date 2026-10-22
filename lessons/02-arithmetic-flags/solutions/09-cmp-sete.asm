@@ -11,13 +11,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_09_cmp_sete PROC
-sub rsp, 40
-    mov rax, 5
+mov rax, 5
     mov rbx, 5
     cmp rax, rbx
     sete al
     movzx rcx, al
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_09_cmp_sete ENDP
 main PROC

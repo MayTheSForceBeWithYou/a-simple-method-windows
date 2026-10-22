@@ -23,9 +23,7 @@ written DWORD ?
 .code
 
 ex_22_stretch_units_header PROC
-sub rsp, 56
-    
-    ; Get stdout handle
+; Get stdout handle
     mov rcx, STD_OUTPUT_HANDLE
     call GetStdHandle
     
@@ -38,11 +36,12 @@ sub rsp, 56
     call WriteFile
     
     ; Exit 0
+    mov rcx, 0
     mov     eax, 0
     ret
 ex_22_stretch_units_header ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_22_stretch_units_header
     mov     rcx, rax
     call    ExitProcess

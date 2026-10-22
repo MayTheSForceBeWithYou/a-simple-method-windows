@@ -13,8 +13,7 @@ s BYTE "mississippi", 0
 .code
 
 ex_20_count_char PROC
-sub rsp, 40
-    lea rdx, s
+lea rdx, s
     xor rcx, rcx
 count_loop:
     movzx rax, BYTE PTR [rdx]

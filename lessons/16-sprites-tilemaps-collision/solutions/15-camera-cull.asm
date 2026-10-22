@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_camera_cull PROC
-sub rsp, 40
-    mov rax, 100
+mov rax, 100
     sub rax, 50
     cmp rax, 40
     jl visible
@@ -22,7 +21,7 @@ sub rsp, 40
 visible:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_15_camera_cull ENDP
 main PROC

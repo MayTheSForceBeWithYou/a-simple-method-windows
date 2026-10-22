@@ -12,13 +12,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_13_interp_alpha PROC
-sub rsp, 40
-    mov rax, 8
+mov rax, 8
     imul rax, 100
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov     eax, 50
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_13_interp_alpha ENDP
 main PROC

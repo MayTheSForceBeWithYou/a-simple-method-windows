@@ -7,9 +7,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_14_debug_missing_ret PROC
-sub rsp, 40
-    call three
-    mov     eax, 3
+call three
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_14_debug_missing_ret ENDP
 main PROC

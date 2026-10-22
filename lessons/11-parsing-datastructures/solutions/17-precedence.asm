@@ -8,11 +8,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_17_precedence PROC
-sub rsp, 40
-    mov rax, 3
+mov rax, 3
     imul rax, 4
     add rax, 2
-    mov     eax, 14
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_17_precedence ENDP
 main PROC

@@ -15,8 +15,7 @@ flags BYTE 1
 .code
 
 ex_05_entity_alive PROC
-sub rsp, 40
-    movzx rcx, BYTE PTR [flags]
+movzx rcx, BYTE PTR [flags]
     and rcx, 1
     mov     eax, 1
     ret

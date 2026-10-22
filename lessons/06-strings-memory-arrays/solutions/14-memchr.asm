@@ -13,14 +13,14 @@ buf BYTE 3,5,7,9
 .code
 
 ex_14_memchr PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, buf
     mov rdx, 7
     mov r8, 4
     call memchr_idx
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_14_memchr ENDP
 main PROC

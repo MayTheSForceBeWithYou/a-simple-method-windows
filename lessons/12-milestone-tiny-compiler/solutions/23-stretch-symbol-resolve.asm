@@ -11,9 +11,9 @@ sym QWORD ?
 .code
 
 ex_23_stretch_symbol_resolve PROC
-sub rsp, 40
-    mov QWORD PTR [sym], 32
-    mov     eax, 32
+mov QWORD PTR [sym], 32
+    mov rcx, QWORD PTR [sym]
+    mov     eax, QWORD PTR [sym]
     ret
 ex_23_stretch_symbol_resolve ENDP
 main PROC

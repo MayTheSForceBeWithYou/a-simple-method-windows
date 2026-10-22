@@ -11,8 +11,7 @@ node QWORD 3 DUP(?)
 .code
 
 ex_18_ast_node PROC
-sub rsp, 40
-    mov QWORD PTR [node], 1
+mov QWORD PTR [node], 1
     mov QWORD PTR [node+8], 2
     mov QWORD PTR [node+16], 3
     mov rcx, QWORD PTR [node]

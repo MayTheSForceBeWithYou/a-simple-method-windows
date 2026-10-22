@@ -13,9 +13,9 @@ next_id QWORD 0
 .code
 
 ex_09_spawn_entity PROC
-sub rsp, 40
-    inc QWORD PTR [next_id]
-    mov     eax, 1
+inc QWORD PTR [next_id]
+    mov rcx, QWORD PTR [next_id]
+    mov     eax, QWORD PTR [next_id]
     ret
 ex_09_spawn_entity ENDP
 main PROC

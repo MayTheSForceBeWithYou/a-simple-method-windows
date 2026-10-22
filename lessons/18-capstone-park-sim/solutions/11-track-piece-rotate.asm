@@ -13,13 +13,13 @@ dir QWORD 0
 .code
 
 ex_11_track_piece_rotate PROC
-sub rsp, 40
-    mov QWORD PTR [dir], 3
+mov QWORD PTR [dir], 3
     inc QWORD PTR [dir]
     mov rax, QWORD PTR [dir]
     and rax, 3
     mov QWORD PTR [dir], rax
-    mov     eax, 0
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_11_track_piece_rotate ENDP
 main PROC

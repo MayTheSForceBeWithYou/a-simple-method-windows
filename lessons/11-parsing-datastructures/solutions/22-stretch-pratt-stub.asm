@@ -8,7 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_22_stretch_pratt_stub PROC
-sub rsp, 40
+mov rcx, 20
     mov     eax, 20
     ret
 ex_22_stretch_pratt_stub ENDP

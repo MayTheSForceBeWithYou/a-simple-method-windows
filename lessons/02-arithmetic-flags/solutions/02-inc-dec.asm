@@ -11,12 +11,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_inc_dec PROC
-sub rsp, 40
-    mov rax, 5
+mov rax, 5
     inc rax
     inc rax
     dec rax
-    mov     eax, 6
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_02_inc_dec ENDP
 main PROC

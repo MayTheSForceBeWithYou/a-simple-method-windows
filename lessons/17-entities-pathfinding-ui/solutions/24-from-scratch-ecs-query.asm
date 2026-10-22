@@ -13,8 +13,7 @@ masks BYTE 1,1,1,0
 .code
 
 ex_24_from_scratch_ecs_query PROC
-sub rsp, 40
-    xor r8, r8
+xor r8, r8
     xor r9, r9
 query_loop:
     cmp r9, 4
@@ -28,7 +27,8 @@ query_next:
     inc r9
     jmp query_loop
 query_done:
-    mov     eax, 3
+    mov rcx, r8
+    mov     eax, r8
     ret
 ex_24_from_scratch_ecs_query ENDP
 main PROC

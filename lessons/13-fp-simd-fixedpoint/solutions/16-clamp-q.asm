@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_clamp_q PROC
-sub rsp, 40
-    mov rax, -3
+mov rax, -3
     cmp rax, 0
     jge clamp_hi
     xor rax, rax
@@ -18,7 +17,8 @@ clamp_hi:
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-    mov     eax, 0
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_16_clamp_q ENDP
 main PROC

@@ -5,10 +5,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_04_shl_mul PROC
-sub rsp, 40
-    mov rax, 3
+mov rax, 3
     shl rax, 3
-    mov     eax, 24
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_04_shl_mul ENDP
 main PROC

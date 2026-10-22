@@ -10,11 +10,11 @@ s BYTE "hello", 0
 .code
 
 ex_11_strchr PROC
-sub rsp, 40
-    lea rcx, s
+lea rcx, s
     mov rdx, 'l'
     call strchr_idx
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_11_strchr ENDP
 main PROC

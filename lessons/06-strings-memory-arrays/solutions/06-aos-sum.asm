@@ -10,8 +10,7 @@ rec QWORD 1,2, 3,4
 .code
 
 ex_06_aos_sum PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     add rcx, rec[0]
     add rcx, rec[8]
     add rcx, rec[16]

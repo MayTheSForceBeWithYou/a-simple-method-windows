@@ -13,8 +13,7 @@ guests QWORD 0
 .code
 
 ex_21_scenario_goal PROC
-sub rsp, 40
-    mov QWORD PTR [guests], 100
+mov QWORD PTR [guests], 100
     cmp QWORD PTR [guests], 100
     jl goal_no
     mov rcx, 1

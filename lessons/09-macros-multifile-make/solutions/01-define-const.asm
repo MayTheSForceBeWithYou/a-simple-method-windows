@@ -14,8 +14,8 @@ SYS_EXIT EQU 0
 .code
 
 ex_01_define_const PROC
-sub rsp, 40
-    mov     eax, 0
+mov rcx, SYS_EXIT
+    mov     eax, SYS_EXIT
     ret
 ex_01_define_const ENDP
 main PROC

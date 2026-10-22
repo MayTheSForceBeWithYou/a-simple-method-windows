@@ -12,9 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_getpid PROC
-sub rsp, 40
-    
-    call GetCurrentProcessId
+call GetCurrentProcessId
     test rax, rax
     setz cl
     movzx rcx, cl

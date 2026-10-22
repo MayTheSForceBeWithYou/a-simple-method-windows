@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_lerp_fixed PROC
-sub rsp, 40
-    mov eax, 0
+mov eax, 0
     mov ebx, 10
     shl ebx, 16
     mov ecx, 1
@@ -19,7 +18,8 @@ sub rsp, 40
     imul rax, rdx
     shr rax, 16
     shr rax, 16
-    mov     eax, 5
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_15_lerp_fixed ENDP
 main PROC

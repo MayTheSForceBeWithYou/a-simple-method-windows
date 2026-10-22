@@ -15,9 +15,9 @@ dropped QWORD ?
 .code
 
 ex_22_stretch_ring_drop PROC
-sub rsp, 40
-    mov QWORD PTR [dropped], 1
-    mov     eax, 1
+mov QWORD PTR [dropped], 1
+    mov rcx, [dropped]
+    mov     eax, [dropped]
     ret
 ex_22_stretch_ring_drop ENDP
 main PROC

@@ -16,15 +16,15 @@ dst BYTE 8 DUP(?)
 .code
 
 ex_18_debug_off_by_one_copy PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, dst
     lea rdx, src
     call strcpy
     lea rcx, dst
     call strlen_fn
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_18_debug_off_by_one_copy ENDP
 main PROC

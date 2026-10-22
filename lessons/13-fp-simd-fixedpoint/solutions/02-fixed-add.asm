@@ -8,12 +8,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_fixed_add PROC
-sub rsp, 40
-    mov eax, (1 SHL 16)+(1 SHL 15)
+mov eax, (1 SHL 16)+(1 SHL 15)
     mov ebx, (2 SHL 16)+(1 SHL 15)
     add eax, ebx
     shr eax, 16
-    mov     eax, 4
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_02_fixed_add ENDP
 main PROC

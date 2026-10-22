@@ -6,9 +6,7 @@
 EXTRN ExitProcess:PROC
 
 ex_02_if_else PROC
-sub rsp, 40
-    
-    mov rax, 5
+mov rax, 5
     cmp rax, 10
     jge else_branch
     mov rcx, 20
@@ -16,7 +14,7 @@ sub rsp, 40
 else_branch:
     mov rcx, 30
 done:
-    mov     eax, 20
+    ; return value already in EAX/RAX
     ret
 ex_02_if_else ENDP
 main PROC

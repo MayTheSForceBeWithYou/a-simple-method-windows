@@ -13,8 +13,7 @@ head QWORD ?
 .code
 
 ex_11_ll_push_front PROC
-sub rsp, 40
-    mov QWORD PTR [n1], 1
+mov QWORD PTR [n1], 1
     mov QWORD PTR [n1+8], 0
     lea rax, n1
     mov QWORD PTR [head], rax
@@ -24,7 +23,8 @@ sub rsp, 40
     lea rax, n2
     mov QWORD PTR [head], rax
     mov rax, QWORD PTR [head]
-    mov     eax, 2
+    mov rcx, QWORD PTR [rax]
+    ; return value already in EAX/RAX
     ret
 ex_11_ll_push_front ENDP
 main PROC

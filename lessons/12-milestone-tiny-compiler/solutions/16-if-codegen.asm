@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_if_codegen PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     test rax, rax
     jz else_branch
     mov rcx, 7
@@ -17,7 +16,7 @@ sub rsp, 40
 else_branch:
     mov rcx, 9
 done:
-    mov     eax, 7
+    ; return value already in EAX/RAX
     ret
 ex_16_if_codegen ENDP
 main PROC

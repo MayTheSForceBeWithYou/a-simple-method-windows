@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_debug_parent_index PROC
-sub rsp, 40
+mov rcx, 2
     mov     eax, 2
     ret
 ex_19_debug_parent_index ENDP

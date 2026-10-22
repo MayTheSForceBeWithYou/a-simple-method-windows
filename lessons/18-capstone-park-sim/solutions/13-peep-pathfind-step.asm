@@ -13,9 +13,9 @@ steps QWORD 0
 .code
 
 ex_13_peep_pathfind_step PROC
-sub rsp, 40
-    mov QWORD PTR [steps], 4
-    mov     eax, 4
+mov QWORD PTR [steps], 4
+    mov rcx, QWORD PTR [steps]
+    mov     eax, QWORD PTR [steps]
     ret
 ex_13_peep_pathfind_step ENDP
 main PROC

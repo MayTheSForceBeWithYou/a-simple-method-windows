@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_20_fixed_hz PROC
-sub rsp, 40
+mov rcx, 60
     mov     eax, 60
     ret
 ex_20_fixed_hz ENDP

@@ -17,11 +17,11 @@ map BYTE 256 DUP(0)
 .code
 
 ex_24_from_scratch_sim_integrate PROC
-sub rsp, 40
-    mov BYTE PTR [map], 1
+mov BYTE PTR [map], 1
     inc QWORD PTR [peep_x]
     inc QWORD PTR [cash]
-    mov     eax, 1
+    mov rcx, QWORD PTR [cash]
+    mov     eax, QWORD PTR [cash]
     ret
 ex_24_from_scratch_sim_integrate ENDP
 main PROC

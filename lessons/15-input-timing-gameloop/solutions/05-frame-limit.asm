@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_05_frame_limit PROC
-sub rsp, 40
-    mov rax, 6
+mov rax, 6
     mov rbx, 8
     cmp rax, rbx
     jge nopad
@@ -23,7 +22,7 @@ sub rsp, 40
 nopad:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 2
+    ; return value already in EAX/RAX
     ret
 ex_05_frame_limit ENDP
 main PROC

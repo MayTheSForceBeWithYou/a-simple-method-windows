@@ -13,8 +13,7 @@ v BYTE 80h
 .code
 
 ex_23_stretch_bit_reverse8 PROC
-sub rsp, 40
-    movzx eax, BYTE PTR [v]
+movzx eax, BYTE PTR [v]
     xor r8d, r8d
     mov r9d, 8
 rev_loop:
@@ -25,7 +24,8 @@ rev_loop:
     shr eax, 1
     dec r9d
     jnz rev_loop
-    mov     eax, 1
+    mov ecx, r8d
+    mov     eax, r8d
     ret
 ex_23_stretch_bit_reverse8 ENDP
 main PROC

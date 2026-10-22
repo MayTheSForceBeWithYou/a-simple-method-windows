@@ -5,12 +5,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_18_mask_range PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     shl rax, 5
     dec rax
     mov rcx, rax
-    mov     eax, 31
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_18_mask_range ENDP
 main PROC

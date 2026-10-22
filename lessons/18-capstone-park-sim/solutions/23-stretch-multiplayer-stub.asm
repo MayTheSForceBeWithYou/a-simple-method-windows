@@ -13,9 +13,9 @@ tick_id QWORD 0
 .code
 
 ex_23_stretch_multiplayer_stub PROC
-sub rsp, 40
-    mov QWORD PTR [tick_id], 2
-    mov     eax, 2
+mov QWORD PTR [tick_id], 2
+    mov rcx, QWORD PTR [tick_id]
+    mov     eax, QWORD PTR [tick_id]
     ret
 ex_23_stretch_multiplayer_stub ENDP
 main PROC

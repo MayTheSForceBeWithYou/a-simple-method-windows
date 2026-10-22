@@ -15,9 +15,7 @@ usp QWORD ?
 .code
 
 ex_22_stretch_undo_stack PROC
-sub rsp, 40
-    
-    mov QWORD PTR [usp], 0
+mov QWORD PTR [usp], 0
     
     ; Push 1
     mov rcx, [usp]
@@ -36,7 +34,8 @@ sub rsp, 40
     ; Get top (which is now 1)
     mov rcx, [usp]
     dec rcx
-    mov     eax, 1
+    mov rcx, [rdx+rcx*8]
+    mov     eax, [rdx+rcx*8]
     ret
 ex_22_stretch_undo_stack ENDP
 main PROC

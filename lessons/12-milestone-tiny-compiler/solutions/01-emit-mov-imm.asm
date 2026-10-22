@@ -11,9 +11,9 @@ outv QWORD ?
 .code
 
 ex_01_emit_mov_imm PROC
-sub rsp, 40
-    mov QWORD PTR [outv], 42
-    mov     eax, 42
+mov QWORD PTR [outv], 42
+    mov rcx, QWORD PTR [outv]
+    mov     eax, QWORD PTR [outv]
     ret
 ex_01_emit_mov_imm ENDP
 main PROC

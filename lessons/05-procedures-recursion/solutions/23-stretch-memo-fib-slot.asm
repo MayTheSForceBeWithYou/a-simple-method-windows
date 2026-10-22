@@ -10,8 +10,7 @@ memo QWORD 16 DUP(?)
 .code
 
 ex_23_stretch_memo_fib_slot PROC
-sub rsp, 40
-    mov rcx, 16
+mov rcx, 16
     lea r8, [memo]
 clear_loop:
     mov QWORD PTR [r8], -1
@@ -19,7 +18,8 @@ clear_loop:
     loop clear_loop
     mov rcx, 8
     call fibm
-    mov     eax, 21
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_23_stretch_memo_fib_slot ENDP
 main PROC

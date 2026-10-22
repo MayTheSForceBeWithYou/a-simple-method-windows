@@ -7,8 +7,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_12_next_power_of_two_bit PROC
-sub rsp, 40
-    mov rax, 16
+mov rax, 16
     test rax, rax
     jz not_pow2
     mov rbx, rax
@@ -20,7 +19,7 @@ sub rsp, 40
 not_pow2:
     xor rcx, rcx
 done_pow2:
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_12_next_power_of_two_bit ENDP
 main PROC

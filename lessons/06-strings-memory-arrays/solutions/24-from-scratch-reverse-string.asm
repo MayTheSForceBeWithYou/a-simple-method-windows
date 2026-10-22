@@ -13,8 +13,7 @@ s BYTE "asm", 0
 .code
 
 ex_24_from_scratch_reverse_string PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, s
     call strlen_fn

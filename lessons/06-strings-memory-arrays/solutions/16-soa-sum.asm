@@ -14,14 +14,13 @@ ys QWORD 4,5,6
 .code
 
 ex_16_soa_sum PROC
-sub rsp, 40
-    mov rcx, QWORD PTR [xs]
+mov rcx, QWORD PTR [xs]
     add rcx, QWORD PTR [xs+8]
     add rcx, QWORD PTR [xs+16]
     add rcx, QWORD PTR [ys]
     add rcx, QWORD PTR [ys+8]
     add rcx, QWORD PTR [ys+16]
-    mov     eax, 21
+    mov     eax, ecx
     ret
 ex_16_soa_sum ENDP
 main PROC

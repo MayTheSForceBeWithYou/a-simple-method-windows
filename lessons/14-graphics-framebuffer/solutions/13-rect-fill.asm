@@ -15,8 +15,7 @@ fb BYTE 16 DUP(?)
 .code
 
 ex_13_rect_fill PROC
-sub rsp, 40
-    mov BYTE PTR [fb], 3
+mov BYTE PTR [fb], 3
     mov BYTE PTR [fb+1], 3
     mov BYTE PTR [fb+4], 3
     mov BYTE PTR [fb+5], 3

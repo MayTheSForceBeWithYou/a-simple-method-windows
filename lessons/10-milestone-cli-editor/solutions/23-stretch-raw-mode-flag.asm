@@ -14,9 +14,7 @@ raw BYTE ?
 .code
 
 ex_23_stretch_raw_mode_flag PROC
-sub rsp, 40
-    
-    mov BYTE PTR [raw], 1
+mov BYTE PTR [raw], 1
     mov BYTE PTR [raw], 0
     
     movzx rcx, BYTE PTR [raw]

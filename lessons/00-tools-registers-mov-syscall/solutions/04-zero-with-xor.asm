@@ -11,8 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_04_zero_with_xor PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     mov     eax, 0
     ret
 ex_04_zero_with_xor ENDP

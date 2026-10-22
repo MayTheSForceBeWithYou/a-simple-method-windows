@@ -15,9 +15,9 @@ count QWORD ?
 .code
 
 ex_18_spatial_hash_insert PROC
-sub rsp, 40
-    inc QWORD PTR [count]
-    mov     eax, 1
+inc QWORD PTR [count]
+    mov rcx, [count]
+    mov     eax, [count]
     ret
 ex_18_spatial_hash_insert ENDP
 main PROC

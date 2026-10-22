@@ -16,8 +16,7 @@ dst BYTE 4 DUP(?)
 .code
 
 ex_17_bounded_strcpy PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, dst
     lea rdx, src
@@ -25,7 +24,8 @@ sub rsp, 40
     call strncpy_term
     lea rcx, dst
     call strlen_fn
-    mov     eax, 3
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_17_bounded_strcpy ENDP
 main PROC

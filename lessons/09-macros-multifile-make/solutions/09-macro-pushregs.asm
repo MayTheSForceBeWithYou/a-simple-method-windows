@@ -22,13 +22,13 @@ ENDM
 .code
 
 ex_09_macro_pushregs PROC
-sub rsp, 40
-    
-    mov rbx, 5
+mov rbx, 5
     PUSH_CALLEE
     mov rbx, 0
     POP_CALLEE
-    mov     eax, 5
+    
+    mov rcx, rbx
+    mov     eax, rbx
     ret
 ex_09_macro_pushregs ENDP
 main PROC

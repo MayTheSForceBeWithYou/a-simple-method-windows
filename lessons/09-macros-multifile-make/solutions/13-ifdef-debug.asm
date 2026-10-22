@@ -14,9 +14,7 @@ DEBUG EQU 1
 .code
 
 ex_13_ifdef_debug PROC
-sub rsp, 40
-    
-    ; MASM conditional assembly
+; MASM conditional assembly
     IFDEF DEBUG
         mov rcx, 1
     ELSE

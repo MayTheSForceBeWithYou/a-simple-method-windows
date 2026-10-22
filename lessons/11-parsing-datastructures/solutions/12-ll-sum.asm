@@ -13,8 +13,7 @@ n1 QWORD 3, 0
 .code
 
 ex_12_ll_sum PROC
-sub rsp, 40
-    lea rax, n3
+lea rax, n3
     mov QWORD PTR [n2+8], rax
     lea rax, n2
     mov QWORD PTR [n1+8], rax

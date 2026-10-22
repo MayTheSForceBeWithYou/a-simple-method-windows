@@ -13,10 +13,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_extern_declare PROC
-sub rsp, 40
-    
-    call foo
-    mov     eax, 9
+call foo
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_19_extern_declare ENDP
 main PROC

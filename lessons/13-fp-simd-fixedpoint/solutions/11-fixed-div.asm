@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_11_fixed_div PROC
-sub rsp, 40
-    mov eax, 6
+mov eax, 6
     shl eax, 16
     mov ebx, 2
     shl ebx, 16
@@ -19,7 +18,8 @@ sub rsp, 40
     cqo
     idiv rbx
     shr rax, 16
-    mov     eax, 3
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_11_fixed_div ENDP
 main PROC

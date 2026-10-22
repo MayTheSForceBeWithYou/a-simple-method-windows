@@ -13,15 +13,15 @@ focus QWORD 0
 .code
 
 ex_16_ui_focus PROC
-sub rsp, 40
-    mov QWORD PTR [focus], 2
+mov QWORD PTR [focus], 2
     inc QWORD PTR [focus]
     mov rax, QWORD PTR [focus]
     xor rdx, rdx
     mov r8, 3
     div r8
     mov QWORD PTR [focus], rdx
-    mov     eax, 0
+    mov rcx, rdx
+    ; return value already in EAX/RAX
     ret
 ex_16_ui_focus ENDP
 main PROC

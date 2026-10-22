@@ -7,8 +7,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_24_from_scratch_ntz PROC
-sub rsp, 40
-    mov rax, 1011000b
+mov rax, 1011000b
     xor rcx, rcx
 loop_ntz:
     test rax, 1
@@ -17,7 +16,7 @@ loop_ntz:
     inc rcx
     jmp loop_ntz
 done_ntz:
-    mov     eax, 3
+    ; return value already in EAX/RAX
     ret
 ex_24_from_scratch_ntz ENDP
 main PROC

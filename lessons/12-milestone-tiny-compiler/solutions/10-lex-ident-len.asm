@@ -11,8 +11,7 @@ s BYTE "foo", 0
 .code
 
 ex_10_lex_ident_len PROC
-sub rsp, 40
-    lea rsi, s
+lea rsi, s
     xor rcx, rcx
 loop_len:
     movzx rax, BYTE PTR [rsi]

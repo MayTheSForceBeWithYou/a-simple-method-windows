@@ -11,7 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_exit_seven PROC
-sub rsp, 40
+mov rcx, 7
     mov     eax, 7
     ret
 ex_02_exit_seven ENDP

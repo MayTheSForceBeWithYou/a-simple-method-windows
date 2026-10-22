@@ -15,9 +15,7 @@ gap_e QWORD ?
 .code
 
 ex_08_from_scratch_gap_start PROC
-sub rsp, 40
-    
-    mov QWORD PTR [gap_s], 0
+mov QWORD PTR [gap_s], 0
     mov QWORD PTR [gap_e], 8
     
     mov rcx, [gap_e]

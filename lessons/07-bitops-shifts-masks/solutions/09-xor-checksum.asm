@@ -10,8 +10,7 @@ b BYTE 1,2,4,8
 .code
 
 ex_09_xor_checksum PROC
-sub rsp, 40
-    xor eax, eax
+xor eax, eax
     xor al, b[0]
     xor al, b[1]
     xor al, b[2]

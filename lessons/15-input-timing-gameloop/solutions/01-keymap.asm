@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_01_keymap PROC
-sub rsp, 40
-    mov al, 'W'
+mov al, 'W'
     cmp al, 'W'
     jne not_match
     mov rcx, 1

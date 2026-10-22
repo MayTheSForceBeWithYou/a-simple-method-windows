@@ -15,9 +15,7 @@ len QWORD ?
 .code
 
 ex_21_debug_cursor_oob PROC
-sub rsp, 40
-    
-    mov QWORD PTR [cur], 9
+mov QWORD PTR [cur], 9
     mov QWORD PTR [len], 3
     
     mov rax, [cur]
@@ -28,7 +26,8 @@ sub rsp, 40
     mov [cur], rax
     
 L_ok:
-    mov     eax, 3
+    mov rcx, [cur]
+    ; return value already in EAX/RAX
     ret
 ex_21_debug_cursor_oob ENDP
 main PROC

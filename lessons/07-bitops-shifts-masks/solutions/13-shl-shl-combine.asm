@@ -5,12 +5,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_13_shl_shl_combine PROC
-sub rsp, 40
-    mov rax, 0Ah
+mov rax, 0Ah
     shl rax, 4
     or rax, 0Bh
     mov rcx, rax
-    mov     eax, 171
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_13_shl_shl_combine ENDP
 main PROC

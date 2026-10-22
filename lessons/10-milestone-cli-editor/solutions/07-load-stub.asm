@@ -14,10 +14,9 @@ len QWORD ?
 .code
 
 ex_07_load_stub PROC
-sub rsp, 40
-    
-    mov QWORD PTR [len], 3
-    mov     eax, 3
+mov QWORD PTR [len], 3
+    mov rcx, [len]
+    mov     eax, [len]
     ret
 ex_07_load_stub ENDP
 main PROC

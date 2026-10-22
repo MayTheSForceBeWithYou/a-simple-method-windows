@@ -16,13 +16,13 @@ updates QWORD ?
 .code
 
 ex_15_pause_flag PROC
-sub rsp, 40
-    mov BYTE PTR [paused], 1
+mov BYTE PTR [paused], 1
     cmp BYTE PTR [paused], 0
     jne skip_update
     inc QWORD PTR [updates]
 skip_update:
-    mov     eax, 0
+    mov rcx, [updates]
+    mov     eax, [updates]
     ret
 ex_15_pause_flag ENDP
 main PROC

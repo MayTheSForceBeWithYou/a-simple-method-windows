@@ -10,8 +10,7 @@ val WORD 00F0h
 .code
 
 ex_20_count_leading_zeros_loop PROC
-sub rsp, 40
-    movzx rax, val
+movzx rax, val
     xor rcx, rcx
     mov r8, 16
 loop_clz:

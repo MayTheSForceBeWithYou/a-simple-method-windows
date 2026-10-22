@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_dt_accum PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     mov rax, 0
     add rax, 8
     add rax, 8
@@ -25,7 +24,7 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-    mov     eax, 2
+    ; return value already in EAX/RAX
     ret
 ex_02_dt_accum ENDP
 main PROC

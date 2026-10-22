@@ -8,10 +8,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_24_from_scratch_compile_add PROC
-sub rsp, 40
-    mov rcx, 40
+mov rcx, 40
     add rcx, 2
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_24_from_scratch_compile_add ENDP
 main PROC

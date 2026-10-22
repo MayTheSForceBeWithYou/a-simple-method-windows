@@ -11,8 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_01_push_pop PROC
-sub rsp, 40
-    push 3
+push 3
     push 4
     pop rax
     pop rcx

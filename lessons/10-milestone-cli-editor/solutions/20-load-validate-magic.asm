@@ -14,9 +14,7 @@ magic BYTE "ED01"
 .code
 
 ex_20_load_validate_magic PROC
-sub rsp, 40
-    
-    cmp WORD PTR [magic], 4445h  ; "ED" in little-endian
+cmp WORD PTR [magic], 4445h  ; "ED" in little-endian
     jne L_n
     
     mov rcx, 1

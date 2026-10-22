@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_06_clip_test PROC
-sub rsp, 40
-    mov rax, 5
+mov rax, 5
     cmp rax, 4
     jl in_range
     mov rcx, 1
@@ -21,7 +20,7 @@ sub rsp, 40
 in_range:
     xor rcx, rcx
 exit_proc:
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_06_clip_test ENDP
 main PROC

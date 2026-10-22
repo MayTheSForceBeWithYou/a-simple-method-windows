@@ -15,8 +15,7 @@ key_w BYTE ?
 .code
 
 ex_09_key_down_up PROC
-sub rsp, 40
-    mov BYTE PTR [key_w], 1
+mov BYTE PTR [key_w], 1
     mov BYTE PTR [key_w], 0
     movzx rcx, BYTE PTR [key_w]
     mov     eax, 0

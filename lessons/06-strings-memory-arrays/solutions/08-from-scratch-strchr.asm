@@ -10,11 +10,11 @@ s BYTE "abcd", 0
 .code
 
 ex_08_from_scratch_strchr PROC
-sub rsp, 40
-    lea rcx, s
+lea rcx, s
     mov rdx, 'c'
     call strchr_idx
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_08_from_scratch_strchr ENDP
 main PROC

@@ -16,8 +16,7 @@ shift BYTE ?
 .code
 
 ex_10_chord PROC
-sub rsp, 40
-    mov BYTE PTR [w], 1
+mov BYTE PTR [w], 1
     mov BYTE PTR [shift], 1
     movzx eax, BYTE PTR [w]
     and al, BYTE PTR [shift]

@@ -11,10 +11,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_mov_imm_vs_reg PROC
-sub rsp, 40
-    mov rax, 100
+mov rax, 100
     mov rbx, rax
-    mov     eax, 100
+    mov rcx, rbx
+    ; return value already in EAX/RAX
     ret
 ex_16_mov_imm_vs_reg ENDP
 main PROC

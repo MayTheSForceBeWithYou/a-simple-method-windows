@@ -10,10 +10,10 @@ lst QWORD 3,4,5,0
 .code
 
 ex_20_fold_list PROC
-sub rsp, 40
-    lea rcx, lst
+lea rcx, lst
     call fold_add
-    mov     eax, 12
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_20_fold_list ENDP
 main PROC

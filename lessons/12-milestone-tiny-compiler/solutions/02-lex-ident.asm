@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_lex_ident PROC
-sub rsp, 40
-    mov al, 'a'
+mov al, 'a'
     cmp al, 'a'
     jb not_alpha
     cmp al, 'z'

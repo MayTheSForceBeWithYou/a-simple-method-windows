@@ -13,10 +13,9 @@ VEL EQU 2
 .code
 
 ex_11_component_mask PROC
-sub rsp, 40
-    mov rcx, POS
+mov rcx, POS
     or rcx, VEL
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_11_component_mask ENDP
 main PROC

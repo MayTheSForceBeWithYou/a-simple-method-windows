@@ -7,8 +7,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_06_popcount_naive PROC
-sub rsp, 40
-    mov rax, 101101b
+mov rax, 101101b
     xor rcx, rcx
 loop_pop:
     test rax, rax
@@ -19,7 +18,7 @@ loop_pop:
     shr rax, 1
     jmp loop_pop
 done_pop:
-    mov     eax, 4
+    ; return value already in EAX/RAX
     ret
 ex_06_popcount_naive ENDP
 main PROC

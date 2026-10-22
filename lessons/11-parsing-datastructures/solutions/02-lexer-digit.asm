@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_lexer_digit PROC
-sub rsp, 40
-    mov al, '7'
+mov al, '7'
     cmp al, '0'
     jb not_digit
     cmp al, '9'

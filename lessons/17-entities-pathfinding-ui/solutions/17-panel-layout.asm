@@ -10,8 +10,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_17_panel_layout PROC
-sub rsp, 40
-    xor ecx, ecx
+xor ecx, ecx
     add rcx, 12
     add rcx, 12
     mov     eax, 24

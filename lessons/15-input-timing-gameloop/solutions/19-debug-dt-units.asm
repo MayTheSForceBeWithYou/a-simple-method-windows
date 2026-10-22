@@ -12,15 +12,15 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_debug_dt_units PROC
-sub rsp, 40
-    mov rax, 16000
+mov rax, 16000
     xor rdx, rdx
     mov rbx, 1000
     div rbx
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov     eax, 1
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_19_debug_dt_units ENDP
 main PROC

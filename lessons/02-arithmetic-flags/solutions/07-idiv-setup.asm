@@ -11,12 +11,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_07_idiv_setup PROC
-sub rsp, 40
-    mov rax, 84
+mov rax, 84
     cqo
     mov rbx, 2
     idiv rbx
-    mov     eax, 42
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_07_idiv_setup ENDP
 main PROC

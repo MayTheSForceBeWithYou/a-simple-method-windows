@@ -8,12 +8,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_24_from_scratch_q8_mul PROC
-sub rsp, 40
-    mov eax, (2 SHL 8)+(1 SHL 7)
+mov eax, (2 SHL 8)+(1 SHL 7)
     mov ebx, 2 SHL 8
     imul eax, ebx
     shr eax, 16
-    mov     eax, 5
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_24_from_scratch_q8_mul ENDP
 main PROC

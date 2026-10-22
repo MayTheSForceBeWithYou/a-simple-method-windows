@@ -15,14 +15,14 @@ gap_e QWORD ?
 .code
 
 ex_16_gap_move_left PROC
-sub rsp, 40
-    
-    mov QWORD PTR [gap_s], 3
+mov QWORD PTR [gap_s], 3
     mov QWORD PTR [gap_e], 5
     
     dec QWORD PTR [gap_s]
     dec QWORD PTR [gap_e]
-    mov     eax, 2
+    
+    mov rcx, [gap_s]
+    mov     eax, [gap_s]
     ret
 ex_16_gap_move_left ENDP
 main PROC

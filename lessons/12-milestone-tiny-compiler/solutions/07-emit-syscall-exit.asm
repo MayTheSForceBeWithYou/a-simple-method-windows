@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_07_emit_syscall_exit PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     mov     eax, 0
     ret
 ex_07_emit_syscall_exit ENDP

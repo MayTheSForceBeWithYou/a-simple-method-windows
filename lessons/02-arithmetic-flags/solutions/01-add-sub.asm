@@ -11,11 +11,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_01_add_sub PROC
-sub rsp, 40
-    mov rcx, 100
+mov rcx, 100
     add rcx, 20
     sub rcx, 78
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_01_add_sub ENDP
 main PROC

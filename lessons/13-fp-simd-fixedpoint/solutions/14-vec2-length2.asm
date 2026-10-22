@@ -8,13 +8,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_14_vec2_length2 PROC
-sub rsp, 40
-    mov rax, 3
+mov rax, 3
     imul rax, rax
     mov rbx, 4
     imul rbx, rbx
     add rax, rbx
-    mov     eax, 25
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_14_vec2_length2 ENDP
 main PROC

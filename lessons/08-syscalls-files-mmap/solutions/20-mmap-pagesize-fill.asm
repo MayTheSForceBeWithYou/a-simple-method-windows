@@ -12,9 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_20_mmap_pagesize_fill PROC
-sub rsp, 40
-    
-    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
     mov rdx, 4096       ; dwSize
     mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
@@ -44,7 +42,8 @@ L_s:
     
 L_o:
     ; Exit with sum (16)
-    mov     eax, 16
+    mov rcx, rdi
+    mov     eax, rdi
     ret
 ex_20_mmap_pagesize_fill ENDP
 main PROC

@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_debug_null_deref_guard PROC
-sub rsp, 40
-    xor rsi, rsi
+xor rsi, rsi
     xor rcx, rcx
 loop_walk:
     test rsi, rsi

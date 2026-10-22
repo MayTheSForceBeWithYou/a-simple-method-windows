@@ -15,8 +15,7 @@ row BYTE 3 DUP(?)
 .code
 
 ex_07_row_fill PROC
-sub rsp, 40
-    mov BYTE PTR [row], 9
+mov BYTE PTR [row], 9
     mov BYTE PTR [row+1], 9
     mov BYTE PTR [row+2], 9
     movzx rcx, BYTE PTR [row+1]

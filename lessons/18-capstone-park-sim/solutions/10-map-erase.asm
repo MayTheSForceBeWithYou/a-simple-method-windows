@@ -13,8 +13,7 @@ map BYTE 256 DUP(0)
 .code
 
 ex_10_map_erase PROC
-sub rsp, 40
-    mov BYTE PTR [map+5], 1
+mov BYTE PTR [map+5], 1
     mov BYTE PTR [map+5], 0
     movzx rcx, BYTE PTR [map+5]
     mov     eax, 0

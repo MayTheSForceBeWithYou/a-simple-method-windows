@@ -5,13 +5,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_21_gray_code PROC
-sub rsp, 40
-    mov rax, 7
+mov rax, 7
     mov rbx, rax
     shr rbx, 1
     xor rax, rbx
     mov rcx, rax
-    mov     eax, 4
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_21_gray_code ENDP
 main PROC

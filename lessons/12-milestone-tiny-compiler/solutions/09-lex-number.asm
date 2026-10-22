@@ -11,8 +11,7 @@ s BYTE "42", 0
 .code
 
 ex_09_lex_number PROC
-sub rsp, 40
-    lea rsi, s
+lea rsi, s
     xor rcx, rcx
 loop_parse:
     movzx rax, BYTE PTR [rsi]

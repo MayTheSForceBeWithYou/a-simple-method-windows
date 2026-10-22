@@ -11,12 +11,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_div_remainder PROC
-sub rsp, 40
-    mov rax, 20
+mov rax, 20
     xor rdx, rdx
     mov rbx, 6
     div rbx
-    mov     eax, 2
+    mov rcx, rdx
+    ; return value already in EAX/RAX
     ret
 ex_08_div_remainder ENDP
 main PROC

@@ -12,14 +12,14 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_01_pixel_offset PROC
-sub rsp, 40
-    mov rax, 2
+mov rax, 2
     imul rax, 40
     mov rbx, 3
     imul rbx, 4
     add rax, rbx
     and rax, 255
-    mov     eax, 92
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_01_pixel_offset ENDP
 main PROC

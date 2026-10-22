@@ -7,8 +7,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_02_or_flags PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     or rcx, 1
     or rcx, 4
     mov     eax, 5

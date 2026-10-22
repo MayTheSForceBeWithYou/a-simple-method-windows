@@ -15,11 +15,11 @@ idx QWORD ?
 .code
 
 ex_18_double_buffer_index PROC
-sub rsp, 40
-    mov QWORD PTR [idx], 0
+mov QWORD PTR [idx], 0
     xor QWORD PTR [idx], 1
     xor QWORD PTR [idx], 1
-    mov     eax, 0
+    mov rcx, [idx]
+    mov     eax, [idx]
     ret
 ex_18_double_buffer_index ENDP
 main PROC

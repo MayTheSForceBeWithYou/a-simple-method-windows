@@ -11,12 +11,12 @@ b BYTE "abz", 0
 .code
 
 ex_10_strncmp PROC
-sub rsp, 40
-    lea rcx, a
+lea rcx, a
     lea rdx, b
     mov r8, 2
     call strncmp_fn
-    mov     eax, 0
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_10_strncmp ENDP
 main PROC

@@ -15,8 +15,7 @@ n QWORD ?
 .code
 
 ex_10_token_buffer PROC
-sub rsp, 40
-    lea rsi, src
+lea rsi, src
     lea rdi, tok
     xor rcx, rcx
 loop_copy:

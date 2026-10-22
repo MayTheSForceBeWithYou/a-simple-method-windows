@@ -10,11 +10,11 @@ ctx QWORD 10
 .code
 
 ex_17_closure_sim PROC
-sub rsp, 40
-    lea r12, ctx
+lea r12, ctx
     mov rcx, 5
     call add_ctx
-    mov     eax, 15
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_17_closure_sim ENDP
 main PROC

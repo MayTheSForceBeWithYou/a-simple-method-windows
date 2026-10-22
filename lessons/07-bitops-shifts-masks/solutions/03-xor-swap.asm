@@ -5,13 +5,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_03_xor_swap PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     mov rbx, 2
     xor rax, rbx
     xor rbx, rax
     xor rax, rbx
-    mov     eax, 2
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_03_xor_swap ENDP
 main PROC

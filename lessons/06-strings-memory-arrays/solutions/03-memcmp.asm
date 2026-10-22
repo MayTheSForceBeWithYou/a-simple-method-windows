@@ -11,12 +11,12 @@ b BYTE 1,2,3
 .code
 
 ex_03_memcmp PROC
-sub rsp, 40
-    lea rcx, a
+lea rcx, a
     lea rdx, b
     mov r8, 3
     call memcmp_fn
-    mov     eax, 0
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_03_memcmp ENDP
 main PROC

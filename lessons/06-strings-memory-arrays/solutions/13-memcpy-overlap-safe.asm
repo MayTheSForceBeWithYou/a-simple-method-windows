@@ -16,8 +16,7 @@ dst BYTE 8 DUP(?)
 .code
 
 ex_13_memcpy_overlap_safe PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, [dst]
     lea rdx, [src]
@@ -34,7 +33,8 @@ sum_loop:
     inc r10
     jmp sum_loop
 sum_done:
-    mov     eax, 36
+    mov rcx, r9
+    mov     eax, r9
     ret
 ex_13_memcpy_overlap_safe ENDP
 main PROC

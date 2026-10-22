@@ -5,12 +5,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_bitfield_unpack PROC
-sub rsp, 40
-    mov rax, 01010101b
+mov rax, 01010101b
     shr rax, 3
     and rax, 7
     mov rcx, rax
-    mov     eax, 2
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_16_bitfield_unpack ENDP
 main PROC

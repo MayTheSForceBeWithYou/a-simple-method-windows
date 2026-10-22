@@ -13,9 +13,9 @@ qlen QWORD 0
 .code
 
 ex_14_ride_queue_len PROC
-sub rsp, 40
-    mov QWORD PTR [qlen], 7
-    mov     eax, 7
+mov QWORD PTR [qlen], 7
+    mov rcx, QWORD PTR [qlen]
+    mov     eax, QWORD PTR [qlen]
     ret
 ex_14_ride_queue_len ENDP
 main PROC

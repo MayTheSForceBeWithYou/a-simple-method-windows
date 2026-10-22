@@ -15,14 +15,14 @@ tick QWORD ?
 .code
 
 ex_08_from_scratch_tick PROC
-sub rsp, 40
 tick_loop:
     cmp QWORD PTR [tick], 5
     jge tick_done
     inc QWORD PTR [tick]
     jmp tick_loop
 tick_done:
-    mov     eax, 5
+    mov rcx, [tick]
+    mov     eax, [tick]
     ret
 ex_08_from_scratch_tick ENDP
 main PROC

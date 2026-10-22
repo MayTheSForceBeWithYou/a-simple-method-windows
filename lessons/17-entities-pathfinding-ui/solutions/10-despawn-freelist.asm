@@ -13,9 +13,9 @@ free_top QWORD 0
 .code
 
 ex_10_despawn_freelist PROC
-sub rsp, 40
-    mov QWORD PTR [free_top], 3
-    mov     eax, 3
+mov QWORD PTR [free_top], 3
+    mov rcx, QWORD PTR [free_top]
+    mov     eax, QWORD PTR [free_top]
     ret
 ex_10_despawn_freelist ENDP
 main PROC

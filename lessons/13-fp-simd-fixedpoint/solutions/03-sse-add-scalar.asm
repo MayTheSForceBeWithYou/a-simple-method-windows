@@ -8,7 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_03_sse_add_scalar PROC
-sub rsp, 40
+mov rcx, 5
     mov     eax, 5
     ret
 ex_03_sse_add_scalar ENDP

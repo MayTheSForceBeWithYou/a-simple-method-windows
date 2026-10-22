@@ -15,8 +15,7 @@ ready BYTE ?
 .code
 
 ex_17_vsync_stub PROC
-sub rsp, 40
-    mov BYTE PTR [ready], 0
+mov BYTE PTR [ready], 0
     movzx rcx, BYTE PTR [ready]
     mov     eax, 0
     ret

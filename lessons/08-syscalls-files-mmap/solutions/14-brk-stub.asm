@@ -12,9 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_14_brk_stub PROC
-sub rsp, 40
-    
-    ; GetProcessHeap returns handle to process heap
+; GetProcessHeap returns handle to process heap
     call GetProcessHeap
     
     ; Check if valid (nonzero)

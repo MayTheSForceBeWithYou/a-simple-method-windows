@@ -14,8 +14,8 @@ VERSION EQU 3
 .code
 
 ex_16_include_path_sim PROC
-sub rsp, 40
-    mov     eax, 3
+mov rcx, VERSION
+    mov     eax, VERSION
     ret
 ex_16_include_path_sim ENDP
 main PROC

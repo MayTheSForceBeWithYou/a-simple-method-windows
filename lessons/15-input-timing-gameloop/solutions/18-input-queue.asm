@@ -17,8 +17,7 @@ t QWORD ?
 .code
 
 ex_18_input_queue PROC
-sub rsp, 40
-    mov rcx, [t]
+mov rcx, [t]
     lea r11, [q]
     mov QWORD PTR [r11+rcx*8], 9
     inc QWORD PTR [t]

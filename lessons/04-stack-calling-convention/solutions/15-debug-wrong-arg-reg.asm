@@ -7,11 +7,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_debug_wrong_arg_reg PROC
-sub rsp, 40
-    mov rcx, 2
+mov rcx, 2
     mov rdx, 40
     call add2
-    mov     eax, 42
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_15_debug_wrong_arg_reg ENDP
 main PROC

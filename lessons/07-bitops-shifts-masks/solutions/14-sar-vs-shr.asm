@@ -7,13 +7,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_14_sar_vs_shr PROC
-sub rsp, 40
-    mov rax, -4
+mov rax, -4
     sar rax, 1
     cmp rax, -2
     sete cl
     movzx rcx, cl
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_14_sar_vs_shr ENDP
 main PROC

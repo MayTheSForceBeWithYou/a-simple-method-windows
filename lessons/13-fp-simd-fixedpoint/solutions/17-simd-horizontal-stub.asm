@@ -11,12 +11,12 @@ v DWORD 1,2,3,4
 .code
 
 ex_17_simd_horizontal_stub PROC
-sub rsp, 40
-    mov eax, DWORD PTR [v]
+mov eax, DWORD PTR [v]
     add eax, DWORD PTR [v+4]
     add eax, DWORD PTR [v+8]
     add eax, DWORD PTR [v+12]
-    mov     eax, 10
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_17_simd_horizontal_stub ENDP
 main PROC

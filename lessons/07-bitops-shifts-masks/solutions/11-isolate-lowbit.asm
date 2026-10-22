@@ -5,13 +5,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_11_isolate_lowbit PROC
-sub rsp, 40
-    mov rax, 101100b
+mov rax, 101100b
     mov rbx, rax
     neg rbx
     and rax, rbx
     mov rcx, rax
-    mov     eax, 4
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_11_isolate_lowbit ENDP
 main PROC

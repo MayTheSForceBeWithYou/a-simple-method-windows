@@ -13,13 +13,13 @@ arr QWORD 2,3,4
 .code
 
 ex_24_from_scratch_rec_sum_array PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, arr
     mov rdx, 3
     call rec_sum
-    mov     eax, 9
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC

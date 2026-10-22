@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_05_makefile_note PROC
-sub rsp, 40
+mov rcx, 0
     mov     eax, 0
     ret
 ex_05_makefile_note ENDP

@@ -15,8 +15,7 @@ fb BYTE 16 DUP(?)
 .code
 
 ex_04_plot_stub PROC
-sub rsp, 40
-    mov BYTE PTR [fb], 7
+mov BYTE PTR [fb], 7
     movzx rcx, BYTE PTR [fb]
     mov     eax, 7
     ret

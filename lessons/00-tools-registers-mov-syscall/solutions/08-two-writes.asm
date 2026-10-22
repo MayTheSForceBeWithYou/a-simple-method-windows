@@ -23,9 +23,7 @@ hStdOut QWORD ?
 .code
 
 ex_08_two_writes PROC
-sub rsp, 56
-    
-    ; Get stdout handle
+; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     mov hStdOut, rax
@@ -47,11 +45,12 @@ sub rsp, 56
     call WriteFile
     
     ; Exit 0
+    mov rcx, 0
     mov     eax, 0
     ret
 ex_08_two_writes ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_08_two_writes
     mov     rcx, rax
     call    ExitProcess

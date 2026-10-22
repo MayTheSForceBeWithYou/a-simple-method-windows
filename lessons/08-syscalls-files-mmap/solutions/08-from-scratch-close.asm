@@ -16,9 +16,7 @@ path BYTE "NUL", 0
 .code
 
 ex_08_from_scratch_close PROC
-sub rsp, 72
-    
-    ; CreateFileA for NUL device
+; CreateFileA for NUL device
     lea rcx, path               ; lpFileName
     mov rdx, 80000000h          ; dwDesiredAccess = GENERIC_READ
     mov r8d, 0                  ; dwShareMode = 0
@@ -49,7 +47,7 @@ L_o:
     ret
 ex_08_from_scratch_close ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 72
     call    ex_08_from_scratch_close
     mov     rcx, rax
     call    ExitProcess

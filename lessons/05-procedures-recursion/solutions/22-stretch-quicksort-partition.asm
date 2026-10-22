@@ -10,12 +10,12 @@ arr QWORD 1,5,2,4
 .code
 
 ex_22_stretch_quicksort_partition PROC
-sub rsp, 40
-    lea rcx, arr
+lea rcx, arr
     xor rdx, rdx
     mov r8, 3
     call partition
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_22_stretch_quicksort_partition ENDP
 main PROC

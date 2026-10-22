@@ -12,13 +12,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_03_astar_h PROC
-sub rsp, 40
-    mov rax, 3
+mov rax, 3
     sub rax, 1
     mov rbx, 4
     sub rbx, 2
     add rax, rbx
-    mov     eax, 4
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_03_astar_h ENDP
 main PROC

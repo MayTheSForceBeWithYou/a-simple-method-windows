@@ -16,11 +16,9 @@ ENDM
 .code
 
 ex_08_from_scratch_macro_add PROC
-sub rsp, 40
-    
-    mov rcx, 40
+mov rcx, 40
     ADD_IMM rcx, 2
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_08_from_scratch_macro_add ENDP
 main PROC

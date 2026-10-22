@@ -12,13 +12,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_07_peep_happy PROC
-sub rsp, 40
-    mov rax, 120
+mov rax, 120
     cmp rax, 100
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-    mov     eax, 100
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_07_peep_happy ENDP
 main PROC

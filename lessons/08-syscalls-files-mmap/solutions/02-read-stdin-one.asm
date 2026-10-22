@@ -18,9 +18,7 @@ bytesRead DWORD ?
 .code
 
 ex_02_read_stdin_one PROC
-sub rsp, 56
-    
-    ; Get stdin handle
+; Get stdin handle
     mov rcx, -10
     call GetStdHandle
     
@@ -40,13 +38,15 @@ sub rsp, 56
     
     ; Exit with byte value
     movzx rcx, BYTE PTR [b]
+
 L_fail:
     ; Exit 0 on failure
-    mov     eax, 65
+    mov rcx, 0
+    mov     eax, 0
     ret
 ex_02_read_stdin_one ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_02_read_stdin_one
     mov     rcx, rax
     call    ExitProcess

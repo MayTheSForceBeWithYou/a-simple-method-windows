@@ -13,8 +13,7 @@ buf BYTE 8 DUP(0)
 .code
 
 ex_21_sparse_fill PROC
-sub rsp, 40
-    xor r8, r8
+xor r8, r8
 fill_loop:
     cmp r8, 8
     jge do_sum

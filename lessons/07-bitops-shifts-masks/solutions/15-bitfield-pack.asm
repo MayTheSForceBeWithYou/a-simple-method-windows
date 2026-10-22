@@ -5,8 +5,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_bitfield_pack PROC
-sub rsp, 40
-    mov rax, 5
+mov rax, 5
     and rax, 7
     mov rbx, 2
     and rbx, 7
@@ -17,7 +16,8 @@ sub rsp, 40
     shl rbx, 6
     or rax, rbx
     mov rcx, rax
-    mov     eax, 85
+    mov rax,60
+    ; return value already in EAX/RAX
     ret
 ex_15_bitfield_pack ENDP
 main PROC

@@ -13,8 +13,7 @@ tail QWORD ?
 .code
 
 ex_20_queue_ring PROC
-sub rsp, 40
-    mov QWORD PTR [head], 0
+mov QWORD PTR [head], 0
     mov QWORD PTR [tail], 0
     mov rcx, QWORD PTR [tail]
     lea r11, [q]

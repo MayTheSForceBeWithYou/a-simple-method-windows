@@ -8,11 +8,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_09_q16_from_int PROC
-sub rsp, 40
-    mov eax, 5
+mov eax, 5
     shl eax, 16
     shr eax, 16
-    mov     eax, 5
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_09_q16_from_int ENDP
 main PROC

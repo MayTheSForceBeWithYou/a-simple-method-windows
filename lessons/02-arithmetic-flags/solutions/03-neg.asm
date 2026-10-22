@@ -11,8 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_03_neg PROC
-sub rsp, 40
-    mov rcx, 5
+mov rcx, 5
     neg rcx
     add rcx, 10
     mov     eax, 5

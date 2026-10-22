@@ -12,12 +12,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_03_fixed_step PROC
-sub rsp, 40
-    mov rax, 50
+mov rax, 50
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov     eax, 3
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_03_fixed_step ENDP
 main PROC

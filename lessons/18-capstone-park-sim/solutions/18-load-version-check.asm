@@ -13,8 +13,7 @@ ver QWORD 1
 .code
 
 ex_18_load_version_check PROC
-sub rsp, 40
-    cmp QWORD PTR [ver], 1
+cmp QWORD PTR [ver], 1
     jne ver_bad
     mov rcx, 1
     jmp ver_done

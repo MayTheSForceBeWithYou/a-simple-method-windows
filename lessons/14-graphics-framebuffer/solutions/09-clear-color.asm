@@ -15,8 +15,7 @@ fb BYTE 4 DUP(?)
 .code
 
 ex_09_clear_color PROC
-sub rsp, 40
-    mov al, 5
+mov al, 5
     lea rdi, fb
     mov rcx, 4
     rep stosb

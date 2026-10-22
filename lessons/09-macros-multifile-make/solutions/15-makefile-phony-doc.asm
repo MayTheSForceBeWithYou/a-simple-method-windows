@@ -19,7 +19,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_makefile_phony_doc PROC
-sub rsp, 40
+mov rcx, 0
     mov     eax, 0
     ret
 ex_15_makefile_phony_doc ENDP

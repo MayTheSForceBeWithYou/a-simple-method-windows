@@ -15,9 +15,9 @@ frames QWORD ?
 .code
 
 ex_14_frame_stats PROC
-sub rsp, 40
-    mov QWORD PTR [frames], 60
-    mov     eax, 60
+mov QWORD PTR [frames], 60
+    mov rcx, [frames]
+    mov     eax, [frames]
     ret
 ex_14_frame_stats ENDP
 main PROC

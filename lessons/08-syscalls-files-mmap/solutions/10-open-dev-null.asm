@@ -16,9 +16,7 @@ path BYTE "NUL", 0
 .code
 
 ex_10_open_dev_null PROC
-sub rsp, 72
-    
-    ; CreateFileA for NUL device
+; CreateFileA for NUL device
     lea rcx, path               ; lpFileName
     mov rdx, 40000000h          ; dwDesiredAccess = GENERIC_WRITE
     mov r8d, 0                  ; dwShareMode = 0
@@ -49,7 +47,7 @@ L_o:
     ret
 ex_10_open_dev_null ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 72
     call    ex_10_open_dev_null
     mov     rcx, rax
     call    ExitProcess

@@ -15,8 +15,7 @@ fb BYTE 8 DUP(?)
 .code
 
 ex_11_hline PROC
-sub rsp, 40
-    mov BYTE PTR [fb], 1
+mov BYTE PTR [fb], 1
     mov BYTE PTR [fb+1], 1
     mov BYTE PTR [fb+2], 1
     xor rcx, rcx

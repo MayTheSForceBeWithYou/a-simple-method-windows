@@ -12,12 +12,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_11_mouse_delta PROC
-sub rsp, 40
-    mov rax, 5
+mov rax, 5
     mov rbx, -2
     neg rbx
     add rax, rbx
-    mov     eax, 7
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_11_mouse_delta ENDP
 main PROC

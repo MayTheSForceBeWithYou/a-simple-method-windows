@@ -15,9 +15,7 @@ counter QWORD ?
 .code
 
 ex_16_clock_gettime_stub PROC
-sub rsp, 40
-    
-    ; QueryPerformanceCounter(&counter)
+; QueryPerformanceCounter(&counter)
     lea rcx, counter
     call QueryPerformanceCounter
     

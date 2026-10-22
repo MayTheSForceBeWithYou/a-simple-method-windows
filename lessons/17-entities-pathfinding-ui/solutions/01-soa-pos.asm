@@ -16,10 +16,9 @@ ys QWORD 0,6,0
 .code
 
 ex_01_soa_pos PROC
-sub rsp, 40
-    mov rcx, [xs+8]
+mov rcx, [xs+8]
     add rcx, [ys+8]
-    mov     eax, 11
+    mov     eax, ecx
     ret
 ex_01_soa_pos ENDP
 main PROC

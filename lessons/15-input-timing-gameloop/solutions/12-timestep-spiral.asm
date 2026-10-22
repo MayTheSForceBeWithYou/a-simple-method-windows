@@ -12,8 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_12_timestep_spiral PROC
-sub rsp, 40
-    mov rax, 100
+mov rax, 100
     xor rdx, rdx
     mov rbx, 16
     div rbx
@@ -21,7 +20,8 @@ sub rsp, 40
     jbe clamp_ok
     mov rax, 3
 clamp_ok:
-    mov     eax, 3
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_12_timestep_spiral ENDP
 main PROC

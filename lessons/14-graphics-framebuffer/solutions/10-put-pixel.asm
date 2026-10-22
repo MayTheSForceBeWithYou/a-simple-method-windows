@@ -15,15 +15,14 @@ fb BYTE 32 DUP(?)
 .code
 
 ex_10_put_pixel PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     imul rax, 8
     add rax, 2
     lea r11, [fb]
     mov BYTE PTR [r11+rax], 9
     lea r11, [fb]
     movzx rcx, BYTE PTR [r11+rax]
-    mov     eax, 9
+    ; return value already in EAX/RAX
     ret
 ex_10_put_pixel ENDP
 main PROC

@@ -15,8 +15,7 @@ fb BYTE 16 DUP(?)
 .code
 
 ex_12_vline PROC
-sub rsp, 40
-    mov BYTE PTR [fb], 2
+mov BYTE PTR [fb], 2
     mov BYTE PTR [fb+4], 2
     mov BYTE PTR [fb+8], 2
     xor rcx, rcx

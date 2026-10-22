@@ -13,13 +13,13 @@ buf BYTE 16 DUP(?)
 .code
 
 ex_22_stretch_itoa PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     mov rcx, 123
     lea rdx, buf
     call itoa
-    mov     eax, 3
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_22_stretch_itoa ENDP
 main PROC

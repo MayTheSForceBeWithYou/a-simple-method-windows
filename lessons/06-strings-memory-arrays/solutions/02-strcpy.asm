@@ -13,13 +13,13 @@ dst BYTE 8 DUP(?)
 .code
 
 ex_02_strcpy PROC
-sub rsp, 40
-    lea rcx, dst
+lea rcx, dst
     lea rdx, src
     call strcpy_fn
     lea rcx, dst
     call strlen_fn
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_02_strcpy ENDP
 main PROC

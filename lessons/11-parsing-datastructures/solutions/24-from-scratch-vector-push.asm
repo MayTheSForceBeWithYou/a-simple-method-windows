@@ -13,13 +13,13 @@ cap QWORD ?
 .code
 
 ex_24_from_scratch_vector_push PROC
-sub rsp, 40
-    mov QWORD PTR [cap], 8
+mov QWORD PTR [cap], 8
     mov QWORD PTR [len], 0
     call push1
     call push1
     call push1
-    mov     eax, 3
+    mov rcx, QWORD PTR [len]
+    mov     eax, QWORD PTR [len]
     ret
 ex_24_from_scratch_vector_push ENDP
 main PROC

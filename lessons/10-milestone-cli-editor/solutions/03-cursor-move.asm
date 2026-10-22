@@ -14,12 +14,12 @@ cursor QWORD ?
 .code
 
 ex_03_cursor_move PROC
-sub rsp, 40
-    
-    mov QWORD PTR [cursor], 0
+mov QWORD PTR [cursor], 0
     inc QWORD PTR [cursor]
     dec QWORD PTR [cursor]
-    mov     eax, 0
+    
+    mov rcx, [cursor]
+    mov     eax, [cursor]
     ret
 ex_03_cursor_move ENDP
 main PROC

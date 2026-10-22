@@ -13,8 +13,7 @@ dst BYTE 5 DUP(?)
 .code
 
 ex_07_rep_movsb PROC
-sub rsp, 40
-    lea rsi, src
+lea rsi, src
     lea rdi, dst
     mov rcx, 5
     rep movsb
@@ -29,7 +28,7 @@ sub rsp, 40
     add rcx, rax
     movzx rax, BYTE PTR dst[4]
     add rcx, rax
-    mov     eax, 15
+    mov     eax, ecx
     ret
 ex_07_rep_movsb ENDP
 main PROC

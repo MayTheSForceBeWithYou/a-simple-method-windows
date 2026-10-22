@@ -15,8 +15,7 @@ held QWORD ?
 .code
 
 ex_16_repeat_delay PROC
-sub rsp, 40
-    mov QWORD PTR [held], 3
+mov QWORD PTR [held], 3
     cmp QWORD PTR [held], 3
     jl not_fire
     mov rcx, 1

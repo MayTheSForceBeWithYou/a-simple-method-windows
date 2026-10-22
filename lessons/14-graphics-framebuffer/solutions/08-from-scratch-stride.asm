@@ -12,10 +12,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_stride PROC
-sub rsp, 40
-    mov rcx, 16
+mov rcx, 16
     imul rcx, 4
-    mov     eax, 64
+    mov     eax, ecx
     ret
 ex_08_from_scratch_stride ENDP
 main PROC

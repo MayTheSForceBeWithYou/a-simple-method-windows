@@ -5,8 +5,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_rol PROC
-sub rsp, 40
-    mov al, 80h
+mov al, 80h
     rol al, 1
     movzx rcx, al
     mov     eax, 1

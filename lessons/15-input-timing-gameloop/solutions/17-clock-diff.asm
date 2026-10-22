@@ -12,11 +12,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_17_clock_diff PROC
-sub rsp, 40
-    mov rax, 100
+mov rax, 100
     mov rbx, 60
     sub rax, rbx
-    mov     eax, 40
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_17_clock_diff ENDP
 main PROC

@@ -7,10 +7,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_debug_callee_clobber PROC
-sub rsp, 40
-    mov rbx, 11
+mov rbx, 11
     call evil
-    mov     eax, 11
+    mov rcx, rbx
+    mov     eax, rbx
     ret
 ex_16_debug_callee_clobber ENDP
 main PROC

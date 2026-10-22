@@ -8,12 +8,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_q8 PROC
-sub rsp, 40
-    mov eax, (1 SHL 8)+(1 SHL 7)
+mov eax, (1 SHL 8)+(1 SHL 7)
     mov ebx, 2 SHL 8
     imul eax, ebx
     shr eax, 16
-    mov     eax, 3
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_08_from_scratch_q8 ENDP
 main PROC

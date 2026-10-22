@@ -14,8 +14,7 @@ table QWORD ?
 .code
 
 ex_21_intern_string PROC
-sub rsp, 40
-    lea rax, a
+lea rax, a
     mov QWORD PTR [table], rax
     mov rbx, QWORD PTR [table]
     cmp rax, rbx

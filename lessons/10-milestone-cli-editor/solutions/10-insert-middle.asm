@@ -18,9 +18,7 @@ cur QWORD ?
 .code
 
 ex_10_insert_middle PROC
-sub rsp, 40
-    
-    mov QWORD PTR [len], 2
+mov QWORD PTR [len], 2
     mov QWORD PTR [cur], 1
     
     ; Shift right from end
@@ -43,7 +41,7 @@ L_put:
     inc QWORD PTR [len]
     
     movzx rcx, BYTE PTR [rdx+1]
-    mov     eax, 66
+    mov     eax, ecx
     ret
 ex_10_insert_middle ENDP
 main PROC

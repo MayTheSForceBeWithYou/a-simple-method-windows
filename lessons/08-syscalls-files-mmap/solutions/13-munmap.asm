@@ -13,9 +13,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_13_munmap PROC
-sub rsp, 40
-    
-    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
     mov rdx, 4096       ; dwSize
     mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
@@ -37,8 +35,11 @@ sub rsp, 40
     jz L_f
     
     ; Success - exit 0
+    mov rcx, 0
+
 L_f:
     ; Failure - exit 1
+    mov rcx, 1
     mov     eax, 0
     ret
 ex_13_munmap ENDP

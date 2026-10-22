@@ -11,8 +11,7 @@ v BYTE 1,2,3,4
 .code
 
 ex_07_simd_lane_sum_stub PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
     movzx rax, BYTE PTR [v]
     add rcx, rax
     movzx rax, BYTE PTR [v+1]

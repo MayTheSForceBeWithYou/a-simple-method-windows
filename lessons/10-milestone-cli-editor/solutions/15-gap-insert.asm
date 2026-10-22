@@ -15,9 +15,7 @@ gap_e QWORD ?
 .code
 
 ex_15_gap_insert PROC
-sub rsp, 40
-    
-    mov QWORD PTR [gap_s], 2
+mov QWORD PTR [gap_s], 2
     mov QWORD PTR [gap_e], 6
     
     ; Insert one char at gap_s
@@ -26,7 +24,7 @@ sub rsp, 40
     ; Calculate free space
     mov rcx, [gap_e]
     sub rcx, [gap_s]
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_15_gap_insert ENDP
 main PROC

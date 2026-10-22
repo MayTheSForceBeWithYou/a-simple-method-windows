@@ -20,9 +20,7 @@ written DWORD ?
 .code
 
 ex_09_write_len_check PROC
-sub rsp, 56
-    
-    ; Get stdout handle
+; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     
@@ -51,7 +49,7 @@ L_o:
     ret
 ex_09_write_len_check ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_09_write_len_check
     mov     rcx, rax
     call    ExitProcess

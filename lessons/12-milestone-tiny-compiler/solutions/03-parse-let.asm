@@ -11,8 +11,7 @@ kw BYTE "let", 0
 .code
 
 ex_03_parse_let PROC
-sub rsp, 40
-    cmp BYTE PTR [kw], 'l'
+cmp BYTE PTR [kw], 'l'
     jne not_l
     mov rcx, 1
     jmp done

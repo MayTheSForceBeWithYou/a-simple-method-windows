@@ -20,9 +20,7 @@ ENDM
 .code
 
 ex_24_from_scratch_macro_abs PROC
-sub rsp, 40
-    
-    mov rcx, -9
+mov rcx, -9
     ABS rcx
     mov     eax, 9
     ret

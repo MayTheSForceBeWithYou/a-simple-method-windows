@@ -10,11 +10,11 @@ arr QWORD 1,2,3,4
 .code
 
 ex_05_array_reverse PROC
-sub rsp, 40
-    lea rcx, arr
+lea rcx, arr
     mov rdx, 4
     call rev_array
-    mov     eax, 4
+    mov rcx, arr
+    mov     eax, arr
     ret
 ex_05_array_reverse ENDP
 main PROC

@@ -8,11 +8,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_21_debug_fold_bug PROC
-sub rsp, 40
-    mov rax, 2
+mov rax, 2
     imul rax, 3
     add rax, 4
-    mov     eax, 10
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_21_debug_fold_bug ENDP
 main PROC

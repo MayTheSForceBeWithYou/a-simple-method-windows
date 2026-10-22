@@ -8,11 +8,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_const_fold PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     add rax, 2
     imul rax, 3
-    mov     eax, 9
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_08_from_scratch_const_fold ENDP
 main PROC

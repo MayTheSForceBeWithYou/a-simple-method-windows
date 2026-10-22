@@ -11,13 +11,13 @@ src BYTE "!", 0
 .code
 
 ex_12_strcat_lite PROC
-sub rsp, 40
-    lea rcx, dst
+lea rcx, dst
     lea rdx, src
     call strcat_fn
     lea rcx, dst
     call strlen_fn
-    mov     eax, 3
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_12_strcat_lite ENDP
 main PROC

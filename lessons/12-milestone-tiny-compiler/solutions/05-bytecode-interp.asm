@@ -15,8 +15,7 @@ sp_ QWORD ?
 .code
 
 ex_05_bytecode_interp PROC
-sub rsp, 40
-    mov QWORD PTR [sp_], 0
+mov QWORD PTR [sp_], 0
     lea rsi, [vmcode]
 loop_vm:
     movzx rax, BYTE PTR [rsi]
@@ -53,7 +52,8 @@ vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stack]
-    mov     eax, 9
+    mov rcx, QWORD PTR [r11+rcx*8]
+    ; return value already in EAX/RAX
     ret
 ex_05_bytecode_interp ENDP
 main PROC

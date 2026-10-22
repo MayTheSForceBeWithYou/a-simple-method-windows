@@ -11,13 +11,12 @@ bump QWORD ?
 .code
 
 ex_04_arena_bump PROC
-sub rsp, 40
-    mov QWORD PTR [bump], 0
+mov QWORD PTR [bump], 0
     add QWORD PTR [bump], 16
     add QWORD PTR [bump], 16
     mov rcx, QWORD PTR [bump]
     and rcx, 255
-    mov     eax, 32
+    mov     eax, ecx
     ret
 ex_04_arena_bump ENDP
 main PROC

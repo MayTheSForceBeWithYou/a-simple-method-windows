@@ -14,12 +14,12 @@ PUBLIC helper_add
 .code
 
 ex_14_multifile_sim_globals PROC
-sub rsp, 40
-    
-    mov rcx, 20
+mov rcx, 20
     mov rdx, 22
     call helper_add
-    mov     eax, 42
+    
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_14_multifile_sim_globals ENDP
 main PROC

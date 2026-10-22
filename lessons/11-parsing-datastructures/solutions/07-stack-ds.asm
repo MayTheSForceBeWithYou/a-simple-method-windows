@@ -12,8 +12,7 @@ sp_ QWORD ?
 .code
 
 ex_07_stack_ds PROC
-sub rsp, 40
-    mov QWORD PTR [sp_], 0
+mov QWORD PTR [sp_], 0
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
     mov QWORD PTR [r11+rcx*8], 1
@@ -25,7 +24,8 @@ sub rsp, 40
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
-    mov     eax, 2
+    mov rcx, QWORD PTR [r11+rcx*8]
+    mov     eax, QWORD PTR [r11+rcx*8]
     ret
 ex_07_stack_ds ENDP
 main PROC

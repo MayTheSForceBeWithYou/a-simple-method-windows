@@ -12,15 +12,15 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_06_hash_cell PROC
-sub rsp, 40
-    mov rax, 10
+mov rax, 10
     shr rax, 3
     mov rbx, 10
     shr rbx, 3
     shl rbx, 4
     add rax, rbx
     and rax, 255
-    mov     eax, 17
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_06_hash_cell ENDP
 main PROC

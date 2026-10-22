@@ -17,9 +17,7 @@ ENDM
 .code
 
 ex_12_strstr_macro_label PROC
-sub rsp, 40
-    
-    xor rcx, rcx
+xor rcx, rcx
     TWICE
     mov     eax, 2
     ret

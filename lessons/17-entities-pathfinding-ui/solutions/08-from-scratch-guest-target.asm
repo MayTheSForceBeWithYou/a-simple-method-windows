@@ -12,7 +12,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_08_from_scratch_guest_target PROC
-sub rsp, 40
+mov rcx, 7
     mov     eax, 7
     ret
 ex_08_from_scratch_guest_target ENDP

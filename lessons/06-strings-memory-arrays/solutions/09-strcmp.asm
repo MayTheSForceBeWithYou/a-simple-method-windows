@@ -11,11 +11,11 @@ b BYTE "abd", 0
 .code
 
 ex_09_strcmp PROC
-sub rsp, 40
-    lea rcx, a
+lea rcx, a
     lea rdx, b
     call strcmp_fn
-    mov     eax, 1
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_09_strcmp ENDP
 main PROC

@@ -11,8 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_05_mov_chain PROC
-sub rsp, 40
-    mov al, 3
+mov al, 3
     mov bl, 5
     mov cl, 7
     mov dil, al

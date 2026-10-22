@@ -12,13 +12,13 @@ v2 QWORD ?
 .code
 
 ex_14_codegen_add_regs PROC
-sub rsp, 40
-    mov QWORD PTR [v1], 10
+mov QWORD PTR [v1], 10
     mov QWORD PTR [v2], 32
     mov rax, QWORD PTR [v1]
     add rax, QWORD PTR [v2]
     mov QWORD PTR [v1], rax
-    mov     eax, 42
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_14_codegen_add_regs ENDP
 main PROC

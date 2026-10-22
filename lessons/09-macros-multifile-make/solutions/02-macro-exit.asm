@@ -17,8 +17,7 @@ ENDM
 .code
 
 ex_02_macro_exit PROC
-sub rsp, 40
-    exit_with 7
+exit_with 7
     mov     eax, 7
     ret
 ex_02_macro_exit ENDP

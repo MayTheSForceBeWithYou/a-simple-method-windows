@@ -8,10 +8,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_21_fast_inv_stub PROC
-sub rsp, 40
-    mov rax, 10
+mov rax, 10
     shr rax, 1
-    mov     eax, 5
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_21_fast_inv_stub ENDP
 main PROC

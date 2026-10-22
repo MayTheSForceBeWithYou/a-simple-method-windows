@@ -7,10 +7,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_14_mutual_parity_count PROC
-sub rsp, 40
-    mov rcx, 6
+mov rcx, 6
     call is_even
-    mov     eax, 1
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_14_mutual_parity_count ENDP
 main PROC

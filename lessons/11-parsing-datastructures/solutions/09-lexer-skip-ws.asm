@@ -11,8 +11,7 @@ s BYTE "  7", 0
 .code
 
 ex_09_lexer_skip_ws PROC
-sub rsp, 40
-    lea rsi, s
+lea rsi, s
 loop_skip:
     cmp BYTE PTR [rsi], ' '
     jne done_skip

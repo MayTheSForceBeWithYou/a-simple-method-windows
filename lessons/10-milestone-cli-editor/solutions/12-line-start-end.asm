@@ -14,9 +14,7 @@ buf BYTE "ab", 10, "cd", 0
 .code
 
 ex_12_line_start_end PROC
-sub rsp, 40
-    
-    mov rcx, 4
+mov rcx, 4
     lea rdx, buf
     
 L_l:
@@ -28,7 +26,7 @@ L_l:
     inc rcx
     
 L_d:
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_12_line_start_end ENDP
 main PROC

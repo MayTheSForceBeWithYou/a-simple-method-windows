@@ -14,8 +14,7 @@ slot BYTE ?
 .code
 
 ex_03_bss_store PROC
-sub rsp, 40
-    mov BYTE PTR [slot], 7
+mov BYTE PTR [slot], 7
     movzx rcx, BYTE PTR [slot]
     mov     eax, 7
     ret

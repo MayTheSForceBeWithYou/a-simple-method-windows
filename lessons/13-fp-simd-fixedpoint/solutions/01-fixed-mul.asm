@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_01_fixed_mul PROC
-sub rsp, 40
-    mov eax, 2
+mov eax, 2
     shl eax, 16
     mov ebx, 3
     shl ebx, 16
@@ -17,7 +16,8 @@ sub rsp, 40
     movsxd rbx, ebx
     imul rax, rbx
     shr rax, 32
-    mov     eax, 6
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_01_fixed_mul ENDP
 main PROC

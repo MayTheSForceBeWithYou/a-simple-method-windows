@@ -14,10 +14,9 @@ count QWORD 41
 .code
 
 ex_01_data_dq PROC
-sub rsp, 40
-    mov rcx, [count]
+mov rcx, [count]
     add rcx, 1
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_01_data_dq ENDP
 main PROC

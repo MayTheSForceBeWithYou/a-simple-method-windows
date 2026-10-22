@@ -14,10 +14,10 @@ arr QWORD 5, 10, 15, 20
 .code
 
 ex_07_scaled_index PROC
-sub rsp, 40
-    mov r8, 2
+mov r8, 2
     lea r11, [arr]
-    mov     eax, 15
+    mov rcx, QWORD PTR [r11+r8*8]
+    mov     eax, QWORD PTR [r11+r8*8]
     ret
 ex_07_scaled_index ENDP
 main PROC

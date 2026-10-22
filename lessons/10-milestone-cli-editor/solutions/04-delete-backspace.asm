@@ -14,15 +14,14 @@ len QWORD ?
 .code
 
 ex_04_delete_backspace PROC
-sub rsp, 40
-    
-    mov QWORD PTR [len], 2
+mov QWORD PTR [len], 2
     cmp QWORD PTR [len], 0
     je L_o
     dec QWORD PTR [len]
     
 L_o:
-    mov     eax, 1
+    mov rcx, [len]
+    mov     eax, [len]
     ret
 ex_04_delete_backspace ENDP
 main PROC

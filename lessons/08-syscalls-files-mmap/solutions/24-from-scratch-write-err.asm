@@ -18,9 +18,7 @@ written DWORD ?
 .code
 
 ex_24_from_scratch_write_err PROC
-sub rsp, 56
-    
-    ; WriteFile with invalid handle (-1)
+; WriteFile with invalid handle (-1)
     mov rcx, -1             ; invalid handle
     lea rdx, msg
     mov r8d, 1
@@ -45,7 +43,7 @@ L_o:
     ret
 ex_24_from_scratch_write_err ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_24_from_scratch_write_err
     mov     rcx, rax
     call    ExitProcess

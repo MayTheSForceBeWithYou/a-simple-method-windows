@@ -10,14 +10,14 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_18_guest_happiness PROC
-sub rsp, 40
-    mov rax, 90
+mov rax, 90
     add rax, 20
     cmp rax, 100
     jle happy_ok
     mov rax, 100
 happy_ok:
-    mov     eax, 100
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_18_guest_happiness ENDP
 main PROC

@@ -18,8 +18,7 @@ dst BYTE 4 DUP(?)
 .code
 
 ex_14_blit_key PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
 loop_start:
     cmp rcx, 4
     jge loop_end

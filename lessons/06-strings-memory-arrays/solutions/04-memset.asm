@@ -10,8 +10,7 @@ buf BYTE 4 DUP(?)
 .code
 
 ex_04_memset PROC
-sub rsp, 40
-    lea rcx, buf
+lea rcx, buf
     mov rdx, 7
     mov r8, 4
     call memset_fn

@@ -15,10 +15,9 @@ VFLIP EQU 2
 .code
 
 ex_17_flip_flags PROC
-sub rsp, 40
-    mov rcx, HFLIP
+mov rcx, HFLIP
     or rcx, VFLIP
-    mov     eax, 3
+    mov     eax, ecx
     ret
 ex_17_flip_flags ENDP
 main PROC

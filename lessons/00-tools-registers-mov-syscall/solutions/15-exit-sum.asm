@@ -11,14 +11,13 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_15_exit_sum PROC
-sub rsp, 40
-    mov r8, 10
+mov r8, 10
     mov r9, 20
     mov r10, 12
     mov rcx, r8
     add rcx, r9
     add rcx, r10
-    mov     eax, 42
+    mov     eax, ecx
     ret
 ex_15_exit_sum ENDP
 main PROC

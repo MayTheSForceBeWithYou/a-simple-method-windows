@@ -12,10 +12,10 @@ n QWORD ?
 .code
 
 ex_08_from_scratch_token_buf PROC
-sub rsp, 40
-    mov BYTE PTR [lex], 'x'
+mov BYTE PTR [lex], 'x'
     mov QWORD PTR [n], 1
-    mov     eax, 1
+    mov rcx, QWORD PTR [n]
+    mov     eax, QWORD PTR [n]
     ret
 ex_08_from_scratch_token_buf ENDP
 main PROC

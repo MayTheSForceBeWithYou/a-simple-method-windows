@@ -10,11 +10,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_27_debug_stack_imbalance PROC
-sub rsp, 40
-    .ALLOCSTACK 40
+.ALLOCSTACK 40
     .ENDPROLOG
     call two
-    mov     eax, 2
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_27_debug_stack_imbalance ENDP
 main PROC

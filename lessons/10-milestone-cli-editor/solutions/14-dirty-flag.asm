@@ -14,9 +14,7 @@ dirty BYTE ?
 .code
 
 ex_14_dirty_flag PROC
-sub rsp, 40
-    
-    ; Edit sets dirty
+; Edit sets dirty
     mov BYTE PTR [dirty], 1
     
     ; Save clears dirty

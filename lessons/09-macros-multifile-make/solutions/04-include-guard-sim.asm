@@ -16,8 +16,8 @@ ENDIF
 .code
 
 ex_04_include_guard_sim PROC
-sub rsp, 40
-    mov     eax, 42
+mov rcx, ANSWER
+    mov     eax, ANSWER
     ret
 ex_04_include_guard_sim ENDP
 main PROC

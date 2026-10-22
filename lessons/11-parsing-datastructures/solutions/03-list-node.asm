@@ -11,10 +11,10 @@ node QWORD 2 DUP(?)
 .code
 
 ex_03_list_node PROC
-sub rsp, 40
-    mov QWORD PTR [node], 9
+mov QWORD PTR [node], 9
     mov QWORD PTR [node+8], 0
-    mov     eax, 9
+    mov rcx, QWORD PTR [node]
+    mov     eax, QWORD PTR [node]
     ret
 ex_03_list_node ENDP
 main PROC

@@ -12,15 +12,15 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_anim_frame PROC
-sub rsp, 40
-    mov rax, 10
+mov rax, 10
     xor rdx, rdx
     mov rbx, 4
     div rbx
     xor rdx, rdx
     mov rbx, 3
     div rbx
-    mov     eax, 2
+    mov rcx, rdx
+    ; return value already in EAX/RAX
     ret
 ex_16_anim_frame ENDP
 main PROC

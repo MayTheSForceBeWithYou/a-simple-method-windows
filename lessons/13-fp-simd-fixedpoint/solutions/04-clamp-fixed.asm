@@ -8,15 +8,15 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_04_clamp_fixed PROC
-sub rsp, 40
-    mov eax, 10 SHL 16
+mov eax, 10 SHL 16
     mov ebx, 8 SHL 16
     cmp eax, ebx
     jle clamp_ok
     mov eax, ebx
 clamp_ok:
     shr eax, 16
-    mov     eax, 8
+    mov ecx, eax
+    ; return value already in EAX/RAX
     ret
 ex_04_clamp_fixed ENDP
 main PROC

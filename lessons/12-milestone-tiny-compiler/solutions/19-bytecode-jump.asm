@@ -15,8 +15,7 @@ sp_ QWORD ?
 .code
 
 ex_19_bytecode_jump PROC
-sub rsp, 40
-    mov QWORD PTR [sp_], 0
+mov QWORD PTR [sp_], 0
     lea rsi, [vmcode]
 loop_vm:
     movzx rax, BYTE PTR [rsi]
@@ -45,7 +44,8 @@ vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
-    mov     eax, 5
+    mov rcx, QWORD PTR [r11+rcx*8]
+    mov     eax, QWORD PTR [r11+rcx*8]
     ret
 ex_19_bytecode_jump ENDP
 main PROC

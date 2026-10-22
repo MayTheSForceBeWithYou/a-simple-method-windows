@@ -8,8 +8,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_17_while_codegen PROC
-sub rsp, 40
-    xor rcx, rcx
+xor rcx, rcx
 loop_while:
     cmp rcx, 3
     jge done_while

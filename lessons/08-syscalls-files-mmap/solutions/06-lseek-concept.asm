@@ -11,9 +11,7 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_06_lseek_concept PROC
-sub rsp, 40
-    
-    ; Simulate offset calculation
+; Simulate offset calculation
     mov rcx, 0
     add rcx, 10
     mov     eax, 10

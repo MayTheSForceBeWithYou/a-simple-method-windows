@@ -7,10 +7,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_21_rec_binary_digits PROC
-sub rsp, 40
-    mov rcx, 1101b
+mov rcx, 1101b
     call poprec
-    mov     eax, 3
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_21_rec_binary_digits ENDP
 main PROC

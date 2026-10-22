@@ -11,13 +11,13 @@ bump QWORD ?
 .code
 
 ex_14_arena_align PROC
-sub rsp, 40
-    mov QWORD PTR [bump], 1
+mov QWORD PTR [bump], 1
     mov rax, QWORD PTR [bump]
     add rax, 7
     and rax, NOT 7
     mov QWORD PTR [bump], rax
-    mov     eax, 8
+    mov rcx, rax
+    ; return value already in EAX/RAX
     ret
 ex_14_arena_align ENDP
 main PROC

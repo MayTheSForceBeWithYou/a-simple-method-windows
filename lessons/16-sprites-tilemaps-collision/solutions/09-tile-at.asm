@@ -15,13 +15,12 @@ map BYTE 0,1,2,3, 4,5,6,7
 .code
 
 ex_09_tile_at PROC
-sub rsp, 40
-    mov rax, 1
+mov rax, 1
     imul rax, 4
     add rax, 1
     lea r11, [map]
     movzx rcx, BYTE PTR [r11+rax]
-    mov     eax, 5
+    ; return value already in EAX/RAX
     ret
 ex_09_tile_at ENDP
 main PROC

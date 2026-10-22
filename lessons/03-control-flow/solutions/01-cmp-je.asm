@@ -6,9 +6,7 @@
 EXTRN ExitProcess:PROC
 
 ex_01_cmp_je PROC
-sub rsp, 40
-    
-    mov rax, 10
+mov rax, 10
     mov rbx, 10
     cmp rax, rbx
     je equal
@@ -17,7 +15,7 @@ sub rsp, 40
 equal:
     mov rcx, 1
 done:
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_01_cmp_je ENDP
 main PROC

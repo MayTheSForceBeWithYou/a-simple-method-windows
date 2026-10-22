@@ -5,11 +5,10 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_05_sar_sign PROC
-sub rsp, 40
-    mov rax, -8
+mov rax, -8
     sar rax, 1
     movzx rcx, al
-    mov     eax, 252
+    ; return value already in EAX/RAX
     ret
 ex_05_sar_sign ENDP
 main PROC

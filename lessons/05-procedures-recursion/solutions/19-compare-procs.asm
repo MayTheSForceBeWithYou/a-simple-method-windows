@@ -7,11 +7,11 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_19_compare_procs PROC
-sub rsp, 40
-    mov rcx, 3
+mov rcx, 3
     mov rdx, 5
     call cmp_i64
-    mov     eax, 0
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_19_compare_procs ENDP
 main PROC

@@ -10,10 +10,10 @@ s BYTE "hello", 0
 .code
 
 ex_01_strlen PROC
-sub rsp, 40
-    lea rcx, s
+lea rcx, s
     call strlen_fn
-    mov     eax, 5
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_01_strlen ENDP
 main PROC

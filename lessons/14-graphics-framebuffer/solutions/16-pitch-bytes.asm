@@ -12,10 +12,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_16_pitch_bytes PROC
-sub rsp, 40
-    mov rcx, 5
+mov rcx, 5
     imul rcx, 4
-    mov     eax, 20
+    mov     eax, ecx
     ret
 ex_16_pitch_bytes ENDP
 main PROC

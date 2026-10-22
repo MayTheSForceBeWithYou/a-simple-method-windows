@@ -11,8 +11,7 @@ s BYTE "3", 0
 .code
 
 ex_06_rd_parse_num PROC
-sub rsp, 40
-    movzx rcx, BYTE PTR [s]
+movzx rcx, BYTE PTR [s]
     sub rcx, '0'
     mov     eax, 3
     ret

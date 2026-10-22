@@ -18,10 +18,10 @@ ENDM
 .code
 
 ex_20_macro_with_params PROC
-sub rsp, 40
+ADD3 10, 20, 12
     
-    ADD3 10, 20, 12
-    mov     eax, 42
+    mov rcx, rax
+    mov     eax, rax
     ret
 ex_20_macro_with_params ENDP
 main PROC

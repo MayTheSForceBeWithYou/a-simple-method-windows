@@ -6,9 +6,7 @@
 EXTRN ExitProcess:PROC
 
 ex_05_signed_cmp PROC
-sub rsp, 40
-    
-    mov rax, -5
+mov rax, -5
     mov rbx, 3
     cmp rax, rbx
     jl less_than
@@ -17,7 +15,7 @@ sub rsp, 40
 less_than:
     mov rcx, 1
 done:
-    mov     eax, 1
+    ; return value already in EAX/RAX
     ret
 ex_05_signed_cmp ENDP
 main PROC

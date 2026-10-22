@@ -16,9 +16,7 @@ cur QWORD ?
 .code
 
 ex_09_insert_at_cursor PROC
-sub rsp, 40
-    
-    mov QWORD PTR [len], 0
+mov QWORD PTR [len], 0
     mov QWORD PTR [cur], 0
     
     mov rcx, [cur]
@@ -27,7 +25,9 @@ sub rsp, 40
     
     inc QWORD PTR [len]
     inc QWORD PTR [cur]
-    mov     eax, 1
+    
+    mov rcx, [cur]
+    mov     eax, [cur]
     ret
 ex_09_insert_at_cursor ENDP
 main PROC

@@ -11,12 +11,12 @@ next_slot QWORD ?
 .code
 
 ex_15_local_slot_alloc PROC
-sub rsp, 40
-    mov QWORD PTR [next_slot], 0
+mov QWORD PTR [next_slot], 0
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
-    mov     eax, 3
+    mov rcx, QWORD PTR [next_slot]
+    mov     eax, QWORD PTR [next_slot]
     ret
 ex_15_local_slot_alloc ENDP
 main PROC

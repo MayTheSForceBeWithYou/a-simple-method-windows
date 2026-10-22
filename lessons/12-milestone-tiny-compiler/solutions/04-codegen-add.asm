@@ -8,10 +8,9 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_04_codegen_add PROC
-sub rsp, 40
-    mov rcx, 2
+mov rcx, 2
     add rcx, 3
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_04_codegen_add ENDP
 main PROC

@@ -15,8 +15,7 @@ d DWORD 033445566h
 .code
 
 ex_10_word_dword PROC
-sub rsp, 40
-    movzx rcx, BYTE PTR [w]
+movzx rcx, BYTE PTR [w]
     mov     eax, 34
     ret
 ex_10_word_dword ENDP

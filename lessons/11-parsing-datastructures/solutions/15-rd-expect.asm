@@ -11,8 +11,7 @@ s BYTE "(1)", 0
 .code
 
 ex_15_rd_expect PROC
-sub rsp, 40
-    cmp BYTE PTR [s], '('
+cmp BYTE PTR [s], '('
     jne not_found
     mov rcx, 1
     jmp done

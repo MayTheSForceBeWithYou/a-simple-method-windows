@@ -15,10 +15,9 @@ E EQU 4
 .code
 
 ex_20_tile_autotile_mask PROC
-sub rsp, 40
-    mov rcx, N
+mov rcx, N
     or rcx, E
-    mov     eax, 5
+    mov     eax, ecx
     ret
 ex_20_tile_autotile_mask ENDP
 main PROC

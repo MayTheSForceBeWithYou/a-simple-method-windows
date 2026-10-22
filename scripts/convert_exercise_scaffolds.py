@@ -187,6 +187,32 @@ def parse_expected_exit(text: str) -> str:
     return "0"
 
 
+def strip_stack_adjustments(body: str) -> str:
+    lines = []
+    for line in body.splitlines():
+        s = line.split(";", 1)[0].strip().lower()
+        if s.startswith("sub rsp") or s.startswith("add rsp"):
+            continue
+        lines.append(line)
+    return "\n".join(lines).strip()
+
+
+def exit_value_from_main_inner(inner: str, fallback: str) -> str:
+    m = re.search(
+        r"mov\s+(rcx|rax|ecx|eax)\s*,\s*([^\n;]+)\s*\n\s*call\s+ExitProcess",
+        inner,
+        re.I,
+    )
+    if m:
+        return m.group(2).strip()
+    return fallback
+
+
+def main_stack_reserve(inner: str) -> str:
+    m = re.search(r"sub\s+rsp,\s*(\d+)", inner, re.I)
+    return m.group(1) if m else "40"
+
+
 def convert_solution_text(text: str, sym: str) -> str:
     if proc_defined(text, sym):
         return text
@@ -197,27 +223,37 @@ def convert_solution_text(text: str, sym: str) -> str:
     )
     if not m:
         return text
-    exit_code = parse_expected_exit(text)
-    body = m.group(2)
-    body = re.sub(
-        r"(?is)\s*mov\s+(?:rcx|rax|ecx|eax)\s*,[^\n]+\s*\n\s*call\s+ExitProcess\s*",
-        "\n",
-        body,
-    )
-    body = re.sub(r"(?is)\s*call\s+ExitProcess\s*", "\n", body)
+    inner = m.group(2)
+    stack = main_stack_reserve(inner)
+    exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
+    body = strip_stack_adjustments(inner)
+    body = re.sub(r"(?im)^\s*call\s+ExitProcess\s*$", "", body)
     body = body.strip()
     if not body:
         body = "    ; student solution"
 
+    tail = f"    mov     eax, {exit_val}"
+    if re.search(r"\bmov\s+eax\s*,", body, re.I) or re.search(
+        r"\bmov\s+rax\s*,", body, re.I
+    ):
+        tail = "    ; return value already in EAX/RAX"
+    elif re.search(r"\bmov\s+ecx\s*,", body, re.I) or re.search(
+        r"\bmov\s+rcx\s*,", body, re.I
+    ):
+        if exit_val in body:
+            tail = f"    mov     eax, {exit_val}"
+        else:
+            tail = "    mov     eax, ecx"
+
     proc = f"""
 {sym} PROC
 {body}
-    mov     eax, {exit_code}
+{tail}
     ret
 {sym} ENDP
 """
     new_main = f"""main PROC
-    sub     rsp, 40
+    sub     rsp, {stack}
     call    {sym}
     mov     rcx, rax
     call    ExitProcess

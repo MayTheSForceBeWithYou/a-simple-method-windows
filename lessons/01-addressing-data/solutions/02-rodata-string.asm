@@ -21,9 +21,7 @@ hStdOut QWORD ?
 .code
 
 ex_02_rodata_string PROC
-sub rsp, 56
-    
-    ; Get stdout handle
+; Get stdout handle
     mov rcx, -11
     call GetStdHandle
     mov hStdOut, rax
@@ -37,11 +35,12 @@ sub rsp, 56
     call WriteFile
     
     ; Exit 0
+    mov rcx, 0
     mov     eax, 0
     ret
 ex_02_rodata_string ENDP
 main PROC
-    sub     rsp, 40
+    sub     rsp, 56
     call    ex_02_rodata_string
     mov     rcx, rax
     call    ExitProcess

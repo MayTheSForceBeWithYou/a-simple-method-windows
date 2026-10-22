@@ -11,13 +11,12 @@ EXTERN ExitProcess:PROC
 .code
 
 ex_06_mul_unsigned PROC
-sub rsp, 40
-    mov rax, 100000
+mov rax, 100000
     mov rbx, 3
     mul rbx
     mov rcx, rax
     and rcx, 255
-    mov     eax, 224
+    ; return value already in EAX/RAX
     ret
 ex_06_mul_unsigned ENDP
 main PROC
