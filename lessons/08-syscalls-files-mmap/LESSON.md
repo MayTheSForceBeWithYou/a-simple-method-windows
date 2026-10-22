@@ -1303,14 +1303,14 @@ ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib &&
 
 The exercises use the Win32 API and MASM syntax this lesson quotes.
 
-**File operations:** two `WriteFile` calls to stdout, read one byte from stdin, `03-open-fail` on a missing file, `10-open-nul` (`CreateFileA("NUL")` / `CloseHandle`, exit 0), `11-read-nul` (`ReadFile` 8 zeros from `NUL`, exit 0), check the byte count after `WriteFile`, `17-duplicate-handle` (`WriteFile` of `"Dup test"` plus CRLF to stdout — no `DuplicateHandle` call), debug a handle-leak pattern, write to an invalid HANDLE.
+**File operations:** `01-write-only` — two `WriteFile`s to stdout, exit **0**. `02-read-stdin-one` — read one byte from stdin, exit that byte (**65** for `"A"`; 0 at EOF). `03-open-fail` — missing path, exit **1**. `07-write-iov-lite` — two writes, exit **0**. `08-from-scratch-close` — open `NUL` read-only, `CloseHandle`, exit **0**. `09-write-len-check` — write and compare `bytesWritten`, exit **0**. `10-open-nul` — `CreateFileA("NUL")` write-only, close, exit **0**. `11-read-nul` — eight zero bytes (header: `VirtualAlloc` then read; sum 0), exit **0**. `17-duplicate-handle` — `WriteFile` to stdout, no `DuplicateHandle`, exit **0**. `21-debug-fd-leak-pattern` — open `NUL` and close the right HANDLE, exit **0**. `24-from-scratch-write-err` — `WriteFile` on handle −1, exit **1**.
 
-**Error handling:** `05-get-last-error-open` — `CreateFileA` on `C:\nope.txt`, then `GetLastError` (2 or 3). `18-error-eacces-sim` — open `C:\` with `GENERIC_WRITE` (expect `ERROR_ACCESS_DENIED`), exit 1 on error.
+**Error handling:** `05-get-last-error-open` — failed `CreateFileA`, then `GetLastError`; expected **2** (`ERROR_FILE_NOT_FOUND`). `18-error-eacces-sim` — open `C:\` with `GENERIC_WRITE`, exit **1**.
 
-**Seeking:** `06-set-file-pointer` is offset arithmetic (5 + 5, exit **10**), not a `SetFilePointer` call. `19-overlapped-write` opens `NUL`, `SetFilePointer` to 0 (`FILE_BEGIN`), `WriteFile` of `"Test"`, close, exit 0.
+**Seeking:** `06-set-file-pointer` is offset arithmetic (5 + 5, exit **10**), not a `SetFilePointer` call. `19-overlapped-write` opens `NUL`, seeks, `WriteFile`, close, exit **0**.
 
-**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit 42; `12-virtualalloc-read-write` — store 99 at offset 100, read it back, exit 99; `13-virtualfree` — allocate then `VirtualFree`, exit 0; `14-heapalloc` — `GetProcessHeap` nonzero, exit 0; `20-allocation-granularity` — fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
+**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit **42**. `12-virtualalloc-read-write` — store 99 at offset 100, read it back, exit **99**. `13-virtualfree` — `VirtualAlloc` then `VirtualFree`, exit **0**. `14-heapalloc` uses `GetProcessHeap` and `HeapAlloc`, not `VirtualAlloc`; exit **0** if the heap HANDLE is valid. `20-allocation-granularity` — fill 16 bytes with 1, exit **16**. `22-stretch-file-copy-mem` — copy four bytes, sum them, exit **10**.
 
-**Other imports:** `15-getpid` — `GetCurrentProcessId`, then `test eax, eax` / `seta cl` so the status is **1** when the PID is above 0 (listing `06-get-process-id` — not `pid AND 07Fh`). `16-qpc` — `QueryPerformanceCounter`, exit 0. `23-stretch-createpipe` — `CreatePipe`, write `"ABC"`, read three bytes, exit **3** (listing `15-create-pipe`).
+**Other imports:** `15-getpid` — `GetCurrentProcessId`; exit **0** if the PID is nonzero, else 1. That is not listing `06-get-process-id` (`test` / `seta`, exit **1**). `16-qpc` — `QueryPerformanceCounter`, exit **0**. `23-stretch-createpipe` — `CreatePipe`, write `"ABC"` through the pipe, read it back, exit **3**.
 
-Expected exits are in each file header under `exercises/` (there is no `exercises/08-syscalls-files-mmap/README.md`).
+Expected exits are in each file header under `exercises/` — all 494 exercise `.asm` files on this tree carry one. There is no `exercises/08-syscalls-files-mmap/README.md`.

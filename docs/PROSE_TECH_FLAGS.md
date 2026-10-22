@@ -1,10 +1,10 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`383c573`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`0adbc05`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
 
-Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `383c573`.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `0adbc05`.
 
-**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39708631683](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39708631683)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`).
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39711077966](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39711077966)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`). All **494** exercise `.asm` files carry an `Expected exit` header.
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -52,7 +52,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `383c573`.
 | L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
 | L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
 | L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. |
-| L08 exercise names | `04-virtualalloc`, `05-get-last-error-open`, `06-set-file-pointer`, `10-open-nul`, `11-read-nul`, `12-virtualalloc-read-write`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `17-duplicate-handle`, `19-overlapped-write`, `20-allocation-granularity`, `23-stretch-createpipe`. |
+| L08 exercise names | Win32 names as at `0adbc05`. `14-heapalloc` is `GetProcessHeap` / `HeapAlloc` (not `VirtualAlloc`), exit **0**. `15-getpid` exits **0** when the PID is nonzero. `23-stretch-createpipe` writes `"ABC"`, reads it back, exit **3**. |
 | L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
 | L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
@@ -70,7 +70,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `383c573`.
 
 ## CI-confirmed exits that used to be traces
 
-These three were fixed at `ec4d05c` and remain CI-green at `383c573`:
+These three were fixed at `ec4d05c` and remain CI-green at `0adbc05`:
 
 - **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
 - **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).

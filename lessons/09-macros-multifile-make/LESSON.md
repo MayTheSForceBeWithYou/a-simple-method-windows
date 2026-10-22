@@ -1033,4 +1033,4 @@ The exercises use the MASM directives this lesson quotes.
 
 **Multi-file and NMake:** Comment-only multi-file note in a single file, exit 0. Single-file `EXTRN` simulation, exit 5. `PUBLIC` simulation, return 42. NMake phony-target comment, exit 0. `EXTRN` declaration without a second object, exit 9. Object count as an immediate, exit 3.
 
-Expected exits are in each file header under `exercises/` (there is no `exercises/09-macros-multifile-make/README.md`).
+Expected exits are in each file header under `exercises/` — all 494 exercise `.asm` files on this tree carry one. There is no `exercises/09-macros-multifile-make/README.md`.
