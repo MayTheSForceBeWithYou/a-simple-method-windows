@@ -28,7 +28,15 @@ def strip_debug_dead():
             t,
             flags=re.S,
         )
-        t2 = re.sub(r"\s*__ex_call:\s*\n", "\n", t2)
+        if "__ex_call:" not in t2 and re.search(r"\bjmp\s+__ex_call\b", t2):
+            t2 = re.sub(
+                r"(\n)(\s*; TODO: write ex_.*?\n\s*call\s+ex_)",
+                r"\n__ex_call:\2",
+                t2,
+                count=1,
+            )
+        else:
+            t2 = re.sub(r"\s*__ex_call:\s*\n", "\n", t2)
         if t2 != t:
             p.write_text(t2, encoding="utf-8")
             n += 1

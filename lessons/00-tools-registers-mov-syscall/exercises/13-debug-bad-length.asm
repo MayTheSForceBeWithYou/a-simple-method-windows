@@ -20,6 +20,7 @@ main PROC
     mov rcx, 1
     lea rdx, msg
     mov r8d, 2                  ; BUG: length too small — fix in ex_13_debug_bad_length
+__ex_call:
     ; TODO: write ex_13_debug_bad_length in this file.
     call    ex_13_debug_bad_length
     mov     ecx, eax
