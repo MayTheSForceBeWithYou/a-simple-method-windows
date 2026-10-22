@@ -460,3 +460,45 @@ END
 ## Exercises
 
 Work in `exercises/`. Build commands are in each file header. Solutions mirror names under `solutions/`. The standalone listings quoted above are `lessons/00-tools-registers-mov-syscall/listings/01-exit-code.asm` through `07-stderr-output.asm` on Jack's PR #5.
+
+`13-debug-bad-length` and `23-debug-stdout-fd` now keep the bug in a live `write_hi_buggy` — not unreachable instructions after `jmp __ex_call`. `05-mov-chain` sums `AL=3`, `BL=5`, `CL=7` into `AL` (not `DIL`), `movzx` to RCX, exit **15**.
+
+`13-debug-bad-length` writes `"Hi"` plus CRLF (`msg_len EQU $ - msg` is 4) but passes `r8d = 2`. Fix the length (`EQU` / `r8d`) in `ex_13_debug_bad_length`. Expected exit: **0**.
+
+```asm
+; BUG: r8d too small — student fixes this pattern inside ex_13_debug_bad_length.
+write_hi_buggy PROC
+    sub     rsp, 56
+    mov     rcx, -11
+    call    GetStdHandle
+    mov     rcx, rax
+    lea     rdx, msg
+    mov     r8d, 2
+    mov     r9, 0
+    mov     QWORD PTR [rsp+32], 0
+    mov     QWORD PTR [rsp+40], 0
+    call    WriteFile
+    mov     eax, 0
+    add     rsp, 56
+    ret
+write_hi_buggy ENDP
+```
+
+`23-debug-stdout-fd` calls `WriteFile` with `rcx = 1` instead of `GetStdHandle(-11)`. Fix the HANDLE in `ex_23_debug_stdout_fd`. Expected exit: **0**.
+
+```asm
+; BUG: rcx=1 is not stdout — use GetStdHandle(-11) in ex_23_debug_stdout_fd.
+write_hi_buggy PROC
+    sub     rsp, 56
+    mov     rcx, 1
+    lea     rdx, msg
+    mov     r8d, msg_len
+    mov     r9, 0
+    mov     QWORD PTR [rsp+32], 0
+    mov     QWORD PTR [rsp+40], 0
+    call    WriteFile
+    mov     eax, 0
+    add     rsp, 56
+    ret
+write_hi_buggy ENDP
+```

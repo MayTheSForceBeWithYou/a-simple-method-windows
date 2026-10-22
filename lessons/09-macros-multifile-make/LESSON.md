@@ -1029,7 +1029,17 @@ Multi-file drills still assemble one source per `ml64 /c` and pass every `.obj` 
 
 The exercises use the MASM directives this lesson quotes.
 
-**Macros:** `STATUS_OK EQU 0`, exit 0. `exit_with 7`, exit 7. A write macro that prints `M` plus CRLF, exit 0. `IFNDEF` guard, exit 42. `REPEAT 3` with `inc rdi`, exit 3. `ADD_IMM rdi, 2` after `mov rdi, 40`, exit 42. Push `rbx` and `r12`, pop in reverse, exit 5. Zero-argument `CALL_EXIT`, exit 0. Four `inc rdi` from `REPEAT 4`, exit 4. `TWICE` with `LOCAL`, two increments, exit 2. `IFDEF DEBUG` keeps `mov ecx, 1`, exit 1. `VERSION EQU 3`, exit 3. Store `"Q"` plus CRLF, exit 0. RIP-relative `lea`, exit 0. `ADD3` 10+20+12, exit 42. Supply the missing argument to `EXIT_STATUS`. Stretch: `STD_OUTPUT_HANDLE EQU -11`, `WriteFile` of `U` plus CRLF, exit 0. From scratch: `AbsVal` with `LOCAL`, exit 9.
+**Macros:** `STATUS_OK EQU 0`, exit 0. `exit_with 7`, exit 7. A write macro that prints `M` plus CRLF, exit 0. `IFNDEF` guard, exit 42. `REPEAT 3` with `inc rdi`, exit 3. `ADD_IMM rdi, 2` after `mov rdi, 40`, exit 42. Push `rbx` and `r12`, pop in reverse, exit 5. Zero-argument `CALL_EXIT`, exit 0. Four `inc rdi` from `REPEAT 4`, exit 4. `TWICE` with `LOCAL`, two increments, exit 2. `IFDEF DEBUG` keeps `mov ecx, 1`, exit 1. `VERSION EQU 3`, exit 3. Store `"Q"` plus CRLF, exit 0. RIP-relative `lea`, exit 0. `ADD3` 10+20+12, exit 42. Stretch: `STD_OUTPUT_HANDLE EQU -11`, `WriteFile` of `U` plus CRLF, exit 0. From scratch: `AbsVal` with `LOCAL`, exit 9.
+
+`21-debug-macro-arity` keeps the bug in a live `EXIT_STATUS` macro — not unreachable instructions after `jmp __ex_call`. The extra `skew` parameter defaults to 1 and is added into ECX. Drop `skew` and use `EXIT_STATUS 4` in `ex_21_debug_macro_arity`. Expected exit: **4**.
+
+```asm
+EXIT_STATUS MACRO status, skew:=<1>
+    mov ecx, status
+    add ecx, skew               ; BUG: drop skew parameter; macro should take only status
+    call ExitProcess
+ENDM
+```
 
 **Multi-file and NMake:** Comment-only multi-file note in a single file, exit 0. Single-file `EXTRN` simulation, exit 5. `PUBLIC` simulation, return 42. NMake phony-target comment, exit 0. `EXTRN` declaration without a second object, exit 9. Object count as an immediate, exit 3.
 

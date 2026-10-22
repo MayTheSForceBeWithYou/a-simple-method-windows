@@ -1,10 +1,10 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`b44543c`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge** PR #7.
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`8c8c661`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge** PR #7.
 
-Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `b44543c`. This branch also contains Jack’s `b44543c` tree via a normal merge (exercises/solutions/listings/harness), so PR #7’s Full Test Harness can run his fixed scaffolds.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `8c8c661`. This branch also contains Jack’s `8c8c661` tree via a normal merge (exercises/solutions/listings/harness), so PR #7’s Full Test Harness can run his fixed scaffolds.
 
-**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39712567477](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39712567477)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`). All **494** exercise `.asm` files carry an `Expected exit` header.
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39713412351](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39713412351)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`). All **494** exercise `.asm` files carry an `Expected exit` header. The harness also runs `tools/windows/selftest/externdef-define.asm` (EXTERNDEF + in-file definition, exit **0**). Jack dropped the one-off `scripts/bruce_pass*` / scaffold-fix helpers at this tip.
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -51,8 +51,10 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `b44543c`. This branc
 | L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment says the same. |
 | L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
 | L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
+| L00 `13-debug-bad-length` / `23-debug-stdout-fd` | Live `write_hi_buggy` (no `jmp __ex_call` dead code). **13** writes `"Hi"`+CRLF with `r8d = 2`; **23** calls `WriteFile` with `rcx = 1`. Both exit **0** after the student fix. `05-mov-chain` sums into `AL`, exit **15**. |
+| L09 `21-debug-macro-arity` | Live `EXIT_STATUS` macro (no `jmp __ex_call` dead code). Extra `skew` arg; drop it and use `EXIT_STATUS 4`, exit **4**. |
 | L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. |
-| L08 exercise names | Win32 names as at `b44543c`. `11-read-nul` is `VirtualAlloc` then read 8 zeros (sum 0), exit **0** — no `CreateFileA("NUL")` task. `14-heapalloc` is `GetProcessHeap` / `HeapAlloc` (not `VirtualAlloc`), exit **0**. `15-getpid` exits **0** when the PID is nonzero. `23-stretch-createpipe` writes `"ABC"`, reads it back, exit **3**. |
+| L08 exercise names | Win32 names as at `8c8c661`. `11-read-nul` is `VirtualAlloc` then read 8 zeros (sum 0), exit **0** — no `CreateFileA("NUL")` task. `14-heapalloc` is `GetProcessHeap` / `HeapAlloc` (not `VirtualAlloc`), exit **0**. `15-getpid` exits **0** when the PID is nonzero. `23-stretch-createpipe` writes `"ABC"`, reads it back, exit **3**. |
 | L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
 | L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
@@ -70,7 +72,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `b44543c`. This branc
 
 ## CI-confirmed exits that used to be traces
 
-These three were fixed at `ec4d05c` and remain CI-green at `b44543c`:
+These three were fixed at `ec4d05c` and remain CI-green at `8c8c661`:
 
 - **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
 - **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).
