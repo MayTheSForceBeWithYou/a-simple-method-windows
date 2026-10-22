@@ -1,6 +1,6 @@
 ; Exercise 30: signed vs unsigned jmp
 ;
-; rax=0xFFFFFFFFFFFFFFFF (-1 signed), cmp to 1. Using jl should take less path exit 1; document why ja would not.
+; rax=0FFFFFFFFFFFFFFFFh (-1 signed), cmp to 1. Using jl should take less path exit 1; document why ja would not.
 ;
 ; Build: ml64 /c 30-signed-vs-unsigned-jmp.asm && link /OUT:30-signed-vs-unsigned-jmp.exe /ENTRY:main /SUBSYSTEM:CONSOLE 30-signed-vs-unsigned-jmp.obj kernel32.lib
 ;

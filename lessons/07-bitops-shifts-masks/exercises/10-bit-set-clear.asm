@@ -2,13 +2,13 @@
 ;
 ; Set and clear specific bits using OR and AND.
 ;
-; Task: Start with RAX = 0xFF (all low 8 bits set).
+; Task: Start with RAX = 0FFh (all low 8 bits set).
 ;       Clear bit 2 (turn it off).
-;       Exit with the result (should be 0xFB = 251).
+;       Exit with the result (should be 0FBh = 251).
 ;
 ; Hint: To clear bit N, AND with ~(1 << N).
 ;       In MASM, you can compute the mask: NOT 4 = NOT (1 << 2).
-;       Or directly: AND with 0xFB (which is 0xFF with bit 2 cleared).
+;       Or directly: AND with 0FBh (which is 0FFh with bit 2 cleared).
 
 .CODE
 

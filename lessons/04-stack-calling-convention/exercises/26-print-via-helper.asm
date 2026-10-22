@@ -4,8 +4,8 @@
 ; Expected: exit code 0
 
 .DATA
-str DB "abi", 13, 10
-str_len EQU $ - str
+walkMsg DB "abi", 13, 10
+walkMsg_len EQU $ - walkMsg
 
 .DATA?
 bytes_written DQ ?
@@ -19,8 +19,8 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub     rsp, 32
-    lea rcx, str
-    mov rdx, str_len
+    lea rcx, walkMsg
+    mov rdx, walkMsg_len
     call write_str
     xor ecx, ecx
     call ExitProcess

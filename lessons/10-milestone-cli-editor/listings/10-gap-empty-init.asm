@@ -1,7 +1,7 @@
 ; Listing 10: Empty gap buffer (LESSON.md block 10)
 ;
 ; Purpose: Initialize empty gap; free space = gap_end - gap_start.
-; Expected exit code: 0 (4096 bytes free; harness uses low 8 bits)
+; Expected exit: 4096
 ; Expected stdout: (none)
 
 .DATA?

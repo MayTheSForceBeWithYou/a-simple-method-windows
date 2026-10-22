@@ -14,10 +14,7 @@ ex_22_many_pushes_balance PROC
     push 3
     call sum_top3
     add rsp, 24
-    mov rcx, rax
-    sub rsp, 40
-    mov     eax, ecx
-    add     rsp, 40
+    mov     eax, eax
     ret
 ex_22_many_pushes_balance ENDP
 main PROC

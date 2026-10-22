@@ -4,9 +4,6 @@
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
-; Note: MS x64 ABI differs from System V - this lesson's NASM examples 
-; assume System V, but these listings follow MS x64.
-;
 ; Build: ml64 /c /Fo01-push-pop.obj 01-push-pop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-push-pop.exe 01-push-pop.obj kernel32.lib
 
 .CODE

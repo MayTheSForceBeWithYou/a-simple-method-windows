@@ -20,7 +20,7 @@ main PROC
     ; TODO: Store WORD PTR 256 to buffer
     ; TODO: Zero RAX, then load lower byte with MOVZX RCX, BYTE PTR [buffer]
     ; TODO: Exit with RCX
-    ; Note: 256 = 0x0100, low byte is 0
+    ; Note: 256 = 00100h, low byte is 0
     ; TODO: implement ex_10_word_dword (student routine; defined in solutions/).
     call    ex_10_word_dword
     mov     ecx, eax

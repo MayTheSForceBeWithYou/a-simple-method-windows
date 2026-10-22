@@ -2,7 +2,7 @@
 ;
 ; Count leading zeros in a 16-bit value using a loop.
 ;
-; Task: Count leading zeros in 0x0030 (binary 0000000000110000).
+; Task: Count leading zeros in 00030h (binary 0000000000110000).
 ;       There are 10 leading zeros. Exit with the count.
 ;
 ; Hint: Loop up to 16 times, checking bit 15 each iteration.

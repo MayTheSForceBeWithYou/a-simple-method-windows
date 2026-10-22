@@ -2,7 +2,7 @@
 ;
 ; Get current process ID, exit with low 7 bits.
 ;
-; Task: Call GetCurrentProcessId, AND with 0x7F, exit with result.
+; Task: Call GetCurrentProcessId, AND with 07Fh, exit with result.
 ;
 ; Hint: GetCurrentProcessId returns DWORD in EAX.
 

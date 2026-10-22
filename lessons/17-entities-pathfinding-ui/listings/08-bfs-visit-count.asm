@@ -70,9 +70,6 @@ try_right:
     jmp     bfs_loop
 
 bfs_done:
-    add     rsp, 40
-    pop     rbx
-    pop     rdi
     mov     ecx, ebx
     call    ExitProcess
 main ENDP

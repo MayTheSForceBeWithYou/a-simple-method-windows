@@ -2,16 +2,29 @@
 ;
 ; BUG: array of qwords indexed with *1 instead of *8. Fix; load index 1 value 20, exit.
 ;
-; Build: nasm -f elf64 12-debug-off-by-scale.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-debug-off-by-scale.asm && link /OUT:12-debug-off-by-scale.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-debug-off-by-scale.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    arr dq 10, 20, 30
+; Expected exit: 20
 
-section .text
-    global _start
-_start:
-    mov rcx, 1
-    mov rdi, [arr+rcx*1]
-    mov rax, 60
-    syscall
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_12_debug_off_by_scale:PROC
+
+main PROC
+    sub     rsp, 40
+    ; Broken starter (implement corrected logic in student routine):
+    jmp     __ex_call
+    mov rcx, 1    ; BUG: fix in ex_12_debug_off_by_scale
+    mov rcx, [arr+rcx*1]    ; BUG: fix in ex_12_debug_off_by_scale
+    mov rax, 60    ; BUG: fix in ex_12_debug_off_by_scale
+    ; syscall removed — use ExitProcess in student routine
+__ex_call:
+    ; TODO: write ex_12_debug_off_by_scale in this file.
+    call    ex_12_debug_off_by_scale
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

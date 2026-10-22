@@ -2,10 +2,22 @@
 ;
 ; x=150. Clamp to [0,100]. Exit 100.
 ;
-; Build: nasm -f elf64 20-clamp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 20-clamp.asm && link /OUT:20-clamp.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-clamp.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 100
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_20_clamp:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_20_clamp in this file.
+    call    ex_20_clamp
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

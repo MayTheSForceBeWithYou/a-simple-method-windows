@@ -2,10 +2,22 @@
 ;
 ; Trial divide n=11 by 2..sqrt-ish (2..10). Exit 1 if prime else 0.
 ;
-; Build: nasm -f elf64 22-is-prime-lite.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 22-is-prime-lite.asm && link /OUT:22-is-prime-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-is-prime-lite.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 1
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_22_is_prime_lite:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_22_is_prime_lite in this file.
+    call    ex_22_is_prime_lite
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

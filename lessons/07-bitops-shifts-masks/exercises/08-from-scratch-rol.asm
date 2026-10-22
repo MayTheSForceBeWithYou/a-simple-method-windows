@@ -2,9 +2,9 @@
 ;
 ; Use ROL (rotate left) to move bits without losing them.
 ;
-; Task: Load 0x81 (binary 10000001) into AL.
+; Task: Load 081h (binary 10000001) into AL.
 ;       Rotate left by 1 bit.
-;       Exit with the result (should be 0x03 = 3, binary 00000011).
+;       Exit with the result (should be 003h = 3, binary 00000011).
 ;
 ; Hint: ROL shifts bits left, but the bit that exits the MSB
 ;       re-enters at the LSB. No bit is lost.

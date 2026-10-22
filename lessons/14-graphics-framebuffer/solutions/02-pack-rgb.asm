@@ -1,6 +1,6 @@
 ; Exercise 02: pack rgb
 ;
-; Pack R=1,G=2,B=3 into 0x010203 then &255 exit 3.
+; Pack R=1,G=2,B=3 into 0010203h then &255 exit 3.
 ;
 ; Build: ml64 /c 02-pack-rgb.asm && link /OUT:02-pack-rgb.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-pack-rgb.obj kernel32.lib
 ;

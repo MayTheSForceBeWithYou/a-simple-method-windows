@@ -4,7 +4,7 @@
 ;
 ; Task: VirtualAlloc one page, VirtualFree it, exit 0.
 ;
-; Hint: VirtualFree(address, 0, MEM_RELEASE) where MEM_RELEASE = 0x8000.
+; Hint: VirtualFree(address, 0, MEM_RELEASE) where MEM_RELEASE = 08000h.
 
 .CODE
 

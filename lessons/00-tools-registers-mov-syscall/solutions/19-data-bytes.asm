@@ -1,6 +1,6 @@
 ; Exercise 19: data bytes
 ;
-; Emit bytes 0x48 0x69 0x0A (Hi newline) using BYTE. Write them; exit 0.
+; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
 ;
 ; Build: ml64 /c 19-data-bytes.asm && link /OUT:19-data-bytes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-data-bytes.obj kernel32.lib
 ;

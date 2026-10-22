@@ -26,12 +26,10 @@ main PROC
     call    ExitProcess
 main ENDP
 
-bump PROC FRAME
+bump PROC
     push rbx
-    .PUSHREG rbx
     sub rsp, 40
-    .ALLOCSTACK 40
-    .ENDPROLOG
+    mov rbx, rcx
     cmp rcx, 0
     je bump_zero
     dec rcx

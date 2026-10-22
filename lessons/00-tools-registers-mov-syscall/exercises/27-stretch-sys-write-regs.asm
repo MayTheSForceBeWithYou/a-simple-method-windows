@@ -1,11 +1,23 @@
 ; Exercise 27: stretch sys write regs
 ;
-; Print "syscall\n" using only rax,rdi,rsi,rdx for the write setup. Exit 0.
+; Print "syscall\n" using write API. Exit 0.
 ;
-; Build: nasm -f elf64 27-stretch-sys-write-regs.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 27-stretch-sys-write-regs.asm && link /OUT:27-stretch-sys-write-regs.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-stretch-sys-write-regs.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 0
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_27_stretch_sys_write_regs:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_27_stretch_sys_write_regs in this file.
+    call    ex_27_stretch_sys_write_regs
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

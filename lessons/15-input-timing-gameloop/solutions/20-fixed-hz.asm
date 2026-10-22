@@ -1,6 +1,6 @@
 ; Exercise 20: fixed hz
 ;
-; 60 Hz -> step ns approx store 16666667&0xff; exit low byte or exit 60 as hz.
+; 60 Hz -> step ns approx store 16666667&0FFh; exit low byte or exit 60 as hz.
 ;
 ; Build: ml64 /c 20-fixed-hz.asm && link /OUT:20-fixed-hz.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-fixed-hz.obj kernel32.lib
 ;

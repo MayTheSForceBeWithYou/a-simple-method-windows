@@ -1,11 +1,23 @@
 ; Exercise 12: setl signed
 ;
-; rax=-1 (or 0xffffffffffffffff), rbx=0. cmp rax,rbx; setl al; exit 1.
+; rax=-1 (or 0FFFFFFFFFFFFFFFFh), rbx=0. cmp rax,rbx; setl al; exit 1.
 ;
-; Build: nasm -f elf64 12-setl-signed.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-setl-signed.asm && link /OUT:12-setl-signed.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-setl-signed.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 1
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_12_setl_signed:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_12_setl_signed in this file.
+    call    ex_12_setl_signed
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

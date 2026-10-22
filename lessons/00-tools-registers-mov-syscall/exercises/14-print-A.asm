@@ -2,10 +2,22 @@
 ;
 ; Write "A\n". Exit 0.
 ;
-; Build: nasm -f elf64 14-print-A.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 14-print-A.asm && link /OUT:14-print-A.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-print-A.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 0
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_14_print_A:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_14_print_A in this file.
+    call    ex_14_print_A
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

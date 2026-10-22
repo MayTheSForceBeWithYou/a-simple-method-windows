@@ -1,11 +1,23 @@
 ; Exercise 19: data bytes
 ;
-; Emit bytes 0x48 0x69 0x0A (Hi newline) using db. Write them; exit 0.
+; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
 ;
-; Build: nasm -f elf64 19-data-bytes.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 19-data-bytes.asm && link /OUT:19-data-bytes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-data-bytes.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 0
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_19_data_bytes:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_19_data_bytes in this file.
+    call    ex_19_data_bytes
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

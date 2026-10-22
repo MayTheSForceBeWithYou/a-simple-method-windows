@@ -1,11 +1,23 @@
 ; Exercise 20: max via flags
 ;
-; a=17,b=23 in regs. cmp; use cmovg (or branchless set) to put max in rdi. Exit 23.
+; a=17,b=23 in regs. cmp; use cmovg to put max in rcx. Exit 23.
 ;
-; Build: nasm -f elf64 20-max-via-flags.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 20-max-via-flags.asm && link /OUT:20-max-via-flags.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-max-via-flags.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 23
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_20_max_via_flags:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_20_max_via_flags in this file.
+    call    ex_20_max_via_flags
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

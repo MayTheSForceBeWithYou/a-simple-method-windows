@@ -1,7 +1,7 @@
 ; Listing 18: MY_ADDR EQU OFFSET msg (LESSON.md block 18)
 ;
 ; Purpose: Assembly-time offset of a data label equals distance from segment base.
-; Expected exit: 0 (low byte of OFFSET msg for flat .data at start)
+; Expected exit: 0
 ; Expected stdout: (none)
 
 .DATA
@@ -16,8 +16,8 @@ main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
-    xor ecx, ecx
-    call ExitProcess
+    mov     ecx, MY_ADDR
+    call    ExitProcess
 main ENDP
 
 END

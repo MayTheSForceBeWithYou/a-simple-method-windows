@@ -5,7 +5,7 @@
 ; Task: VirtualAlloc one page (4096 bytes) with MEM_COMMIT | MEM_RESERVE and PAGE_READWRITE.
 ;       Store 42 at the base address, read it back, exit with 42.
 ;
-; Hint: VirtualAlloc(NULL, 4096, 0x3000, 4) returns base address in RAX.
+; Hint: VirtualAlloc(NULL, 4096, 03000h, 4) returns base address in RAX.
 ;       Check for NULL (error).
 
 .CODE

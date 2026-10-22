@@ -4,7 +4,7 @@
 ; Expected exit code: 2
 ; Expected stdout: (none)
 ;
-; Extracts field 'b' (bits 3-5, width 3) from packed value 0x55.
+; Extracts field 'b' (bits 3-5, width 3) from packed value 55h.
 ; To unpack: shift field to bit 0, then mask to width.
 
 .CODE
@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     rax, 055h       ; Packed value = 0b001_010_101 = 0x55
+    mov     rax, 055h       ; Packed value = 0b001_010_101 = 55h
     
     ; Extract 'b' (bits 3-5, width 3):
     shr     rax, 3          ; Shift bits 3-5 down to bits 0-2

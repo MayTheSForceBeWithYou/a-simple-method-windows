@@ -4,7 +4,7 @@
 ; Expected: exit code 8
 
 .DATA
-str DB "assembly", 0
+walkMsg DB "assembly", 0
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub     rsp, 32
-    lea rcx, str
+    lea rcx, walkMsg
     call strlen
     mov rcx, rax
     call ExitProcess

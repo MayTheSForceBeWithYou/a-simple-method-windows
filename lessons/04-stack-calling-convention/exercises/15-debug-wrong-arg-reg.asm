@@ -9,9 +9,17 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_debug_wrong_arg_reg:PROC
 
+add2 PROC
+    mov rax, rcx
+    add rax, rdx
+    ret
+add2 ENDP
+
 main PROC
     sub     rsp, 40
-    ; TODO: implement ex_15_debug_wrong_arg_reg (student routine; defined in solutions/).
+    mov     rcx, 2
+    mov     rsi, 40                ; BUG: second arg must be in RDX for add2
+    ; TODO: write ex_15_debug_wrong_arg_reg in this file (correct arg regs, call add2).
     call    ex_15_debug_wrong_arg_reg
     mov     ecx, eax
     call    ExitProcess

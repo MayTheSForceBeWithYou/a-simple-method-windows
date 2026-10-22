@@ -1,5 +1,5 @@
 ; Exercise 20: clz loop
-; Count leading zeros in 0x00F0 (16-bit) -> 8.
+; Count leading zeros in 000F0h (16-bit) -> 8.
 ; Expected exit: 8
 
 EXTERN ExitProcess:PROC

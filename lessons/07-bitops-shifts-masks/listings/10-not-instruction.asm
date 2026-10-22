@@ -14,7 +14,7 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
     mov     al, 0Fh         ; al = 00001111 binary
-    not     al              ; al = 11110000 binary = 0xF0 = 240
+    not     al              ; al = 11110000 binary = 0F0h = 240
     
     movzx   ecx, al         ; Zero-extend to 32-bit for ExitProcess
     call    ExitProcess     ; Exit with 240

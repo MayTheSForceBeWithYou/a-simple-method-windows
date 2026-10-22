@@ -2,10 +2,22 @@
 ;
 ; Same array; min 2.
 ;
-; Build: nasm -f elf64 12-min-in-array.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 12-min-in-array.asm && link /OUT:12-min-in-array.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-min-in-array.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 2
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_12_min_in_array:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_12_min_in_array in this file.
+    call    ex_12_min_in_array
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

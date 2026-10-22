@@ -1,6 +1,6 @@
 ; Exercise 23: stretch bit reverse 8
 ;
-; Reverse bits of 0x80 -> 0x01; exit 1.
+; Reverse bits of 080h -> 001h; exit 1.
 ;
 ; Expected exit: 1
 ; Expected stdout: (none)

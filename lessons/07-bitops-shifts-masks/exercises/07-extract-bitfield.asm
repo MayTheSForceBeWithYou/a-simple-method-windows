@@ -2,7 +2,7 @@
 ;
 ; Extract a bitfield by shifting and masking.
 ;
-; Task: Extract a 5-bit field starting at position 3 from value 0x1F8.
+; Task: Extract a 5-bit field starting at position 3 from value 01F8h.
 ;       The field spans bits 3-7 and has value 31 (0b11111).
 ;       Exit with the extracted value.
 ;

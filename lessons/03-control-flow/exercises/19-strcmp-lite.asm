@@ -2,10 +2,22 @@
 ;
 ; Compare 'ab' and 'ab' bytewise; exit 0 if equal else 1. Should exit 0.
 ;
-; Build: nasm -f elf64 19-strcmp-lite.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 19-strcmp-lite.asm && link /OUT:19-strcmp-lite.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-strcmp-lite.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 0
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_19_strcmp_lite:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_19_strcmp_lite in this file.
+    call    ex_19_strcmp_lite
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

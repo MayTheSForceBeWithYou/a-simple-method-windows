@@ -1,6 +1,6 @@
 ; Exercise 22: stretch char from reg
 ;
-; Set bl=0x5A ('Z'). Store into a 2-byte buffer (char + newline), write it, exit 0.
+; Set bl=05Ah ('Z'). Store into a 2-byte buffer (char + newline), write it, exit 0.
 ;
 ; Build: ml64 /c 22-stretch-char-from-reg.asm && link /OUT:22-stretch-char-from-reg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 22-stretch-char-from-reg.obj kernel32.lib
 ;

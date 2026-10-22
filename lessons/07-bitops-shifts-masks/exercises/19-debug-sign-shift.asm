@@ -2,7 +2,7 @@
 ;
 ; Debug a sign-extension bug when shifting.
 ;
-; Task: Given value -1 (0xFF in AL), extend to 64 bits then shift right by 1.
+; Task: Given value -1 (0FFh in AL), extend to 64 bits then shift right by 1.
 ;       If you use MOVZX (zero-extend), SHR gives 127.
 ;       If you use MOVSX (sign-extend), SAR gives -1 (255 in low byte).
 ;

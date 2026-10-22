@@ -1,22 +1,34 @@
 ; Exercise 23: debug stdout fd
 ;
-; BUG HUNT: fd is 0. Fix to stdout.
+; BUG HUNT: handle is wrong. Fix to stdout.
 ;
-; Build: nasm -f elf64 23-debug-stdout-fd.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Build: ml64 /c 23-debug-stdout-fd.asm && link /OUT:23-debug-stdout-fd.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-debug-stdout-fd.obj kernel32.lib
 ;
-; --- your code below ---
-section .data
-    msg db "visible", 10
-    msg_len equ $ - msg
+; Expected exit: 0
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 0
-    mov rsi, msg
-    mov rdx, msg_len
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_23_debug_stdout_fd:PROC
+
+main PROC
+    sub     rsp, 40
+    ; Broken starter (implement corrected logic in student routine):
+    jmp     __ex_call
+    mov rax, 1    ; BUG: fix in ex_23_debug_stdout_fd
+    mov rcx, 0    ; BUG: fix in ex_23_debug_stdout_fd
+    mov rdx, msg    ; BUG: fix in ex_23_debug_stdout_fd
+    mov rdx, msg_len    ; BUG: fix in ex_23_debug_stdout_fd
+    ; syscall removed — use ExitProcess in student routine
+    mov rax, 60    ; BUG: fix in ex_23_debug_stdout_fd
+    xor rdi, rdi    ; BUG: fix in ex_23_debug_stdout_fd
+    ; syscall removed — use ExitProcess in student routine
+__ex_call:
+    ; TODO: write ex_23_debug_stdout_fd in this file.
+    call    ex_23_debug_stdout_fd
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

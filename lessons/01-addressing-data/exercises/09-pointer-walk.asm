@@ -8,7 +8,7 @@
 ; Expected exit: 131 (65+66 = 'A'+'B')
 
 .DATA
-str DB "ABC", 0
+walkMsg DB "ABC", 0
 
 .CODE
 
@@ -17,7 +17,7 @@ EXTRN ex_09_pointer_walk:PROC
 
 main PROC
     sub     rsp, 32
-    ; TODO: LEA RSI, str
+    ; TODO: LEA RSI, walkMsg
     ; TODO: MOVZX RAX, BYTE PTR [RSI]   ; first byte
     ; TODO: INC RSI or ADD RSI, 1
     ; TODO: MOVZX RBX, BYTE PTR [RSI]   ; second byte

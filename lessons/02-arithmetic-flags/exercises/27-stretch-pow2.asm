@@ -1,11 +1,23 @@
 ; Exercise 27: stretch pow2
 ;
-; STRETCH: compute 2^8 with a loop of adds or imul (you may use labels/jmp — preview of 03). Exit 256&255=0 OR exit 0 after verifying — prefer: put 256 in rdi and exit — wait exit max 255. Exit (2^8 - 256)=0 by computing rax=1; shift preview: use 8 imuls by 2 starting from 1, then sub 256, exit 0.
+; STRETCH: compute 2^8 with successive imuls. Exit (256 - 256)=0.
 ;
-; Build: nasm -f elf64 27-stretch-pow2.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 27-stretch-pow2.asm && link /OUT:27-stretch-pow2.exe /ENTRY:main /SUBSYSTEM:CONSOLE 27-stretch-pow2.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 0
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_27_stretch_pow2:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_27_stretch_pow2 in this file.
+    call    ex_27_stretch_pow2
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

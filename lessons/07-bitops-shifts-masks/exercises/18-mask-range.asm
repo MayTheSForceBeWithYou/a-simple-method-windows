@@ -2,7 +2,7 @@
 ;
 ; Create a mask for a range of bits.
 ;
-; Task: Generate a mask with bits 2-5 set (value 0b00111100 = 0x3C = 60).
+; Task: Generate a mask with bits 2-5 set (value 0b00111100 = 03Ch = 60).
 ;       Exit with the mask.
 ;
 ; Hint: One method:

@@ -1,11 +1,23 @@
 ; Exercise 08: find first
 ;
-; arr db 3,1,4,1,5. Find first index of 4 (2). Exit index.
+; arr BYTE 3,1,4,1,5. Find first index of 4 (2). Exit index.
 ;
-; Build: nasm -f elf64 08-find-first.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Build: ml64 /c 08-find-first.asm && link /OUT:08-find-first.exe /ENTRY:main /SUBSYSTEM:CONSOLE 08-find-first.obj kernel32.lib
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+; Expected exit: 2
+
+
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_08_find_first:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_08_find_first in this file.
+    call    ex_08_find_first
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

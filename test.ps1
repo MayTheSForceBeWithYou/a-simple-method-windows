@@ -264,7 +264,7 @@ function Invoke-BuiltExe {
         throw "timed out after 8s"
     }
 
-    $exitCode = $process.ExitCode -band 0xFF
+    $exitCode = $process.ExitCode
     $stdout = Read-TextOrEmpty $stdoutFile
     $stderr = Read-TextOrEmpty $stderrFile
 
@@ -311,6 +311,11 @@ function Test-IsPrimaryListing {
     }
 
     return $true
+}
+
+function Test-IsScaffoldLinkOrAsmFailure {
+    param([string]$Message)
+    return ($Message -match '(?i)ml64 failed|LNK20|LNK11|unresolved external|undefined symbol|error A[0-9]{4}:')
 }
 
 function Test-RunnableAsm {
@@ -412,9 +417,16 @@ function Test-ExerciseScaffold {
             }
         }
     } catch {
-        Add-Result -File $relativePath -Status "SCAFFOLD OK" -Details "Failed as expected ($($_.Exception.Message))" -Kind "exercise"
-        if ($VerbosePreference -eq "Continue") {
-            Write-Host "SCAFFOLD OK: $relativePath (build failed as expected)" -ForegroundColor Green
+        $msg = $_.Exception.Message
+        $isLinkOrAsm = ($msg -match '(?i)ml64 failed|LNK20|LNK11|unresolved external|undefined symbol|error A[0-9]{4}:')
+        if ($isLinkOrAsm) {
+            Add-Result -File $relativePath -Status "SCAFFOLD OK" -Details "Failed as expected ($msg)" -Kind "exercise"
+            if ($VerbosePreference -eq "Continue") {
+                Write-Host "SCAFFOLD OK: $relativePath (build failed as expected)" -ForegroundColor Green
+            }
+        } else {
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details $msg -Kind "exercise"
+            Write-Host "HARNESS FAIL: $relativePath - $msg" -ForegroundColor Magenta
         }
     }
 }
@@ -451,10 +463,14 @@ Write-Host "Setting up MSVC environment..." -ForegroundColor Cyan
 Find-MSVC
 Write-Host "Toolchain ready.`n" -ForegroundColor Green
 
-$script:HarnessOutDir = Join-Path $PSScriptRoot "out"
-Test-NonEmptyPath -Value $script:HarnessOutDir -Name "HarnessOutDir"
-if (-not (Test-Path -LiteralPath $script:HarnessOutDir)) {
-    New-Item -ItemType Directory -Path $script:HarnessOutDir | Out-Null
+$script:HarnessOutRoot = Join-Path $PSScriptRoot "out"
+$script:HarnessOutDirSolutions = Join-Path $script:HarnessOutRoot "solutions"
+$script:HarnessOutDirListings = Join-Path $script:HarnessOutRoot "listings"
+$script:HarnessOutDirExercises = Join-Path $script:HarnessOutRoot "exercises"
+foreach ($d in @($script:HarnessOutRoot, $script:HarnessOutDirSolutions, $script:HarnessOutDirListings, $script:HarnessOutDirExercises)) {
+    if (-not (Test-Path -LiteralPath $d)) {
+        New-Item -ItemType Directory -Path $d | Out-Null
+    }
 }
 
 $lessonDirs = Get-LessonDirectories
@@ -462,20 +478,25 @@ $lessonDirs = Get-LessonDirectories
 Write-Host "Testing solutions..." -ForegroundColor Cyan
 foreach ($lessonDir in $lessonDirs) {
     foreach ($solution in (Get-AsmFiles -LessonDir $lessonDir -Subdir "solutions")) {
-        Test-RunnableAsm -AsmPath $solution.FullName -OutDir $script:HarnessOutDir -Kind "solution" -RequireExpected
+        Test-RunnableAsm -AsmPath $solution.FullName -OutDir $script:HarnessOutDirSolutions -Kind "solution" -RequireExpected
     }
 }
 
 Write-Host "`nTesting listings..." -ForegroundColor Cyan
 $listingCount = 0
+$listingSkipped = 0
 foreach ($lessonDir in $lessonDirs) {
     foreach ($listing in (Get-AsmFiles -LessonDir $lessonDir -Subdir "listings")) {
         if (-not (Test-IsPrimaryListing -AsmPath $listing.FullName)) {
+            $listingSkipped++
             continue
         }
         $listingCount++
-        Test-RunnableAsm -AsmPath $listing.FullName -OutDir $script:HarnessOutDir -Kind "listing" -RequireExpected
+        Test-RunnableAsm -AsmPath $listing.FullName -OutDir $script:HarnessOutDirListings -Kind "listing" -RequireExpected
     }
+}
+if ($listingSkipped -gt 0) {
+    Write-Host "Skipped $listingSkipped listing(s) (companion / non-main PROC)." -ForegroundColor Yellow
 }
 if ($listingCount -eq 0) {
     Write-Host "No listings found" -ForegroundColor Yellow
@@ -486,7 +507,7 @@ $exerciseCount = 0
 foreach ($lessonDir in $lessonDirs) {
     foreach ($exercise in (Get-AsmFiles -LessonDir $lessonDir -Subdir "exercises")) {
         $exerciseCount++
-        Test-ExerciseScaffold -AsmPath $exercise.FullName -OutDir $script:HarnessOutDir
+        Test-ExerciseScaffold -AsmPath $exercise.FullName -OutDir $script:HarnessOutDirExercises
     }
 }
 if ($exerciseCount -eq 0) {
@@ -527,7 +548,7 @@ Write-Host "Failed: $script:FailCount" -ForegroundColor $(if ($script:FailCount 
 
 if (-not $KeepArtifacts) {
     Write-Host "`nCleaning build artifacts..." -ForegroundColor Cyan
-    Get-ChildItem -LiteralPath $script:HarnessOutDir -File -ErrorAction SilentlyContinue |
+    Get-ChildItem -LiteralPath $script:HarnessOutRoot -Recurse -File -ErrorAction SilentlyContinue |
         Where-Object { $_.Extension -in ".obj", ".exe", ".pdb", ".ilk", ".txt" } |
         Remove-Item -ErrorAction SilentlyContinue
 }
