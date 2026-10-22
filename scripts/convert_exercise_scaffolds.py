@@ -264,9 +264,12 @@ def convert_solution_text(text: str, sym: str) -> str:
     )
     if exit_m:
         reg, val = exit_m.group(1).lower(), exit_m.group(2).strip()
-        if reg in ("rbx", "ebx") or val.lower() in ("rbx", "ebx"):
+        val_l = val.lower()
+        if val_l in ("rax", "eax"):
+            ret_setup = "    ret"
+        elif reg in ("rbx", "ebx") or val_l in ("rbx", "ebx"):
             ret_setup = "    mov     eax, ebx\n    ret"
-        elif reg in ("rcx", "ecx") or val.lower() in ("rcx", "ecx"):
+        elif reg in ("rcx", "ecx") and val_l not in ("rax", "eax"):
             ret_setup = "    mov     eax, ecx\n    ret"
         elif reg in ("rax", "eax"):
             ret_setup = f"    mov     eax, {val}\n    ret"

@@ -19,9 +19,8 @@ ex_06_hash_cell PROC
     shl rbx, 4
     add rax, rbx
     and rax, 255
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_06_hash_cell ENDP
 main PROC
     sub     rsp, 40

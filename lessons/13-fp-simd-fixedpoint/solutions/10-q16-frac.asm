@@ -12,9 +12,8 @@ ex_10_q16_frac PROC
     shl eax, 15
     add eax, eax
     shr eax, 16
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_10_q16_frac ENDP
 main PROC
     sub     rsp, 40

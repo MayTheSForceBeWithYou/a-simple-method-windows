@@ -10,9 +10,8 @@ ex_15_debug_wrong_arg_reg PROC
     mov rcx, 2
     mov rdx, 40
     call add2
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_15_debug_wrong_arg_reg ENDP
 main PROC
     sub     rsp, 40

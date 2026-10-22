@@ -11,9 +11,8 @@ ex_12_parse_paren PROC
     mov rax, 1
     add rax, 2
     imul rax, 3
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_12_parse_paren ENDP
 main PROC
     sub     rsp, 40

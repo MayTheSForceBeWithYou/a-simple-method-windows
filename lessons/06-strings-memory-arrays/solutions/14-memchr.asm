@@ -19,9 +19,8 @@ ex_14_memchr PROC
     mov rdx, 7
     mov r8, 4
     call memchr_idx
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_14_memchr ENDP
 main PROC
     sub     rsp, 40

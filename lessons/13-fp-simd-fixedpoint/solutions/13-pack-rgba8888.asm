@@ -9,9 +9,8 @@ EXTERN ExitProcess:PROC
 ex_13_pack_rgba8888 PROC
     sub rsp, 40
     mov eax, 255
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_13_pack_rgba8888 ENDP
 main PROC
     sub     rsp, 40

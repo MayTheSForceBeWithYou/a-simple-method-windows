@@ -14,9 +14,8 @@ ex_23_stretch_chunk_coords PROC
     sub rsp, 40
     mov rax, 40
     shr rax, 4
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_23_stretch_chunk_coords ENDP
 main PROC
     sub     rsp, 40

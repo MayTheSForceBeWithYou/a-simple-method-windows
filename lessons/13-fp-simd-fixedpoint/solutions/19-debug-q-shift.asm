@@ -17,9 +17,8 @@ ex_19_debug_q_shift PROC
     imul rax, rbx
     shr rax, 16
     shr rax, 16
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_19_debug_q_shift ENDP
 main PROC
     sub     rsp, 40

@@ -15,9 +15,8 @@ ex_01_tile_index PROC
     mov rax, 2
     imul rax, 10
     add rax, 3
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_01_tile_index ENDP
 main PROC
     sub     rsp, 40

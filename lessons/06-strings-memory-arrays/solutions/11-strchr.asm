@@ -13,9 +13,8 @@ ex_11_strchr PROC
     lea rcx, s
     mov rdx, 'l'
     call strchr_idx
-        mov     eax, ecx
-    add     rsp, 40
-    ret
+        add     rsp, 40
+        ret
 ex_11_strchr ENDP
 main PROC
     sub     rsp, 40
