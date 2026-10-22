@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_25_stretch_binsearch:PROC
+EXTERNDEF ex_25_stretch_binsearch:PROC
 
 main PROC
     sub     rsp, 40

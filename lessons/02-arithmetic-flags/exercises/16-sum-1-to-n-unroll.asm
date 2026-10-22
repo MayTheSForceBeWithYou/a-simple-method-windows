@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_16_sum_1_to_n_unroll:PROC
+EXTERNDEF ex_16_sum_1_to_n_unroll:PROC
 
 main PROC
     sub     rsp, 40

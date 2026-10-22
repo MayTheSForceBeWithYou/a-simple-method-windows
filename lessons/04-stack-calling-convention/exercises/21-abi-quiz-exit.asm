@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_21_abi_quiz_exit:PROC
+EXTERNDEF ex_21_abi_quiz_exit:PROC
 
 main PROC
     sub     rsp, 40

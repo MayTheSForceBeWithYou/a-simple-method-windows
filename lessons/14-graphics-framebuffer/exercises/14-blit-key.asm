@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_blit_key:PROC
+EXTERNDEF ex_14_blit_key:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_14_blit_key in this file.

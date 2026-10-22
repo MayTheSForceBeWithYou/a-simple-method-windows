@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_count_loop:PROC
+EXTERNDEF ex_04_count_loop:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_dt_units:PROC
+EXTERNDEF ex_19_debug_dt_units:PROC
 
 dt_units_bug PROC
     mov rax, 16000

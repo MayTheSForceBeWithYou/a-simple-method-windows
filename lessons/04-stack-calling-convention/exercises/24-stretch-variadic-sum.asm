@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_24_stretch_variadic_sum:PROC
+EXTERNDEF ex_24_stretch_variadic_sum:PROC
 
 ; TODO: write ex_24_stretch_variadic_sum in this file.
 

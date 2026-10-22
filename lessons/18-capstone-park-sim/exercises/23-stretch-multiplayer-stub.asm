@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_multiplayer_stub:PROC
+EXTERNDEF ex_23_stretch_multiplayer_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_23_stretch_multiplayer_stub in this file.

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_07_poll_stub:PROC
+EXTERNDEF ex_07_poll_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_07_poll_stub in this file.

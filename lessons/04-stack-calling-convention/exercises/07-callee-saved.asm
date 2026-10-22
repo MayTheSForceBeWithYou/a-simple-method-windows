@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_07_callee_saved:PROC
+EXTERNDEF ex_07_callee_saved:PROC
 
 helper PROC
     push rbx

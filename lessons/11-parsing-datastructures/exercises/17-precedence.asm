@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_precedence:PROC
+EXTERNDEF ex_17_precedence:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_precedence in this file.

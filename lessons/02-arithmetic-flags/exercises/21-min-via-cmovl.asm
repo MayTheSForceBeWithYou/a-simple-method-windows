@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_21_min_via_cmovl:PROC
+EXTERNDEF ex_21_min_via_cmovl:PROC
 
 main PROC
     sub     rsp, 40

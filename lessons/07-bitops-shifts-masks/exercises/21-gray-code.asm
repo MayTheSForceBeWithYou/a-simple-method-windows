@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_21_gray_code:PROC
+EXTERNDEF ex_21_gray_code:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_aabb_overlap:PROC
+EXTERNDEF ex_02_aabb_overlap:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_02_aabb_overlap in this file.

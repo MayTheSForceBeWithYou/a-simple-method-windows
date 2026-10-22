@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_tile_autotile_mask:PROC
+EXTERNDEF ex_20_tile_autotile_mask:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_tile_autotile_mask in this file.

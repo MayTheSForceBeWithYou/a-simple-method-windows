@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_ast_node:PROC
+EXTERNDEF ex_18_ast_node:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_18_ast_node in this file.

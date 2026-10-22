@@ -14,7 +14,7 @@ bytesWritten DWORD ?
 
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_24_from_scratch_write_err:PROC
+EXTERNDEF ex_24_from_scratch_write_err:PROC
 
 main PROC
     sub     rsp, 40

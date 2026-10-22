@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_03_aabb_reject:PROC
+EXTERNDEF ex_03_aabb_reject:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_03_aabb_reject in this file.

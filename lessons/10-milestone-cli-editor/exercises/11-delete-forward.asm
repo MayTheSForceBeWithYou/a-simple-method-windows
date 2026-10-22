@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_delete_forward:PROC
+EXTERNDEF ex_11_delete_forward:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_11_delete_forward in this file.

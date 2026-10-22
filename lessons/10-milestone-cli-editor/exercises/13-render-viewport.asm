@@ -14,7 +14,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_13_render_viewport:PROC
+EXTERNDEF ex_13_render_viewport:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_render_viewport in this file.

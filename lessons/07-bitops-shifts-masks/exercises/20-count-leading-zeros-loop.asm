@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_count_leading_zeros_loop:PROC
+EXTERNDEF ex_20_count_leading_zeros_loop:PROC
 
 main PROC
     sub     rsp, 40

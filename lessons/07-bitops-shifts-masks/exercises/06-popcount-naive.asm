@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_popcount_naive:PROC
+EXTERNDEF ex_06_popcount_naive:PROC
 
 main PROC
     sub     rsp, 40

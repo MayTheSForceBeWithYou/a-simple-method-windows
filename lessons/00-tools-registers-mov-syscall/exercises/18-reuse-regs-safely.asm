@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_reuse_regs_safely:PROC
+EXTERNDEF ex_18_reuse_regs_safely:PROC
 
 main PROC
     sub     rsp, 40

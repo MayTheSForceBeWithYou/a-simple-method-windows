@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_count_char:PROC
+EXTERNDEF ex_20_count_char:PROC
 
 
 

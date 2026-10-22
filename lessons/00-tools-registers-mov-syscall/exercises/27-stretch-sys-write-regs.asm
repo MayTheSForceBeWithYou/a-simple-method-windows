@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_27_stretch_sys_write_regs:PROC
+EXTERNDEF ex_27_stretch_sys_write_regs:PROC
 
 main PROC
     sub     rsp, 40

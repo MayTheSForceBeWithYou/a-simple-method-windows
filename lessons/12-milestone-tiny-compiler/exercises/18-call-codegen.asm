@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_call_codegen:PROC
+EXTERNDEF ex_18_call_codegen:PROC
 
 main PROC
     sub     rsp, 40

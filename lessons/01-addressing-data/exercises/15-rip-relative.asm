@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_15_rip_relative:PROC
+EXTERNDEF ex_15_rip_relative:PROC
 
 main PROC
     sub     rsp, 40

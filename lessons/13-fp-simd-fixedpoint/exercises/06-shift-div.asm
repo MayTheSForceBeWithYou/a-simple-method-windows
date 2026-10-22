@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_shift_div:PROC
+EXTERNDEF ex_06_shift_div:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_shift_div in this file.

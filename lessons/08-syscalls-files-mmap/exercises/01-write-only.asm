@@ -18,7 +18,7 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_01_write_only:PROC
+EXTERNDEF ex_01_write_only:PROC
 
 main PROC
     sub     rsp, 40

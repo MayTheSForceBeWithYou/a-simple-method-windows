@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_make_dependency:PROC
+EXTERNDEF ex_23_stretch_make_dependency:PROC
 
 main PROC
     sub     rsp, 40

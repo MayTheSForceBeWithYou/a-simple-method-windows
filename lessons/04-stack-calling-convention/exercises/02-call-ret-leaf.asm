@@ -5,10 +5,12 @@
 ; Contract: implement `ex_02_call_ret_leaf` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
+; Implement leaf `answer` returning 42 in RAX. In `ex_02_call_ret_leaf`, call `answer` and return that value as the process exit code.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_02_call_ret_leaf:PROC
+EXTERNDEF ex_02_call_ret_leaf:PROC
 
 ; TODO: write ex_02_call_ret_leaf in this file.
 

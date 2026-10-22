@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_char_from_reg:PROC
+EXTERNDEF ex_22_stretch_char_from_reg:PROC
 
 main PROC
     sub     rsp, 40

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_lex_ident:PROC
+EXTERNDEF ex_02_lex_ident:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_02_lex_ident in this file.

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_ui_button_press:PROC
+EXTERNDEF ex_15_ui_button_press:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_15_ui_button_press in this file.

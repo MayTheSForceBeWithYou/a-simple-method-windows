@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_quicksort_partition:PROC
+EXTERNDEF ex_22_stretch_quicksort_partition:PROC
 
 
 

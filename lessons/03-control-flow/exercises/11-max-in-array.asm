@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_max_in_array:PROC
+EXTERNDEF ex_11_max_in_array:PROC
 
 main PROC
     sub     rsp, 40

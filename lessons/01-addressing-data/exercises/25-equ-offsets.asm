@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_25_equ_offsets:PROC
+EXTERNDEF ex_25_equ_offsets:PROC
 
 main PROC
     sub     rsp, 40

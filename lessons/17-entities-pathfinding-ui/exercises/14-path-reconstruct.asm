@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_path_reconstruct:PROC
+EXTERNDEF ex_14_path_reconstruct:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_14_path_reconstruct in this file.

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_fixed_mul:PROC
+EXTERNDEF ex_01_fixed_mul:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_01_fixed_mul in this file.

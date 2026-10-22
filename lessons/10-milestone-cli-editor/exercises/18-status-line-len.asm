@@ -12,7 +12,7 @@ cur QWORD ?
 statusBuf DB 64 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_status_line_len:PROC
+EXTERNDEF ex_18_status_line_len:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_18_status_line_len in this file.

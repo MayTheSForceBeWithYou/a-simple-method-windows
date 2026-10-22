@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_map_bounds:PROC
+EXTERNDEF ex_19_debug_map_bounds:PROC
 
 clamp_x_bug PROC
     mov rax, 99

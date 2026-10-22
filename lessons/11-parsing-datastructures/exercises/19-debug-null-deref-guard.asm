@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_null_deref_guard:PROC
+EXTERNDEF ex_19_debug_null_deref_guard:PROC
 
 sum_list_bug PROC
     xor rcx, rcx

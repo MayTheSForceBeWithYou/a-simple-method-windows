@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_24_from_scratch_rec_sum_array:PROC
+EXTERNDEF ex_24_from_scratch_rec_sum_array:PROC
 
 
 

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_rec_binary_digits:PROC
+EXTERNDEF ex_21_rec_binary_digits:PROC
 
 
 

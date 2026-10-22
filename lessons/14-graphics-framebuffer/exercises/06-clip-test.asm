@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_clip_test:PROC
+EXTERNDEF ex_06_clip_test:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_clip_test in this file.

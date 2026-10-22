@@ -12,7 +12,7 @@ counter QWORD ?
 
 EXTRN QueryPerformanceCounter:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_16_qpc:PROC
+EXTERNDEF ex_16_qpc:PROC
 
 main PROC
     sub     rsp, 40

@@ -18,7 +18,7 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_07_write_iov_lite:PROC
+EXTERNDEF ex_07_write_iov_lite:PROC
 
 main PROC
     sub     rsp, 40

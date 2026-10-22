@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_macro_with_params:PROC
+EXTERNDEF ex_20_macro_with_params:PROC
 
 ; TODO: ADD3 MACRO reg, v1, v2, v3; mov reg, v1; add reg, v2; add reg, v3; ENDM
 

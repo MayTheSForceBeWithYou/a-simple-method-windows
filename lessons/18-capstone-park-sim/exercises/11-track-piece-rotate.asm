@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_track_piece_rotate:PROC
+EXTERNDEF ex_11_track_piece_rotate:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_11_track_piece_rotate in this file.

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_extern_sim_onefile:PROC
+EXTERNDEF ex_06_extern_sim_onefile:PROC
 
 main PROC
     sub     rsp, 40

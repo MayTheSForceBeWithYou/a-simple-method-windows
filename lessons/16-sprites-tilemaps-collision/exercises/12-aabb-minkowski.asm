@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_aabb_minkowski:PROC
+EXTERNDEF ex_12_aabb_minkowski:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_aabb_minkowski in this file.

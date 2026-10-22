@@ -9,7 +9,7 @@
 
 EXTRN GetProcessHeap:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_14_heapalloc:PROC
+EXTERNDEF ex_14_heapalloc:PROC
 
 main PROC
     sub     rsp, 40

@@ -15,7 +15,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_units_header:PROC
+EXTERNDEF ex_22_stretch_units_header:PROC
 
 main PROC
     sub     rsp, 40

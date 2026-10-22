@@ -11,7 +11,7 @@ walkMsg DB "ABC", 0
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_09_pointer_walk:PROC
+EXTERNDEF ex_09_pointer_walk:PROC
 
 main PROC
     sub     rsp, 40

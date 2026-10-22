@@ -15,7 +15,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_18_default_rel_macro:PROC
+EXTERNDEF ex_18_default_rel_macro:PROC
 
 main PROC
     sub     rsp, 40

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_expr_stack:PROC
+EXTERNDEF ex_16_expr_stack:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_16_expr_stack in this file.

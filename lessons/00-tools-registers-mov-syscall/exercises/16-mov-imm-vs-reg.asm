@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_16_mov_imm_vs_reg:PROC
+EXTERNDEF ex_16_mov_imm_vs_reg:PROC
 
 main PROC
     sub     rsp, 40

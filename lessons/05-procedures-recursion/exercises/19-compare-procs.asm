@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_compare_procs:PROC
+EXTERNDEF ex_19_compare_procs:PROC
 
 
 

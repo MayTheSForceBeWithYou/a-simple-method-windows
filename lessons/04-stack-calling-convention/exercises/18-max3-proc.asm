@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_max3_proc:PROC
+EXTERNDEF ex_18_max3_proc:PROC
 
 ; TODO: write ex_18_max3_proc in this file.
 

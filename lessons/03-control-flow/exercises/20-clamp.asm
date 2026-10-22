@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_clamp:PROC
+EXTERNDEF ex_20_clamp:PROC
 
 main PROC
     sub     rsp, 40

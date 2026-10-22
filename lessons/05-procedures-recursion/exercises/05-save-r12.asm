@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_05_save_r12:PROC
+EXTERNDEF ex_05_save_r12:PROC
 
 ; TODO: write ex_05_save_r12 in this file.
 

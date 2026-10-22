@@ -18,7 +18,7 @@ EXTRN SetFilePointer:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_19_overlapped_write:PROC
+EXTERNDEF ex_19_overlapped_write:PROC
 
 main PROC
     sub     rsp, 40

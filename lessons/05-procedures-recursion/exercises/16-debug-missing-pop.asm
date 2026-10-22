@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_debug_missing_pop:PROC
+EXTERNDEF ex_16_debug_missing_pop:PROC
 
 fact PROC
     cmp rcx, 1

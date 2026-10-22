@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_27_print_digits_loop:PROC
+EXTERNDEF ex_27_print_digits_loop:PROC
 
 main PROC
     sub     rsp, 40

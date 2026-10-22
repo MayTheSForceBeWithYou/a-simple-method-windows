@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_fixed_div:PROC
+EXTERNDEF ex_11_fixed_div:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_11_fixed_div in this file.

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_05_array_reverse:PROC
+EXTERNDEF ex_05_array_reverse:PROC
 
 
 

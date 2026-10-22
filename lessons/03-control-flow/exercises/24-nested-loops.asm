@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_24_nested_loops:PROC
+EXTERNDEF ex_24_nested_loops:PROC
 
 main PROC
     sub     rsp, 40

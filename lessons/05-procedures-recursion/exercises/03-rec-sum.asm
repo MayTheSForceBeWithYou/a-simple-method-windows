@@ -5,10 +5,12 @@
 ; Contract: implement `ex_03_rec_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
 ;
+; Implement recursive `sum_to(n)`. In `ex_03_rec_sum`, exit sum_to(5)=15.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_03_rec_sum:PROC
+EXTERNDEF ex_03_rec_sum:PROC
 
 ; TODO: write ex_03_rec_sum in this file.
 

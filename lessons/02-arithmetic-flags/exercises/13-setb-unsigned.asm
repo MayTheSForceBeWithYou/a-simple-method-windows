@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_13_setb_unsigned:PROC
+EXTERNDEF ex_13_setb_unsigned:PROC
 
 main PROC
     sub     rsp, 40

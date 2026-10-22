@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_aabb_y:PROC
+EXTERNDEF ex_19_debug_aabb_y:PROC
 
 ; a: x=0 w=10 y=0 h=2   b: x=0 w=10 y=1 h=2  -> overlap on Y
 aabb_overlap_y_bug PROC

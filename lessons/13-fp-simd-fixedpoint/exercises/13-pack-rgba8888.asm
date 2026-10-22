@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_pack_rgba8888:PROC
+EXTERNDEF ex_13_pack_rgba8888:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_pack_rgba8888 in this file.

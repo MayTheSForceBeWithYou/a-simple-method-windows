@@ -13,7 +13,7 @@ filename DB "C:\no\such\file.txt", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_03_open_fail:PROC
+EXTERNDEF ex_03_open_fail:PROC
 
 main PROC
     sub     rsp, 40

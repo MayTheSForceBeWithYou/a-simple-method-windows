@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_02_exit_seven:PROC
+EXTERNDEF ex_02_exit_seven:PROC
 
 main PROC
     sub     rsp, 40                ; Shadow space required by ABI

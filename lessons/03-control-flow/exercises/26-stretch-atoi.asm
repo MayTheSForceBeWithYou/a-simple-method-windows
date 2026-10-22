@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_26_stretch_atoi:PROC
+EXTERNDEF ex_26_stretch_atoi:PROC
 
 main PROC
     sub     rsp, 40

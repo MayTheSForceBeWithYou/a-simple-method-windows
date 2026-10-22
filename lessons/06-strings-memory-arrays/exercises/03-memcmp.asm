@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_03_memcmp:PROC
+EXTERNDEF ex_03_memcmp:PROC
 
 
 

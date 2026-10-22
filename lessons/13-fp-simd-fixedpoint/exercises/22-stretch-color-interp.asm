@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_color_interp:PROC
+EXTERNDEF ex_22_stretch_color_interp:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_22_stretch_color_interp in this file.

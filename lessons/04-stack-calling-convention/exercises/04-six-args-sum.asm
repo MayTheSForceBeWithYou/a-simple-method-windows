@@ -5,10 +5,12 @@
 ; Contract: implement `ex_04_six_args_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 21
 ;
+; Implement `sum6` using MS x64 register args RCX,RDX,R8,R9 and stack slots [rsp+32],[rsp+40]. In `ex_04_six_args_sum`, pass 1..6 and exit with the sum (21).
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_six_args_sum:PROC
+EXTERNDEF ex_04_six_args_sum:PROC
 
 ; TODO: write ex_04_six_args_sum in this file.
 

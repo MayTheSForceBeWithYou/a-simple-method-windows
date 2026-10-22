@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_16_debug_callee_clobber:PROC
+EXTERNDEF ex_16_debug_callee_clobber:PROC
 
 helper PROC
     ; BUG: uses RBX without saving (nonvolatile in MS x64)

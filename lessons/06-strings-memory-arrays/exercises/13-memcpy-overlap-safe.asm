@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_memcpy_overlap_safe:PROC
+EXTERNDEF ex_13_memcpy_overlap_safe:PROC
 
 
 

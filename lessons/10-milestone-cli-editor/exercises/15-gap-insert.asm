@@ -11,7 +11,7 @@ gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_gap_insert:PROC
+EXTERNDEF ex_15_gap_insert:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_15_gap_insert in this file.

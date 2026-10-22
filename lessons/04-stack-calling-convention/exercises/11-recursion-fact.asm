@@ -5,10 +5,12 @@
 ; Contract: implement `ex_11_recursion_fact` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 24
 ;
+; Implement recursive `factorial`. In `ex_11_recursion_fact`, exit with fact(5)=120.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_recursion_fact:PROC
+EXTERNDEF ex_11_recursion_fact:PROC
 
 ; TODO: write ex_11_recursion_fact in this file.
 

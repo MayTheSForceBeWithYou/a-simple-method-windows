@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_15_debug_inc_cf:PROC
+EXTERNDEF ex_15_debug_inc_cf:PROC
 
 ; BUG: INC does not set CF the way ADD does; student fixes in ex_15_debug_inc_cf.
 show_cf PROC

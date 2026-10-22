@@ -1,6 +1,6 @@
 ; Exercise: 16-debug-off-by-one
 ;
-; BUG: loop runs 0..n inclusive summing 1..5 as 0..5. Fix to sum 1..5 = 15.
+; BUG: loop sums 0..5 inclusive instead of 1..5. Fix in `ex_16_debug_off_by_one`; expected sum 15.
 ;
 ; Contract: implement `ex_16_debug_off_by_one` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 15
@@ -8,23 +8,10 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_16_debug_off_by_one:PROC
+EXTERNDEF ex_16_debug_off_by_one:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-
-    mov rcx, 0    ; BUG: fix in ex_16_debug_off_by_one
-dbg_loop:    ; BUG: fix in ex_16_debug_off_by_one
-    cmp rcx, 5    ; BUG: fix in ex_16_debug_off_by_one
-    jg dbg_done    ; BUG: fix in ex_16_debug_off_by_one
-    add rdi, rcx    ; BUG: fix in ex_16_debug_off_by_one
-    inc rcx    ; BUG: fix in ex_16_debug_off_by_one
-    jmp dbg_loop    ; BUG: fix in ex_16_debug_off_by_one
-dbg_done:    ; BUG: fix in ex_16_debug_off_by_one
-
-__ex_call:
     ; TODO: write ex_16_debug_off_by_one in this file.
     call    ex_16_debug_off_by_one
     mov     ecx, eax

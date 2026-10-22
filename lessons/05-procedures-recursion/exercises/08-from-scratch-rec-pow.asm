@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_08_from_scratch_rec_pow:PROC
+EXTERNDEF ex_08_from_scratch_rec_pow:PROC
 
 ; TODO: write ex_08_from_scratch_rec_pow in this file.
 

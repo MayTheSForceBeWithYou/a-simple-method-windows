@@ -11,16 +11,11 @@ arr QWORD 10, 20, 30
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_12_debug_off_by_scale:PROC
+EXTERNDEF ex_12_debug_off_by_scale:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov rcx, 1    ; BUG: fix in ex_12_debug_off_by_scale
-    mov rcx, QWORD PTR [arr+rcx*1]    ; BUG: fix in ex_12_debug_off_by_scale
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_12_debug_off_by_scale in this file.
     call    ex_12_debug_off_by_scale
     mov     ecx, eax

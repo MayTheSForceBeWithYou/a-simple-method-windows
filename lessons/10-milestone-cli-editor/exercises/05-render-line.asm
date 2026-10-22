@@ -14,7 +14,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_05_render_line:PROC
+EXTERNDEF ex_05_render_line:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_05_render_line in this file.

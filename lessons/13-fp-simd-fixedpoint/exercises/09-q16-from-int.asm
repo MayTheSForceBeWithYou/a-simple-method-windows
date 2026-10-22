@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_q16_from_int:PROC
+EXTERNDEF ex_09_q16_from_int:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_09_q16_from_int in this file.

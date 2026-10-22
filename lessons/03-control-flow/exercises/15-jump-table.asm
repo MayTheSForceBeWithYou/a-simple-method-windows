@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_15_jump_table:PROC
+EXTERNDEF ex_15_jump_table:PROC
 
 main PROC
     sub     rsp, 40

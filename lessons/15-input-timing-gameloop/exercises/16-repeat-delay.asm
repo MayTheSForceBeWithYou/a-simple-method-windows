@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_repeat_delay:PROC
+EXTERNDEF ex_16_repeat_delay:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_16_repeat_delay in this file.

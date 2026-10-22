@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_matrix_index:PROC
+EXTERNDEF ex_19_matrix_index:PROC
 
 
 

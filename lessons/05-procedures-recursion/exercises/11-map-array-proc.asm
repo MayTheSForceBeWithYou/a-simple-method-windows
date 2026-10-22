@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_map_array_proc:PROC
+EXTERNDEF ex_11_map_array_proc:PROC
 
 
 

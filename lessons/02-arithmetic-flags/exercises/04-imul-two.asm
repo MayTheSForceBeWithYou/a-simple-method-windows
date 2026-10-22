@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_imul_two:PROC
+EXTERNDEF ex_04_imul_two:PROC
 
 main PROC
     sub     rsp, 40

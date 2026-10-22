@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_neg_fixed:PROC
+EXTERNDEF ex_13_neg_fixed:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_neg_fixed in this file.

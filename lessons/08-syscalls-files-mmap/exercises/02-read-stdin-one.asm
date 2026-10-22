@@ -15,7 +15,7 @@ bytesRead DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN ReadFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_02_read_stdin_one:PROC
+EXTERNDEF ex_02_read_stdin_one:PROC
 
 main PROC
     sub     rsp, 40

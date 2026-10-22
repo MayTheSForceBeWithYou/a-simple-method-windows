@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_09_count_evens:PROC
+EXTERNDEF ex_09_count_evens:PROC
 
 main PROC
     sub     rsp, 40

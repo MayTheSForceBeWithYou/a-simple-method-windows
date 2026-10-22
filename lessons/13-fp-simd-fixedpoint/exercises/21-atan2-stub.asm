@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_atan2_stub:PROC
+EXTERNDEF ex_21_atan2_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_21_atan2_stub in this file.

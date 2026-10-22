@@ -16,7 +16,7 @@ EXTRN CreateFileA:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_06_save_stub:PROC
+EXTERNDEF ex_06_save_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_save_stub in this file.

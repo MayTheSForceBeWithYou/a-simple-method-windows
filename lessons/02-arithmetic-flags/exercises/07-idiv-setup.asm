@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_07_idiv_setup:PROC
+EXTERNDEF ex_07_idiv_setup:PROC
 
 main PROC
     sub     rsp, 40

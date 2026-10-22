@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_25_adc_chain:PROC
+EXTERNDEF ex_25_adc_chain:PROC
 
 main PROC
     sub     rsp, 40

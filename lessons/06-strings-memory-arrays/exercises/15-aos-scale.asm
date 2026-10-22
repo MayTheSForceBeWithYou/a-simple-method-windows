@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_aos_scale:PROC
+EXTERNDEF ex_15_aos_scale:PROC
 
 
 

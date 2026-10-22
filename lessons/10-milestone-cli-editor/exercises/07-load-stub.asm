@@ -16,7 +16,7 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_07_load_stub:PROC
+EXTERNDEF ex_07_load_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_07_load_stub in this file.

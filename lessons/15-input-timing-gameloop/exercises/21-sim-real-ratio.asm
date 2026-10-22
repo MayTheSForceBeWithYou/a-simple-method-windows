@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_sim_real_ratio:PROC
+EXTERNDEF ex_21_sim_real_ratio:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_21_sim_real_ratio in this file.

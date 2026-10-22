@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_many_pushes_balance:PROC
+EXTERNDEF ex_22_many_pushes_balance:PROC
 
 ; TODO: write ex_22_many_pushes_balance in this file.
 

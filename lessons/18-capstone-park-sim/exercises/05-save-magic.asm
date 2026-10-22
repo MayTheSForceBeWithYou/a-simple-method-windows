@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_05_save_magic:PROC
+EXTERNDEF ex_05_save_magic:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_05_save_magic in this file.

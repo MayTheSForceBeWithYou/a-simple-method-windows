@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_macro_pushregs:PROC
+EXTERNDEF ex_09_macro_pushregs:PROC
 
 ; TODO: PushRegs MACRO; push rbx; push r12; ENDM
 ; TODO: PopRegs MACRO; pop r12; pop rbx; ENDM

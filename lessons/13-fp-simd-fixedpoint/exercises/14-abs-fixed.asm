@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_abs_fixed:PROC
+EXTERNDEF ex_14_abs_fixed:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_14_abs_fixed in this file.

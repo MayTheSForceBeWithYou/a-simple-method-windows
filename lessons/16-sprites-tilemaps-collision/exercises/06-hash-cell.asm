@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_hash_cell:PROC
+EXTERNDEF ex_06_hash_cell:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_hash_cell in this file.

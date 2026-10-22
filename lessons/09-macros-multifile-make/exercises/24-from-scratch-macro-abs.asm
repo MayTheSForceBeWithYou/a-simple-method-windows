@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_24_from_scratch_macro_abs:PROC
+EXTERNDEF ex_24_from_scratch_macro_abs:PROC
 
 ; TODO: AbsVal MACRO reg; LOCAL skip; cmp reg, 0; jge skip; neg reg; skip:; ENDM
 

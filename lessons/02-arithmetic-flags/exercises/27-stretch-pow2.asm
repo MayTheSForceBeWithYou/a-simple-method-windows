@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_27_stretch_pow2:PROC
+EXTERNDEF ex_27_stretch_pow2:PROC
 
 main PROC
     sub     rsp, 40

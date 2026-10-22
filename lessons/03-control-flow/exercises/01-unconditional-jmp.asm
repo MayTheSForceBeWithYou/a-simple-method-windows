@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_01_unconditional_jmp:PROC
+EXTERNDEF ex_01_unconditional_jmp:PROC
 
 main PROC
     sub     rsp, 40

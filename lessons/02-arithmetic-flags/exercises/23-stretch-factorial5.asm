@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_factorial5:PROC
+EXTERNDEF ex_23_stretch_factorial5:PROC
 
 main PROC
     sub     rsp, 40

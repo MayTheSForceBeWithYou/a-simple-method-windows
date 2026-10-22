@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_mouse_delta:PROC
+EXTERNDEF ex_11_mouse_delta:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_11_mouse_delta in this file.

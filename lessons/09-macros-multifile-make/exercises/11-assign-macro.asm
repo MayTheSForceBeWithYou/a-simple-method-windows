@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_assign_macro:PROC
+EXTERNDEF ex_11_assign_macro:PROC
 
 main PROC
     sub     rsp, 40

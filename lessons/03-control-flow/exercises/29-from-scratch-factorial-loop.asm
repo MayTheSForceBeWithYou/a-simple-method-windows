@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_29_from_scratch_factorial_loop:PROC
+EXTERNDEF ex_29_from_scratch_factorial_loop:PROC
 
 main PROC
     sub     rsp, 40

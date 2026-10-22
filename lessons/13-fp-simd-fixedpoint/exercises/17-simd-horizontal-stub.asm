@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_simd_horizontal_stub:PROC
+EXTERNDEF ex_17_simd_horizontal_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_simd_horizontal_stub in this file.

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_clamp_q:PROC
+EXTERNDEF ex_16_clamp_q:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_16_clamp_q in this file.

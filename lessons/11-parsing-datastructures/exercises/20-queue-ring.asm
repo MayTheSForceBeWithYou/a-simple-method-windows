@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_queue_ring:PROC
+EXTERNDEF ex_20_queue_ring:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_queue_ring in this file.

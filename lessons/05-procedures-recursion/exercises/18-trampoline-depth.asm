@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_trampoline_depth:PROC
+EXTERNDEF ex_18_trampoline_depth:PROC
 
 
 

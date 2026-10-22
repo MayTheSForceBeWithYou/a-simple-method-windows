@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_sar_vs_shr:PROC
+EXTERNDEF ex_14_sar_vs_shr:PROC
 
 main PROC
     sub     rsp, 40

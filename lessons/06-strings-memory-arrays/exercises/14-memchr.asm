@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_memchr:PROC
+EXTERNDEF ex_14_memchr:PROC
 
 
 

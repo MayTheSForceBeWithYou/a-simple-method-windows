@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_memo_fib_slot:PROC
+EXTERNDEF ex_23_stretch_memo_fib_slot:PROC
 
 
 

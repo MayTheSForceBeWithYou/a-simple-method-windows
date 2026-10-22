@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_expr_eax:PROC
+EXTERNDEF ex_19_expr_eax:PROC
 
 main PROC
     sub     rsp, 40

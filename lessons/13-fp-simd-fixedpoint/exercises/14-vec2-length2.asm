@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_vec2_length2:PROC
+EXTERNDEF ex_14_vec2_length2:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_14_vec2_length2 in this file.

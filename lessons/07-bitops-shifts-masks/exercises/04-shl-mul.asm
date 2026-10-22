@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_shl_mul:PROC
+EXTERNDEF ex_04_shl_mul:PROC
 
 main PROC
     sub     rsp, 40

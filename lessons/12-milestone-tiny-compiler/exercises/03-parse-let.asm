@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_03_parse_let:PROC
+EXTERNDEF ex_03_parse_let:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_03_parse_let in this file.

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_01_cmp_je:PROC
+EXTERNDEF ex_01_cmp_je:PROC
 
 main PROC
     sub     rsp, 40

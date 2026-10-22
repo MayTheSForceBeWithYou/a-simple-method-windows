@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_10_strncmp:PROC
+EXTERNDEF ex_10_strncmp:PROC
 
 
 

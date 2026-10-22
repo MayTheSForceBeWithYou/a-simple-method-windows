@@ -15,7 +15,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_03_macro_write:PROC
+EXTERNDEF ex_03_macro_write:PROC
 
 ; TODO: Define WriteMsgMacro
 

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_26_abs_via_neg:PROC
+EXTERNDEF ex_26_abs_via_neg:PROC
 
 main PROC
     sub     rsp, 40

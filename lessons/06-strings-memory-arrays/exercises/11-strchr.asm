@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_strchr:PROC
+EXTERNDEF ex_11_strchr:PROC
 
 
 

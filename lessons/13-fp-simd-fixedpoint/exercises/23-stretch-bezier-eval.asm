@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_bezier_eval:PROC
+EXTERNDEF ex_23_stretch_bezier_eval:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_23_stretch_bezier_eval in this file.

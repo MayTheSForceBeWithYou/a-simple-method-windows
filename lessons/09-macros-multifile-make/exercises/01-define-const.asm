@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_define_const:PROC
+EXTERNDEF ex_01_define_const:PROC
 
 ; TODO: Define STATUS_OK EQU 0
 

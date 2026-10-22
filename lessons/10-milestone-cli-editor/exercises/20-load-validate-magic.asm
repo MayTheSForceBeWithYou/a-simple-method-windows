@@ -18,7 +18,7 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_20_load_validate_magic:PROC
+EXTERNDEF ex_20_load_validate_magic:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_load_validate_magic in this file.

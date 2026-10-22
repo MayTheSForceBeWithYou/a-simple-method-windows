@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_lexer_digit:PROC
+EXTERNDEF ex_02_lexer_digit:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_02_lexer_digit in this file.

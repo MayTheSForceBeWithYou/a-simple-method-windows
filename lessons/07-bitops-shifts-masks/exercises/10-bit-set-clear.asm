@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_10_bit_set_clear:PROC
+EXTERNDEF ex_10_bit_set_clear:PROC
 
 main PROC
     sub     rsp, 40

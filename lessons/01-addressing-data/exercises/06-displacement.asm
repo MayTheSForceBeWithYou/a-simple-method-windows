@@ -11,7 +11,7 @@ arr DQ 5, 15, 25
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_displacement:PROC
+EXTERNDEF ex_06_displacement:PROC
 
 main PROC
     sub     rsp, 40

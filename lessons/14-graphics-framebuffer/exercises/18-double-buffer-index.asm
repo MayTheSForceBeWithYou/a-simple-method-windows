@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_double_buffer_index:PROC
+EXTERNDEF ex_18_double_buffer_index:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_18_double_buffer_index in this file.

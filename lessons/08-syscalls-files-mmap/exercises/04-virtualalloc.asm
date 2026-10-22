@@ -10,7 +10,7 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_04_virtualalloc:PROC
+EXTERNDEF ex_04_virtualalloc:PROC
 
 main PROC
     sub     rsp, 40

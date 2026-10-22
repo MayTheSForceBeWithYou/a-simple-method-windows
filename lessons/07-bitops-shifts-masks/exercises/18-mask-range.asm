@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_mask_range:PROC
+EXTERNDEF ex_18_mask_range:PROC
 
 main PROC
     sub     rsp, 40

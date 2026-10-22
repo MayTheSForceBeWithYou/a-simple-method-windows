@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_offset_bpp:PROC
+EXTERNDEF ex_19_debug_offset_bpp:PROC
 
 pixel_offset_bug PROC
     mov rcx, 2

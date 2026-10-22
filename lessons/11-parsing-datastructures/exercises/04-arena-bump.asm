@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_arena_bump:PROC
+EXTERNDEF ex_04_arena_bump:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_04_arena_bump in this file.

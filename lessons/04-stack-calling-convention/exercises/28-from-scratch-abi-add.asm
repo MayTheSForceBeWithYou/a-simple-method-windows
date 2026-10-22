@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_28_from_scratch_abi_add:PROC
+EXTERNDEF ex_28_from_scratch_abi_add:PROC
 
 ; TODO: write ex_28_from_scratch_abi_add in this file.
 

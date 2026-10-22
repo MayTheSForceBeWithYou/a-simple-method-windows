@@ -11,15 +11,11 @@ x QWORD 55
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_lea_load:PROC
+EXTERNDEF ex_19_debug_lea_load:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    lea rcx, x    ; BUG: fix in ex_19_debug_lea_load (should load value, not address)
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_19_debug_lea_load in this file.
     call    ex_19_debug_lea_load
     mov     ecx, eax

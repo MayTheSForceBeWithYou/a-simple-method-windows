@@ -10,7 +10,7 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_20_allocation_granularity:PROC
+EXTERNDEF ex_20_allocation_granularity:PROC
 
 main PROC
     sub     rsp, 40

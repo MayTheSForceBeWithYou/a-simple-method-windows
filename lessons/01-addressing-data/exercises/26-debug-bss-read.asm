@@ -11,15 +11,11 @@ v QWORD ?
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_26_debug_bss_read:PROC
+EXTERNDEF ex_26_debug_bss_read:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov rcx, QWORD PTR [v]    ; BUG: fix in ex_26_debug_bss_read
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_26_debug_bss_read in this file.
     call    ex_26_debug_bss_read
     mov     ecx, eax

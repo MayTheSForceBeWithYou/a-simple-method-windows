@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_mul_overflow:PROC
+EXTERNDEF ex_19_debug_mul_overflow:PROC
 
 q_mul_wide_bug PROC
     mov eax, 2

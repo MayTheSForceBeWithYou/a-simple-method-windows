@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_strcat_lite:PROC
+EXTERNDEF ex_12_strcat_lite:PROC
 
 
 

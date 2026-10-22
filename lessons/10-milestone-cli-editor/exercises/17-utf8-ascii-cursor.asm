@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_utf8_ascii_cursor:PROC
+EXTERNDEF ex_17_utf8_ascii_cursor:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_utf8_ascii_cursor in this file.

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_label_arith:PROC
+EXTERNDEF ex_17_label_arith:PROC
 
 main PROC
     sub     rsp, 40

@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_line_start_end:PROC
+EXTERNDEF ex_12_line_start_end:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_line_start_end in this file.

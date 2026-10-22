@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_void_side_effect:PROC
+EXTERNDEF ex_17_void_side_effect:PROC
 
 ; TODO: write ex_17_void_side_effect in this file.
 

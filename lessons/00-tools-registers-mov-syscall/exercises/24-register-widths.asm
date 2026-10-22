@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_24_register_widths:PROC
+EXTERNDEF ex_24_register_widths:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_createpipe:PROC
+EXTERNDEF ex_23_stretch_createpipe:PROC
 
 main PROC
     sub     rsp, 40

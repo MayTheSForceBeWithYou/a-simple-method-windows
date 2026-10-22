@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_early_break:PROC
+EXTERNDEF ex_14_early_break:PROC
 
 main PROC
     sub     rsp, 40

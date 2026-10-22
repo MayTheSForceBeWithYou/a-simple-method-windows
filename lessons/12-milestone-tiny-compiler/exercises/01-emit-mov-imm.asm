@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_emit_mov_imm:PROC
+EXTERNDEF ex_01_emit_mov_imm:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_01_emit_mov_imm in this file.

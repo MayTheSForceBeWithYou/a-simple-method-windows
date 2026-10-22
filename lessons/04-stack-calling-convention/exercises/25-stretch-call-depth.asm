@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_25_stretch_call_depth:PROC
+EXTERNDEF ex_25_stretch_call_depth:PROC
 
 ; TODO: write ex_25_stretch_call_depth in this file.
 

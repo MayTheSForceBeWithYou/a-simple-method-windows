@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_10_gcd_proc:PROC
+EXTERNDEF ex_10_gcd_proc:PROC
 
 ; TODO: write ex_10_gcd_proc in this file.
 

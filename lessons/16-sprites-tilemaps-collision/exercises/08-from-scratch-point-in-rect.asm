@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_08_from_scratch_point_in_rect:PROC
+EXTERNDEF ex_08_from_scratch_point_in_rect:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_08_from_scratch_point_in_rect in this file.

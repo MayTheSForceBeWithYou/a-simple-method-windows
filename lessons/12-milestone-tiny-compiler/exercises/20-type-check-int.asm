@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_type_check_int:PROC
+EXTERNDEF ex_20_type_check_int:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_type_check_int in this file.

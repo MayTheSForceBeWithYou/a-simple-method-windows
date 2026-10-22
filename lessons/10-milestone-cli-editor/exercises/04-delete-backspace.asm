@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_delete_backspace:PROC
+EXTERNDEF ex_04_delete_backspace:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_04_delete_backspace in this file.

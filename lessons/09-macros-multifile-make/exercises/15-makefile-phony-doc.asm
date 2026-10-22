@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_makefile_phony_doc:PROC
+EXTERNDEF ex_15_makefile_phony_doc:PROC
 
 ; .PHONY in Makefile marks non-file targets like "clean" or "all"
 

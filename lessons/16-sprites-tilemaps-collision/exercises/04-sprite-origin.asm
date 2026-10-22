@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_sprite_origin:PROC
+EXTERNDEF ex_04_sprite_origin:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_04_sprite_origin in this file.

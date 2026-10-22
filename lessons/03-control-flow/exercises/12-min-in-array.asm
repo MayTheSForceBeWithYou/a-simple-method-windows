@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_12_min_in_array:PROC
+EXTERNDEF ex_12_min_in_array:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_13_align_before_call:PROC
+EXTERNDEF ex_13_align_before_call:PROC
 
 ; TODO: write ex_13_align_before_call in this file.
 

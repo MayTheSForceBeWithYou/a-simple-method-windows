@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_aos_sum:PROC
+EXTERNDEF ex_06_aos_sum:PROC
 
 
 

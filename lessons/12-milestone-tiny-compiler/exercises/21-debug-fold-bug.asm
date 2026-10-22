@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_debug_fold_bug:PROC
+EXTERNDEF ex_21_debug_fold_bug:PROC
 
 fold_bug PROC
     mov rax, 2

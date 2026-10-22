@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_pratt_stub:PROC
+EXTERNDEF ex_22_stretch_pratt_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_22_stretch_pratt_stub in this file.

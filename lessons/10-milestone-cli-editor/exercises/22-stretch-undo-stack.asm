@@ -10,7 +10,7 @@ undo_stack DQ 16 DUP(?)
 stack_top QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_undo_stack:PROC
+EXTERNDEF ex_22_stretch_undo_stack:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_22_stretch_undo_stack in this file.

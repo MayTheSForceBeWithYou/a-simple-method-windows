@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_swap_via_ptrs:PROC
+EXTERNDEF ex_19_swap_via_ptrs:PROC
 
 ; TODO: write ex_19_swap_via_ptrs in this file.
 

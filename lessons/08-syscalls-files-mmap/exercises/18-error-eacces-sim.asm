@@ -13,7 +13,7 @@ path DB "C:\", 0
 EXTRN CreateFileA:PROC
 EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_18_error_eacces_sim:PROC
+EXTERNDEF ex_18_error_eacces_sim:PROC
 
 main PROC
     sub     rsp, 40

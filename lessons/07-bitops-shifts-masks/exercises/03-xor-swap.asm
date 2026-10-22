@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_03_xor_swap:PROC
+EXTERNDEF ex_03_xor_swap:PROC
 
 main PROC
     sub     rsp, 40

@@ -11,7 +11,7 @@ buffer DQ ?
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_10_word_dword:PROC
+EXTERNDEF ex_10_word_dword:PROC
 
 main PROC
     sub     rsp, 40

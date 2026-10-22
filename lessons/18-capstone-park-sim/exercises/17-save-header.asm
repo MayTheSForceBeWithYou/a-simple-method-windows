@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_save_header:PROC
+EXTERNDEF ex_17_save_header:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_save_header in this file.

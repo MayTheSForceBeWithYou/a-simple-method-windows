@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_clamp_fixed:PROC
+EXTERNDEF ex_04_clamp_fixed:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_04_clamp_fixed in this file.

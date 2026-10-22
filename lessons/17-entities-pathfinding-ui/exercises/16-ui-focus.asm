@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_ui_focus:PROC
+EXTERNDEF ex_16_ui_focus:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_16_ui_focus in this file.

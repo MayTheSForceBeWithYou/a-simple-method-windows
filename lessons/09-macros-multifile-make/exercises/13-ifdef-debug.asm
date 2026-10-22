@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_ifdef_debug:PROC
+EXTERNDEF ex_13_ifdef_debug:PROC
 
 main PROC
     sub     rsp, 40

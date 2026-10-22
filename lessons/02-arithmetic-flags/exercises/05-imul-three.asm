@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_05_imul_three:PROC
+EXTERNDEF ex_05_imul_three:PROC
 
 main PROC
     sub     rsp, 40

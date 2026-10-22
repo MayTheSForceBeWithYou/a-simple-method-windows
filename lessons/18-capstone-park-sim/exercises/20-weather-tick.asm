@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_weather_tick:PROC
+EXTERNDEF ex_20_weather_tick:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_weather_tick in this file.

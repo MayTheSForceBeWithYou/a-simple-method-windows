@@ -13,7 +13,7 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_02_rodata_string:PROC
+EXTERNDEF ex_02_rodata_string:PROC
 
 main PROC
     sub     rsp, 40

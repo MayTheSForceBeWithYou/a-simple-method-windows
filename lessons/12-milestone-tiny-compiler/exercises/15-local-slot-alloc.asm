@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_local_slot_alloc:PROC
+EXTERNDEF ex_15_local_slot_alloc:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_15_local_slot_alloc in this file.

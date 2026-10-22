@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_bit_reverse8:PROC
+EXTERNDEF ex_23_stretch_bit_reverse8:PROC
 
 main PROC
     sub     rsp, 40

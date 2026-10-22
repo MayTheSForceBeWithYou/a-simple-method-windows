@@ -9,7 +9,7 @@
 
 EXTRN GetCurrentProcessId:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_15_getpid:PROC
+EXTERNDEF ex_15_getpid:PROC
 
 main PROC
     sub     rsp, 40

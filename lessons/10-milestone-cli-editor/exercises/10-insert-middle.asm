@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_10_insert_middle:PROC
+EXTERNDEF ex_10_insert_middle:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_10_insert_middle in this file.

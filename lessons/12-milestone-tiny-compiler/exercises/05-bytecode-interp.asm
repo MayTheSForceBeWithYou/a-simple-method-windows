@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_05_bytecode_interp:PROC
+EXTERNDEF ex_05_bytecode_interp:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_05_bytecode_interp in this file.

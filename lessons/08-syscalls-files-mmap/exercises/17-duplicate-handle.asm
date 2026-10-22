@@ -16,7 +16,7 @@ bytesWritten DWORD ?
 EXTRN ExitProcess:PROC
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
-EXTRN ex_17_duplicate_handle:PROC
+EXTERNDEF ex_17_duplicate_handle:PROC
 
 main PROC
     sub     rsp, 40

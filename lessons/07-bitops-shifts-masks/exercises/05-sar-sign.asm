@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_05_sar_sign:PROC
+EXTERNDEF ex_05_sar_sign:PROC
 
 main PROC
     sub     rsp, 40

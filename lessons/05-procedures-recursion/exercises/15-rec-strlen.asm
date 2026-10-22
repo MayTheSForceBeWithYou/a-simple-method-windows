@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_15_rec_strlen:PROC
+EXTERNDEF ex_15_rec_strlen:PROC
 
 
 

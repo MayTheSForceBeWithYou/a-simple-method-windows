@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_02_je_equal:PROC
+EXTERNDEF ex_02_je_equal:PROC
 
 main PROC
     sub     rsp, 40

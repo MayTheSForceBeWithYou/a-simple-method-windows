@@ -12,7 +12,7 @@ bytes_len EQU $ - bytes
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_09_xor_checksum:PROC
+EXTERNDEF ex_09_xor_checksum:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_10_map_erase:PROC
+EXTERNDEF ex_10_map_erase:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_10_map_erase in this file.

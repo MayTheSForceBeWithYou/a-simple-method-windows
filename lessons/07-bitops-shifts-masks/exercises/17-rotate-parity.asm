@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_rotate_parity:PROC
+EXTERNDEF ex_17_rotate_parity:PROC
 
 main PROC
     sub     rsp, 40

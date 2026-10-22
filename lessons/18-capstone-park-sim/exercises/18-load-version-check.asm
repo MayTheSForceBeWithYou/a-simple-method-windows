@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_load_version_check:PROC
+EXTERNDEF ex_18_load_version_check:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_18_load_version_check in this file.

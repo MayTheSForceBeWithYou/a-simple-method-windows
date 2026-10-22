@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_07_simd_lane_sum_stub:PROC
+EXTERNDEF ex_07_simd_lane_sum_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_07_simd_lane_sum_stub in this file.

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_bytecode_jump:PROC
+EXTERNDEF ex_19_bytecode_jump:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_19_bytecode_jump in this file.

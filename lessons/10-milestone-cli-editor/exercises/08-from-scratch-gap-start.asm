@@ -11,7 +11,7 @@ gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_08_from_scratch_gap_start:PROC
+EXTERNDEF ex_08_from_scratch_gap_start:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_08_from_scratch_gap_start in this file.

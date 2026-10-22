@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_28_from_scratch_expr:PROC
+EXTERNDEF ex_28_from_scratch_expr:PROC
 
 main PROC
     sub     rsp, 40

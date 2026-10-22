@@ -13,7 +13,7 @@ filename DB "C:\nope.txt", 0
 EXTRN CreateFileA:PROC
 EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_05_get_last_error_open:PROC
+EXTERNDEF ex_05_get_last_error_open:PROC
 
 main PROC
     sub     rsp, 40

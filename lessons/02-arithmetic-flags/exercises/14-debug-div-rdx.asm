@@ -8,18 +8,11 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_debug_div_rdx:PROC
+EXTERNDEF ex_14_debug_div_rdx:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov rax, 100    ; BUG: fix in ex_14_debug_div_rdx
-    mov rbx, 10    ; BUG: fix in ex_14_debug_div_rdx
-    div rbx    ; BUG: fix in ex_14_debug_div_rdx
-    mov rcx, rax    ; BUG: fix in ex_14_debug_div_rdx
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_14_debug_div_rdx in this file.
     call    ex_14_debug_div_rdx
     mov     ecx, eax

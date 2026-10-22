@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_mod_via_div:PROC
+EXTERNDEF ex_18_mod_via_div:PROC
 
 main PROC
     sub     rsp, 40

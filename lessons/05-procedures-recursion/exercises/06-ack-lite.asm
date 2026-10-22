@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_ack_lite:PROC
+EXTERNDEF ex_06_ack_lite:PROC
 
 ; TODO: write ex_06_ack_lite in this file.
 

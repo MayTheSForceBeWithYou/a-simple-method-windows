@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_25_comment_trace:PROC
+EXTERNDEF ex_25_comment_trace:PROC
 
 main PROC
     sub     rsp, 40

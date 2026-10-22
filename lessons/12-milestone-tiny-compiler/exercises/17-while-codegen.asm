@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_while_codegen:PROC
+EXTERNDEF ex_17_while_codegen:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_while_codegen in this file.

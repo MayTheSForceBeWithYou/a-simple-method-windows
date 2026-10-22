@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_03_exit_from_register:PROC
+EXTERNDEF ex_03_exit_from_register:PROC
 
 main PROC
     sub     rsp, 40

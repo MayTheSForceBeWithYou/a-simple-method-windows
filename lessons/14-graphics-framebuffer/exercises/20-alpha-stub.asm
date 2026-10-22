@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_alpha_stub:PROC
+EXTERNDEF ex_20_alpha_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_20_alpha_stub in this file.

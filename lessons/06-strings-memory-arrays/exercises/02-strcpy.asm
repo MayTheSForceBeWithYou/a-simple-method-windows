@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_strcpy:PROC
+EXTERNDEF ex_02_strcpy:PROC
 
 
 

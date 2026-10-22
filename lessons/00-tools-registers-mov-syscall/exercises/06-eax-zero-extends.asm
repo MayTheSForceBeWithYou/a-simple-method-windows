@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_eax_zero_extends:PROC
+EXTERNDEF ex_06_eax_zero_extends:PROC
 
 main PROC
     sub     rsp, 40

@@ -14,7 +14,7 @@ dst BYTE 8 DUP(?)
 
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_18_debug_off_by_one_copy:PROC
+EXTERNDEF ex_18_debug_off_by_one_copy:PROC
 
 strcpy_n PROC
     ; BUG: copies exactly two bytes, no terminating NUL

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_soa_sum:PROC
+EXTERNDEF ex_16_soa_sum:PROC
 
 
 

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_21_loop_mul_table:PROC
+EXTERNDEF ex_21_loop_mul_table:PROC
 
 main PROC
     sub     rsp, 40

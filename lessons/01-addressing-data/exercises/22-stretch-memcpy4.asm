@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_memcpy4:PROC
+EXTERNDEF ex_22_stretch_memcpy4:PROC
 
 main PROC
     sub     rsp, 40

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_hashmap_put_get:PROC
+EXTERNDEF ex_13_hashmap_put_get:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_hashmap_put_get in this file.

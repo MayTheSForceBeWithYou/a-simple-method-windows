@@ -13,7 +13,7 @@ filename DB "NUL", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_08_from_scratch_close:PROC
+EXTERNDEF ex_08_from_scratch_close:PROC
 
 main PROC
     sub     rsp, 40

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_memset:PROC
+EXTERNDEF ex_04_memset:PROC
 
 
 

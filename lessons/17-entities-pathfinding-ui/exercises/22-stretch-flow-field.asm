@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_flow_field:PROC
+EXTERNDEF ex_22_stretch_flow_field:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_22_stretch_flow_field in this file.

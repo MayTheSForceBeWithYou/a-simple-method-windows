@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_codegen_add:PROC
+EXTERNDEF ex_04_codegen_add:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_04_codegen_add in this file.

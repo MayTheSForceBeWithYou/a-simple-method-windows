@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_20_fold_list:PROC
+EXTERNDEF ex_20_fold_list:PROC
 
 
 

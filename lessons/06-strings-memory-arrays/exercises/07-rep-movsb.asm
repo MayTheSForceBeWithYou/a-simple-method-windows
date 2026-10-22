@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_07_rep_movsb:PROC
+EXTERNDEF ex_07_rep_movsb:PROC
 
 
 

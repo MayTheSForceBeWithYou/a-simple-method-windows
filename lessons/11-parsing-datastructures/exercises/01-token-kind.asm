@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_token_kind:PROC
+EXTERNDEF ex_01_token_kind:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_01_token_kind in this file.

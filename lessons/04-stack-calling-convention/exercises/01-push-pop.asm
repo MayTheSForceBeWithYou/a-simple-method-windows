@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_push_pop:PROC
+EXTERNDEF ex_01_push_pop:PROC
 
 main PROC
     sub     rsp, 40

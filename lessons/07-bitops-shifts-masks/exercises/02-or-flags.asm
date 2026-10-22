@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_02_or_flags:PROC
+EXTERNDEF ex_02_or_flags:PROC
 
 main PROC
     sub     rsp, 40

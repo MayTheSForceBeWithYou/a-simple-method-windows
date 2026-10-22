@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_bounded_strcpy:PROC
+EXTERNDEF ex_17_bounded_strcpy:PROC
 
 
 

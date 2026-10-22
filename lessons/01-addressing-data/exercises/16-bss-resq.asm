@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_16_bss_resq:PROC
+EXTERNDEF ex_16_bss_resq:PROC
 
 main PROC
     sub     rsp, 40

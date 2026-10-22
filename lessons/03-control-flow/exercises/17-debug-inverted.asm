@@ -8,22 +8,11 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_debug_inverted:PROC
+EXTERNDEF ex_17_debug_inverted:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov rax, 5    ; BUG: fix in ex_17_debug_inverted
-    cmp rax, 3    ; BUG: fix in ex_17_debug_inverted
-    jl dbg_big    ; BUG: fix in ex_17_debug_inverted
-    mov rcx, 1    ; BUG: fix in ex_17_debug_inverted
-    jmp dbg_out    ; BUG: fix in ex_17_debug_inverted
-dbg_big:    ; BUG: fix in ex_17_debug_inverted
-    mov rcx, 2    ; BUG: fix in ex_17_debug_inverted
-dbg_out:    ; BUG: fix in ex_17_debug_inverted
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_17_debug_inverted in this file.
     call    ex_17_debug_inverted
     mov     ecx, eax

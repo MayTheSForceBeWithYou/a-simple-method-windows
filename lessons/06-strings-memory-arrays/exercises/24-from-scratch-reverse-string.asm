@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_24_from_scratch_reverse_string:PROC
+EXTERNDEF ex_24_from_scratch_reverse_string:PROC
 
 
 

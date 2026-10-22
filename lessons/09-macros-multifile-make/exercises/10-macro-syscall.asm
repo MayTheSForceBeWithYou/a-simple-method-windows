@@ -15,7 +15,7 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_10_macro_syscall:PROC
+EXTERNDEF ex_10_macro_syscall:PROC
 
 ; TODO: Define WriteK MACRO (no args) that writes msg
 

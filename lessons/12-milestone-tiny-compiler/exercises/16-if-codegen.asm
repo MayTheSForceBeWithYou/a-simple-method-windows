@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_if_codegen:PROC
+EXTERNDEF ex_16_if_codegen:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_16_if_codegen in this file.

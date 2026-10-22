@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_macro_exit:PROC
+EXTERNDEF ex_02_macro_exit:PROC
 
 ; TODO: Define ExitWith macro
 

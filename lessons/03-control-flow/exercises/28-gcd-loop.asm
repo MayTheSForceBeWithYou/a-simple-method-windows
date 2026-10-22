@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_28_gcd_loop:PROC
+EXTERNDEF ex_28_gcd_loop:PROC
 
 main PROC
     sub     rsp, 40

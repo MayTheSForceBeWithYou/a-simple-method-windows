@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_24_overwrite_data:PROC
+EXTERNDEF ex_24_overwrite_data:PROC
 
 main PROC
     sub     rsp, 40

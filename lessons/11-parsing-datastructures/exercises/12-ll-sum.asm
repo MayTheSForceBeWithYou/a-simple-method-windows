@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_ll_sum:PROC
+EXTERNDEF ex_12_ll_sum:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_ll_sum in this file.

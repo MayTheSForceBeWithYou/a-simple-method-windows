@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_ring_drop:PROC
+EXTERNDEF ex_22_stretch_ring_drop:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_22_stretch_ring_drop in this file.

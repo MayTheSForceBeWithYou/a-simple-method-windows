@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_max_via_flags:PROC
+EXTERNDEF ex_20_max_via_flags:PROC
 
 main PROC
     sub     rsp, 40

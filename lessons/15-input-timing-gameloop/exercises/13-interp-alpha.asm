@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_interp_alpha:PROC
+EXTERNDEF ex_13_interp_alpha:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_interp_alpha in this file.

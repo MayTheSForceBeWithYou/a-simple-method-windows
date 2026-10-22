@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_10_nested_if:PROC
+EXTERNDEF ex_10_nested_if:PROC
 
 main PROC
     sub     rsp, 40

@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_01_buffer_init:PROC
+EXTERNDEF ex_01_buffer_init:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_01_buffer_init in this file.

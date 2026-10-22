@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_04_include_guard_sim:PROC
+EXTERNDEF ex_04_include_guard_sim:PROC
 
 main PROC
     sub     rsp, 40

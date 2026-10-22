@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_30_signed_vs_unsigned_jmp:PROC
+EXTERNDEF ex_30_signed_vs_unsigned_jmp:PROC
 
 main PROC
     sub     rsp, 40

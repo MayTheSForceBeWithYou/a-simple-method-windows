@@ -5,10 +5,12 @@
 ; Contract: implement `ex_06_prologue_locals` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 42
 ;
+; Implement `sum_locals(rcx)` with three QWORD locals summing rcx+1..rcx+3. In `ex_06_prologue_locals`, call with 10 and exit 33.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_prologue_locals:PROC
+EXTERNDEF ex_06_prologue_locals:PROC
 
 ; TODO: write ex_06_prologue_locals in this file.
 

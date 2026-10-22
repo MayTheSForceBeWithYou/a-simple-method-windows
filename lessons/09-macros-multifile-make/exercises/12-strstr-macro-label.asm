@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_strstr_macro_label:PROC
+EXTERNDEF ex_12_strstr_macro_label:PROC
 
 ; TODO: TWICE MACRO; inc rax; inc rax; ENDM (no labels needed)
 

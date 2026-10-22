@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_sweep_hit_t:PROC
+EXTERNDEF ex_13_sweep_hit_t:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_13_sweep_hit_t in this file.

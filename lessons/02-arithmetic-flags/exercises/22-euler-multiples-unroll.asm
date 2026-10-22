@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_euler_multiples_unroll:PROC
+EXTERNDEF ex_22_euler_multiples_unroll:PROC
 
 main PROC
     sub     rsp, 40

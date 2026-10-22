@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_05_dot2_fixed:PROC
+EXTERNDEF ex_05_dot2_fixed:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_05_dot2_fixed in this file.

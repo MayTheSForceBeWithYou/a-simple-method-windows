@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_23_collatz_steps:PROC
+EXTERNDEF ex_23_collatz_steps:PROC
 
 main PROC
     sub     rsp, 40

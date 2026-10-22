@@ -1,6 +1,6 @@
 ; Exercise: 08-two-writes
 ;
-; Write "alpha\n" then "beta\n" with two write syscalls. Exit 0.
+; Write "alpha\n" then "beta\n" with two WriteFile calls. Exit 0.
 ;
 ; Contract: implement `ex_08_two_writes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 0
@@ -19,7 +19,7 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_08_two_writes:PROC
+EXTERNDEF ex_08_two_writes:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_10_chord:PROC
+EXTERNDEF ex_10_chord:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_10_chord in this file.

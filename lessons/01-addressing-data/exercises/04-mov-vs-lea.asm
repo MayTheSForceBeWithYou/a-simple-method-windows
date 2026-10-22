@@ -11,7 +11,7 @@ x DQ 99
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_mov_vs_lea:PROC
+EXTERNDEF ex_04_mov_vs_lea:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_07_tail_ish_loop:PROC
+EXTERNDEF ex_07_tail_ish_loop:PROC
 
 ; TODO: write ex_07_tail_ish_loop in this file.
 

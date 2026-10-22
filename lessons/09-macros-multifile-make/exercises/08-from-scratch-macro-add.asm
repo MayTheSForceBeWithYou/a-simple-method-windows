@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_08_from_scratch_macro_add:PROC
+EXTERNDEF ex_08_from_scratch_macro_add:PROC
 
 ; TODO: Define ADD_IMM MACRO reg, imm; add reg, imm; ENDM
 

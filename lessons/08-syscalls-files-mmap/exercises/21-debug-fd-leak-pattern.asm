@@ -12,7 +12,7 @@ filename DB "NUL", 0
 
 EXTRN CreateFileA:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_21_debug_fd_leak_pattern:PROC
+EXTERNDEF ex_21_debug_fd_leak_pattern:PROC
 
 open_no_close PROC
     sub rsp, 72

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_16_include_path_sim:PROC
+EXTERNDEF ex_16_include_path_sim:PROC
 
 main PROC
     sub     rsp, 40

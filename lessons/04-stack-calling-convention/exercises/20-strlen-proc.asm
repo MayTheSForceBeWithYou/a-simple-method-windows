@@ -5,10 +5,12 @@
 ; Contract: implement `ex_20_strlen_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 8
 ;
+; Implement `strlen` on `walkMsg`. In `ex_20_strlen_proc`, exit with string length (8).
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_strlen_proc:PROC
+EXTERNDEF ex_20_strlen_proc:PROC
 
 ; TODO: write ex_20_strlen_proc in this file.
 

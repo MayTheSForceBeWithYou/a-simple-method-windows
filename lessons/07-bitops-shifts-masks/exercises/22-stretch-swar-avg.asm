@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_swar_avg:PROC
+EXTERNDEF ex_22_stretch_swar_avg:PROC
 
 main PROC
     sub     rsp, 40

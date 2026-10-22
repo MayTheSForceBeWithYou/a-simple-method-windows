@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_label_addresses:PROC
+EXTERNDEF ex_20_label_addresses:PROC
 
 main PROC
     sub     rsp, 40

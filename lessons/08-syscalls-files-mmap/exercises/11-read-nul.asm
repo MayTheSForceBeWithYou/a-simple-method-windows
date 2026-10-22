@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_read_nul:PROC
+EXTERNDEF ex_11_read_nul:PROC
 
 main PROC
     sub     rsp, 40

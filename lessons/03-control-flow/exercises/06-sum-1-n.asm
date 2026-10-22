@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_sum_1_n:PROC
+EXTERNDEF ex_06_sum_1_n:PROC
 
 main PROC
     sub     rsp, 40

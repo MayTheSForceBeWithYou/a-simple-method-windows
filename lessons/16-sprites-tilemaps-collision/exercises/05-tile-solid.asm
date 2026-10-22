@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_05_tile_solid:PROC
+EXTERNDEF ex_05_tile_solid:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_05_tile_solid in this file.

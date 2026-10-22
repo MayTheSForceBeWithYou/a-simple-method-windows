@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_15_debug_wrong_arg_reg:PROC
+EXTERNDEF ex_15_debug_wrong_arg_reg:PROC
 
 add2 PROC
     mov rax, rcx

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_07_emit_syscall_exit:PROC
+EXTERNDEF ex_07_emit_syscall_exit:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_07_emit_syscall_exit in this file.

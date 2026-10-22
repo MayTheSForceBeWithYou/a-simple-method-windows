@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_22_is_prime_lite:PROC
+EXTERNDEF ex_22_is_prime_lite:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_key_down_up:PROC
+EXTERNDEF ex_09_key_down_up:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_09_key_down_up in this file.

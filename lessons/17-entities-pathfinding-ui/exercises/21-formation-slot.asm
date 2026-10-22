@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_formation_slot:PROC
+EXTERNDEF ex_21_formation_slot:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_21_formation_slot in this file.

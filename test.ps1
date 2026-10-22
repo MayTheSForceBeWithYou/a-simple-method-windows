@@ -315,7 +315,7 @@ function Test-IsPrimaryListing {
 function Get-ExerciseExternSymbol {
     param([string]$AsmPath)
     $content = Read-TextOrEmpty $AsmPath
-    if ($content -match '(?im)EXTRN\s+(ex_[A-Za-z0-9_]+)\s*:\s*PROC') {
+    if ($content -match '(?im)(?:EXTRN|EXTERNDEF)\s+(ex_[A-Za-z0-9_]+)\s*:\s*PROC') {
         return $Matches[1]
     }
     return $null

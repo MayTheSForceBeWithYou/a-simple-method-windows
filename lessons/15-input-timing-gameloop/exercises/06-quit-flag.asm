@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_quit_flag:PROC
+EXTERNDEF ex_06_quit_flag:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_quit_flag in this file.

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_tile_at:PROC
+EXTERNDEF ex_09_tile_at:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_09_tile_at in this file.

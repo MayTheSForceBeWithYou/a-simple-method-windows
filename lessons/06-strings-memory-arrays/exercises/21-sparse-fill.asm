@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_sparse_fill:PROC
+EXTERNDEF ex_21_sparse_fill:PROC
 
 
 

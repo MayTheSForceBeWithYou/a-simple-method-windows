@@ -5,10 +5,12 @@
 ; Contract: implement `ex_01_locals_three` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 33
 ;
+; Implement `sum_locals` with three QWORD locals. In `ex_01_locals_three`, call with 10 and exit 33.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_01_locals_three:PROC
+EXTERNDEF ex_01_locals_three:PROC
 
 ; TODO: write ex_01_locals_three in this file.
 

@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_sign_shift:PROC
+EXTERNDEF ex_19_debug_sign_shift:PROC
 
 sign_shift_bug PROC
     mov al, 0FFh

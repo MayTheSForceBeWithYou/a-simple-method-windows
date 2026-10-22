@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_11_sprite_layer:PROC
+EXTERNDEF ex_11_sprite_layer:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_11_sprite_layer in this file.

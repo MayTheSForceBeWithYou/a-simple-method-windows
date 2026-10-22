@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_14_mutual_parity_count:PROC
+EXTERNDEF ex_14_mutual_parity_count:PROC
 
 
 

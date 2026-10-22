@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_08_lea_scale:PROC
+EXTERNDEF ex_08_lea_scale:PROC
 
 main PROC
     sub     rsp, 40

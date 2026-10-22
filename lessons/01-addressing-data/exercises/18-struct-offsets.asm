@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_18_struct_offsets:PROC
+EXTERNDEF ex_18_struct_offsets:PROC
 
 main PROC
     sub     rsp, 40

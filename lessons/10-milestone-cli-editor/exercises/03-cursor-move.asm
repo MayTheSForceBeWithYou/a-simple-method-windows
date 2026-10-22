@@ -10,7 +10,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_03_cursor_move:PROC
+EXTERNDEF ex_03_cursor_move:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_03_cursor_move in this file.

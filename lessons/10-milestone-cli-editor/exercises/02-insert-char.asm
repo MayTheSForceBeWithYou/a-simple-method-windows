@@ -10,7 +10,7 @@ buf DB 256 DUP(?)
 len QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_02_insert_char:PROC
+EXTERNDEF ex_02_insert_char:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_02_insert_char in this file.

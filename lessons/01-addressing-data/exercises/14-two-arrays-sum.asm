@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_two_arrays_sum:PROC
+EXTERNDEF ex_14_two_arrays_sum:PROC
 
 main PROC
     sub     rsp, 40

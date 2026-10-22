@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_07_extract_bitfield:PROC
+EXTERNDEF ex_07_extract_bitfield:PROC
 
 main PROC
     sub     rsp, 40

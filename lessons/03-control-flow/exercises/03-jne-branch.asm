@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_03_jne_branch:PROC
+EXTERNDEF ex_03_jne_branch:PROC
 
 main PROC
     sub     rsp, 40

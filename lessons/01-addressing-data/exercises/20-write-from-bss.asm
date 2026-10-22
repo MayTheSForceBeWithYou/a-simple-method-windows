@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_20_write_from_bss:PROC
+EXTERNDEF ex_20_write_from_bss:PROC
 
 main PROC
     sub     rsp, 40

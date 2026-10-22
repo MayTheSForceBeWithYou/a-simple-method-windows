@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_rd_parse_num:PROC
+EXTERNDEF ex_06_rd_parse_num:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_rd_parse_num in this file.

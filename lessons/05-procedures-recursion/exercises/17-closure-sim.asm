@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_closure_sim:PROC
+EXTERNDEF ex_17_closure_sim:PROC
 
 main PROC
     sub     rsp, 40

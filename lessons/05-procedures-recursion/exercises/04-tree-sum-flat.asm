@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_04_tree_sum_flat:PROC
+EXTERNDEF ex_04_tree_sum_flat:PROC
 
 ; TODO: write ex_04_tree_sum_flat in this file.
 

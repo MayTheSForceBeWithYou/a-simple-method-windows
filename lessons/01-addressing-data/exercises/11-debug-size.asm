@@ -11,16 +11,11 @@ buf BYTE ?
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_debug_size:PROC
+EXTERNDEF ex_11_debug_size:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov [buf], 1    ; BUG: fix in ex_11_debug_size
-    movzx rcx, BYTE PTR [buf]    ; BUG: fix in ex_11_debug_size
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_11_debug_size in this file.
     call    ex_11_debug_size
     mov     ecx, eax

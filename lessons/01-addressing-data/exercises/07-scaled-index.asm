@@ -11,7 +11,7 @@ arr DQ 11, 22, 33, 44
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_07_scaled_index:PROC
+EXTERNDEF ex_07_scaled_index:PROC
 
 main PROC
     sub     rsp, 40

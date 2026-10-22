@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_23_leaf_no_frame:PROC
+EXTERNDEF ex_23_leaf_no_frame:PROC
 
 ; TODO: write ex_23_leaf_no_frame in this file.
 

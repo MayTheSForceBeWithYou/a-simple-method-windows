@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_13_variadic_max:PROC
+EXTERNDEF ex_13_variadic_max:PROC
 
 
 

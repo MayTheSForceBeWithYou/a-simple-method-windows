@@ -11,7 +11,7 @@ cur QWORD ?
 
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_debug_cursor_oob:PROC
+EXTERNDEF ex_21_debug_cursor_oob:PROC
 
 clamp_bug PROC
     mov QWORD PTR [cur], 9

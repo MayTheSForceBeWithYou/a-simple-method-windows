@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_debug_macro_arity:PROC
+EXTERNDEF ex_21_debug_macro_arity:PROC
 
 EXIT_STATUS MACRO status, skew:=<1>
     mov ecx, status
@@ -19,7 +19,6 @@ main PROC
     sub     rsp, 40
     jmp     __ex_call
     EXIT_STATUS 4, 1            ; BUG: fix macro arity and use EXIT_STATUS 4 in ex_21
-__ex_call:
     ; TODO: write ex_21_debug_macro_arity in this file.
     call    ex_21_debug_macro_arity
     mov     ecx, eax

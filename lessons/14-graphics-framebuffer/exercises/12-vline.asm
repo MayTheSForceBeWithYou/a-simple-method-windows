@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_vline:PROC
+EXTERNDEF ex_12_vline:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_vline in this file.

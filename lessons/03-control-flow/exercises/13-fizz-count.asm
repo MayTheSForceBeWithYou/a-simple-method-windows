@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_13_fizz_count:PROC
+EXTERNDEF ex_13_fizz_count:PROC
 
 main PROC
     sub     rsp, 40

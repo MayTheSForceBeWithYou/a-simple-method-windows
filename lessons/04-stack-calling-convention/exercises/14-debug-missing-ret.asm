@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_debug_missing_ret:PROC
+EXTERNDEF ex_14_debug_missing_ret:PROC
 
 three PROC
     mov rax, 3

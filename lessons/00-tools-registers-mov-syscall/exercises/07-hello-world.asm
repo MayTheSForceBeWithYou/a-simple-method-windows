@@ -18,7 +18,7 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_07_hello_world:PROC
+EXTERNDEF ex_07_hello_world:PROC
 
 main PROC
     sub     rsp, 40

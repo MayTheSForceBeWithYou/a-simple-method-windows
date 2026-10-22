@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_07_while_double:PROC
+EXTERNDEF ex_07_while_double:PROC
 
 main PROC
     sub     rsp, 40

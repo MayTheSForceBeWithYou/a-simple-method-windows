@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_17_three_lines:PROC
+EXTERNDEF ex_17_three_lines:PROC
 
 main PROC
     sub     rsp, 40

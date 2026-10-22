@@ -8,16 +8,11 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_debug_wrong_syscall:PROC
+EXTERNDEF ex_11_debug_wrong_syscall:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    jmp     __ex_call
-    mov rax, 1    ; BUG: fix in ex_11_debug_wrong_syscall
-    mov rcx, 3    ; BUG: fix in ex_11_debug_wrong_syscall
-
-__ex_call:
+    ; BUG: see exercise description; implement fix in student routine.
     ; TODO: write ex_11_debug_wrong_syscall in this file.
     call    ex_11_debug_wrong_syscall
     mov     ecx, eax

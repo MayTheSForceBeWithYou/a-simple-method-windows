@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_12_next_power_of_two_bit:PROC
+EXTERNDEF ex_12_next_power_of_two_bit:PROC
 
 main PROC
     sub     rsp, 40

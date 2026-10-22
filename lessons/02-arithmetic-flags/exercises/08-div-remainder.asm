@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_08_div_remainder:PROC
+EXTERNDEF ex_08_div_remainder:PROC
 
 main PROC
     sub     rsp, 40

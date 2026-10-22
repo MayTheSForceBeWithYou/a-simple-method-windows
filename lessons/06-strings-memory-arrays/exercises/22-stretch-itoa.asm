@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_22_stretch_itoa:PROC
+EXTERNDEF ex_22_stretch_itoa:PROC
 
 
 

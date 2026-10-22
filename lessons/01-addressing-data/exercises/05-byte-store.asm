@@ -11,7 +11,7 @@ buffer DB ?
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_05_byte_store:PROC
+EXTERNDEF ex_05_byte_store:PROC
 
 main PROC
     sub     rsp, 40

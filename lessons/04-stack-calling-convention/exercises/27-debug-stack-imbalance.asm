@@ -9,7 +9,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_27_debug_stack_imbalance:PROC
+EXTERNDEF ex_27_debug_stack_imbalance:PROC
 
 two PROC
     mov rax, 2

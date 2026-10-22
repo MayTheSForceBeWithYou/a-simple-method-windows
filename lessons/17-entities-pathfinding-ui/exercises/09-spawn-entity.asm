@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_spawn_entity:PROC
+EXTERNDEF ex_09_spawn_entity:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_09_spawn_entity in this file.

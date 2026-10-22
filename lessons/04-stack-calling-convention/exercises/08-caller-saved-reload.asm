@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_08_caller_saved_reload:PROC
+EXTERNDEF ex_08_caller_saved_reload:PROC
 
 main PROC
     sub     rsp, 40

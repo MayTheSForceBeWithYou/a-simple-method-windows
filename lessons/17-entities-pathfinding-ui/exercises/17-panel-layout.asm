@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_17_panel_layout:PROC
+EXTERNDEF ex_17_panel_layout:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_17_panel_layout in this file.

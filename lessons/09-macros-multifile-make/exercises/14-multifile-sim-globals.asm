@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_14_multifile_sim_globals:PROC
+EXTERNDEF ex_14_multifile_sim_globals:PROC
 
 main PROC
     sub     rsp, 40

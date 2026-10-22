@@ -11,7 +11,7 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_09_insert_at_cursor:PROC
+EXTERNDEF ex_09_insert_at_cursor:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_09_insert_at_cursor in this file.

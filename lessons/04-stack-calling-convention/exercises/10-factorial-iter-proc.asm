@@ -5,10 +5,12 @@
 ; Contract: implement `ex_10_factorial_iter_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 120
 ;
+; Implement iterative `factorial(n)` in a PROC. In `ex_10_factorial_iter_proc`, compute fact(5) and exit 120.
+;
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_10_factorial_iter_proc:PROC
+EXTERNDEF ex_10_factorial_iter_proc:PROC
 
 ; TODO: write ex_10_factorial_iter_proc in this file.
 

@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_sse_movss_stub:PROC
+EXTERNDEF ex_12_sse_movss_stub:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_sse_movss_stub in this file.

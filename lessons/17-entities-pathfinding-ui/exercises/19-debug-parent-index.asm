@@ -12,7 +12,7 @@ goal DWORD 3
 
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_19_debug_parent_index:PROC
+EXTERNDEF ex_19_debug_parent_index:PROC
 
 reconstruct_steps_bug PROC
     mov ecx, DWORD PTR goal

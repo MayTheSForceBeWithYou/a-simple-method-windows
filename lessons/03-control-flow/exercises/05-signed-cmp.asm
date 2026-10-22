@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_05_signed_cmp:PROC
+EXTERNDEF ex_05_signed_cmp:PROC
 
 main PROC
     sub     rsp, 40

@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_12_timestep_spiral:PROC
+EXTERNDEF ex_12_timestep_spiral:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_12_timestep_spiral in this file.

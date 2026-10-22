@@ -7,7 +7,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_06_symbol_slot:PROC
+EXTERNDEF ex_06_symbol_slot:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_06_symbol_slot in this file.

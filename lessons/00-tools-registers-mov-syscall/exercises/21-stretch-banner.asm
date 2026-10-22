@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_21_stretch_banner:PROC
+EXTERNDEF ex_21_stretch_banner:PROC
 
 main PROC
     sub     rsp, 40

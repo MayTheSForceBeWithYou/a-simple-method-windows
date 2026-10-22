@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_strcmp_lite:PROC
+EXTERNDEF ex_19_strcmp_lite:PROC
 
 main PROC
     sub     rsp, 40

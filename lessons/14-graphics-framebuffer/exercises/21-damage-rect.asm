@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_21_damage_rect:PROC
+EXTERNDEF ex_21_damage_rect:PROC
 main PROC
     sub     rsp, 40
     ; TODO: write ex_21_damage_rect in this file.

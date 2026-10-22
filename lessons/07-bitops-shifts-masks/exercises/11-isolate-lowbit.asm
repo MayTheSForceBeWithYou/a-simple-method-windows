@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_isolate_lowbit:PROC
+EXTERNDEF ex_11_isolate_lowbit:PROC
 
 main PROC
     sub     rsp, 40

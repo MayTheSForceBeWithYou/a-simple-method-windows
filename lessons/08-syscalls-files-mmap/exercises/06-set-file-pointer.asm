@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_set_file_pointer:PROC
+EXTERNDEF ex_06_set_file_pointer:PROC
 
 main PROC
     sub     rsp, 40

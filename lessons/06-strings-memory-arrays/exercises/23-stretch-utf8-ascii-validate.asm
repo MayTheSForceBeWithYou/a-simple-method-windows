@@ -8,7 +8,7 @@
 ;
 .CODE
 EXTRN ExitProcess:PROC
-EXTRN ex_23_stretch_utf8_ascii_validate:PROC
+EXTERNDEF ex_23_stretch_utf8_ascii_validate:PROC
 
 
 

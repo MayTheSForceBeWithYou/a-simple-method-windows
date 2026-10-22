@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_11_test_zf:PROC
+EXTERNDEF ex_11_test_zf:PROC
 
 main PROC
     sub     rsp, 40

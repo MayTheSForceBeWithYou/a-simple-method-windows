@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_19_data_bytes:PROC
+EXTERNDEF ex_19_data_bytes:PROC
 
 main PROC
     sub     rsp, 40

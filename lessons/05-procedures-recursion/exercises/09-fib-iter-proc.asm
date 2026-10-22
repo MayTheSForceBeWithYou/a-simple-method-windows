@@ -8,7 +8,7 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_09_fib_iter_proc:PROC
+EXTERNDEF ex_09_fib_iter_proc:PROC
 
 ; TODO: write ex_09_fib_iter_proc in this file.
 
