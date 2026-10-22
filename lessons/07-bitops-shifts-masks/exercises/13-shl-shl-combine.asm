@@ -1,28 +1,21 @@
-; 13-shl-shl-combine.asm
+; Exercise: 13-shl-shl-combine
 ;
-; Combine two values into one register using shifts.
+; Implement `ex_13_shl_shl_combine` in this file.
 ;
-; Task: Put value 0x12 in the high byte (bits 8-15) and 0x34 in the low byte
-;       (bits 0-7) of a 16-bit value.
-;       Exit with the combined value (should be 0x1234 = 4660).
+; Contract: implement `ex_13_shl_shl_combine` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 171
 ;
-; Hint: Shift the high byte left by 8, OR it with the low byte.
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_13_shl_shl_combine:PROC
 
 main PROC
-    mov     ax, 12h         ; High byte value
-    
-    ; TODO: Shift left by 8 to position in high byte
-    .ERR <TODO: Insert SHL instruction to shift left by 8>
-    
-    ; TODO: OR with low byte value
-    .ERR <TODO: Insert OR instruction with 0x34>
-    
-    movzx   ecx, ax
-    call    ExitProcess     ; Should exit with 4660 (0x1234)
+    sub     rsp, 40
+    ; TODO: write ex_13_shl_shl_combine in this file.
+    call    ex_13_shl_shl_combine
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

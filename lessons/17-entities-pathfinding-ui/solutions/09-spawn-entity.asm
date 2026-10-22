@@ -2,18 +2,27 @@
 ;
 ; Bump entity id; first spawn id=1; exit 1.
 ;
-; Build: ml64 /c 09-spawn-entity.asm && link /OUT:09-spawn-entity.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-spawn-entity.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    inc qword [next_id]
-    mov rcx, [next_id]
-    call ExitProcess
+.data
+next_id QWORD 0
 
+.code
+ex_09_spawn_entity PROC
+    sub rsp, 40
+    inc QWORD PTR [next_id]
+    mov rcx, QWORD PTR [next_id]
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_09_spawn_entity ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_spawn_entity
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

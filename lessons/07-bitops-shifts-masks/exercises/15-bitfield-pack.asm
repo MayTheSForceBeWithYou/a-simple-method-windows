@@ -1,37 +1,21 @@
-; 15-bitfield-pack.asm
+; Exercise: 15-bitfield-pack
 ;
-; Pack three 4-bit values into a 12-bit field.
+; Implement `ex_15_bitfield_pack` in this file.
 ;
-; Task: Pack a=9, b=5, c=3 into bits 0-3, 4-7, 8-11 respectively.
-;       Exit with the packed value (should be 0x359 = 857).
+; Contract: implement `ex_15_bitfield_pack` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 85
 ;
-; Hint: Mask each value to 4 bits (0xF), shift to position, OR together.
-;       a at bits 0-3 (no shift), b at bits 4-7 (shift by 4), c at bits 8-11 (shift by 8).
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_15_bitfield_pack:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    mov     rax, 9          ; a = 9
-    and     rax, 0Fh        ; Mask to 4 bits
-    
-    ; TODO: Load b=5, mask, shift by 4, OR into rax
-    .ERR <TODO: Pack b=5 into bits 4-7>
-    
-    ; TODO: Load c=3, mask, shift by 8, OR into rax
-    .ERR <TODO: Pack c=3 into bits 8-11>
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_15_bitfield_pack in this file.
+    call    ex_15_bitfield_pack
     mov     ecx, eax
-    pop     r12
-    pop     rbx
-    call    ExitProcess     ; Should exit with 857
+    call    ExitProcess
 main ENDP
 
 END

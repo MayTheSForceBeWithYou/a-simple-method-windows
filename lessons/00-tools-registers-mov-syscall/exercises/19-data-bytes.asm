@@ -1,11 +1,21 @@
-; Exercise 19: data bytes
+; Exercise: 19-data-bytes
 ;
-; Emit bytes 0x48 0x69 0x0A (Hi newline) using db. Write them; exit 0.
+; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
 ;
-; Build: nasm -f elf64 19-data-bytes.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_19_data_bytes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_19_data_bytes:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_19_data_bytes in this file.
+    call    ex_19_data_bytes
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

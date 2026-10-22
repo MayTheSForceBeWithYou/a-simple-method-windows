@@ -1,11 +1,21 @@
-; Exercise 12: setl signed
+; Exercise: 12-setl-signed
 ;
-; rax=-1 (or 0xffffffffffffffff), rbx=0. cmp rax,rbx; setl al; exit 1.
+; rax=-1 (or 0FFFFFFFFFFFFFFFFh), rbx=0. cmp rax,rbx; setl al; exit 1.
 ;
-; Build: nasm -f elf64 12-setl-signed.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_12_setl_signed` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_setl_signed:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_12_setl_signed in this file.
+    call    ex_12_setl_signed
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

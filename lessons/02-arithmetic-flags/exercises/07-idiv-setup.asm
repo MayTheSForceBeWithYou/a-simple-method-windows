@@ -1,25 +1,21 @@
-; Exercise 07: idiv setup (Win32 port)
+; Exercise: 07-idiv-setup
 ;
-; RAX=126, divisor=3. Use CQO and IDIV. Exit with quotient (42).
+; Divide 84 by 2 using idiv. cqo; idiv. Exit with quotient in rcx.
 ;
-; Build: ml64 /c /Fo07-idiv-setup.obj 07-idiv-setup.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-idiv-setup.exe 07-idiv-setup.obj kernel32.lib
-; Run: 07-idiv-setup.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_07_idiv_setup` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
 ;
-; Expected: exit code 42
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_07_idiv_setup:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 126
-    mov rbx, 3
-    
-    ; TODO: CQO to sign-extend, IDIV RBX, exit with quotient
-    .ERR <TODO: Use CQO and IDIV>
-    
+    sub     rsp, 40
+    ; TODO: write ex_07_idiv_setup in this file.
+    call    ex_07_idiv_setup
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

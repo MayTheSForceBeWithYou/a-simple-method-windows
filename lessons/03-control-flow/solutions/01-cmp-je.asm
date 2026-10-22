@@ -1,11 +1,11 @@
 ; Exercise 01: cmp je (Win32 port) - SOLUTION
+; Expected exit: 1
 
 .CODE
 
 EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
+ex_01_cmp_je PROC
+    sub rsp, 40
     
     mov rax, 10
     mov rbx, 10
@@ -16,7 +16,15 @@ main PROC
 equal:
     mov rcx, 1
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_01_cmp_je ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_cmp_je
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 END

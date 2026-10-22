@@ -1,24 +1,21 @@
-; Exercise 03: neg (Win32 port)
+; Exercise: 03-neg
 ;
-; RAX=-42; negate it; exit (42).
+; mov rcx, 5; neg rcx; add rcx, 10; exit (5).
 ;
-; Build: ml64 /c /Fo03-neg.obj 03-neg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-neg.exe 03-neg.obj kernel32.lib
-; Run: 03-neg.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_03_neg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
 ;
-; Expected: exit code 42
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_03_neg:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, -42
-    
-    ; TODO: NEG RAX, exit
-    .ERR <TODO: Negate and exit>
-    
+    sub     rsp, 40
+    ; TODO: write ex_03_neg in this file.
+    call    ex_03_neg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

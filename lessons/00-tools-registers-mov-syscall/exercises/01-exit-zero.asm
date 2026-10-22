@@ -1,11 +1,21 @@
-; Exercise 01: exit zero
+; Exercise: 01-exit-zero
 ;
-; Exit with status 0 using sys_exit (rax=60).
+; Exit with status 0 using ExitProcess.
 ;
-; Build: nasm -f elf64 01-exit-zero.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_01_exit_zero` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_01_exit_zero:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_01_exit_zero in this file.
+    call    ex_01_exit_zero
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

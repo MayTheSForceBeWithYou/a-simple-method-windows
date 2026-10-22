@@ -16,7 +16,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_20_write_from_bss PROC
     sub rsp, 56
     
     ; Fill buffer
@@ -41,6 +41,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_20_write_from_bss ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_write_from_bss
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

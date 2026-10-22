@@ -5,8 +5,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_popcount_naive PROC
+    sub rsp, 40
     mov rax, 101101b
     xor rcx, rcx
 loop_pop:
@@ -18,6 +18,14 @@ loop_pop:
     shr rax, 1
     jmp loop_pop
 done_pop:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_06_popcount_naive ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_popcount_naive
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

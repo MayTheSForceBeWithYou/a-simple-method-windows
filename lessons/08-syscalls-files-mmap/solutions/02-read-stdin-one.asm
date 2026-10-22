@@ -4,7 +4,8 @@
 ;
 ; Build: ml64 /c 02-read-stdin-one.asm && link /OUT:02-read-stdin-one.exe /ENTRY:main /SUBSYSTEM:CONSOLE 02-read-stdin-one.obj kernel32.lib
 ;
-; Expected exit: 65 (when piped 'A')
+; Expected exit: 65
+; Expected stdin: "A"
 
 EXTERN GetStdHandle:PROC
 EXTERN ReadFile:PROC
@@ -15,7 +16,7 @@ b BYTE ?
 bytesRead DWORD ?
 
 .code
-main PROC
+ex_02_read_stdin_one PROC
     sub rsp, 56
     
     ; Get stdin handle
@@ -31,18 +32,26 @@ main PROC
     call ReadFile
     
     ; Check if read succeeded and got 1 byte
-    test rax, rax
-    jz .fail
+    test eax, eax
+    jz L_fail
     cmp bytesRead, 1
-    jne .fail
+    jne L_fail
     
     ; Exit with byte value
     movzx rcx, BYTE PTR [b]
-    call ExitProcess
-    
-.fail:
+    mov     eax, ecx
+    add     rsp, 56
+    ret
+L_fail:
     ; Exit 0 on failure
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_02_read_stdin_one ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_read_stdin_one
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

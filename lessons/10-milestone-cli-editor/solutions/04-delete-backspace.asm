@@ -12,16 +12,24 @@ EXTERN ExitProcess:PROC
 len QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_04_delete_backspace PROC
+    sub rsp, 40
     
     mov QWORD PTR [len], 2
     cmp QWORD PTR [len], 0
-    je .o
+    je L_o
     dec QWORD PTR [len]
     
-.o:
+L_o:
     mov rcx, [len]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_04_delete_backspace ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_delete_backspace
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

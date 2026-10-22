@@ -1,13 +1,11 @@
-; 02-read-stdin-one.asm
+; Exercise: 02-read-stdin-one
 ;
-; Read one byte from stdin, exit with that byte value (or 0 at EOF).
+; STUB design: read 1 byte from stdin into buf; exit that byte (run with echo A | ). Solution exits 0 if read fails.
+; Expected stdin: "A"
 ;
-; Task: Get stdin handle, call ReadFile for 1 byte, exit with the byte value.
-;       If EOF (bytesRead == 0), exit 0.
+; Contract: implement `ex_02_read_stdin_one` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 65
 ;
-; Hint: GetStdHandle(-10) for STD_INPUT_HANDLE.
-;       ReadFile returns nonzero on success, check bytesRead for count.
-
 .DATA
 buffer DB ?
 bytesRead DWORD ?
@@ -17,22 +15,13 @@ bytesRead DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN ReadFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_02_read_stdin_one:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdin handle
-    .ERR <TODO: Call GetStdHandle with STD_INPUT_HANDLE (-10)>
-    
-    ; TODO: ReadFile(stdin, &buffer, 1, &bytesRead, NULL)
-    .ERR <TODO: Call ReadFile to read 1 byte>
-    
-    ; TODO: Check if bytesRead == 0 (EOF), exit 0; else exit with buffer byte
-    .ERR <TODO: Load buffer byte into exit code>
-    
-    add     rsp, 40
+    ; TODO: write ex_02_read_stdin_one in this file.
+    call    ex_02_read_stdin_one
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

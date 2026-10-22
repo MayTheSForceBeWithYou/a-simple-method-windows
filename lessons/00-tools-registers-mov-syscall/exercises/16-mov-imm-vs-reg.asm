@@ -1,25 +1,21 @@
-; Exercise 16: mov imm vs reg (Win32 port)
+; Exercise: 16-mov-imm-vs-reg
 ;
-; Demonstrate difference between immediate and register operands.
+; Load 100 into rax (imm), copy to rbx, copy rbx to rcx, exit.
 ;
-; Build: ml64 /c /Fo16-mov-imm-vs-reg.obj 16-mov-imm-vs-reg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-mov-imm-vs-reg.exe 16-mov-imm-vs-reg.obj kernel32.lib
-; Run: 16-mov-imm-vs-reg & echo %ERRORLEVEL%
+; Contract: implement `ex_16_mov_imm_vs_reg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 100
 ;
-; Expected: exit code 20
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_mov_imm_vs_reg:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 10                ; Immediate 10 to RAX
-    mov rbx, rax               ; Copy RAX to RBX (register operand)
-    
-    ; TODO: Add RBX to RAX, move result to RCX, and exit
-    .ERR <TODO: Finish the addition and exit>
-    
+    sub     rsp, 40
+    ; TODO: write ex_16_mov_imm_vs_reg in this file.
+    call    ex_16_mov_imm_vs_reg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

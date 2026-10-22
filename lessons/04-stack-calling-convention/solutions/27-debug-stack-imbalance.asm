@@ -2,17 +2,31 @@
 ;
 ; BUG: extra push without pop before ret corrupts return. Fix; exit 2.
 ;
-; Build: nasm -f elf64 27-debug-stack-imbalance.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    call two
-    mov rdi, rax
-    mov rax, 60
-    syscall
+; Expected exit: 2
+; Expected stdout: (none)
 
-two:
+EXTERN ExitProcess:PROC
+
+.code
+ex_27_debug_stack_imbalance PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    call two
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_27_debug_stack_imbalance ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_27_debug_stack_imbalance
+    mov     rcx, rax
+    call    ExitProcess
+main ENDP
+
+two PROC
     mov rax, 2
     ret
+two ENDP
+END

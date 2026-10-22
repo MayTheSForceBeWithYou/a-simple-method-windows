@@ -13,8 +13,8 @@ tok BYTE 8 DUP(?)
 n QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_10_token_buffer PROC
+    sub rsp, 40
     lea rsi, src
     lea rdi, tok
     xor rcx, rcx
@@ -27,6 +27,14 @@ loop_copy:
     jmp loop_copy
 done_copy:
     mov QWORD PTR [n], rcx
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_10_token_buffer ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_token_buffer
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

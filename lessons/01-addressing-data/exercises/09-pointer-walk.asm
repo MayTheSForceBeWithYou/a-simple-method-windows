@@ -1,29 +1,29 @@
-; Exercise 09: pointer walk (Win32 port)
+; Exercise: 09-pointer-walk
 ;
-; String DB "ABC",0. Load address, read first byte, increment pointer, read second byte. Exit with sum.
+; bytes BYTE 1,2,3,4. rsi=&bytes. Sum four byte loads with inc rsi into rcx, exit (10).
 ;
-; Build: ml64 /c /Fo09-pointer-walk.obj 09-pointer-walk.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-pointer-walk.exe 09-pointer-walk.obj kernel32.lib
-; Run: 09-pointer-walk.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_09_pointer_walk` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
 ;
-; Expected: exit code 131 (65+66 = 'A'+'B')
-
 .DATA
-str DB "ABC", 0
+walkMsg DB "ABC", 0
 
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_pointer_walk:PROC
 
 main PROC
-    sub rsp, 32
-    
-    ; TODO: LEA RSI, str
+    sub     rsp, 40
+    ; TODO: LEA RSI, walkMsg
     ; TODO: MOVZX RAX, BYTE PTR [RSI]   ; first byte
     ; TODO: INC RSI or ADD RSI, 1
     ; TODO: MOVZX RBX, BYTE PTR [RSI]   ; second byte
     ; TODO: ADD RAX, RBX and exit
-    .ERR <TODO: Walk pointer and sum>
-    
+    ; TODO: write ex_09_pointer_walk in this file.
+    call    ex_09_pointer_walk
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

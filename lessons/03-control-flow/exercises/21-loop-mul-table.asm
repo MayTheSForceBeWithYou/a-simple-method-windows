@@ -1,11 +1,21 @@
-; Exercise 21: loop mul table
+; Exercise: 21-loop-mul-table
 ;
 ; Compute 7*8 via repeated addition loop. Exit 56.
 ;
-; Build: nasm -f elf64 21-loop-mul-table.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_21_loop_mul_table` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 56
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_loop_mul_table:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_21_loop_mul_table in this file.
+    call    ex_21_loop_mul_table
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

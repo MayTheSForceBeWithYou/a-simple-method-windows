@@ -12,9 +12,17 @@ EXTERN ExitProcess:PROC
 SYS_EXIT EQU 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_01_define_const PROC
+    sub rsp, 40
     mov rcx, SYS_EXIT
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_01_define_const ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_define_const
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

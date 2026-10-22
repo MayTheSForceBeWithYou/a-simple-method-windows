@@ -1,17 +1,22 @@
-; 12-line-start-end.asm: Find line start (scan back for \n), exit line_start
+; Exercise: 12-line-start-end
+;
+; In "ab\ncd" find line start for cur=4 (index of c)->3; exit 3.
+;
+; Contract: implement `ex_12_line_start_end` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_line_start_end:PROC
 main PROC
-    mov buf[0], 'A'
-    mov buf[1], 13
-    mov buf[2], 10
-    mov buf[3], 'B'
-    mov len, 4
-    mov cur, 3
-    .ERR <TODO: Scan back from cur for \n, find line_start, exit line_start>
+    sub     rsp, 40
+    ; TODO: write ex_12_line_start_end in this file.
+    call    ex_12_line_start_end
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

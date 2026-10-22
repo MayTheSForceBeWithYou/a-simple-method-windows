@@ -6,8 +6,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_16_if_codegen PROC
+    sub rsp, 40
     mov rax, 1
     test rax, rax
     jz else_branch
@@ -16,6 +16,14 @@ main PROC
 else_branch:
     mov rcx, 9
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_16_if_codegen ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_if_codegen
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

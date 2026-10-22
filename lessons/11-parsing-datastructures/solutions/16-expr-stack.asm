@@ -6,28 +6,41 @@
 EXTERN ExitProcess:PROC
 
 .data?
-st QWORD 8 DUP(?)
+stk QWORD 8 DUP(?)
 sp_ QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_16_expr_stack PROC
+    sub rsp, 40
     mov QWORD PTR [sp_], 0
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [st+rcx*8], 2
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], 2
     inc QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov QWORD PTR [st+rcx*8], 3
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], 3
     inc QWORD PTR [sp_]
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    mov rax, QWORD PTR [st+rcx*8]
+    lea r11, [stk]
+    mov rax, QWORD PTR [r11+rcx*8]
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
-    add rax, QWORD PTR [st+rcx*8]
-    mov QWORD PTR [st+rcx*8], rax
+    lea r11, [stk]
+    add rax, QWORD PTR [r11+rcx*8]
+    lea r11, [stk]
+    mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_16_expr_stack ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_expr_stack
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

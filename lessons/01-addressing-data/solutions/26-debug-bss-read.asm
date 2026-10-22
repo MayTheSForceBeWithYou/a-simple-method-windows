@@ -12,10 +12,18 @@ EXTERN ExitProcess:PROC
 v QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_26_debug_bss_read PROC
+    sub rsp, 40
     mov QWORD PTR [v], 12
     mov rcx, [v]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_26_debug_bss_read ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_26_debug_bss_read
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

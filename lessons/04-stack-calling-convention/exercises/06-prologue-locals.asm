@@ -1,21 +1,24 @@
-; Exercise 06: prologue locals (Win32 port)
+; Exercise: 06-prologue-locals
 ;
-; Function stores local = RCX+1 on stack frame; returns it. Call with 41; exit 42.
+; Function stores local = rcx+1 on stack frame; returns it. Call with 41; exit 42.
 ;
-; Build: ml64 /c /Fo06-prologue-locals.obj 06-prologue-locals.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-prologue-locals.exe 06-prologue-locals.obj kernel32.lib
-; Expected: exit code 42
-
+; Contract: implement `ex_06_prologue_locals` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+; Implement `sum_locals(rcx)` with three QWORD locals summing rcx+1..rcx+3. In `ex_06_prologue_locals`, call with 10 and exit 33.
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement function with local variable on stack
-.ERR <TODO: Implement function with prologue and local variable>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_06_prologue_locals:PROC
+
+; TODO: write ex_06_prologue_locals in this file.
 
 main PROC
-    sub rsp, 32
-    mov rcx, 41
-    call compute_plus_one
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_06_prologue_locals
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

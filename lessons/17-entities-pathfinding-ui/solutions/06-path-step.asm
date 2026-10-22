@@ -10,9 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_path_step PROC
+    sub rsp, 40
     mov rcx, 1
-    call ExitProcess
+    mov     eax, 1
+    add     rsp, 40
+    ret
+ex_06_path_step ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_path_step
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

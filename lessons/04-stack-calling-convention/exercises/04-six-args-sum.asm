@@ -1,32 +1,24 @@
-; Exercise 04: six args sum (Win32 port)
+; Exercise: 04-six-args-sum
 ;
-; Function sum6(a,b,c,d,e,f) -> RAX. MS x64: RCX, RDX, R8, R9, [RSP+32], [RSP+40]
-; Call with 1,2,3,4,5,6; exit with 21.
+; sum6(a..f): first 4 in regs, 5th and 6th on stack. Pass 1..6; exit 21.
 ;
-; Build: ml64 /c /Fo04-six-args-sum.obj 04-six-args-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-six-args-sum.exe 04-six-args-sum.obj kernel32.lib
-; Expected: exit code 21
-
+; Contract: implement `ex_04_six_args_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 21
+;
+; Implement `sum6` using MS x64 register args RCX,RDX,R8,R9 and stack slots [rsp+32],[rsp+40]. In `ex_04_six_args_sum`, pass 1..6 and exit with the sum (21).
+;
 .CODE
+
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_04_six_args_sum:PROC
 
-; TODO: Implement sum6 that sums RCX, RDX, R8, R9, [RSP+32], [RSP+40]
-.ERR <TODO: Implement sum6 PROC with 6 arguments>
+; TODO: write ex_04_six_args_sum in this file.
 
-main PROC FRAME
-    sub rsp, 56                ; Shadow (32) + 2 stack args (16) + alignment (8)
-    .allocstack 56
-    .endprolog
-    
-    ; Args 5 and 6 on stack
-    mov QWORD PTR [rsp+32], 5
-    mov QWORD PTR [rsp+40], 6
-    
-    mov rcx, 1
-    mov rdx, 2
-    mov r8, 3
-    mov r9, 4
-    call sum6
-    mov rcx, rax
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    call    ex_04_six_args_sum
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

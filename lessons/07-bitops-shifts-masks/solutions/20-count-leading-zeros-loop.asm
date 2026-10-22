@@ -1,5 +1,5 @@
 ; Exercise 20: clz loop
-; Count leading zeros in 0x00F0 (16-bit) -> 8.
+; Count leading zeros in 000F0h (16-bit) -> 8.
 ; Expected exit: 8
 
 EXTERN ExitProcess:PROC
@@ -8,8 +8,8 @@ EXTERN ExitProcess:PROC
 val WORD 00F0h
 
 .code
-main PROC
-    sub rsp, 32
+ex_20_count_leading_zeros_loop PROC
+    sub rsp, 40
     movzx rax, val
     xor rcx, rcx
     mov r8, 16
@@ -26,6 +26,14 @@ loop_clz:
 pad_clz:
     mov rcx, 16
 done_clz:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_20_count_leading_zeros_loop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_count_leading_zeros_loop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

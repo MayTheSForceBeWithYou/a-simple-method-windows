@@ -1,19 +1,24 @@
-; Exercise 12: recursion fib (Win32 port)
-; Naive fib(7)=13. Exit 13. (OK if slow.)
-; Build: ml64 /c /Fo12-recursion-fib.obj 12-recursion-fib.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:12-recursion-fib.exe 12-recursion-fib.obj kernel32.lib
-; Expected: exit code 13
-
+; Exercise: 12-recursion-fib
+;
+; Naive fib(7)=13. MS x64 ABI.
+;
+; Contract: implement `ex_12_recursion_fib` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 13
+;
+; Implement recursive `fib`. In `ex_12_recursion_fib`, exit with fib(7)=13.
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement recursive fibonacci with PROC FRAME
-.ERR <TODO: Implement recursive fibonacci>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_recursion_fib:PROC
+
+; TODO: write ex_12_recursion_fib in this file.
 
 main PROC
-    sub rsp, 32
-    mov rcx, 7
-    call fibonacci
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_12_recursion_fib
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

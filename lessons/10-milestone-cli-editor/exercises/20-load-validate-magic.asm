@@ -1,4 +1,10 @@
-; 20-load-validate-magic.asm: Load file, check magic, exit 0 if valid else 1
+; Exercise: 20-load-validate-magic
+;
+; Magic "ED01"; check first two ED; exit 1 if ok.
+;
+; Contract: implement `ex_20_load_validate_magic` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
 .DATA
 fname DB "save.dat", 0
 MAGIC EQU 12345678h
@@ -12,10 +18,12 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 56
-    .allocstack 56
-    .endprolog
-    .ERR <TODO: Open file, read magic, validate, read len, read data, exit 0 if valid else 1>
+EXTERNDEF ex_20_load_validate_magic:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_20_load_validate_magic in this file.
+    call    ex_20_load_validate_magic
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

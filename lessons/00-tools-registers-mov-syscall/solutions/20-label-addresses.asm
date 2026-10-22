@@ -20,7 +20,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_20_label_addresses PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -38,6 +38,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_20_label_addresses ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_label_addresses
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -19,7 +19,7 @@ msg_len EQU $ - msg
 written DWORD ?
 
 .code
-main PROC
+ex_18_default_rel_macro PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -36,6 +36,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_18_default_rel_macro ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_default_rel_macro
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 path BYTE "C:\", 0
 
 .code
-main PROC
+ex_18_error_eacces_sim PROC
     sub rsp, 72
     
     ; CreateFileA - try to open root with write access
@@ -29,20 +29,28 @@ main PROC
     
     ; Check for failure
     cmp rax, -1
-    je .bad
+    je L_bad
     
     ; Success - close and exit 0
     mov rcx, rax
     call CloseHandle
     
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
-    call ExitProcess
+L_o:
+    mov     eax, ecx
+    add     rsp, 72
+    ret
+ex_18_error_eacces_sim ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_error_eacces_sim
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

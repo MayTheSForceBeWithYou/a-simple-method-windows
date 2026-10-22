@@ -13,7 +13,7 @@ EXTERN ExitProcess:PROC
 path BYTE "/no/such/asm_course_file", 0
 
 .code
-main PROC
+ex_03_open_fail PROC
     sub rsp, 72
     
     ; CreateFileA
@@ -28,17 +28,25 @@ main PROC
     
     ; Check if INVALID_HANDLE_VALUE (-1)
     cmp rax, -1
-    je .bad
+    je L_bad
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .out
+    jmp L_out
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.out:
-    call ExitProcess
+L_out:
+    mov     eax, ecx
+    add     rsp, 72
+    ret
+ex_03_open_fail ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_open_fail
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

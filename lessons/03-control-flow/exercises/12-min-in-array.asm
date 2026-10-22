@@ -1,11 +1,21 @@
-; Exercise 12: min in array
+; Exercise: 12-min-in-array
 ;
 ; Same array; min 2.
 ;
-; Build: nasm -f elf64 12-min-in-array.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_12_min_in_array` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_min_in_array:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_12_min_in_array in this file.
+    call    ex_12_min_in_array
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

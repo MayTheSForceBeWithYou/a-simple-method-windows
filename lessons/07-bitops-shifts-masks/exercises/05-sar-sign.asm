@@ -1,26 +1,21 @@
-; 05-sar-sign.asm
+; Exercise: 05-sar-sign
 ;
-; Use SAR (shift arithmetic right) to divide a signed negative number.
+; Implement `ex_05_sar_sign` in this file.
 ;
-; Task: Load -16 into RAX, then use SAR to divide by 4 (shift right by 2).
-;       Exit with the result (should be -4, which is 252 as an 8-bit unsigned).
+; Contract: implement `ex_05_sar_sign` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 252
 ;
-; Hint: SAR preserves the sign bit, correctly dividing signed values.
-;       Use SAR, not SHR, for signed division.
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_05_sar_sign:PROC
 
 main PROC
-    mov     rax, -16        ; Signed negative value
-    
-    ; TODO: Shift arithmetic right by 2 to divide by 4
-    .ERR <TODO: Insert SAR instruction to shift right by 2>
-    
+    sub     rsp, 40
+    ; TODO: write ex_05_sar_sign in this file.
+    call    ex_05_sar_sign
     mov     ecx, eax
-    and     ecx, 0FFh       ; Exit with low byte
-    call    ExitProcess     ; Should exit with 252
+    call    ExitProcess
 main ENDP
 
 END

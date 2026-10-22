@@ -1,14 +1,21 @@
-; 19-extern-declare.asm
-; Single file, define helper returning 9, exit 9.
-
+; Exercise: 19-extern-declare
+;
+; EXTERN for multi-file; local call exit 9.
+;
+; Contract: implement `ex_19_extern_declare` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Define helper returning 9
-.ERR <TODO: helper PROC; mov rax, 9; ret; helper ENDP>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_19_extern_declare:PROC
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; call ExitProcess
-    .ERR <TODO: Call helper, exit 9>
+    sub     rsp, 40
+    ; TODO: write ex_19_extern_declare in this file.
+    call    ex_19_extern_declare
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

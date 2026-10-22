@@ -21,7 +21,7 @@ msg BYTE "U", 10
 written DWORD ?
 
 .code
-main PROC
+ex_22_stretch_units_header PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -38,6 +38,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_22_stretch_units_header ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_units_header
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

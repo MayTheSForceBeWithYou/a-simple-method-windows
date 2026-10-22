@@ -1,6 +1,11 @@
-; 17-macro-stringize.asm
-; Stores string "Q\n", exit 0 (no stringification in MASM).
-
+; Exercise: 17-macro-stringize
+;
+; MASM text macro: write 'Q' and newline exit 0.
+; Expected stdout: "Q\n"
+;
+; Contract: implement `ex_17_macro_stringize` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .DATA
 msg DB "Q", 13, 10
 msgLen EQU $ - msg
@@ -10,12 +15,13 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_17_macro_stringize:PROC
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: GetStdHandle, WriteFile msg, exit 0
-    .ERR <TODO: Write "Q\n", exit 0>
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_17_macro_stringize in this file.
+    call    ex_17_macro_stringize
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

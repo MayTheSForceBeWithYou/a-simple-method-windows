@@ -27,7 +27,7 @@ done:
 my_strlen ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, test_str
     call my_strlen
     mov rcx, rax

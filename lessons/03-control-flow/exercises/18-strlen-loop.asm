@@ -1,11 +1,21 @@
-; Exercise 18: strlen loop
+; Exercise: 18-strlen-loop
 ;
-; Cstring 'hello',0. Count length 5 into rdi.
+; Cstring 'hello',0. Count length 5 into rcx.
 ;
-; Build: nasm -f elf64 18-strlen-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_18_strlen_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_18_strlen_loop:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_18_strlen_loop in this file.
+    call    ex_18_strlen_loop
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -1,11 +1,21 @@
-; Exercise 11: max in array
+; Exercise: 11-max-in-array
 ;
-; arr dq 3,9,2,7. Max in rdi (9).
+; arr QWORD 3,9,2,7. Max in rcx (9).
 ;
-; Build: nasm -f elf64 11-max-in-array.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_11_max_in_array` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_11_max_in_array:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_11_max_in_array in this file.
+    call    ex_11_max_in_array
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -12,10 +12,18 @@ EXTERN ExitProcess:PROC
 slot BYTE ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_03_bss_store PROC
+    sub rsp, 40
     mov BYTE PTR [slot], 7
     movzx rcx, BYTE PTR [slot]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_03_bss_store ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_bss_store
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

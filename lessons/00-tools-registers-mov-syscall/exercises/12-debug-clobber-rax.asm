@@ -1,22 +1,25 @@
-; Exercise 12: debug clobber rax
+; Exercise: 12-debug-clobber-rax
 ;
-; BUG HUNT: Should write "X\n" then exit 0. rax set wrong before write. Fix.
+; BUG HUNT: Should write "X\n" then exit 0. Register setup wrong before WriteFile. Fix in `ex_12_debug_clobber_rax`.
 ;
-; Build: nasm -f elf64 12-debug-clobber-rax.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_12_debug_clobber_rax` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .data
-    msg db "X", 10
-    msg_len equ $ - msg
+.DATA
+msg BYTE "X", 13, 10
+msg_len EQU $ - msg
 
-section .text
-    global _start
-_start:
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, msg_len
-    mov rax, 60
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_debug_clobber_rax:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_12_debug_clobber_rax in this file.
+    call    ex_12_debug_clobber_rax
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -1,25 +1,21 @@
-; Exercise 04: imul two (Win32 port)
+; Exercise: 04-imul-two
 ;
-; RAX=6, RBX=7. IMUL RAX, RBX. Exit with 42.
+; imul-style: rax=6, imul rax,7; mov rcx,rax; exit 42.
 ;
-; Build: ml64 /c /Fo04-imul-two.obj 04-imul-two.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-imul-two.exe 04-imul-two.obj kernel32.lib
-; Run: 04-imul-two.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_04_imul_two` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
 ;
-; Expected: exit code 42
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_04_imul_two:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 6
-    mov rbx, 7
-    
-    ; TODO: IMUL RAX, RBX; exit
-    .ERR <TODO: Use IMUL two-operand form>
-    
+    sub     rsp, 40
+    ; TODO: write ex_04_imul_two in this file.
+    call    ex_04_imul_two
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

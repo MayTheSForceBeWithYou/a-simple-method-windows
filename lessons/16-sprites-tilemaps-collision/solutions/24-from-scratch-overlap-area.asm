@@ -10,10 +10,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_24_from_scratch_overlap_area PROC
+    sub rsp, 40
     mov rcx, 2
     imul rcx, 3
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_24_from_scratch_overlap_area ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_overlap_area
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

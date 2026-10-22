@@ -30,7 +30,6 @@ ctz_loop:
 done:
     ; rax = number of trailing zeros = 3
     mov     ecx, eax
-    pop     rbx
     call    ExitProcess     ; Exit with 3
 main ENDP
 

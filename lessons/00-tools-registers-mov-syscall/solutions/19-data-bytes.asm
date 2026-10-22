@@ -1,6 +1,6 @@
 ; Exercise 19: data bytes
 ;
-; Emit bytes 0x48 0x69 0x0A (Hi newline) using BYTE. Write them; exit 0.
+; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
 ;
 ; Build: ml64 /c 19-data-bytes.asm && link /OUT:19-data-bytes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-data-bytes.obj kernel32.lib
 ;
@@ -19,7 +19,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_19_data_bytes PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -37,6 +37,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_19_data_bytes ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_data_bytes
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

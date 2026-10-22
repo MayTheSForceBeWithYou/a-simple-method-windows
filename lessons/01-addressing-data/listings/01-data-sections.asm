@@ -21,7 +21,7 @@ buffer DB 256 DUP(?)           ; Uninitialized 256-byte buffer
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load counter value and exit with it
     mov rax, counter           ; Load from .DATA

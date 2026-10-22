@@ -12,9 +12,17 @@ EXTERN ExitProcess:PROC
 vals QWORD 1, 2, 3
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_displacement PROC
+    sub rsp, 40
     mov rcx, QWORD PTR [vals+16]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_06_displacement ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_displacement
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

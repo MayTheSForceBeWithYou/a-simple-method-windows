@@ -2,40 +2,59 @@
 ;
 ; BUG: copies n bytes but forgets NUL. Fix strcpy of "ok"; strlen=2.
 ;
-; Build: nasm -f elf64 18-debug-off-by-one-copy.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .data
-    src db "ok",0
-section .bss
-    dst resb 8
-section .text
-    global _start
-_start:
-    lea rdi, [dst]
-    lea rsi, [src]
+; Expected exit: 2
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.data
+src BYTE "ok", 0
+
+.data?
+dst BYTE 8 DUP(?)
+
+.code
+ex_18_debug_off_by_one_copy PROC FRAME
+    sub rsp, 40
+    .ALLOCSTACK 40
+    .ENDPROLOG
+    lea rcx, dst
+    lea rdx, src
     call strcpy
-    lea rdi, [dst]
-    call strlen
-    mov rdi, rax
-    mov rax, 60
-    syscall
-strcpy:
-.l:
-    mov al, [rsi]
-    mov [rdi], al
-    inc rsi
-    inc rdi
+    lea rcx, dst
+    call strlen_fn
+    mov rcx, rax
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_18_debug_off_by_one_copy ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_debug_off_by_one_copy
+    mov     rcx, rax
+    call    ExitProcess
+main ENDP
+
+strcpy PROC
+cpy_loop:
+    mov al, BYTE PTR [rdx]
+    mov BYTE PTR [rcx], al
+    inc rdx
+    inc rcx
     test al, al
-    jnz .l
+    jnz cpy_loop
     ret
-strlen:
-    mov rax, rdi
-.s:
-    cmp byte [rax], 0
-    je .d
+strcpy ENDP
+
+strlen_fn PROC
+    mov rax, rcx
+len_loop:
+    cmp BYTE PTR [rax], 0
+    je len_done
     inc rax
-    jmp .s
-.d:
-    sub rax, rdi
+    jmp len_loop
+len_done:
+    sub rax, rcx
     ret
+strlen_fn ENDP
+END

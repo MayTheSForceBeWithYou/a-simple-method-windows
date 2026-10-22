@@ -11,9 +11,9 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
-    mov rax, 0b0101            ; Binary: 0101 (bits 0 and 2 set)
+    mov rax, 101b              ; Binary: 0101 (bits 0 and 2 set)
     test rax, 4                ; Test bit 2 (4 = 0b0100)
                                ; Computes RAX & 4, sets flags
                                ; ZF = 0 (result nonzero, bit is set)

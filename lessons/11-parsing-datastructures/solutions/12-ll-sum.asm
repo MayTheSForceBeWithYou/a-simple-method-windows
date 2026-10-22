@@ -11,8 +11,8 @@ n2 QWORD 4, 0
 n1 QWORD 3, 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_12_ll_sum PROC
+    sub rsp, 40
     lea rax, n3
     mov QWORD PTR [n2+8], rax
     lea rax, n2
@@ -26,6 +26,14 @@ loop_sum:
     mov rsi, QWORD PTR [rsi+8]
     jmp loop_sum
 done_sum:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_12_ll_sum ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_ll_sum
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

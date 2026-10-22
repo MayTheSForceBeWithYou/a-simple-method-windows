@@ -1,18 +1,13 @@
-; Exercise 10: len equ (Win32 port)
+; Exercise: 10-len-equ
 ;
-; Declare a message and compute its length with EQU $ - label.
-; Write the message using the computed length.
+; Define string "equ works\n" with BYTE; length via EQU $ - label. Write it; exit 0.
 ;
-; Build: ml64 /c /Fo10-len-equ.obj 10-len-equ.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-len-equ.exe 10-len-equ.obj kernel32.lib
-; Run: 10-len-equ.exe
+; Contract: implement `ex_10_len_equ` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Expected output: Test message\n
-; Expected exit code: 0
-
 .DATA
 ; TODO: Declare 'msg' with "Test message" and CRLF
 ; TODO: Use 'msg_len EQU $ - msg' to compute length
-.ERR <TODO: Declare msg and msg_len>
 
 .DATA?
 bytes_written DQ ?
@@ -22,28 +17,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_10_len_equ:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; Code provided; you must fix data declarations above
-    mov ecx, -11
-    call GetStdHandle
-    mov rbx, rax
-    
-    mov rcx, rbx
-    lea rdx, msg
-    mov r8d, msg_len
-    lea r9, bytes_written
-    mov qword ptr [rsp+32], 0
-    call WriteFile
-    
-    xor ecx, ecx
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_10_len_equ in this file.
+    call    ex_10_len_equ
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

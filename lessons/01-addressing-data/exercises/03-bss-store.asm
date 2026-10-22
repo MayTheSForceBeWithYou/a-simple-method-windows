@@ -1,25 +1,22 @@
-; Exercise 03: bss store (Win32 port)
+; Exercise: 03-bss-store
 ;
-; Declare 1 byte in .DATA? (uninitialized). Store 7 into it, load into RCX, exit.
+; BYTE ? in .data? (uninitialized). Store 7 into it, load into rcx, exit.
 ;
-; Build: ml64 /c /Fo03-bss-store.obj 03-bss-store.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-bss-store.exe 03-bss-store.obj kernel32.lib
-; Run: 03-bss-store.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_03_bss_store` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
 ;
-; Expected: exit code 7
-
-; TODO: Declare .DATA? section with a 1-byte variable
-.ERR <TODO: Declare .DATA? section>
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_03_bss_store:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 40
     ; TODO: Store 7 to the byte variable, load it back, exit with it
-    .ERR <TODO: Store, load, and exit>
-    
+    ; TODO: write ex_03_bss_store in this file.
+    call    ex_03_bss_store
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

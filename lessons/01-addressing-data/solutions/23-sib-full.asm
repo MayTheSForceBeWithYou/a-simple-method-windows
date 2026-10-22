@@ -12,11 +12,19 @@ EXTERN ExitProcess:PROC
 table QWORD 0, 0, 42, 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_sib_full PROC
+    sub rsp, 40
     lea rbx, [table]
     mov r8, 2
     mov rcx, QWORD PTR [rbx+r8*8]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_23_sib_full ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_sib_full
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

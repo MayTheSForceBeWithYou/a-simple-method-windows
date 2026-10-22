@@ -1,11 +1,21 @@
-; Exercise 28: gcd loop
+; Exercise: 28-gcd-loop
 ;
 ; Euclid GCD(48,18)=6. Exit 6.
 ;
-; Build: nasm -f elf64 28-gcd-loop.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_28_gcd_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_28_gcd_loop:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_28_gcd_loop in this file.
+    call    ex_28_gcd_loop
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

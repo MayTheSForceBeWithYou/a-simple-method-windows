@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 s BYTE "hello", 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_strlen_loop PROC
+    sub rsp, 40
     lea rsi, [s]
     xor rcx, rcx
 loop_start:
@@ -23,6 +23,14 @@ loop_start:
     inc rsi
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_18_strlen_loop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_strlen_loop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -10,11 +10,19 @@ lex BYTE 8 DUP(?)
 n QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_08_from_scratch_token_buf PROC
+    sub rsp, 40
     mov BYTE PTR [lex], 'x'
     mov QWORD PTR [n], 1
     mov rcx, QWORD PTR [n]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_08_from_scratch_token_buf ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_token_buf
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

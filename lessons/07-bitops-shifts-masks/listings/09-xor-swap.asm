@@ -13,6 +13,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rcx, 5          ; a = 5
     mov     rdx, 42         ; b = 42
     

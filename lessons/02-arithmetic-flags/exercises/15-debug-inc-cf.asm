@@ -1,11 +1,30 @@
-; Exercise 15: debug lecture
+; Exercise: 15-debug-inc-cf
 ;
-; Educational: compute 0xFF as byte in al, add 1 to al (wraps). Exit with CF materialized: after add, setc al; movzx rdi,al expect 1.
+; Educational: compute 0FFh as byte in al, add 1 to al (wraps). Exit with CF materialized: after add, setc al; movzx rcx,al expect 1.
 ;
-; Build: nasm -f elf64 15-debug-inc-cf.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_15_debug_inc_cf` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_15_debug_inc_cf:PROC
+
+; BUG: INC does not set CF the way ADD does; student fixes in ex_15_debug_inc_cf.
+show_cf PROC
+    mov al, 0FFh
+    inc al
+    setc al
+    movzx rax, al
+    ret
+show_cf ENDP
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_15_debug_inc_cf in this file (use ADD + SETC, not INC).
+    call    ex_15_debug_inc_cf
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

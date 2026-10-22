@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_collatz_steps PROC
+    sub rsp, 40
     mov rax, 6
     xor rcx, rcx
 loop_start:
@@ -26,6 +26,14 @@ odd:
     add rax, 1
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_23_collatz_steps ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_collatz_steps
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

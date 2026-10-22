@@ -1,19 +1,24 @@
-; Exercise 11: recursion fact (Win32 port)
-; Recursive fact(4)=24. Preserve regs properly. Exit 24.
-; Build: ml64 /c /Fo11-recursion-fact.obj 11-recursion-fact.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:11-recursion-fact.exe 11-recursion-fact.obj kernel32.lib
-; Expected: exit code 24
-
+; Exercise: 11-recursion-fact
+;
+; Recursive fact(4)=24. MS x64 ABI.
+;
+; Contract: implement `ex_11_recursion_fact` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 24
+;
+; Implement recursive `factorial`. In `ex_11_recursion_fact`, exit with fact(5)=120.
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement recursive factorial with proper PROC FRAME
-.ERR <TODO: Implement recursive factorial>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_11_recursion_fact:PROC
+
+; TODO: write ex_11_recursion_fact in this file.
 
 main PROC
-    sub rsp, 32
-    mov rcx, 4
-    call factorial
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_11_recursion_fact
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

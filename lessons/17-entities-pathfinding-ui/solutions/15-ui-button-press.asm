@@ -11,11 +11,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 32
+ex_15_ui_button_press PROC
+    sub rsp, 40
     mov rcx, 1
-    call ExitProcess
-
+    mov     eax, 1
+    add     rsp, 40
+    ret
+ex_15_ui_button_press ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_ui_button_press
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

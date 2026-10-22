@@ -1,4 +1,11 @@
-; 05-render-line.asm: Write buffer to stdout, exit 0
+; Exercise: 05-render-line
+;
+; Print buffer 'ed\n'; exit 0.
+; Expected stdout: "ed\n"
+;
+; Contract: implement `ex_05_render_line` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?
@@ -7,13 +14,12 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    mov buf[0], 'H'
-    mov buf[1], 'i'
-    mov len, 2
-    .ERR <TODO: GetStdHandle, WriteFile buf with len bytes, exit 0>
+EXTERNDEF ex_05_render_line:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_05_render_line in this file.
+    call    ex_05_render_line
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

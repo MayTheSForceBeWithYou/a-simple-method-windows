@@ -15,8 +15,14 @@ EXIT_STATUS MACRO code
 ENDM
 
 .code
-main PROC
-    sub rsp, 32
+ex_21_debug_macro_arity PROC
+    sub rsp, 40
     EXIT_STATUS 4
+ex_21_debug_macro_arity ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_debug_macro_arity
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -8,18 +8,20 @@
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
+    lea     r10, buffer
     ; Setup: "ABC" with cursor at 1
-    mov     BYTE PTR buffer[0], 'A'
-    mov     BYTE PTR buffer[1], 'B'
-    mov     BYTE PTR buffer[2], 'C'
-    mov     length, 3
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
+    mov     buf_len, 3
     mov     cursor, 1
     
     ; Delete byte at cursor (delete 'B')
@@ -27,18 +29,18 @@ main PROC
     mov     rcx, cursor
 shift_loop:
     inc     rcx
-    cmp     rcx, length
+    cmp     rcx, buf_len
     jge     shift_done
-    mov     al, buffer[rcx]
-    mov     buffer[rcx-1], al
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
     jmp     shift_loop
     
 shift_done:
-    dec     length
-    ; Buffer now contains "AC" (length 2)
+    dec     buf_len
+    ; Buffer now contains "AC" (buf_len 2)
     
-    ; Exit with length (2)
-    mov     ecx, DWORD PTR length
+    ; Exit with buf_len (2)
+    mov     ecx, DWORD PTR buf_len
     call    ExitProcess
 main ENDP
 

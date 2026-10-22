@@ -1,12 +1,31 @@
-; 21-debug-cursor-oob.asm: Clamp out-of-range cursor, exit clamped value
+; Exercise: 21-debug-cursor-oob
+;
+; BUG: cursor can exceed len. Clamp cur to len; start cur=9 len=3; exit 3.
+;
+; Contract: implement `ex_21_debug_cursor_oob` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
 .DATA?
 len QWORD ?
 cur QWORD ?
+
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_debug_cursor_oob:PROC
+
+clamp_bug PROC
+    mov QWORD PTR [cur], 9
+    mov QWORD PTR [len], 3
+    mov rax, QWORD PTR [cur]
+    ; BUG: no compare/clamp against len
+    ret
+clamp_bug ENDP
+
 main PROC
-    mov len, 3
-    mov cur, 9
-    .ERR <TODO: Clamp cur to [0, len], exit cur (should be 3)>
+    sub     rsp, 40
+    ; TODO: write ex_21_debug_cursor_oob in this file.
+    call    ex_21_debug_cursor_oob
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

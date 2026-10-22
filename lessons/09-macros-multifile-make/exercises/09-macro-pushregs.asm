@@ -1,19 +1,22 @@
-; 09-macro-pushregs.asm
-; Macro pushes RBX, R12; pop in reverse order; exit 5.
-
+; Exercise: 09-macro-pushregs
+;
+; MACRO PUSH_CALLEE / POP_CALLEE for rbx r12; exit 5.
+;
+; Contract: implement `ex_09_macro_pushregs` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_macro_pushregs:PROC
 
 ; TODO: PushRegs MACRO; push rbx; push r12; ENDM
-.ERR <TODO: Define PushRegs macro>
 ; TODO: PopRegs MACRO; pop r12; pop rbx; ENDM
-.ERR <TODO: Define PopRegs macro>
 
 main PROC
-    mov eax, 5
-    ; TODO: PushRegs; PopRegs
-    .ERR <TODO: Invoke macros>
-    mov ecx, eax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_09_macro_pushregs in this file.
+    call    ex_09_macro_pushregs
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -12,19 +12,27 @@ EXTERN ExitProcess:PROC
 magic BYTE "ED01"
 
 .code
-main PROC
-    sub rsp, 32
+ex_20_load_validate_magic PROC
+    sub rsp, 40
     
     cmp WORD PTR [magic], 4445h  ; "ED" in little-endian
-    jne .n
+    jne L_n
     
     mov rcx, 1
-    jmp .o
+    jmp L_o
     
-.n:
+L_n:
     xor rcx, rcx
     
-.o:
-    call ExitProcess
+L_o:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_20_load_validate_magic ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_load_validate_magic
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

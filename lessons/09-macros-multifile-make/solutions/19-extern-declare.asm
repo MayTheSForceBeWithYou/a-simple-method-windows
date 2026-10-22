@@ -11,12 +11,20 @@ EXTERN ExitProcess:PROC
 ; In multi-file: EXTERN foo:PROC / PUBLIC foo
 
 .code
-main PROC
-    sub rsp, 32
+ex_19_extern_declare PROC
+    sub rsp, 40
     
     call foo
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_19_extern_declare ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_extern_declare
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 foo PROC

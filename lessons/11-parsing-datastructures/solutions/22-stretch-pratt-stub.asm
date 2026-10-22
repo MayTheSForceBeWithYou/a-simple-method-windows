@@ -6,9 +6,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_22_stretch_pratt_stub PROC
+    sub rsp, 40
     mov rcx, 20
-    call ExitProcess
+    mov     eax, 20
+    add     rsp, 40
+    ret
+ex_22_stretch_pratt_stub ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_pratt_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

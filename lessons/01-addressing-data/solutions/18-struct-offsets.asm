@@ -9,11 +9,11 @@
 EXTERN ExitProcess:PROC
 
 .data?
-s BYTE 17 DUP(?)
+s QWORD 3 DUP(?)
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_struct_offsets PROC
+    sub rsp, 40
     mov QWORD PTR [s], 1
     mov QWORD PTR [s+8], 2
     mov BYTE PTR [s+16], 3
@@ -21,6 +21,14 @@ main PROC
     add rcx, [s+8]
     movzx rax, BYTE PTR [s+16]
     add rcx, rax
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_18_struct_offsets ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_struct_offsets
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

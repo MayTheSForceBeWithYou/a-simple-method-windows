@@ -1,11 +1,11 @@
 ; Exercise 05: signed cmp (Win32 port) - SOLUTION
+; Expected exit: 1
 
 .CODE
 
 EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
+ex_05_signed_cmp PROC
+    sub rsp, 40
     
     mov rax, -5
     mov rbx, 3
@@ -16,7 +16,15 @@ main PROC
 less_than:
     mov rcx, 1
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_05_signed_cmp ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_signed_cmp
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 END

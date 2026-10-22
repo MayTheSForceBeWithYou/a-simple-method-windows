@@ -1,10 +1,20 @@
-; 14-dirty-flag.asm: Set dirty=1 on edit, clear on save, exit dirty
+; Exercise: 14-dirty-flag
+;
+; Edit sets dirty=1; save clears; exit dirty 0.
+;
+; Contract: implement `ex_14_dirty_flag` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .DATA?
 dirty QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_14_dirty_flag:PROC
 main PROC
-    mov dirty, 0
-    .ERR <TODO: Simulate edit (set dirty=1), simulate save (clear dirty=0), exit dirty>
+    sub     rsp, 40
+    ; TODO: write ex_14_dirty_flag in this file.
+    call    ex_14_dirty_flag
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

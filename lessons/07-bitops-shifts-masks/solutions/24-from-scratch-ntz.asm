@@ -5,8 +5,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_24_from_scratch_ntz PROC
+    sub rsp, 40
     mov rax, 1011000b
     xor rcx, rcx
 loop_ntz:
@@ -16,6 +16,14 @@ loop_ntz:
     inc rcx
     jmp loop_ntz
 done_ntz:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_24_from_scratch_ntz ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_ntz
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

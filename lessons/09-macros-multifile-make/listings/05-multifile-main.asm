@@ -17,6 +17,7 @@ EXTRN add_two_numbers:PROC
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     rcx, 20         ; First argument (MS x64 ABI)
     mov     rdx, 22         ; Second argument
     call    add_two_numbers ; Returns result in RAX

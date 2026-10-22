@@ -1,11 +1,11 @@
 ; Exercise 02: if else (Win32 port) - SOLUTION
+; Expected exit: 20
 
 .CODE
 
 EXTRN ExitProcess:PROC
-
-main PROC
-    sub rsp, 32
+ex_02_if_else PROC
+    sub rsp, 40
     
     mov rax, 5
     cmp rax, 10
@@ -15,7 +15,15 @@ main PROC
 else_branch:
     mov rcx, 30
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_02_if_else ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_if_else
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 END

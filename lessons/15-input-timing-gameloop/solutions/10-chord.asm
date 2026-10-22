@@ -14,13 +14,21 @@ w BYTE ?
 shift BYTE ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_10_chord PROC
+    sub rsp, 40
     mov BYTE PTR [w], 1
     mov BYTE PTR [shift], 1
     movzx eax, BYTE PTR [w]
     and al, BYTE PTR [shift]
     movzx rcx, al
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_10_chord ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_chord
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

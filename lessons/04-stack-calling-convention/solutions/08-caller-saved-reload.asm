@@ -9,15 +9,23 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_08_caller_saved_reload PROC
+    sub rsp, 40
     mov r10, 5
     push r10
     call one
     pop r10
     add rax, r10
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_08_caller_saved_reload ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_caller_saved_reload
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 one PROC

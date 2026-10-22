@@ -25,7 +25,7 @@ wipe PROC FRAME
 wipe ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov r12, 42
     call wipe
     mov rcx, r12               ; Still 42 (preserved)

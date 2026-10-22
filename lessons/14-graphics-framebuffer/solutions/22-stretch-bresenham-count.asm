@@ -10,9 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_22_stretch_bresenham_count PROC
+    sub rsp, 40
     mov rcx, 4
-    call ExitProcess
+    mov     eax, 4
+    add     rsp, 40
+    ret
+ex_22_stretch_bresenham_count ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_bresenham_count
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

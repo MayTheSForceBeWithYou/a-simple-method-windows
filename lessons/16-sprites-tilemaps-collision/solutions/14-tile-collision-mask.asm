@@ -13,10 +13,18 @@ EXTERN ExitProcess:PROC
 flags BYTE 3
 
 .code
-main PROC
-    sub rsp, 32
+ex_14_tile_collision_mask PROC
+    sub rsp, 40
     movzx rcx, BYTE PTR [flags]
     and rcx, 1
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_14_tile_collision_mask ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_tile_collision_mask
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,22 +1,22 @@
-; Exercise 04: tree sum flat (Win32 port)
-; Simulate binary heap array DQ 1,2,3,4,5. Recursively sum. Exit 15.
-; Build: ml64 /c /Fo04-tree-sum-flat.obj 04-tree-sum-flat.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-tree-sum-flat.exe 04-tree-sum-flat.obj kernel32.lib
-; Expected: exit code 15
-
-.DATA
-heap DQ 1, 2, 3, 4, 5
-heap_len EQU ($ - heap) / 8
-
+; Exercise: 04-tree-sum-flat
+;
+; Binary heap array [1,2,3,4,5]. Recursively sum. Exit 15.
+;
+; Contract: implement `ex_04_tree_sum_flat` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement recursive tree sum over heap array
-.ERR <TODO: Implement recursive heap sum>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_04_tree_sum_flat:PROC
+
+; TODO: write ex_04_tree_sum_flat in this file.
 
 main PROC
-    sub rsp, 32
-    call tree_sum
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_04_tree_sum_flat
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

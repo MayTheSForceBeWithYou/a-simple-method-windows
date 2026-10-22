@@ -1,11 +1,21 @@
-; Exercise 25: stretch binsearch
+; Exercise: 25-stretch-binsearch
 ;
-; STRETCH: sorted dq 1,3,5,7,9. Binary search for 7; exit index 3.
+; STRETCH: sorted QWORD 1,3,5,7,9. Binary search for 7; exit index 3.
 ;
-; Build: nasm -f elf64 25-stretch-binsearch.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_25_stretch_binsearch` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_25_stretch_binsearch:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_25_stretch_binsearch in this file.
+    call    ex_25_stretch_binsearch
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -12,10 +12,19 @@ EXTERN ExitProcess:PROC
 arr QWORD 10, 20, 30
 
 .code
-main PROC
-    sub rsp, 32
+ex_12_debug_off_by_scale PROC
+    sub rsp, 40
     mov r8, 1
-    mov rcx, QWORD PTR [arr+r8*8]
-    call ExitProcess
+    lea r11, [arr]
+    mov rcx, QWORD PTR [r11+r8*8]
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_12_debug_off_by_scale ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_debug_off_by_scale
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

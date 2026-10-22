@@ -1,13 +1,10 @@
-; 09-xor-checksum.asm
+; Exercise: 09-xor-checksum
 ;
-; Compute a simple XOR checksum of a sequence of bytes.
+; XOR-fold bytes 1,2,4,8 -> 15.
 ;
-; Task: XOR together the bytes: 0x12, 0x34, 0x56, 0x78.
-;       Exit with the checksum.
+; Contract: implement `ex_09_xor_checksum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
 ;
-; Hint: Start with a zero accumulator, then XOR each byte into it.
-;       12 ^ 34 ^ 56 ^ 78 = ... (compute or test to verify)
-
 .DATA
 bytes DB 12h, 34h, 56h, 78h
 bytes_len EQU $ - bytes
@@ -15,25 +12,13 @@ bytes_len EQU $ - bytes
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_xor_checksum:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    xor     rax, rax        ; checksum = 0
-    lea     rbx, bytes
-    mov     r12, bytes_len
-    
-    ; TODO: Loop through bytes, XOR each into RAX
-    .ERR <TODO: Create loop that XORs each byte into accumulator>
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_09_xor_checksum in this file.
+    call    ex_09_xor_checksum
     mov     ecx, eax
-    and     ecx, 0FFh       ; Low byte only
-    pop     r12
-    pop     rbx
     call    ExitProcess
 main ENDP
 

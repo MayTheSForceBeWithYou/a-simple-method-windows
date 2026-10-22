@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 tick QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_08_from_scratch_tick PROC
+    sub rsp, 40
 tick_loop:
     cmp QWORD PTR [tick], 5
     jge tick_done
@@ -22,6 +22,14 @@ tick_loop:
     jmp tick_loop
 tick_done:
     mov rcx, [tick]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_08_from_scratch_tick ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_tick
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,8 +1,19 @@
-; 18-input-queue: input queue
+; Exercise: 18-input-queue
+;
+; Enqueue event 9; dequeue; exit 9.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_18_input_queue` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement input queue>
+EXTERNDEF ex_18_input_queue:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_18_input_queue in this file.
+    call    ex_18_input_queue
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -1,25 +1,21 @@
-; Exercise 04: count loop (Win32 port)
+; Exercise: 04-count-loop
 ;
-; For loop from 0 to 4. Count iterations. Exit with count (5).
+; Implement `ex_04_count_loop` in this file.
 ;
-; Build: ml64 /c /Fo04-count-loop.obj 04-count-loop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-count-loop.exe 04-count-loop.obj kernel32.lib
-; Run: 04-count-loop.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_04_count_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
 ;
-; Expected: exit code 5
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_04_count_loop:PROC
 
 main PROC
-    sub rsp, 32
-    
-    xor rcx, rcx               ; Index
-    xor rax, rax               ; Count
-    
-    ; TODO: While index < 5, inc count, inc index
-    .ERR <TODO: Implement counted loop>
-    
+    sub     rsp, 40
+    ; TODO: write ex_04_count_loop in this file.
+    call    ex_04_count_loop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

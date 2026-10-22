@@ -1,7 +1,10 @@
 ; Manhattan distance for A*, exit dist
+; Expected exit: 5
+; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     mov rax, 10
     mov rbx, 5
     sub rax, rbx

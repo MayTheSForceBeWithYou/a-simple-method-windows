@@ -1,11 +1,21 @@
-; Exercise 26: two exits dead
+; Exercise: 26-two-exits-dead
 ;
 ; Write "alive\n", exit 0, then dead exit 99 after (unreachable).
 ;
-; Build: nasm -f elf64 26-two-exits-dead.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_26_two_exits_dead` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_26_two_exits_dead:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_26_two_exits_dead in this file.
+    call    ex_26_two_exits_dead
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

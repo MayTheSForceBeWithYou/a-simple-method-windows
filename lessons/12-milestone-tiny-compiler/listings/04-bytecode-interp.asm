@@ -1,4 +1,6 @@
 ; 04-bytecode-interp.asm: Simple bytecode interpreter
+; Expected exit: 30
+; Expected stdout: (none)
 ; Opcodes: 1=LOAD_IMM, 2=ADD, 3=HALT
 ; Program: LOAD 10, LOAD 20, ADD, HALT → exit 30
 .DATA
@@ -9,6 +11,7 @@ acc QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, bytecode
     mov ip, rax
     xor rax, rax

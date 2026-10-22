@@ -2,25 +2,33 @@
 ;
 ; Guests>=100 goal; guests=100; exit 1 success.
 ;
-; Build: ml64 /c 21-scenario-goal.asm && link /OUT:21-scenario-goal.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-scenario-goal.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov qword [guests],100
-    cmp qword [guests],100
-    jl .n
-    mov rdi,1
-    jmp .o
-.n:
-    xor rdi,rdi
-.o:
-    mov rax,60
-    syscall
+.data
+guests QWORD 0
 
+.code
+ex_21_scenario_goal PROC
+    sub rsp, 40
+    mov QWORD PTR [guests], 100
+    cmp QWORD PTR [guests], 100
+    jl goal_no
+    mov rcx, 1
+    jmp goal_done
+goal_no:
+    xor ecx, ecx
+goal_done:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_21_scenario_goal ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_scenario_goal
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

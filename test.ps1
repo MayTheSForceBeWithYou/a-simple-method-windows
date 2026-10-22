@@ -1,163 +1,399 @@
 # test.ps1 - Test harness for Windows port of A Simple Method
-# Builds and runs all solutions, checks exit codes and stdout against expected values
-# Verifies that exercise scaffolds fail (don't pass as-is)
+# Builds and runs solutions and listings against ; Expected exit / stdout headers.
+# Untouched exercise scaffolds must fail to assemble, link, or match — that is success.
 
+[CmdletBinding()]
 param(
     [string]$Lesson = "*",
-    [switch]$Verbose,
     [switch]$KeepArtifacts
 )
 
+Set-StrictMode -Version Latest
 $ErrorActionPreference = "Stop"
+
 $script:PassCount = 0
 $script:FailCount = 0
-$script:Results = @()
+$script:Results = New-Object System.Collections.Generic.List[object]
+$script:SolutionPassByLesson = @{}
+$script:SolutionFailByLesson = @{}
+$script:ScaffoldOkByLesson = @{}
+$script:ScaffoldHarnessFailByLesson = @{}
+$script:ListingFailures = New-Object System.Collections.Generic.List[object]
 
-# Import build functions
 . "$PSScriptRoot\build.ps1"
+
+function Get-LessonName {
+    param([string]$Path)
+    if ($Path -match 'lessons[\\/]([^\\/]+)') {
+        return $matches[1]
+    }
+    return "unknown"
+}
+
+function Increment-Map {
+    param($Map, [string]$Key)
+    if (-not $Map.ContainsKey($Key)) {
+        $Map[$Key] = 0
+    }
+    $Map[$Key]++
+}
+
+function Add-Result {
+    param(
+        [string]$File,
+        [string]$Status,
+        [string]$Details,
+        [string]$Kind
+    )
+    $row = [PSCustomObject]@{
+        File    = $File
+        Status  = $Status
+        Details = $Details
+        Kind    = $Kind
+    }
+    $script:Results.Add($row)
+    $lesson = Get-LessonName $File
+    switch ($Kind) {
+        "solution" {
+            if ($Status -eq "PASS") {
+                $script:PassCount++
+                Increment-Map $script:SolutionPassByLesson $lesson
+            } else {
+                $script:FailCount++
+                Increment-Map $script:SolutionFailByLesson $lesson
+            }
+        }
+        "listing" {
+            if ($Status -eq "PASS") {
+                $script:PassCount++
+            } else {
+                $script:FailCount++
+                $script:ListingFailures.Add($row)
+            }
+        }
+        "exercise" {
+            if ($Status -eq "SCAFFOLD OK") {
+                $script:PassCount++
+                Increment-Map $script:ScaffoldOkByLesson $lesson
+            } else {
+                $script:FailCount++
+                Increment-Map $script:ScaffoldHarnessFailByLesson $lesson
+            }
+        }
+        "selftest" {
+            if ($Status -eq "PASS") {
+                $script:PassCount++
+            } else {
+                $script:FailCount++
+            }
+        }
+    }
+}
+
+function Read-TextOrEmpty {
+    param([string]$Path)
+    if ([string]::IsNullOrWhiteSpace($Path)) {
+        throw "Read-TextOrEmpty: Path is empty"
+    }
+    if (-not (Test-Path -LiteralPath $Path)) {
+        return ""
+    }
+    $raw = Get-Content -LiteralPath $Path -Raw -ErrorAction SilentlyContinue
+    if ($null -eq $raw) {
+        return ""
+    }
+    return [string]$raw
+}
+
+function Convert-ExpectedText {
+    param([string]$Text)
+    if ($null -eq $Text) {
+        return ""
+    }
+    $t = [string]$Text
+    $t = $t -replace '\\n', "`n"
+    $t = $t -replace '\\r', "`r"
+    $t = $t -replace '\\t', "`t"
+    return $t
+}
 
 function Parse-Expected {
     param([string]$AsmPath)
-    
-    $content = Get-Content $AsmPath -Raw
-    
+    Test-NonEmptyPath -Value $AsmPath -Name "Parse-Expected AsmPath"
+
+    $content = Read-TextOrEmpty $AsmPath
     $expected = @{
-        ExitCode = $null
-        Stdout = $null
-        StdoutRegex = $null
+        ExitCode     = $null
+        Stdout       = $null
+        Stderr       = $null
+        Stdin        = $null
+        StdoutRegex  = $null
+        ExitUnparsed = $null
+        HasAny       = $false
     }
-    
-    # Parse "Expected exit: N" or "; exit=N"
-    if ($content -match '; Expected exit:\s*(\d+)') {
+
+    if ($content -match '(?im)^;\s*Expected exit(?: code)?:\s*(\d+)\b') {
         $expected.ExitCode = [int]$matches[1]
-    } elseif ($content -match '; exit=(\d+)') {
+        $expected.HasAny = $true
+    } elseif ($content -match '(?im)^;\s*exit=(\d+)') {
         $expected.ExitCode = [int]$matches[1]
-    }
-    # For simple exit-only tests, infer from filename
-    elseif ($AsmPath -match 'exit-zero') {
-        $expected.ExitCode = 0
-    } elseif ($AsmPath -match 'exit-seven') {
-        $expected.ExitCode = 7
-    } elseif ($AsmPath -match 'exit-(\d+)') {
+        $expected.HasAny = $true
+    } elseif ($content -match '(?im)^;\s*Expected:\s*".*?"\s*[→-]+\s*exit\s+(\d+)') {
         $expected.ExitCode = [int]$matches[1]
+        $expected.HasAny = $true
+    } elseif ($content -match '(?im)^;\s*Expected exit(?: code)?:\s*(.+)$') {
+        $tail = $matches[1].Trim()
+        if ($tail -match '^(\d+)') {
+            $expected.ExitCode = [int]$matches[1]
+            $expected.HasAny = $true
+        } else {
+            $expected.ExitUnparsed = $tail
+            $expected.HasAny = $true
+        }
     }
-    # Infer from final exit value in common patterns
-    elseif ($content -match 'mov\s+(?:rcx|ecx),\s*(\d+)\s*\n\s*call\s+ExitProcess') {
-        $expected.ExitCode = [int]$matches[1]
+
+    $stdoutLine = $null
+    if ($content -match '(?im)^;\s*Expected stdout:\s*(.+)$') {
+        $stdoutLine = $matches[1].Trim()
+    } elseif ($content -match '(?im)^;\s*Expected output:\s*(.+)$') {
+        $stdoutLine = $matches[1].Trim()
+    } elseif ($content -match '(?im)^;\s*stdout=(.+)$') {
+        $stdoutLine = $matches[1].Trim()
     }
-    
-    # Parse expected stdout
-    if ($content -match '; Expected stdout:\s*"([^"]*)"') {
-        $stdoutStr = $matches[1]
-        # Handle escape sequences
-        $stdoutStr = $stdoutStr -replace '\\n', "`n"
-        $stdoutStr = $stdoutStr -replace '\\r', "`r"
-        $stdoutStr = $stdoutStr -replace '\\t', "`t"
-        $expected.Stdout = $stdoutStr
-    } elseif ($content -match '; stdout=(.+)') {
-        $expected.Stdout = $matches[1] -replace '\\n', "`n"
+
+    if ($null -ne $stdoutLine) {
+        $expected.HasAny = $true
+        if ($stdoutLine -match '^\(to stderr\)\s*(.+)$') {
+            $expected.Stderr = Convert-ExpectedText $matches[1].Trim()
+            $expected.Stdout = ""
+        } elseif ($stdoutLine -match '^\(none') {
+            $expected.Stdout = ""
+        } elseif ($stdoutLine -match '^"(.*)"$') {
+            $expected.Stdout = Convert-ExpectedText $matches[1]
+        } else {
+            $expected.Stdout = Convert-ExpectedText $stdoutLine
+        }
     }
-    
-    # Parse stdout regex
-    if ($content -match '; Expected stdout regex:\s*(.+)') {
-        $expected.StdoutRegex = $matches[1]
+
+    if ($content -match '(?im)^;\s*Expected stdout regex:\s*(.+)$') {
+        $expected.StdoutRegex = $matches[1].Trim()
+        $expected.HasAny = $true
     }
-    
+
+    if ($content -match '(?im)^;\s*Expected stdin:\s*"(.*)"\s*$') {
+        $expected.Stdin = Convert-ExpectedText $matches[1]
+        $expected.HasAny = $true
+    } elseif ($content -match "(?im)^;\s*Expected exit:\s*65\s*\(when piped 'A'\)") {
+        $expected.Stdin = "A"
+    }
+
     return $expected
 }
 
-function Test-Solution {
+function Compare-Output {
+    param(
+        $Expected,
+        [int]$ExitCode,
+        [string]$Stdout,
+        [string]$Stderr
+    )
+    $issues = New-Object System.Collections.Generic.List[string]
+
+    if ($null -ne $Expected.ExitUnparsed) {
+        $issues.Add("unparseable expected exit: $($Expected.ExitUnparsed)")
+    }
+
+    if ($null -ne $Expected.ExitCode) {
+        if ($ExitCode -ne [int]$Expected.ExitCode) {
+            $issues.Add("exit code $ExitCode (expected $($Expected.ExitCode))")
+        }
+    }
+
+    if ($null -ne $Expected.Stdout) {
+        $normalizedStdout = ([string]$Stdout) -replace "`r`n", "`n"
+        $normalizedExpected = ([string]$Expected.Stdout) -replace "`r`n", "`n"
+        if ($normalizedStdout -ne $normalizedExpected) {
+            $issues.Add("stdout mismatch")
+        }
+    }
+
+    if ($null -ne $Expected.Stderr) {
+        $normalizedStderr = ([string]$Stderr) -replace "`r`n", "`n"
+        $normalizedExpected = ([string]$Expected.Stderr) -replace "`r`n", "`n"
+        if ($normalizedStderr -ne $normalizedExpected) {
+            $issues.Add("stderr mismatch")
+        }
+    }
+
+    if ($null -ne $Expected.StdoutRegex) {
+        if ($Stdout -notmatch $Expected.StdoutRegex) {
+            $issues.Add("stdout does not match regex: $($Expected.StdoutRegex)")
+        }
+    }
+
+    return $issues
+}
+
+function Invoke-BuiltExe {
+    param(
+        [Parameter(Mandatory = $true)][string]$ExePath,
+        [Parameter(Mandatory = $true)][string]$OutDir,
+        [Parameter(Mandatory = $true)][string]$Name,
+        [string]$StdinText = ""
+    )
+
+    Test-NonEmptyPath -Value $ExePath -Name "ExePath"
+    Test-NonEmptyPath -Value $OutDir -Name "Invoke-BuiltExe OutDir"
+    if (-not (Test-Path -LiteralPath $ExePath)) {
+        throw "Executable not found: $ExePath"
+    }
+
+    $stdoutFile = Join-Path $OutDir "$Name.stdout.txt"
+    $stderrFile = Join-Path $OutDir "$Name.stderr.txt"
+    $stdinFile = Join-Path $OutDir "$Name.stdin.txt"
+    Test-NonEmptyPath -Value $stdoutFile -Name "stdoutFile"
+    Test-NonEmptyPath -Value $stderrFile -Name "stderrFile"
+    Test-NonEmptyPath -Value $stdinFile -Name "stdinFile"
+
+    if ($null -eq $StdinText) {
+        $StdinText = ""
+    }
+    [System.IO.File]::WriteAllText($stdinFile, [string]$StdinText)
+
+    $process = Start-Process -FilePath $ExePath -WorkingDirectory $OutDir `
+        -NoNewWindow -PassThru `
+        -RedirectStandardInput $stdinFile `
+        -RedirectStandardOutput $stdoutFile `
+        -RedirectStandardError $stderrFile
+
+    if (-not $process.WaitForExit(8000)) {
+        try { $process.Kill() } catch { }
+        throw "timed out after 8s"
+    }
+
+    $exitCode = $process.ExitCode
+    $stdout = Read-TextOrEmpty $stdoutFile
+    $stderr = Read-TextOrEmpty $stderrFile
+
+    if (-not $KeepArtifacts) {
+        Remove-Item -LiteralPath $stdoutFile -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $stderrFile -ErrorAction SilentlyContinue
+        Remove-Item -LiteralPath $stdinFile -ErrorAction SilentlyContinue
+    }
+
+    return @{
+        ExitCode = $exitCode
+        Stdout   = $stdout
+        Stderr   = $stderr
+    }
+}
+
+function Get-RelativeAsmPath {
+    param([string]$AsmPath)
+    Test-NonEmptyPath -Value $AsmPath -Name "Get-RelativeAsmPath"
+    $relativePath = $AsmPath
+    if (-not [string]::IsNullOrWhiteSpace($PSScriptRoot)) {
+        $relativePath = $AsmPath -replace [regex]::Escape($PSScriptRoot), ""
+    }
+    return $relativePath.TrimStart("\", "/")
+}
+
+function Test-IsPrimaryListing {
+    param([Parameter(Mandatory = $true)][string]$AsmPath)
+
+    $base = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
+    $skipNames = @(
+        '05-multifile-helper',
+        '14-helper-add',
+        '20-add-two-numbers'
+    )
+    if ($skipNames -contains $base) {
+        return $false
+    }
+
+    $content = Read-TextOrEmpty $AsmPath
+    if ($content -notmatch '(?im)^main\s+PROC') {
+        return $false
+    }
+
+    return $true
+}
+
+function Get-ExerciseExternSymbol {
+    param([string]$AsmPath)
+    $content = Read-TextOrEmpty $AsmPath
+    if ($content -match '(?im)(?:EXTRN|EXTERNDEF)\s+(ex_[A-Za-z0-9_]+)\s*:\s*PROC') {
+        return $Matches[1]
+    }
+    return $null
+}
+
+function Test-IsScaffoldLinkOrAsmFailure {
+    param(
+        [string]$Message,
+        [string]$ExpectedExternSymbol
+    )
+    if ([string]::IsNullOrWhiteSpace($ExpectedExternSymbol)) {
+        return $false
+    }
+    $sym = [regex]::Escape($ExpectedExternSymbol)
+    if ($Message -match '(?i)LNK2019|LNK2001') {
+        return ($Message -match $sym)
+    }
+    if ($Message -match '(?i)ml64 failed') {
+        if ($Message -notmatch '(?i)error A2006') {
+            return $false
+        }
+        return ($Message -match $sym)
+    }
+    return $false
+}
+
+function Test-RunnableAsm {
     param(
         [string]$AsmPath,
-        [string]$OutDir
+        [string]$OutDir,
+        [string]$Kind,
+        [switch]$RequireExpected
     )
-    
+
     $name = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
-    $relativePath = $AsmPath -replace [regex]::Escape($PSScriptRoot), ''
-    $relativePath = $relativePath.TrimStart('\', '/')
-    
+    $relativePath = Get-RelativeAsmPath $AsmPath
+
     try {
-        # Build
-        $exePath = Build-Asm -AsmPath $AsmPath -OutputDir $OutDir
-        
-        # Parse expected values
+        $built = Build-Asm -AsmPath $AsmPath -OutputDir $OutDir
+        if ($built -is [array]) {
+            throw "Build-Asm returned multiple values (pipeline pollution): $($built -join ' | ')"
+        }
+        $exePath = [string]$built
+        Test-NonEmptyPath -Value $exePath -Name "Build-Asm return"
+
         $expected = Parse-Expected -AsmPath $AsmPath
-        
-        # Run with timeout (30 seconds)
-        $stdoutFile = Join-Path $OutDir "$name.stdout.txt"
-        $stderrFile = Join-Path $OutDir "$name.stderr.txt"
-        
-        $process = Start-Process -FilePath $exePath -NoNewWindow -Wait -PassThru `
-            -RedirectStandardOutput $stdoutFile `
-            -RedirectStandardError $stderrFile
-        
-        $exitCode = $process.ExitCode -band 0xFF  # Low 8 bits only
-        $stdout = if (Test-Path $stdoutFile) { Get-Content $stdoutFile -Raw } else { "" }
-        $stderr = if (Test-Path $stderrFile) { Get-Content $stderrFile -Raw } else { "" }
-        
-        # Check expectations
-        $issues = @()
-        
-        if ($null -ne $expected.ExitCode) {
-            if ($exitCode -ne $expected.ExitCode) {
-                $issues += "exit code $exitCode (expected $($expected.ExitCode))"
-            }
+        if ($RequireExpected -and -not $expected.HasAny) {
+            Add-Result -File $relativePath -Status "FAIL" -Details "missing Expected exit/stdout header" -Kind $Kind
+            return
         }
-        
-        if ($null -ne $expected.Stdout) {
-            # Normalize line endings for comparison
-            $normalizedStdout = $stdout -replace "`r`n", "`n"
-            $normalizedExpected = $expected.Stdout -replace "`r`n", "`n"
-            
-            if ($normalizedStdout -ne $normalizedExpected) {
-                $issues += "stdout mismatch"
-                if ($Verbose) {
-                    Write-Host "  Expected: $($normalizedExpected | ConvertTo-Json)"
-                    Write-Host "  Actual:   $($normalizedStdout | ConvertTo-Json)"
-                }
-            }
+
+        $stdinText = ""
+        if ($null -ne $expected.Stdin) {
+            $stdinText = [string]$expected.Stdin
         }
-        
-        if ($null -ne $expected.StdoutRegex) {
-            if ($stdout -notmatch $expected.StdoutRegex) {
-                $issues += "stdout does not match regex: $($expected.StdoutRegex)"
-            }
-        }
-        
-        # Clean up temp files
-        if (-not $KeepArtifacts) {
-            Remove-Item $stdoutFile -ErrorAction SilentlyContinue
-            Remove-Item $stderrFile -ErrorAction SilentlyContinue
-        }
-        
+        $run = Invoke-BuiltExe -ExePath $exePath -OutDir $OutDir -Name $name -StdinText $stdinText
+        # Empty List unwraps to $null in PowerShell; wrap so StrictMode can see .Count.
+        $issues = @(Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr)
+
         if ($issues.Count -eq 0) {
-            $script:PassCount++
-            $script:Results += [PSCustomObject]@{
-                File = $relativePath
-                Status = "PASS"
-                Details = ""
-            }
-            if ($Verbose) {
+            Add-Result -File $relativePath -Status "PASS" -Details "" -Kind $Kind
+            if ($VerbosePreference -eq "Continue") {
                 Write-Host "PASS: $relativePath" -ForegroundColor Green
             }
         } else {
-            $script:FailCount++
             $details = $issues -join "; "
-            $script:Results += [PSCustomObject]@{
-                File = $relativePath
-                Status = "FAIL"
-                Details = $details
-            }
+            Add-Result -File $relativePath -Status "FAIL" -Details $details -Kind $Kind
             Write-Host "FAIL: $relativePath - $details" -ForegroundColor Red
         }
-        
     } catch {
-        $script:FailCount++
-        $script:Results += [PSCustomObject]@{
-            File = $relativePath
-            Status = "FAIL"
-            Details = $_.Exception.Message
-        }
+        Add-Result -File $relativePath -Status "FAIL" -Details $_.Exception.Message -Kind $Kind
         Write-Host "FAIL: $relativePath - $($_.Exception.Message)" -ForegroundColor Red
     }
 }
@@ -167,189 +403,185 @@ function Test-ExerciseScaffold {
         [string]$AsmPath,
         [string]$OutDir
     )
-    
+
     $name = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
-    $relativePath = $AsmPath -replace [regex]::Escape($PSScriptRoot), ''
-    $relativePath = $relativePath.TrimStart('\', '/')
-    
-    # Skip if this is an old NASM file (Jack hasn't ported it yet)
-    $content = Get-Content $AsmPath -Raw
-    if ($content -match 'section\s+\.text' -and $content -match 'global\s+_start') {
-        # Old NASM syntax - will fail to assemble with ml64, which is acceptable
-        $script:Results += [PSCustomObject]@{
-            File = $relativePath
-            Status = "SKIP"
-            Details = "NASM syntax (not yet ported)"
-        }
-        if ($Verbose) {
-            Write-Host "SKIP: $relativePath (NASM syntax)" -ForegroundColor Yellow
-        }
-        return
-    }
-    
+    $relativePath = Get-RelativeAsmPath $AsmPath
+
     try {
-        # Try to build - it should either fail to assemble/link, or pass but exit with error
-        $exePath = Build-Asm -AsmPath $AsmPath -OutputDir $OutDir
-        
-        # If it built, run it - it should fail (non-zero exit code)
-        $stdoutFile = Join-Path $OutDir "$name.stdout.txt"
-        $stderrFile = Join-Path $OutDir "$name.stderr.txt"
-        
-        $process = Start-Process -FilePath $exePath -NoNewWindow -Wait -PassThru `
-            -RedirectStandardOutput $stdoutFile `
-            -RedirectStandardError $stderrFile
-        
-        $exitCode = $process.ExitCode -band 0xFF
-        
-        if (-not $KeepArtifacts) {
-            Remove-Item $stdoutFile -ErrorAction SilentlyContinue
-            Remove-Item $stderrFile -ErrorAction SilentlyContinue
+        $built = Build-Asm -AsmPath $AsmPath -OutputDir $OutDir
+        if ($built -is [array]) {
+            throw "Build-Asm returned multiple values (pipeline pollution): $($built -join ' | ')"
         }
-        
-        if ($exitCode -eq 0) {
-            # Scaffold passed - this is a HARNESS FAILURE
-            $script:FailCount++
-            $script:Results += [PSCustomObject]@{
-                File = $relativePath
-                Status = "HARNESS FAIL"
-                Details = "Exercise scaffold passed as-is (should fail)"
-            }
+        $exePath = [string]$built
+        Test-NonEmptyPath -Value $exePath -Name "Build-Asm return"
+
+        $expected = Parse-Expected -AsmPath $AsmPath
+        $stdinText = ""
+        if ($null -ne $expected.Stdin) {
+            $stdinText = [string]$expected.Stdin
+        }
+        # Scaffolds must fail at link/asm time, not build and run.
+        $run = Invoke-BuiltExe -ExePath $exePath -OutDir $OutDir -Name $name -StdinText $stdinText
+        $issues = @(Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr)
+        $why = if ($issues.Count -gt 0) { $issues -join "; " } else { "exit $($run.ExitCode)" }
+        if ($issues.Count -eq 0) {
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details "Exercise scaffold passed as-is (should fail at link)" -Kind "exercise"
             Write-Host "HARNESS FAIL: $relativePath - scaffold passed without modification" -ForegroundColor Magenta
         } else {
-            # Scaffold failed as expected
-            $script:PassCount++
-            $script:Results += [PSCustomObject]@{
-                File = $relativePath
-                Status = "SCAFFOLD OK"
-                Details = "Failed as expected (exit $exitCode)"
-            }
-            if ($Verbose) {
-                Write-Host "SCAFFOLD OK: $relativePath (failed as expected)" -ForegroundColor Green
-            }
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details "Exercise scaffold linked and ran ($why); expected link/asm failure only" -Kind "exercise"
+            Write-Host "HARNESS FAIL: $relativePath - scaffold built ($why)" -ForegroundColor Magenta
         }
-        
     } catch {
-        # Failed to build - this is acceptable for scaffolds
-        $script:PassCount++
-        $script:Results += [PSCustomObject]@{
-            File = $relativePath
-            Status = "SCAFFOLD OK"
-            Details = "Failed to build as expected"
-        }
-        if ($Verbose) {
-            Write-Host "SCAFFOLD OK: $relativePath (build failed as expected)" -ForegroundColor Green
+        $msg = $_.Exception.Message
+        $expectedSym = Get-ExerciseExternSymbol -AsmPath $AsmPath
+        $isLinkOrAsm = Test-IsScaffoldLinkOrAsmFailure -Message $msg -ExpectedExternSymbol $expectedSym
+        if ($isLinkOrAsm) {
+            Add-Result -File $relativePath -Status "SCAFFOLD OK" -Details "Failed as expected ($msg)" -Kind "exercise"
+            if ($VerbosePreference -eq "Continue") {
+                Write-Host "SCAFFOLD OK: $relativePath (build failed as expected)" -ForegroundColor Green
+            }
+        } else {
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details $msg -Kind "exercise"
+            Write-Host "HARNESS FAIL: $relativePath - $msg" -ForegroundColor Magenta
         }
     }
 }
 
-function Test-Listing {
+function Get-LessonDirectories {
+    $lessonsRoot = Join-Path $PSScriptRoot "lessons"
+    Test-NonEmptyPath -Value $lessonsRoot -Name "lessonsRoot"
+    if (-not (Test-Path -LiteralPath $lessonsRoot)) {
+        throw "lessons directory not found: $lessonsRoot"
+    }
+    $dirs = @(Get-ChildItem -LiteralPath $lessonsRoot -Directory)
+    if ($Lesson -ne "*") {
+        $dirs = @($dirs | Where-Object { $_.Name -like "$Lesson*" -or $_.Name -eq $Lesson })
+    }
+    return $dirs
+}
+
+function Get-AsmFiles {
     param(
-        [string]$AsmPath,
-        [string]$OutDir
+        [System.IO.DirectoryInfo]$LessonDir,
+        [string]$Subdir
     )
-    
-    $name = [System.IO.Path]::GetFileNameWithoutExtension($AsmPath)
-    $relativePath = $AsmPath -replace [regex]::Escape($PSScriptRoot), ''
-    $relativePath = $relativePath.TrimStart('\', '/')
-    
-    try {
-        # Listings should build successfully
-        $exePath = Build-Asm -AsmPath $AsmPath -OutputDir $OutDir
-        
-        # For now, just check that it builds - we can add runtime checks later
-        $script:PassCount++
-        $script:Results += [PSCustomObject]@{
-            File = $relativePath
-            Status = "PASS"
-            Details = "Listing built successfully"
-        }
-        if ($Verbose) {
-            Write-Host "PASS: $relativePath (listing)" -ForegroundColor Green
-        }
-        
-    } catch {
-        $script:FailCount++
-        $script:Results += [PSCustomObject]@{
-            File = $relativePath
-            Status = "FAIL"
-            Details = $_.Exception.Message
-        }
-        Write-Host "FAIL: $relativePath - $($_.Exception.Message)" -ForegroundColor Red
+    $dir = Join-Path $LessonDir.FullName $Subdir
+    if ([string]::IsNullOrWhiteSpace($dir) -or -not (Test-Path -LiteralPath $dir)) {
+        return @()
     }
+    return @(Get-ChildItem -LiteralPath $dir -File -Filter "*.asm")
 }
 
-# Main execution
 Write-Host "=== Windows Port Test Harness ===" -ForegroundColor Cyan
 Write-Host ""
 
-if ($Verbose) {
-    $VerbosePreference = "Continue"
-}
-
-# Set up MSVC environment
 Write-Host "Setting up MSVC environment..." -ForegroundColor Cyan
-Find-MSVC | Out-Null
+Find-MSVC
 Write-Host "Toolchain ready.`n" -ForegroundColor Green
 
-# Create output directory
-$outDir = Join-Path $PSScriptRoot "out"
-if (-not (Test-Path $outDir)) {
-    New-Item -ItemType Directory -Path $outDir | Out-Null
+$script:HarnessOutRoot = Join-Path $PSScriptRoot "out"
+$script:HarnessOutDirSolutions = Join-Path $script:HarnessOutRoot "solutions"
+$script:HarnessOutDirListings = Join-Path $script:HarnessOutRoot "listings"
+$script:HarnessOutDirExercises = Join-Path $script:HarnessOutRoot "exercises"
+$script:HarnessOutDirSelftest = Join-Path $script:HarnessOutRoot "selftest"
+foreach ($d in @($script:HarnessOutRoot, $script:HarnessOutDirSolutions, $script:HarnessOutDirListings, $script:HarnessOutDirExercises, $script:HarnessOutDirSelftest)) {
+    if (-not (Test-Path -LiteralPath $d)) {
+        New-Item -ItemType Directory -Path $d | Out-Null
+    }
 }
 
-# Find all solutions
+$lessonDirs = Get-LessonDirectories
+
+Write-Host "EXTERNDEF self-test (tools/windows/selftest)..." -ForegroundColor Cyan
+$selftestAsm = Join-Path $PSScriptRoot "tools\windows\selftest\externdef-define.asm"
+if (-not (Test-Path -LiteralPath $selftestAsm)) {
+    throw "Missing harness self-test: $selftestAsm"
+}
+Test-RunnableAsm -AsmPath $selftestAsm -OutDir $script:HarnessOutDirSelftest -Kind "selftest" -RequireExpected
+
 Write-Host "Testing solutions..." -ForegroundColor Cyan
-$solutionPattern = Join-Path $PSScriptRoot "lessons\$Lesson\solutions\*.asm"
-$solutions = Get-ChildItem $solutionPattern -File -ErrorAction SilentlyContinue
-
-foreach ($solution in $solutions) {
-    Test-Solution -AsmPath $solution.FullName -OutputDir $outDir
+foreach ($lessonDir in $lessonDirs) {
+    foreach ($solution in (Get-AsmFiles -LessonDir $lessonDir -Subdir "solutions")) {
+        Test-RunnableAsm -AsmPath $solution.FullName -OutDir $script:HarnessOutDirSolutions -Kind "solution" -RequireExpected
+    }
 }
 
-# Find all listings (if they exist)
 Write-Host "`nTesting listings..." -ForegroundColor Cyan
-$listingPattern = Join-Path $PSScriptRoot "lessons\$Lesson\listings\*.asm"
-$listings = Get-ChildItem $listingPattern -File -ErrorAction SilentlyContinue
-
-if ($listings.Count -eq 0) {
-    Write-Host "No listings found (this is expected until Jack ports them)" -ForegroundColor Yellow
-} else {
-    foreach ($listing in $listings) {
-        Test-Listing -AsmPath $listing.FullName -OutputDir $outDir
+$listingCount = 0
+$listingSkipped = 0
+$listingSkippedNames = @()
+foreach ($lessonDir in $lessonDirs) {
+    foreach ($listing in (Get-AsmFiles -LessonDir $lessonDir -Subdir "listings")) {
+        if (-not (Test-IsPrimaryListing -AsmPath $listing.FullName)) {
+            $listingSkipped++
+            $listingSkippedNames += (Get-RelativeAsmPath $listing.FullName)
+            continue
+        }
+        $listingCount++
+        Test-RunnableAsm -AsmPath $listing.FullName -OutDir $script:HarnessOutDirListings -Kind "listing" -RequireExpected
     }
 }
+if ($listingSkipped -gt 0) {
+    Write-Host "Skipped $listingSkipped listing(s) (companion / non-main PROC):" -ForegroundColor Yellow
+    foreach ($skippedListing in $listingSkippedNames) {
+        Write-Host "  $skippedListing" -ForegroundColor Yellow
+    }
+}
+if ($listingCount -eq 0) {
+    Write-Host "No listings found" -ForegroundColor Yellow
+}
 
-# Find all exercises
 Write-Host "`nVerifying exercise scaffolds fail..." -ForegroundColor Cyan
-$exercisePattern = Join-Path $PSScriptRoot "lessons\$Lesson\exercises\*.asm"
-$exercises = Get-ChildItem $exercisePattern -File -ErrorAction SilentlyContinue
-
-if ($exercises.Count -eq 0) {
-    Write-Host "No exercises found" -ForegroundColor Yellow
-} else {
-    foreach ($exercise in $exercises) {
-        Test-ExerciseScaffold -AsmPath $exercise.FullName -OutputDir $outDir
+$exerciseCount = 0
+foreach ($lessonDir in $lessonDirs) {
+    foreach ($exercise in (Get-AsmFiles -LessonDir $lessonDir -Subdir "exercises")) {
+        $exerciseCount++
+        Test-ExerciseScaffold -AsmPath $exercise.FullName -OutDir $script:HarnessOutDirExercises
     }
 }
+if ($exerciseCount -eq 0) {
+    Write-Host "No exercises found" -ForegroundColor Yellow
+}
 
-# Print summary table
 Write-Host "`n=== Test Results ===" -ForegroundColor Cyan
-$script:Results | Format-Table -Property File, Status, Details -AutoSize
+$script:Results | Format-Table -Property File, Status, Details -AutoSize | Out-String -Width 240 | Out-Host
+
+Write-Host "`n=== Solution pass counts by lesson ===" -ForegroundColor Cyan
+$allLessons = @($script:SolutionPassByLesson.Keys + $script:SolutionFailByLesson.Keys) | Sort-Object -Unique
+foreach ($lesson in $allLessons) {
+    $p = 0; $f = 0
+    if ($script:SolutionPassByLesson.ContainsKey($lesson)) { $p = $script:SolutionPassByLesson[$lesson] }
+    if ($script:SolutionFailByLesson.ContainsKey($lesson)) { $f = $script:SolutionFailByLesson[$lesson] }
+    Write-Host ("  {0}: pass={1} fail={2}" -f $lesson, $p, $f)
+}
+
+Write-Host "`n=== Scaffold-failing counts by lesson ===" -ForegroundColor Cyan
+$scaffoldLessons = @($script:ScaffoldOkByLesson.Keys + $script:ScaffoldHarnessFailByLesson.Keys) | Sort-Object -Unique
+foreach ($lesson in $scaffoldLessons) {
+    $ok = 0; $bad = 0
+    if ($script:ScaffoldOkByLesson.ContainsKey($lesson)) { $ok = $script:ScaffoldOkByLesson[$lesson] }
+    if ($script:ScaffoldHarnessFailByLesson.ContainsKey($lesson)) { $bad = $script:ScaffoldHarnessFailByLesson[$lesson] }
+    Write-Host ("  {0}: scaffold-failing={1} harness-fail={2}" -f $lesson, $ok, $bad)
+}
+
+if ($script:ListingFailures.Count -gt 0) {
+    Write-Host "`n=== Listing failures ===" -ForegroundColor Red
+    foreach ($row in $script:ListingFailures) {
+        Write-Host ("  {0}: {1}" -f $row.File, $row.Details)
+    }
+}
 
 Write-Host "`n=== Summary ===" -ForegroundColor Cyan
 Write-Host "Passed: $script:PassCount" -ForegroundColor Green
 Write-Host "Failed: $script:FailCount" -ForegroundColor $(if ($script:FailCount -eq 0) { "Green" } else { "Red" })
 
-# Clean up build artifacts if requested
 if (-not $KeepArtifacts) {
     Write-Host "`nCleaning build artifacts..." -ForegroundColor Cyan
-    Remove-Item (Join-Path $outDir "*.obj") -ErrorAction SilentlyContinue
-    Remove-Item (Join-Path $outDir "*.exe") -ErrorAction SilentlyContinue
-    Remove-Item (Join-Path $outDir "*.pdb") -ErrorAction SilentlyContinue
-    Remove-Item (Join-Path $outDir "*.ilk") -ErrorAction SilentlyContinue
+    Get-ChildItem -LiteralPath $script:HarnessOutRoot -Recurse -File -ErrorAction SilentlyContinue |
+        Where-Object { $_.Extension -in ".obj", ".exe", ".pdb", ".ilk", ".txt" } |
+        Remove-Item -ErrorAction SilentlyContinue
 }
 
-# Exit with failure if any tests failed
 if ($script:FailCount -gt 0) {
     exit 1
 } else {

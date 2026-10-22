@@ -11,11 +11,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 32
+ex_17_save_header PROC
+    sub rsp, 40
     mov rcx, 8
-    call ExitProcess
-
+    mov     eax, 8
+    add     rsp, 40
+    ret
+ex_17_save_header ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_save_header
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

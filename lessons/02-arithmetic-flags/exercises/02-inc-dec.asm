@@ -1,24 +1,21 @@
-; Exercise 02: inc dec (Win32 port)
+; Exercise: 02-inc-dec
 ;
-; RAX=0; inc 5 times; dec 2 times; exit (3).
+; rax=5; inc; inc; dec; mov rcx,rax; exit (6).
 ;
-; Build: ml64 /c /Fo02-inc-dec.obj 02-inc-dec.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-inc-dec.exe 02-inc-dec.obj kernel32.lib
-; Run: 02-inc-dec.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_02_inc_dec` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
 ;
-; Expected: exit code 3
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_02_inc_dec:PROC
 
 main PROC
-    sub rsp, 32
-    
-    xor rax, rax
-    
-    ; TODO: INC 5 times, DEC 2 times, exit
-    .ERR <TODO: Use INC and DEC>
-    
+    sub     rsp, 40
+    ; TODO: write ex_02_inc_dec in this file.
+    call    ex_02_inc_dec
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

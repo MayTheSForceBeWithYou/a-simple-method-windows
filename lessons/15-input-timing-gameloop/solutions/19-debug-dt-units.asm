@@ -10,8 +10,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_19_debug_dt_units PROC
+    sub rsp, 40
     mov rax, 16000
     xor rdx, rdx
     mov rbx, 1000
@@ -20,6 +20,14 @@ main PROC
     mov rbx, 16
     div rbx
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_19_debug_dt_units ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_dt_units
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

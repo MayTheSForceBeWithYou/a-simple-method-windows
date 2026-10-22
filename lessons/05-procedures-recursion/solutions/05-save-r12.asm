@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_05_save_r12 PROC
+    sub rsp, 40
     mov r12, 42
     call use_r12
     mov rcx, r12
-    call ExitProcess
+    mov     eax, r12d
+    add     rsp, 40
+    ret
+ex_05_save_r12 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_save_r12
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 use_r12 PROC

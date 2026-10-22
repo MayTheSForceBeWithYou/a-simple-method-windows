@@ -1,25 +1,21 @@
-; Exercise 10: cmp setne (Win32 port)
+; Exercise: 10-cmp-setne
 ;
-; RAX=10, RBX=20. CMP and SETNE. Exit with 1 (not equal).
+; rax=5, rbx=6. setne -> exit 1.
 ;
-; Build: ml64 /c /Fo10-cmp-setne.obj 10-cmp-setne.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-cmp-setne.exe 10-cmp-setne.obj kernel32.lib
-; Run: 10-cmp-setne.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_10_cmp_setne` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; Expected: exit code 1
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_10_cmp_setne:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 10
-    mov rbx, 20
-    
-    ; TODO: CMP RAX, RBX; SETNE CL; MOVZX RCX, CL; exit
-    .ERR <TODO: Use CMP and SETNE>
-    
+    sub     rsp, 40
+    ; TODO: write ex_10_cmp_setne in this file.
+    call    ex_10_cmp_setne
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

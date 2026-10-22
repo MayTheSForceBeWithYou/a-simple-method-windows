@@ -26,7 +26,7 @@ add_four PROC
 add_four ENDP
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
     
     ; Call add_four(1, 2, 3, 4)
     mov rcx, 1

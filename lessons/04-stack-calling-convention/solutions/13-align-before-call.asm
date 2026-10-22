@@ -5,11 +5,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_13_align_before_call PROC
+    sub rsp, 40
     call check_align
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_13_align_before_call ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_align_before_call
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 check_align PROC

@@ -16,7 +16,7 @@ result DQ 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load values from memory
     mov rax, value1            ; RAX = 10

@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 dirty BYTE ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_14_dirty_flag PROC
+    sub rsp, 40
     
     ; Edit sets dirty
     mov BYTE PTR [dirty], 1
@@ -22,6 +22,14 @@ main PROC
     mov BYTE PTR [dirty], 0
     
     movzx rcx, BYTE PTR [dirty]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_14_dirty_flag ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_dirty_flag
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,11 +1,21 @@
-; Exercise 14: early break
+; Exercise: 14-early-break
 ;
-; Sum arr dq 5,5,5,5 until sum>=10; exit sum (10).
+; Sum arr QWORD 5,5,5,5 until sum>=10; exit sum (10).
 ;
-; Build: nasm -f elf64 14-early-break.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_14_early_break` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_14_early_break:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_14_early_break in this file.
+    call    ex_14_early_break
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

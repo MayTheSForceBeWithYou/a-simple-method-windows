@@ -13,14 +13,15 @@ arr BYTE 1, 2, 3, 4, 5, 6
 n EQU 6
 
 .code
-main PROC
-    sub rsp, 32
+ex_09_count_evens PROC
+    sub rsp, 40
     xor rcx, rcx
     xor r8, r8
 loop_start:
     cmp r8, n
     jge done
-    movzx rax, BYTE PTR [arr+r8]
+    lea r11, [arr]
+    movzx rax, BYTE PTR [r11+r8]
     test rax, 1
     jnz odd
     inc rcx
@@ -28,6 +29,14 @@ odd:
     inc r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_09_count_evens ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_count_evens
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

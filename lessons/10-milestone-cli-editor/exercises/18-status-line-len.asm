@@ -1,4 +1,10 @@
-; 18-status-line-len.asm: Format status (len, cur) as string, exit len
+; Exercise: 18-status-line-len
+;
+; Status encodes len=12; exit 12.
+;
+; Contract: implement `ex_18_status_line_len` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
+;
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?
@@ -6,11 +12,12 @@ cur QWORD ?
 statusBuf DB 64 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_18_status_line_len:PROC
 main PROC
-    mov len, 42
-    mov cur, 10
-    .ERR <TODO: Format "len=42 cur=10" into statusBuf (or simple exit len)>
-    mov ecx, DWORD PTR len
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_18_status_line_len in this file.
+    call    ex_18_status_line_len
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

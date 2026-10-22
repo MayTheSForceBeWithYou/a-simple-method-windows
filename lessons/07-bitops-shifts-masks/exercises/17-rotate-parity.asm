@@ -1,32 +1,20 @@
-; 17-rotate-parity.asm
+; Exercise: 17-rotate-parity
 ;
-; Use rotate to compute simple parity (XOR of all bits).
+; Implement `ex_17_rotate_parity` in this file.
 ;
-; Task: Compute parity of 8-bit value 0b10110110 (182).
-;       Rotate and XOR bits to accumulate parity into bit 0.
-;       Exit with parity bit (0 or 1).
+; Contract: implement `ex_17_rotate_parity` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 128
 ;
-; Hint: One approach: rotate right, XOR into accumulator, repeat 8 times.
-;       Bit 0 ends up holding XOR of all original bits (parity).
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_17_rotate_parity:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     al, 182         ; 0b10110110
-    xor     bl, bl          ; Parity accumulator
-    
-    ; TODO: Loop 8 times, rotating and XORing bit 0 into accumulator
-    .ERR <TODO: Implement rotate-and-XOR loop to compute parity>
-    
-    movzx   ecx, bl
-    and     ecx, 1          ; Keep only parity bit
-    pop     rbx
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_17_rotate_parity in this file.
+    call    ex_17_rotate_parity
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

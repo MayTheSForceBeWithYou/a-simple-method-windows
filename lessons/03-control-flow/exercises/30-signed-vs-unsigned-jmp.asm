@@ -1,11 +1,21 @@
-; Exercise 30: signed vs unsigned jmp
+; Exercise: 30-signed-vs-unsigned-jmp
 ;
-; rax=0xFFFFFFFFFFFFFFFF (-1 signed), cmp to 1. Using jl should take less path exit 1; document why ja would not.
+; rax=0FFFFFFFFFFFFFFFFh (-1 signed), cmp to 1. Using jl should take less path exit 1; document why ja would not.
 ;
-; Build: nasm -f elf64 30-signed-vs-unsigned-jmp.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_30_signed_vs_unsigned_jmp` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_30_signed_vs_unsigned_jmp:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_30_signed_vs_unsigned_jmp in this file.
+    call    ex_30_signed_vs_unsigned_jmp
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

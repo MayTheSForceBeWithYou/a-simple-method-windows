@@ -1,11 +1,21 @@
-; Exercise 16: bss resq
+; Exercise: 16-bss-resq
 ;
-; resq 4. Store 1,2,3,4 into consecutive qwords; sum into rdi (10); exit.
+; QWORD ? DUP(4). Store 1,2,3,4 into consecutive qwords; sum into rcx (10); exit.
 ;
-; Build: nasm -f elf64 16-bss-resq.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_16_bss_resq` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_bss_resq:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_16_bss_resq in this file.
+    call    ex_16_bss_resq
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

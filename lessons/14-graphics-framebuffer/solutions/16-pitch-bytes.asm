@@ -10,10 +10,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_16_pitch_bytes PROC
+    sub rsp, 40
     mov rcx, 5
     imul rcx, 4
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_16_pitch_bytes ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_pitch_bytes
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

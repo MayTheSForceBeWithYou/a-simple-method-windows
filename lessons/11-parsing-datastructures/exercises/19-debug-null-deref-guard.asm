@@ -1,8 +1,29 @@
-; 19-debug-null-deref-guard
+; Exercise: 19-debug-null-deref-guard
+;
+; BUG: walks next without null check. Fix empty list sum=0.
+;
+; Contract: implement `ex_19_debug_null_deref_guard` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 19-debug-null-deref-guard>
+EXTERNDEF ex_19_debug_null_deref_guard:PROC
+
+sum_list_bug PROC
+    xor rcx, rcx
+    xor rsi, rsi                ; empty list head = NULL
+    ; BUG: dereference without null test
+    add rcx, QWORD PTR [rsi]
+    mov rsi, QWORD PTR [rsi+8]
+    mov rax, rcx
+    ret
+sum_list_bug ENDP
+
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_19_debug_null_deref_guard in this file.
+    call    ex_19_debug_null_deref_guard
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

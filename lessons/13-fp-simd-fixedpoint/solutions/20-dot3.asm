@@ -6,9 +6,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_20_dot3 PROC
+    sub rsp, 40
     mov rcx, 1*4+2*5+3*6
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_20_dot3 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_dot3
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -5,13 +5,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_ack_lite PROC
+    sub rsp, 40
     mov rcx, 1
     mov rdx, 1
     call ack
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_06_ack_lite ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_ack_lite
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 ack PROC
@@ -20,10 +28,10 @@ ack PROC
     cmp rdx, 0
     je n_zero
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     dec rdx
     call ack
-    add rsp, 32
+    add rsp, 40
     mov rdx, rax
     pop rcx
     dec rcx

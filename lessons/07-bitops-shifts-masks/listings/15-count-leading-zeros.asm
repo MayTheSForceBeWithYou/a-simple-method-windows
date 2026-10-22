@@ -5,7 +5,7 @@
 ; Expected stdout: (none)
 ;
 ; Shifts left until bit 15 is set, counting shifts.
-; For 0x00F0 (binary 0000000011110000), there are 8 leading zeros.
+; For 00F0h (binary 0000000011110000), there are 8 leading zeros.
 
 .CODE
 
@@ -16,7 +16,7 @@ main PROC FRAME
     .pushreg rbx
     .endprolog
     
-    mov     ax, 0F0h        ; Value = 0x00F0 (8 leading zeros)
+    mov     ax, 0F0h        ; Value = 000F0h (8 leading zeros)
     xor     rbx, rbx        ; counter = 0
     
 clz_loop:
@@ -33,7 +33,6 @@ clz_loop:
 done:
     ; rbx = count of leading zeros = 8
     mov     ecx, ebx
-    pop     rbx
     call    ExitProcess     ; Exit with 8
 main ENDP
 

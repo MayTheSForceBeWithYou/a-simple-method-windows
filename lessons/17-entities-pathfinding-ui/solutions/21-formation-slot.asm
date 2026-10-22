@@ -11,11 +11,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 32
+ex_21_formation_slot PROC
+    sub rsp, 40
     mov rcx, 2
-    call ExitProcess
-
+    mov     eax, 2
+    add     rsp, 40
+    ret
+ex_21_formation_slot ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_formation_slot
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

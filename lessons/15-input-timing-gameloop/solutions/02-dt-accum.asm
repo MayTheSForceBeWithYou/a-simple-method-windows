@@ -10,8 +10,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_02_dt_accum PROC
+    sub rsp, 40
     xor rcx, rcx
     mov rax, 0
     add rax, 8
@@ -24,6 +24,14 @@ loop_start:
     inc rcx
     jmp loop_start
 loop_done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_02_dt_accum ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_dt_accum
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

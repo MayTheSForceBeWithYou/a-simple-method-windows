@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_07_while_double PROC
+    sub rsp, 40
     mov rax, 1
 loop_start:
     cmp rax, 100
@@ -20,6 +20,14 @@ loop_start:
 done:
     mov rcx, rax
     and rcx, 255
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_07_while_double ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_07_while_double
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

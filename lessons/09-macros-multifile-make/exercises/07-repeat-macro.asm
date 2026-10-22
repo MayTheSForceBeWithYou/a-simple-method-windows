@@ -1,15 +1,19 @@
-; 07-repeat-macro.asm
-; Use REPT to generate three INC instructions, exit 3.
-; Task: xor eax; REPT 3; inc eax; ENDM; exit eax.
-
+; Exercise: 07-repeat-macro
+;
+; REPT 3 increment; exit 3.
+;
+; Contract: implement `ex_07_repeat_macro` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_07_repeat_macro:PROC
 
 main PROC
-    xor eax, eax
-    ; TODO: REPT 3; inc eax; ENDM
-    .ERR <TODO: Use REPT to generate three inc eax>
-    mov ecx, eax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_07_repeat_macro in this file.
+    call    ex_07_repeat_macro
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -9,10 +9,18 @@ EXTERN ExitProcess:PROC
 s BYTE "3", 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_rd_parse_num PROC
+    sub rsp, 40
     movzx rcx, BYTE PTR [s]
     sub rcx, '0'
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_06_rd_parse_num ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_rd_parse_num
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

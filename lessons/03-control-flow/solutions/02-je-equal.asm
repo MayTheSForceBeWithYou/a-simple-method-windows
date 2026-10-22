@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_02_je_equal PROC
+    sub rsp, 40
     mov rax, 3
     mov rbx, 3
     cmp rax, rbx
@@ -20,6 +20,14 @@ main PROC
 yes:
     mov rcx, 1
 exit_proc:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_02_je_equal ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_je_equal
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

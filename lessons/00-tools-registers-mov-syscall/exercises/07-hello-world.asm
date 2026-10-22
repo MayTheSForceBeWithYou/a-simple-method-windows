@@ -1,13 +1,11 @@
-; Exercise 07: hello world (Win32 port)
+; Exercise: 07-hello-world
 ;
 ; Write "Hello, world\n" to stdout, then exit 0.
+; Expected stdout: "Hello, world\n"
 ;
-; Build: ml64 /c /Fo07-hello-world.obj 07-hello-world.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-hello-world.exe 07-hello-world.obj kernel32.lib
-; Run: 07-hello-world.exe
+; Contract: implement `ex_07_hello_world` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Expected output: Hello, world\n
-; Expected exit code: 0
-
 .DATA
 msg DB "Hello, world", 13, 10
 msg_len EQU $ - msg
@@ -20,19 +18,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_07_hello_world:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout handle with GetStdHandle(-11)
-    ; TODO: Call WriteFile with proper arguments
-    ; TODO: Exit with status 0
-    .ERR <TODO: Implement GetStdHandle, WriteFile, and ExitProcess calls>
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_07_hello_world in this file.
+    call    ex_07_hello_world
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

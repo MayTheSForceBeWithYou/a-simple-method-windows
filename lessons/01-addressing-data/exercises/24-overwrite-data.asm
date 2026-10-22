@@ -1,11 +1,21 @@
-; Exercise 24: overwrite data
+; Exercise: 24-overwrite-data
 ;
-; msg db 'x',10. Change first byte to 'Y' in place, write 2 bytes, exit 0.
+; msg BYTE 'x',CR,LF. Change first byte to 'Y' in place, write 3 bytes, exit 0.
 ;
-; Build: nasm -f elf64 24-overwrite-data.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_24_overwrite_data` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_24_overwrite_data:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_24_overwrite_data in this file.
+    call    ex_24_overwrite_data
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

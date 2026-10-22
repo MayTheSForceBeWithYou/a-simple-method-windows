@@ -1,11 +1,11 @@
-; 07-write-iov-lite.asm
+; Exercise: 07-write-iov-lite
 ;
-; Write two separate buffers to stdout using two WriteFile calls.
+; Two writes simulating writev; print 'A\nB\n'; exit 0.
+; Expected stdout: "A\nB\n"
 ;
-; Task: WriteFile "Part1\n", then WriteFile "Part2\n", exit 0.
+; Contract: implement `ex_07_write_iov_lite` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Hint: Two separate WriteFile calls to stdout.
-
 .DATA
 buf1 DB "Part1", 13, 10
 buf1_len EQU $ - buf1
@@ -18,26 +18,13 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_07_write_iov_lite:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout, save in rbx
-    .ERR <TODO: GetStdHandle(-11), mov rbx, rax>
-    
-    ; TODO: WriteFile buf1
-    .ERR <TODO: WriteFile(rbx, buf1, buf1_len, &bytesWritten, NULL)>
-    
-    ; TODO: WriteFile buf2
-    .ERR <TODO: WriteFile(rbx, buf2, buf2_len, &bytesWritten, NULL)>
-    
-    xor     ecx, ecx
-    add     rsp, 32
-    pop     rbx
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_07_write_iov_lite in this file.
+    call    ex_07_write_iov_lite
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

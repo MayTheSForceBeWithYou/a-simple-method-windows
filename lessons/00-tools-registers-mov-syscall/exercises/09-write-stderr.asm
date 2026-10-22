@@ -1,13 +1,10 @@
-; Exercise 09: write stderr (Win32 port)
+; Exercise: 09-write-stderr
 ;
-; Write "Error\n" to stderr (not stdout).
+; Write "error\n" to stderr (fd 2), exit 1.
 ;
-; Build: ml64 /c /Fo09-write-stderr.obj 09-write-stderr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-write-stderr.exe 09-write-stderr.obj kernel32.lib
-; Run: 09-write-stderr.exe 2>&1
+; Contract: implement `ex_09_write_stderr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; Expected output: (to stderr) Error\n
-; Expected exit code: 0
-
 .DATA
 msg DB "Error", 13, 10
 msg_len EQU $ - msg
@@ -20,18 +17,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_write_stderr:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stderr handle (STD_ERROR_HANDLE = -12, not -11)
-    ; TODO: Write message to stderr
-    .ERR <TODO: Use GetStdHandle with -12 for stderr>
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_09_write_stderr in this file.
+    call    ex_09_write_stderr
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

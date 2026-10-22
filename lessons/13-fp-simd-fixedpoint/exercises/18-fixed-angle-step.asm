@@ -1,8 +1,18 @@
-; 18-fixed-angle-step
+; Exercise: 18-fixed-angle-step
+;
+; Angle += delta; wrap 360; 350+20 -> 10; exit 10.
+;
+; Contract: implement `ex_18_fixed_angle_step` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 18-fixed-angle-step>
+EXTERNDEF ex_18_fixed_angle_step:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_18_fixed_angle_step in this file.
+    call    ex_18_fixed_angle_step
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -10,8 +10,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_15_camera_cull PROC
+    sub rsp, 40
     mov rax, 100
     sub rax, 50
     cmp rax, 40
@@ -21,6 +21,14 @@ main PROC
 visible:
     xor rcx, rcx
 exit_proc:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_15_camera_cull ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_camera_cull
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -12,21 +12,29 @@ EXTERN ExitProcess:PROC
 buf BYTE "ab", 10, "cd", 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_12_line_start_end PROC
+    sub rsp, 40
     
     mov rcx, 4
     lea rdx, buf
     
-.l:
+L_l:
     test rcx, rcx
-    jz .d
+    jz L_d
     dec rcx
     cmp BYTE PTR [rdx+rcx], 10
-    jne .l
+    jne L_l
     inc rcx
     
-.d:
-    call ExitProcess
+L_d:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_12_line_start_end ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_line_start_end
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,12 +1,11 @@
-; 09-write-len-check.asm
+; Exercise: 09-write-len-check
 ;
-; Write a message to stdout, verify bytes written matches expected.
+; write "Z\n"; if written==2 exit 0 else 1.
+; Expected stdout: "Z\n"
 ;
-; Task: WriteFile "Test\n" (5 bytes), check bytesWritten == 5, exit 0.
-;       If mismatch, exit 1.
+; Contract: implement `ex_09_write_len_check` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Hint: Compare bytesWritten with expected length.
-
 .DATA
 message DB "Test", 13, 10
 message_len EQU $ - message
@@ -17,26 +16,13 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_write_len_check:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdout, WriteFile message
-    .ERR <TODO: GetStdHandle, WriteFile>
-    
-    ; TODO: Check if bytesWritten == message_len
-    .ERR <TODO: cmp bytesWritten, message_len; jne error>
-    
-    xor     ecx, ecx
-    jmp     done
-    
-error:
-    mov     ecx, 1
-    
-done:
-    add     rsp, 40
+    ; TODO: write ex_09_write_len_check in this file.
+    call    ex_09_write_len_check
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

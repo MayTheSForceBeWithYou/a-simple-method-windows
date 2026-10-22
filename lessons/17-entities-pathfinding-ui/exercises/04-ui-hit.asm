@@ -1,8 +1,19 @@
-; 04-ui-hit: ui hit
+; Exercise: 04-ui-hit
+;
+; Point in panel -> 1.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_04_ui_hit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement ui hit>
+EXTERNDEF ex_04_ui_hit:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_04_ui_hit in this file.
+    call    ex_04_ui_hit
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

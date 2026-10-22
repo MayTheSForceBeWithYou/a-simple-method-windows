@@ -1,14 +1,22 @@
-; 16-gap-move-left.asm: Move gap left (copy byte to gap_end-1, dec both), exit gap_start
+; Exercise: 16-gap-move-left
+;
+; Move gap left: gap_s=3 gap_e=5 -> move left once gap_s=2 gap_e=4; exit gap_s.
+;
+; Contract: implement `ex_16_gap_move_left` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .DATA?
 buf DB 256 DUP(?)
 gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_gap_move_left:PROC
 main PROC
-    mov buf[0], 'X'
-    mov gap_start, 1
-    mov gap_end, 256
-    .ERR <TODO: Move gap left: dec gap_start, dec gap_end, copy buf[gap_start] to buf[gap_end], exit gap_start>
+    sub     rsp, 40
+    ; TODO: write ex_16_gap_move_left in this file.
+    call    ex_16_gap_move_left
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

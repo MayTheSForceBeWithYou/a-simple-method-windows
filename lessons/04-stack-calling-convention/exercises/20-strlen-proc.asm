@@ -1,22 +1,24 @@
-; Exercise 20: strlen proc (Win32 port)
-; strlen(RCX)->RAX. 'assembly' len 8; exit 8.
-; Build: ml64 /c /Fo20-strlen-proc.obj 20-strlen-proc.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:20-strlen-proc.exe 20-strlen-proc.obj kernel32.lib
-; Expected: exit code 8
-
-.DATA
-str DB "assembly", 0
-
+; Exercise: 20-strlen-proc
+;
+; strlen('assembly')=8. MS x64 ABI.
+;
+; Contract: implement `ex_20_strlen_proc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 8
+;
+; Implement `strlen` on `walkMsg`. In `ex_20_strlen_proc`, exit with string length (8).
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement strlen(RCX) -> RAX
-.ERR <TODO: Implement strlen procedure>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_20_strlen_proc:PROC
+
+; TODO: write ex_20_strlen_proc in this file.
 
 main PROC
-    sub rsp, 32
-    lea rcx, str
-    call strlen
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_20_strlen_proc
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

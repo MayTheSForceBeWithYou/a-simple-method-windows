@@ -1,25 +1,21 @@
-; Exercise 15: exit sum (Win32 port)
+; Exercise: 15-exit-sum
 ;
-; Add three numbers and exit with their sum.
+; Set r8=10, r9=20, r10=12. Sum into rcx; exit (42).
 ;
-; Build: ml64 /c /Fo15-exit-sum.obj 15-exit-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:15-exit-sum.exe 15-exit-sum.obj kernel32.lib
-; Run: 15-exit-sum.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_15_exit_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
 ;
-; Expected: exit code 100 (10 + 30 + 60)
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_15_exit_sum:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 10
-    ; TODO: Add 30 to RAX
-    ; TODO: Add 60 to RAX
-    ; TODO: Move result to RCX and exit
-    .ERR <TODO: Complete the sum and exit>
-    
+    sub     rsp, 40
+    ; TODO: write ex_15_exit_sum in this file.
+    call    ex_15_exit_sum
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

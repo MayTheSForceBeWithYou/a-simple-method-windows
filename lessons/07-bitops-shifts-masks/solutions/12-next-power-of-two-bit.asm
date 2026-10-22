@@ -5,8 +5,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_12_next_power_of_two_bit PROC
+    sub rsp, 40
     mov rax, 16
     test rax, rax
     jz not_pow2
@@ -19,6 +19,14 @@ main PROC
 not_pow2:
     xor rcx, rcx
 done_pow2:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_12_next_power_of_two_bit ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_next_power_of_two_bit
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

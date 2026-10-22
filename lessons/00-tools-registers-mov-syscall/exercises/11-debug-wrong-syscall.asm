@@ -1,13 +1,22 @@
-; Exercise 11: debug wrong syscall
+; Exercise: 11-debug-wrong-syscall
 ;
-; BUG HUNT: Intends to exit status 3 but uses wrong syscall number. Fix it.
+; BUG HUNT: Intends to exit status 3 but uses wrong function. Fix it.
 ;
-; Build: nasm -f elf64 11-debug-wrong-syscall.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_11_debug_wrong_syscall` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 3
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_11_debug_wrong_syscall:PROC
+
+main PROC
+    sub     rsp, 40
+    ; BUG: see exercise description; implement fix in student routine.
+    ; TODO: write ex_11_debug_wrong_syscall in this file.
+    call    ex_11_debug_wrong_syscall
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

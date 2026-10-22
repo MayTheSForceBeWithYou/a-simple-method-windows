@@ -1,8 +1,19 @@
-; 07-peep-happy: peep happy
+; Exercise: 07-peep-happy
+;
+; happiness clamp 0..100; set 120->100.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_07_peep_happy` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 100
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement peep happy>
+EXTERNDEF ex_07_peep_happy:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_07_peep_happy in this file.
+    call    ex_07_peep_happy
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

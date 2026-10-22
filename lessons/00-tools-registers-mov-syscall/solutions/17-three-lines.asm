@@ -23,7 +23,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_17_three_lines PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -57,6 +57,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_17_three_lines ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_three_lines
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -9,8 +9,8 @@ EXTERN ExitProcess:PROC
 v BYTE 1,2,3,4
 
 .code
-main PROC
-    sub rsp, 32
+ex_07_simd_lane_sum_stub PROC
+    sub rsp, 40
     xor rcx, rcx
     movzx rax, BYTE PTR [v]
     add rcx, rax
@@ -20,6 +20,14 @@ main PROC
     add rcx, rax
     movzx rax, BYTE PTR [v+3]
     add rcx, rax
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_07_simd_lane_sum_stub ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_07_simd_lane_sum_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

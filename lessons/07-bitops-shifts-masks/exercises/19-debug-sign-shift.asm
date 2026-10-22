@@ -1,32 +1,28 @@
-; 19-debug-sign-shift.asm
+; Exercise: 19-debug-sign-shift
 ;
-; Debug a sign-extension bug when shifting.
+; Implement `ex_19_debug_sign_shift` in this file.
 ;
-; Task: Given value -1 (0xFF in AL), extend to 64 bits then shift right by 1.
-;       If you use MOVZX (zero-extend), SHR gives 127.
-;       If you use MOVSX (sign-extend), SAR gives -1 (255 in low byte).
+; Contract: implement `ex_19_debug_sign_shift` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 252
 ;
-; Use MOVSX and SAR. Exit with low byte of result.
-;
-; Hint: MOVSX sign-extends; SAR preserves sign. Together they correctly
-;       handle signed values across size changes.
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_19_debug_sign_shift:PROC
+
+sign_shift_bug PROC
+    mov al, 0FFh
+    movzx rax, al            ; BUG: zero-extend; should be MOVSX
+    shr rax, 1               ; BUG: unsigned shift; should be SAR after sign extend
+    ret
+sign_shift_bug ENDP
 
 main PROC
-    mov     al, 0FFh        ; -1 as signed byte
-    
-    ; TODO: Sign-extend to 64 bits with MOVSX
-    .ERR <TODO: Insert MOVSX rax, al to sign-extend>
-    
-    ; TODO: Shift right arithmetic by 1
-    .ERR <TODO: Insert SAR rax, 1>
-    
+    sub     rsp, 40
+    ; TODO: write ex_19_debug_sign_shift in this file.
+    call    ex_19_debug_sign_shift
     mov     ecx, eax
-    and     ecx, 0FFh       ; Low byte
-    call    ExitProcess     ; Should exit with 255 (0xFF = -1)
+    call    ExitProcess
 main ENDP
 
 END
