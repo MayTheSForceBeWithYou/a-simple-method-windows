@@ -21,7 +21,7 @@ MASM's macro processor runs before instruction encoding. It sees `EQU`, `TEXTEQU
 
 ### Constants with EQU
 
-`EQU` binds a symbol to a value computed at assembly time. You cannot redefine it later (unlike `=`, which allows reassignment). There is still no `01-*.asm`. Listing `21-status-equ-zero` stands in: `STATUS_OK EQU 0` and `STATUS_ERR EQU 1`. It loads `STATUS_OK` into EAX, compares to `STATUS_ERR`, and because 0 is not 1 it keeps `mov ecx, STATUS_OK`. Expected exit: **0**. `EQU` also appears in `constants.inc`, in listing `07-debug-equ-exit` (`DEBUG EQU 1`), and in listing `18-offset-equ` (`MY_ADDR EQU OFFSET msg`).
+`EQU` binds a symbol to a value computed at assembly time. You cannot redefine it later (unlike `=`, which allows reassignment). There is still no `01-*.asm`. Listing `21-status-equ-zero` stands in: `STATUS_OK EQU 0` and `STATUS_ERR EQU 1`. It loads `STATUS_OK` into EAX, compares to `STATUS_ERR`, and because 0 is not 1 it keeps `mov ecx, STATUS_OK`. Expected exit: **0**. `EQU` also appears in `constants.inc`, in listing `07-debug-equ-exit` (`DEBUG EQU 1`), and in listing `18-offset-equ` (`MSG_LEN EQU msg_end - msg`).
 
 ```asm
 ; Listing 21: EQU constants choose process status (01-* topic)
@@ -747,29 +747,56 @@ main ENDP
 END
 ```
 
-`OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` sets `MY_ADDR EQU OFFSET msg` for a one-byte `"Z"` in `.DATA`. The `EQU` stays; the process status is the hardcoded `mov ecx, 0`, not `mov ecx, MY_ADDR`. The comment says `MY_ADDR` is 0 when `msg` is the first object in this `.data` segment. Expected exit: **0**. Frame: `PROC FRAME`, `sub rsp, 40`.
+`OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` puts `"Z", 0` in `.DATA`, marks `msg_end LABEL BYTE` after it, and binds `MSG_LEN EQU msg_end - msg` (2). It takes the address two ways — `lea rcx, msg` (RIP-relative) and `mov rdx, OFFSET msg` (64-bit immediate) — then checks that a runtime `lea`/`sub` span equals `MSG_LEN` and that the two addresses match. Success exits **2** (`MSG_LEN`). Span mismatch exits **117**; LEA vs OFFSET mismatch exits **118**. Frame: `PROC FRAME`, `sub rsp, 40`.
 
 ```asm
-; Listing 18: MY_ADDR EQU OFFSET msg (LESSON.md block 18)
+; Listing 18: OFFSET / label span (LESSON.md block 18)
 ;
-; Purpose: Assembly-time offset of a data label equals distance from segment base.
-; Expected exit: 0
+; Purpose: RIP-relative LEA vs OFFSET immediate; assemble-time span MSG_LEN.
+; Expected exit: 2
 ; Expected stdout: (none)
+;
+; MSG_LEN = msg_end - msg (same .DATA section). Runtime span must match.
+; Failure codes: 117 = span mismatch, 118 = LEA vs OFFSET address mismatch.
 
 .DATA
 msg BYTE "Z", 0
+msg_end LABEL BYTE
 
-MY_ADDR EQU OFFSET msg
+MSG_LEN EQU msg_end - msg
+FAIL_SPAN_CODE EQU 117
+FAIL_ADDR_CODE EQU 118
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub rsp, 40
+    sub     rsp, 40
     .allocstack 40
     .endprolog
-    ; MY_ADDR (= OFFSET msg) is 0 when msg is the first object in this .data segment.
-    mov     ecx, 0
+
+    ; Two legal ways to take the address of msg in MASM x64:
+    lea     rcx, msg                 ; RIP-relative
+    mov     rdx, OFFSET msg          ; 64-bit immediate (ADDR64)
+
+    lea     rax, msg
+    lea     rbx, msg_end
+    sub     rbx, rax
+    cmp     ebx, MSG_LEN
+    jne     fail_span_exit
+
+    cmp     rcx, rdx
+    jne     fail_addr_exit
+
+    mov     ecx, MSG_LEN
+    call    ExitProcess
+
+fail_span_exit:
+    mov     ecx, FAIL_SPAN_CODE
+    call    ExitProcess
+
+fail_addr_exit:
+    mov     ecx, FAIL_ADDR_CODE
     call    ExitProcess
 main ENDP
 

@@ -190,9 +190,12 @@ compute PROC FRAME
     ret
 compute ENDP
 
-main PROC
-    sub rsp, 40
+main PROC FRAME
     push rbx
+    .pushreg rbx
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
     mov rbx, 99
     mov rcx, 32
     call compute
@@ -203,16 +206,18 @@ main PROC
 rbx_clobbered:
     mov rcx, 1
 exit_main:
+    add rsp, 32
     pop rbx
+    sub rsp, 40                ; Shadow + align (RSP was 16-aligned after pop)
     call ExitProcess
 main ENDP
 
 END
 ```
 
-32+10=42 in RAX. `main` now saves its own RBX, sets it to 99, and after `call compute` compares it to 99. If `compute` restored RBX, ECX becomes RAX (42). If not, the `rbx_clobbered` path exits **1**. `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog` is unwind info: no extra instructions, only metadata.
+32+10=42 in RAX. `main` is now the aligned 1-push frame: `push rbx` / `.pushreg rbx` / `sub rsp, 32`. It sets RBX to 99 and after `call compute` compares it to 99. If `compute` restored RBX, ECX becomes RAX (42). If not, the `rbx_clobbered` path exits **1**. Both procedures use `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog`.
 
-The extra `push rbx` after `sub rsp, 40` leaves RSP ≡ 8 at `call compute` — misaligned. Quote the file as written; do not copy that prologue as the alignment model. The aligned 0-push frame is `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
+After the compare, `main` tears that frame down (`add rsp, 32` / `pop rbx`) and allocates a fresh `sub rsp, 40` before `call ExitProcess`. Entry RSP ≡ 8; one push plus `sub rsp, 32` leaves RSP ≡ 0 at `call compute`. After the pop, RSP is 16-aligned again; `sub rsp, 40` leaves it aligned at `ExitProcess`. This is a correct 1-push frame. The aligned 0-push frame is still `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
 
 ## Alignment
 
@@ -330,14 +335,14 @@ Immediately before `call sum3`: RCX=10, RDX=20, R8=30. `main` allocated **40** b
 EXTRN ExitProcess:PROC
 
 ; Form 1: RBP is a real frame pointer for unwind (locals below [rbp-8]…).
-; .SETFRAME offset N must equal the stack allocation and match lea rbp,[rsp+N].
+; .SETFRAME offset N is a multiple of 16 and at most 240; N matches lea rbp,[rsp+N].
 compute_setframe PROC FRAME
     push rbp
     .pushreg rbp
     sub rsp, 48
-    lea rbp, [rsp+48]          ; N = 48 (multiple of 16, <= 240)
-    .setframe rbp, 48
     .allocstack 48
+    lea rbp, [rsp+48]
+    .setframe rbp, 48
     .endprolog
 
     mov rax, 42
@@ -373,7 +378,7 @@ main ENDP
 END
 ```
 
-Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`, `.allocstack 48`. The `.SETFRAME` offset must be a **multiple of 16 and at most 240**. It does **not** have to equal the stack allocation. This listing happens to use 48 for both `lea`/`setframe` and `.allocstack`. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
+Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `.allocstack 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`. The `.SETFRAME` offset must be a **multiple of 16 and at most 240**. It does **not** have to equal the stack allocation. This listing happens to use 48 for both `lea`/`setframe` and `.allocstack`. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
 
 ```asm
 ; Listing 08: RBP saved as nonvolatile only (no .SETFRAME)

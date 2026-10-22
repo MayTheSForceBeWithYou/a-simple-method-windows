@@ -69,7 +69,7 @@ Most file functions return a BOOL (nonzero = TRUE = success, 0 = FALSE = failure
 | `VirtualFree`, `UnmapViewOfFile` | nonzero TRUE | 0 FALSE |
 | `QueryPerformanceCounter` / `QueryPerformanceFrequency` | nonzero TRUE | 0 FALSE |
 
-`CreateFileA` failure is −1, not 0. `test rax, rax` / `jz` misses it: −1 is nonzero. Listing `13-open-missing-get-last-error` compares `rax` to −1, then calls `GetLastError` and exits with that code. The path is `C:\no\such\file.txt`, so the missing directory components produce **3** (`ERROR_PATH_NOT_FOUND`), not 2 (`ERROR_FILE_NOT_FOUND`). Listing `09-close-handle` shows the BOOL test: `test rax, rax` / `jz close_failed` after `CloseHandle`.
+`CreateFileA` failure is −1, not 0. `test rax, rax` / `jz` misses it: −1 is nonzero. Listing `13-open-missing-get-last-error` compares `rax` to −1, then calls `GetLastError` and exits with that code. The path is `C:\no\such\file.txt`, so the missing directory components produce **3** (`ERROR_PATH_NOT_FOUND`), not 2 (`ERROR_FILE_NOT_FOUND`). Listing `09-close-handle` shows the BOOL test: `test eax, eax` / `jz close_failed` after `CloseHandle`.
 
 | Code | Name | Meaning |
 |-----:|------|---------|
@@ -515,7 +515,7 @@ END
 
 `CloseHandle` takes the HANDLE in RCX and returns BOOL. After a successful close, that HANDLE is invalid. A later use fails with `ERROR_INVALID_HANDLE` (6). Windows does not promise that new HANDLEs are small or sequential.
 
-Listing `09-close-handle` opens `test.txt` `GENERIC_READ` / exclusive / `OPEN_EXISTING`, then `CloseHandle` and `test rax, rax`. Close failure exits 3; open failure exits 1; success exits 0. Frame: `push rbx` + `sub rsp, 48`.
+Listing `09-close-handle` opens `test.txt` `GENERIC_READ` / exclusive / `OPEN_EXISTING`, then `CloseHandle` and `test eax, eax`. Close failure exits 3; open failure exits 1; success exits 0. Frame: `push rbx` + `sub rsp, 64`. BOOL is in EAX.
 
 ```asm
 ; Listing 09: CloseHandle success check (LESSON.md asm block 9)
@@ -560,7 +560,7 @@ have_handle:
 
     mov rcx, rbx
     call CloseHandle
-    test rax, rax
+    test eax, eax
     jz close_failed
 
     xor ecx, ecx
@@ -688,7 +688,7 @@ main PROC FRAME
     xor edx, edx
     mov r8d, 8000h
     call VirtualFree
-    test rax, rax
+    test eax, eax
     jz free_failed
 
     mov ecx, 42
@@ -1257,7 +1257,7 @@ Expected exit: **3** (`ERROR_PATH_NOT_FOUND`). The path is `C:\no\such\file.txt`
 | `SetFilePointer` and `SetFilePointerEx` are the same call | `SetFilePointer` takes a 32-bit distance in EDX and an optional high pointer in R8 (listing `03-set-file-pointer`). `SetFilePointerEx` takes a 64-bit offset in RDX and an optional new-position pointer in R8 (listings `14-set-file-pointer-begin`, `08-set-file-pointer-end`) |
 | `CloseHandle` returns the HANDLE | It returns BOOL. Listing `09-close-handle` tests RAX and exits 3 on FALSE |
 | `ReadFile` always fills the request | Short reads are normal; 0 bytes + TRUE is EOF; FALSE is an error |
-| `VirtualAlloc` returns −1 on failure | It returns 0. Listings `04-virtual-alloc` and `10-virtual-alloc-free` use `test rax, rax` |
+| `VirtualAlloc` returns −1 on failure | It returns 0. Listing `04-virtual-alloc` and the alloc path of `10-virtual-alloc-free` use `test rax, rax`. `VirtualFree` returns BOOL in EAX; listing `10` tests that with `test eax, eax` |
 | `VirtualFree` size equals the allocation | `MEM_RELEASE` requires size 0 |
 | `lpNumberOfBytesWritten` is a QWORD | It is a DWORD. Listing `01-create-file-write` declares `bytesWritten DWORD ?` |
 | Shadow space is optional for one-argument calls | Listing `11-mandatory-shadow-space` still does `sub rsp, 32` before `ExitProcess` |
@@ -1309,8 +1309,8 @@ The exercises use the Win32 API and MASM syntax this lesson quotes.
 
 **Seeking:** arithmetic offset without a seek call; open `NUL`, `SetFilePointerEx` to 0 (`FILE_BEGIN`), write, close, exit 0.
 
-**Memory:** one page via `VirtualAlloc`, store 42, exit 42; store 99 at offset 100, exit 99; allocate then `VirtualFree`, exit 0; `GetProcessHeap` nonzero, exit 0; fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
+**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit 42; store 99 at offset 100, exit 99; `13-virtualfree` — allocate then `VirtualFree`, exit 0; `14-heapalloc` — `GetProcessHeap` nonzero, exit 0; fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
 
-**Other imports:** `GetCurrentProcessId`, then `test eax, eax` / `seta cl` so the status is **1** when the PID is above 0 (listing `06-get-process-id` — not `pid AND 07Fh`). `QueryPerformanceCounter`, exit 0. `CreatePipe`, write `"ABC"`, read three bytes, exit **3** (listing `15-create-pipe`).
+**Other imports:** `15-getpid` — `GetCurrentProcessId`, then `test eax, eax` / `seta cl` so the status is **1** when the PID is above 0 (listing `06-get-process-id` — not `pid AND 07Fh`). `16-qpc` — `QueryPerformanceCounter`, exit 0. `23-stretch-createpipe` — `CreatePipe`, write `"ABC"`, read three bytes, exit **3** (listing `15-create-pipe`).
 
 Expected exits are in each file header under `exercises/` (there is no `exercises/08-syscalls-files-mmap/README.md`).

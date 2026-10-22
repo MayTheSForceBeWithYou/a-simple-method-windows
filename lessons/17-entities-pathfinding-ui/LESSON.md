@@ -182,7 +182,7 @@ END
 
 The sign test is the same rule as lesson 15’s mouse delta. Reverse the operands (`5 - 10`) and `neg` runs. A full `h` still needs `|x2 - x1| + |y2 - y1|`.
 
-Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the sum is 10. `abs_rax` tests the sign and `neg`s when needed. Expected exit: **10**. RBX is saved: `push rbx` / `sub rsp, 32`.
+Listing `10-manhattan-2axis` is that add. `|10 - 5|` is 5; `|3 - 8|` is 5; the sum is 10. The first absolute value is kept in RBX so the second `abs_rax` (which uses RAX) does not overwrite it; RCX holds the second operand. Expected exit: **10**. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 10: Two-axis Manhattan |dx|+|dy|
@@ -199,13 +199,13 @@ main PROC
     mov     rbx, 5
     sub     rax, rbx
     call    abs_rax
-    mov     rcx, rax
+    mov     rbx, rax
     mov     rax, 3
-    mov     rbx, 8
-    sub     rax, rbx
+    mov     rcx, 8
+    sub     rax, rcx
     call    abs_rax
-    add     rcx, rax
-    mov     ecx, ecx
+    add     rbx, rax
+    mov     ecx, ebx
     call    ExitProcess
 main ENDP
 
@@ -220,7 +220,7 @@ abs_rax ENDP
 END
 ```
 
-Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 2|` = 2 + 2 = 4. Then `g = 3` is added: `f = 7`. Expected exit: **7**. Same `abs_rax` helper. RBX is saved: `push rbx` / `sub rsp, 32`.
+Listing `09-astar-f-score` builds `f = g + h`. Heuristic `h` is `|3 - 1| + |4 - 2|` = 2 + 2 = 4. Each `|di|` is kept in RBX across `abs_rax`; then `g = 3` is added: `f = 7`. Expected exit: **7**. Same `abs_rax` helper. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
 ; Listing 09: A* score f = g + h
@@ -237,14 +237,14 @@ main PROC
     mov     rbx, 1
     sub     rax, rbx
     call    abs_rax
-    mov     rcx, rax
+    mov     rbx, rax
     mov     rax, 4
-    mov     rbx, 2
-    sub     rax, rbx
+    mov     rcx, 2
+    sub     rax, rcx
     call    abs_rax
-    add     rcx, rax
+    add     rbx, rax
     mov     rax, 3
-    add     rax, rcx
+    add     rax, rbx
     mov     ecx, eax
     call    ExitProcess
 main ENDP

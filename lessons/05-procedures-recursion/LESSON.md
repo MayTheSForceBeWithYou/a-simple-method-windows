@@ -182,6 +182,7 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 
 EXTRN ExitProcess:PROC
 
+; One push (8) + sub rsp,32 (32) => 40 bytes; RSP mod 16 == 8 before nested call.
 sum_to PROC FRAME
     push rbx
     .pushreg rbx
@@ -222,7 +223,7 @@ RCX is **volatile**. This listing copies `n` into RBX before `dec rcx` / `call`,
 
 Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 32` / `pop rbx` / `ret`. After the recursive return, `add rax, rbx` adds this frame’s `n`. For `n = 5` the sum is 5+4+3+2+1+0 = 15.
 
-This frame is the model to copy. At procedure entry RSP ≡ 8 (mod 16). One `push` leaves RSP ≡ 0; `sub rsp, 32` leaves RSP ≡ 0 at the recursive `call`. That is the aligned 1-push allocation. `main` uses the aligned 0-push frame (`sub rsp, 40`) before `call sum_to`.
+This frame is the model to copy. At procedure entry RSP ≡ 8 (mod 16). One `push` leaves RSP ≡ 0; `sub rsp, 32` leaves RSP ≡ 0 at the recursive `call`. That is the aligned 1-push allocation. The listing comment (`RSP mod 16 == 8 before nested call`) is the incoming RSP the nested callee sees after `call` pushes RIP — not the value at the `call` instruction. `main` uses the aligned 0-push frame (`sub rsp, 40`) before `call sum_to`.
 
 ## Tail recursion (concept)
 

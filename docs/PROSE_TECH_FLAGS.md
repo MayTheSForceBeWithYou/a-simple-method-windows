@@ -1,10 +1,10 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`f36a0bd`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`72e4724`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
 
-Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `f36a0bd`.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 
-**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39705668644](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39705668644)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit & 0xFF`).
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39706742127](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39706742127)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit & 0xFF`).
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -15,7 +15,8 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `f36a0bd`.
 | L01 `08-size-specifiers` | `WORD PTR [rbx+1], 4342h` (MASM hex, not `0x4342`). |
 | L02 `08-test-instruction` | Binary literal is `101b`. ml64 CI assembled it. |
 | L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. The `.SETFRAME` offset is 48 (multiple of 16, ≤ 240); it does not have to equal the allocation. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
-| L04 `01-push-pop` header | NASM/SysV comment is gone at `f36a0bd`. Quote is verbatim. |
+| L04 `01-push-pop` header | NASM/SysV comment is gone. Quote is verbatim. |
+| L04 `04-nonvolatile-regs` | `main` is `push rbx` / `.pushreg rbx` / `sub rsp, 32` — aligned 1-push frame. After the RBX check it tears down and `sub rsp, 40` before `ExitProcess`. Exit **42** (or **1** if clobbered). |
 | L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
 | L05 `04-recursive-sum` frame | `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32` / `mov rbx, rcx` / `add rax, rbx`. Aligned 1-push model. Shared `done:` is `add rsp, 32` / `pop rbx` / `ret`. Exit **15**. |
 | L07 `01-bit-operations` | MASM hex `0FFh` / `0Fh`; OR path is `8` / `4`; `sub rsp, 40`; exit **12**. |
@@ -49,7 +50,10 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `f36a0bd`.
 | L14 pitch / pack / clip / Bresenham | `06-pitch-pixel-offset` (40), `07-rgb-pack-low-byte` (3), `08-clip-half-open` (1), `10-bresenham-pixel-count` (`delta_x` / `delta_y`, 4). |
 | L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment says the same. |
 | L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
-| L09 `18-offset-equ` | `MY_ADDR EQU OFFSET msg` remains defined; status is hardcoded `mov ecx, 0`. Exit **0**. May change again. |
+| L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
+| L08 exercise names | Renamed: `04-virtualalloc`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `23-stretch-createpipe`. No `exercises/08-…/README.md`. |
+| L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
+| L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
 | L15 rising-edge / chord / Sleep pad | `11-rising-edge` (1), `12-two-key-chord` (1). `13-sleep-frame-pad`: clamp keeps status in EBX, Sleep ms in ECX, then `mov ecx, ebx` — exit **1**. |
 | L16 listing exits | `01` → 1; `02` → 53; `07` → 160; `09` → 2. |
@@ -65,7 +69,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `f36a0bd`.
 
 ## CI-confirmed exits that used to be traces
 
-These three were fixed at `ec4d05c` and remain CI-green at `f36a0bd`:
+These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
 
 - **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
 - **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).
@@ -87,17 +91,14 @@ These three were fixed at `ec4d05c` and remain CI-green at `f36a0bd`:
 ### Lesson 03 — `07-test-zero-check.asm` RDI scratch
 **Why unchanged:** Same never-returns `main` pattern.
 
-### Lesson 04 — `04-nonvolatile-regs.asm` extra push after `sub rsp, 40`
-**Why unchanged:** `main` does `sub rsp, 40` then `push rbx` before `call compute`, so RSP ≡ 8 at the call. Quoted verbatim. Not the alignment model.
-
 ### Lesson 01 — `03-register-indirect.asm` RSI without save
 **Why unchanged:** Never-returns `main`.
 
 ### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
 **Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
-### Lesson 09 — `18-offset-equ.asm` hardcoded exit 0
-**Why unchanged:** `MY_ADDR EQU OFFSET msg` is still defined. The listing uses `mov ecx, 0` (comment: `MY_ADDR` is 0 when `msg` is first in `.data`) to avoid an ADDR32 relocation. May change again; quote as it stands.
+### Lesson 05 — `04-recursive-sum.asm` comment wording
+**Why unchanged:** The new comment says `RSP mod 16 == 8 before nested call`. That is the nested callee’s incoming RSP after `call` pushes RIP. At the `call` instruction RSP is 0 mod 16. Prose teaches the call-site rule.
 
 ### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
 **Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
@@ -128,9 +129,7 @@ BFS counts visits and does not store parents. Hit-test is the four-compare panel
 
 ## Pending on Jack (PR #5)
 
-None of the previous pending items remain. L05 `04-recursive-sum` is the aligned 1-push model. L04 `01-push-pop` no longer carries a NASM header. L07 `10` / `11` / `15` / `16` comments use `h` hex.
-
-**Watch:** L09 `18-offset-equ` may change again (currently hardcoded `mov ecx, 0`).
+None. L04 `04-nonvolatile-regs` is the aligned 1-push model. L09 `18-offset-equ` now exits **2** (`MSG_LEN`) with failure codes 117 / 118.
 
 ## Remaining LISTING-PENDING (no matching Jack file)
 
