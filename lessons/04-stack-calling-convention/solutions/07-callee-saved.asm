@@ -14,7 +14,7 @@ ex_07_callee_saved PROC
     mov rbx, 9
     call clobber_careful
     mov rcx, rbx
-    mov     eax, rbx
+    mov     eax, ebx
     add     rsp, 40
     ret
 ex_07_callee_saved ENDP

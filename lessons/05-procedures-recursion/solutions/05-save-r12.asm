@@ -10,7 +10,7 @@ ex_05_save_r12 PROC
     mov r12, 42
     call use_r12
     mov rcx, r12
-    mov     eax, r12
+    mov     eax, r12d
     add     rsp, 40
     ret
 ex_05_save_r12 ENDP

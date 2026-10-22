@@ -16,7 +16,7 @@ ex_18_mod_via_div PROC
     mov rbx, 5
     div rbx
     mov rcx, rdx
-    mov     eax, rdx
+    mov     eax, edx
     add     rsp, 40
     ret
 ex_18_mod_via_div ENDP

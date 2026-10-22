@@ -10,7 +10,7 @@ ex_16_debug_callee_clobber PROC
     mov rbx, 11
     call evil
     mov rcx, rbx
-    mov     eax, rbx
+    mov     eax, ebx
     add     rsp, 40
     ret
 ex_16_debug_callee_clobber ENDP

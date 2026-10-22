@@ -19,7 +19,7 @@ ex_25_adc_chain PROC
     adc rdx, r8
     ; High word is 1 after the incoming carry from add.
     mov rcx, rdx
-    mov     eax, rdx
+    mov     eax, edx
     add     rsp, 40
     ret
 ex_25_adc_chain ENDP

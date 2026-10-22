@@ -20,7 +20,7 @@ ex_16_anim_frame PROC
     mov rbx, 3
     div rbx
     mov rcx, rdx
-    mov     eax, rdx
+    mov     eax, edx
     add     rsp, 40
     ret
 ex_16_anim_frame ENDP

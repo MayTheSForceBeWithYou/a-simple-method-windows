@@ -20,9 +20,7 @@ ex_05_seventh_stack_arg PROC
     mov QWORD PTR [rsp+48], 7
     call sum7
     add rsp, 56
-    mov rcx, rax
-    sub rsp, 40
-    mov     eax, ecx
+    mov     eax, eax
     ret
 ex_05_seventh_stack_arg ENDP
 main PROC

@@ -19,9 +19,7 @@ ex_04_six_args_sum PROC
     mov QWORD PTR [rsp+40], 6
     call sum6
     add rsp, 56
-    mov rcx, rax
-    sub rsp, 40
-    mov     eax, ecx
+    mov     eax, eax
     ret
 ex_04_six_args_sum ENDP
 main PROC
