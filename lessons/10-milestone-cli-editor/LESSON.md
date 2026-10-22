@@ -826,7 +826,7 @@ Listing `17-save-length-prefix` creates or truncates `editor.save` with `CreateF
 
 `cmp rax, -1` / `je fail` rejects `INVALID_HANDLE_VALUE`. The HANDLE is saved in RBX. Two `WriteFile` calls write 4 magic bytes and the 8-byte `len` (the listing initializes `len QWORD 0`). There is no third `WriteFile` for buffer contents. `CloseHandle`, then `xor ecx, ecx` / `call ExitProcess`. Failure exits 1.
 
-Frame: `push rbx` / `.pushreg rbx` / `sub rsp, 64` / `.allocstack 64`. Expected exit on success: **0**. Side effect: `editor.save` holds 12 bytes (`ED01` plus eight 0x00 bytes).
+Frame: `push rbx` / `.pushreg rbx` / `sub rsp, 64` / `.allocstack 64`. Expected exit on success: **0**. Side effect: `editor.save` holds 12 bytes (`ED01` plus eight `00h` bytes).
 
 ```asm
 ; Listing 17: Save editor image with Win32 I/O (LESSON.md block 17)

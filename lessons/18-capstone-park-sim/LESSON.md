@@ -309,7 +309,7 @@ main ENDP
 END
 ```
 
-`jb` treats RAX as unsigned. A bit-pattern of −1 is `0xFFFFFFFFFFFFFFFF`, which is **not** below 8, so the unsigned clamp would snap it to 7, not to 0. That is why listing 05 exists: signed x needs the `cmp rax, 0` / `jge` path. Do not use listing 06 on a value that can be negative.
+`jb` treats RAX as unsigned. A bit-pattern of −1 is `0FFFFFFFFFFFFFFFFh`, which is **not** below 8, so the unsigned clamp would snap it to 7, not to 0. That is why listing 05 exists: signed x needs the `cmp rax, 0` / `jge` path. Do not use listing 06 on a value that can be negative.
 
 ## Parent walk: one hop
 
@@ -428,7 +428,7 @@ END
 
 ```
 
-`jb` is unsigned. If cash were 2 and upkeep 3, listing 09 would skip and leave 2. Listing 08 would execute `sub` and leave `0xFFFFFFFFFFFFFFFF` (−1 as a signed QWORD). `mov ecx, DWORD PTR cash` would then pass `0xFFFFFFFF` to `ExitProcess`. An exit of 7 from listing 08 proves only that 10 − 3 = 7.
+`jb` is unsigned. If cash were 2 and upkeep 3, listing 09 would skip and leave 2. Listing 08 would execute `sub` and leave `0FFFFFFFFFFFFFFFFh` (−1 as a signed QWORD). `mov ecx, DWORD PTR cash` would then pass `0FFFFFFFFh` to `ExitProcess`. An exit of 7 from listing 08 proves only that 10 − 3 = 7.
 
 ## Save and load: CreateFileA, magic, version
 

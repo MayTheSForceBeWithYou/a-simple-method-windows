@@ -177,7 +177,7 @@ This is `for (i = 0; i < 5; i++) sum += i`. Condition `jge` after `cmp i, n` is 
 
 ## Signed vs unsigned
 
-−1 as signed is less than 1. As unsigned it is `0xFFFFFFFFFFFFFFFF`, above 1.
+−1 as signed is less than 1. As unsigned it is `0FFFFFFFFFFFFFFFFh`, above 1.
 
 ```asm
 ; Listing 05: Signed vs unsigned comparison

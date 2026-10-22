@@ -4,7 +4,7 @@ Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `
 
 Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 
-**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39706742127](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39706742127)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit & 0xFF`).
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39706742127](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39706742127)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`).
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -12,7 +12,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 |------|------------|
 | L00 hello RBX vs `[rsp+32]` | `02-hello-world` uses `sub rsp, 48` / `.allocstack 48` after one `push rbx`; fifth `WriteFile` arg does not overwrite saved RBX. |
 | L00 `07-stderr-output` | Writes `"Error message"` with **no CRLF**. `bytes_written` is `DWORD`. Plain `main PROC`, `sub rsp, 56`, HANDLE stays in RAX then RCX. Header: `Expected output: (to stderr) Error message`. Exit **0**. |
-| L01 `08-size-specifiers` | `WORD PTR [rbx+1], 4342h` (MASM hex, not `0x4342`). |
+| L01 `08-size-specifiers` | `WORD PTR [rbx+1], 4342h` (MASM hex, not a leading `0x`). |
 | L02 `08-test-instruction` | Binary literal is `101b`. ml64 CI assembled it. |
 | L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. The `.SETFRAME` offset is 48 (multiple of 16, ≤ 240); it does not have to equal the allocation. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
 | L04 `01-push-pop` header | NASM/SysV comment is gone. Quote is verbatim. |
@@ -97,8 +97,11 @@ These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
 ### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
 **Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
+### Lesson 04 — `04-nonvolatile-regs.asm` comment after `pop rbx`
+**Waiting on Jack:** The listing comment still says `RSP was 16-aligned after pop`. After the pop, RSP is the entry value, 8 mod 16; `sub rsp, 40` then aligns it. Quote left as-is at `72e4724`.
+
 ### Lesson 05 — `04-recursive-sum.asm` comment wording
-Jack’s comment is the callee’s view on entry (`RSP mod 16 == 8` after `call` pushes RIP). Prose teaches RSP ≡ 0 at the `call`. Same alignment, eight bytes apart.
+**Waiting on Jack:** The listing still says `RSP mod 16 == 8 before nested call`. Prose states the arithmetic: entry 8 + push 8 + `sub rsp, 32` ⇒ 0 mod 16 at the `call`. Quote left as-is at `72e4724`.
 
 ### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
 **Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
@@ -129,7 +132,8 @@ BFS counts visits and does not store parents. Hit-test is the four-compare panel
 
 ## Pending on Jack (PR #5)
 
-None. L04 `04-nonvolatile-regs` is the aligned 1-push model. L09 `18-offset-equ` now exits **2** (`MSG_LEN`) with failure codes 117 / 118.
+- **L04 `04-nonvolatile-regs`:** comment after `pop rbx` still says RSP was 16-aligned. After the pop it is 8 mod 16.
+- **L05 `04-recursive-sum`:** comment still says `RSP mod 16 == 8 before nested call`. At the `call` it is 0.
 
 ## Remaining LISTING-PENDING (no matching Jack file)
 

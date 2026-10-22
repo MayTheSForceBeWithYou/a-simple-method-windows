@@ -217,7 +217,7 @@ END
 
 32+10=42 in RAX. `main` is now the aligned 1-push frame: `push rbx` / `.pushreg rbx` / `sub rsp, 32`. It sets RBX to 99 and after `call compute` compares it to 99. If `compute` restored RBX, ECX becomes RAX (42). If not, the `rbx_clobbered` path exits **1**. Both procedures use `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog`.
 
-After the compare, `main` tears that frame down (`add rsp, 32` / `pop rbx`) and allocates a fresh `sub rsp, 40` before `call ExitProcess`. Entry RSP ≡ 8; one push plus `sub rsp, 32` leaves RSP ≡ 0 at `call compute`. After the pop, RSP is 16-aligned again; `sub rsp, 40` leaves it aligned at `ExitProcess`. This is a correct 1-push frame. The aligned 0-push frame is still `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
+After the compare, `main` tears that frame down (`add rsp, 32` / `pop rbx`) and allocates a fresh `sub rsp, 40` before `call ExitProcess`. Entry RSP ≡ 8; one push plus `sub rsp, 32` leaves RSP ≡ 0 at `call compute`. After the pop, RSP is back to its entry value, 8 mod 16 — that is why the following `sub rsp, 40` leaves it aligned at `ExitProcess`. This is a correct 1-push frame. The aligned 0-push frame is still `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
 
 ## Alignment
 

@@ -193,7 +193,7 @@ A second wrong reading is putting the first argument in RDI because Linux does. 
 
 ## Register sizes, XOR-zero, and `mov`
 
-Listing `03-register-sizes` fills RAX with −1, then writes 42 to EAX (RAX becomes `0x000000000000002A`) versus AL (RAX becomes `0xFFFFFFFFFFFFFF2A`). It exits 42.
+Listing `03-register-sizes` fills RAX with −1, then writes 42 to EAX (RAX becomes `000000000000002Ah`) versus AL (RAX becomes `0FFFFFFFFFFFFFF2Ah`). It exits 42.
 
 ```asm
 ; Listing 03: Register size variants and zero-extension

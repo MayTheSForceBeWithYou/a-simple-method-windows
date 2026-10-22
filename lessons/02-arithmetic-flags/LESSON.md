@@ -117,7 +117,7 @@ main ENDP
 END
 ```
 
-`mul` has only the one-operand form. RDX is 0 here because 40 fits in 64 bits. Multiplying −1 by 2 with `imul` yields −2; with `mul` it treats −1 as `0xFFFFFFFFFFFFFFFF` and produces a huge unsigned product.
+`mul` has only the one-operand form. RDX is 0 here because 40 fits in 64 bits. Multiplying −1 by 2 with `imul` yields −2; with `mul` it treats −1 as `0FFFFFFFFFFFFFFFFh` and produces a huge unsigned product.
 
 ## Division: `rdx:rax` as the dividend
 
@@ -402,7 +402,7 @@ If the dividend were −42, `cqo` would fill RDX with ones. `idiv` by 5 would pu
 | `cmp` vs `test` | Subtract vs AND; both discard the result. |
 | `setl` vs `setb` | Signed less vs unsigned below. |
 | `inc` vs `add reg, 1` | `inc` does not update CF. |
-| `mov eax, -1` | Zero-extends to `0x00000000FFFFFFFF`, not −1 in RAX. Use `movsxd`/`cdqe` to sign-extend. |
+| `mov eax, -1` | Zero-extends to `00000000FFFFFFFFh`, not −1 in RAX. Use `movsxd`/`cdqe` to sign-extend. |
 
 ## Check yourself
 

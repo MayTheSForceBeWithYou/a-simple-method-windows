@@ -17,7 +17,7 @@ You must be able to mask with `and`, set bits with `or`, toggle with `xor`, and 
 
 Listing `01-bit-operations` runs one example of `and`, `or`, `xor`, `not`, `shl`, and `shr`, then exits with the OR result. `sub rsp, 40` is the Microsoft x64 shadow-plus-alignment frame before `call ExitProcess`. The OR path loads `8` into RBX and ORs `4`, so RBX is 12. `mov rcx, rbx` makes that 12 the `ExitProcess` status. Expected exit: **12**.
 
-The other demos in this listing are not the exit code. `and` of `0FFh` with `0Fh` leaves 15 in RAX. `xor rcx, 0FFh` after `mov rcx, 0FFh` leaves RCX = 0, then `mov rcx, rbx` overwrites it. `not rdx` on 0 leaves RDX = −1. `shl r8, 2` on 3 leaves R8 = 12. `shr r9, 2` on 48 leaves R9 = 12. The hex literals are MASM `0FFh` / `0Fh`, not `0xFF`.
+The other demos in this listing are not the exit code. `and` of `0FFh` with `0Fh` leaves 15 in RAX. `xor rcx, 0FFh` after `mov rcx, 0FFh` leaves RCX = 0, then `mov rcx, rbx` overwrites it. `not rdx` on 0 leaves RDX = −1. `shl r8, 2` on 3 leaves R8 = 12. `shr r9, 2` on 48 leaves R9 = 12. The hex literals are MASM `0FFh` / `0Fh`, not a leading `0x`.
 
 ```asm
 ; Listing 01: Bitwise operations

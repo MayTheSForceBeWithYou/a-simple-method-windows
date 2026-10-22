@@ -223,7 +223,7 @@ RCX is **volatile**. This listing copies `n` into RBX before `dec rcx` / `call`,
 
 Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 32` / `pop rbx` / `ret`. After the recursive return, `add rax, rbx` adds this frame’s `n`. For `n = 5` the sum is 5+4+3+2+1+0 = 15.
 
-This frame is the model to copy. At procedure entry RSP ≡ 8 (mod 16). One `push` leaves RSP ≡ 0; `sub rsp, 32` leaves RSP ≡ 0 at the recursive `call`. That is the aligned 1-push allocation. Jack’s comment (`RSP mod 16 == 8`) is the callee’s view on entry, after `call` has pushed the return address — the same alignment, eight bytes later. `main` uses the aligned 0-push frame (`sub rsp, 40`) before `call sum_to`.
+This frame is the model to copy. Entry RSP ≡ 8 (mod 16). The `push` subtracts 8 and `sub rsp, 32` subtracts 32, so RSP ≡ 0 at the recursive `call`. That is the aligned 1-push allocation. `main` uses the aligned 0-push frame (`sub rsp, 40`) before `call sum_to`.
 
 ## Tail recursion (concept)
 
