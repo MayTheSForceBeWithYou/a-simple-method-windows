@@ -1,3 +1,12 @@
+; Exercise: 06-eax-zero-extends
+;
+; Exercise 06: eax zero extends
+; Set rax to all 0FFh bytes, then mov eax, 1. Exit with rcx=rax (should be 1).
+;
+; Contract: implement `ex_06_eax_zero_extends` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; Exercise 06: eax zero extends (Win32 port)
 ;
 ; Fill RAX with -1, then write 5 to EAX. Verify upper 32 bits are cleared.

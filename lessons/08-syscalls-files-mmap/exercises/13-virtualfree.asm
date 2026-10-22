@@ -1,3 +1,12 @@
+; Exercise: 13-virtualfree
+;
+; Exercise 13: munmap
+; VirtualAlloc then VirtualFree; exit 0 if VirtualFree succeeds.
+;
+; Contract: implement `ex_13_virtualfree` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 13-virtualfree.asm
 ;
 ; Allocate memory with VirtualAlloc, then free it with VirtualFree, exit 0.

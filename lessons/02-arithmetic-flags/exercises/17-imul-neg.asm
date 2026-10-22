@@ -1,3 +1,12 @@
+; Exercise: 17-imul-neg
+;
+; Exercise 17: imul neg
+; rax=-3; imul rax, -4; mov rcx,rax; exit 12.
+;
+; Contract: implement `ex_17_imul_neg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
+;
+
 ; Exercise 17: imul neg
 ;
 ; rax=-3; imul rax, -4; mov rcx,rax; exit 12.

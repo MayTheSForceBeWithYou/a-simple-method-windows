@@ -1,3 +1,12 @@
+; Exercise: 02-exit-seven
+;
+; Exercise 02: exit seven
+; Exit with status 7.
+;
+; Contract: implement `ex_02_exit_seven` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
+
 ; Exercise 02: exit seven (Win32 port)
 ;
 ; Exit with status 7.

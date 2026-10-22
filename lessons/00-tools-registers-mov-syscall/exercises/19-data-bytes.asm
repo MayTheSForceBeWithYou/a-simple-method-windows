@@ -1,3 +1,12 @@
+; Exercise: 19-data-bytes
+;
+; Exercise 19: data bytes
+; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
+;
+; Contract: implement `ex_19_data_bytes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 19: data bytes
 ;
 ; Emit bytes 048h 069h 00Ah (Hi newline) using BYTE. Write them; exit 0.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 19-data-bytes.asm && link /OUT:19-data-bytes.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-data-bytes.obj kernel32.lib
 ;
 ; Expected exit: 0
-
 
 .CODE
 

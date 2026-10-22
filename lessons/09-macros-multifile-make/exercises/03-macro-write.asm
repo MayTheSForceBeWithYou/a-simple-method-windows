@@ -1,3 +1,13 @@
+; Exercise: 03-macro-write
+;
+; Exercise 03: macro write
+; Macro write_stdout msg,len; print 'M\n'.
+; Expected stdout: "M\n"
+;
+; Contract: implement `ex_03_macro_write` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 03-macro-write.asm
 ; Macro writes "M\n", exit 0.
 ; Task: Define macro that gets stdout and writes message.

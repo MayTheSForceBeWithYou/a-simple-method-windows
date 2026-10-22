@@ -1,3 +1,12 @@
+; Exercise: 13-store-through-ptr
+;
+; Exercise 13: store through ptr
+; lea rdx,[slot]; mov QWORD PTR [rdx], 77; mov rcx,[slot]; exit.
+;
+; Contract: implement `ex_13_store_through_ptr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 77
+;
+
 ; Exercise 13: store through ptr
 ;
 ; lea rdx,[slot]; mov QWORD PTR [rdx], 77; mov rcx,[slot]; exit.

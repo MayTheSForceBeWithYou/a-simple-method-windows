@@ -1,3 +1,12 @@
+; Exercise: 14-sar-vs-shr
+;
+; Exercise 14: sar vs shr
+; For -4: sar 1 vs shr 1; exit (sar_result == -2) as 1.
+;
+; Contract: implement `ex_14_sar_vs_shr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 14-sar-vs-shr.asm
 ;
 ; Demonstrate the difference between SAR and SHR on a negative value.

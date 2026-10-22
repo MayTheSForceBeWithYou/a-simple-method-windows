@@ -1,3 +1,13 @@
+; Exercise: 12-vline
+;
+; Exercise 12: vline
+; Vertical with stride 4; plot 3 pixels; sum=6 if value 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_12_vline` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; 12-vline: vline
 .CODE
 EXTRN ExitProcess:PROC

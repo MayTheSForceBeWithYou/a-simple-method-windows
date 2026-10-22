@@ -1,3 +1,13 @@
+; Exercise: 18-debug-off-by-one-copy
+;
+; Exercise 18: debug off by one copy
+; BUG: copies n bytes but forgets NUL. Fix strcpy of "ok"; strlen=2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_18_debug_off_by_one_copy` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; Exercise 18: debug off by one copy
 ; BUG: copies n bytes but forgets NUL. Fix strcpy of "ok"; strlen=2.
 ; Build: ml64 /c /Fo18-debug-off-by-one-copy.obj 18-debug-off-by-one-copy.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:18-debug-off-by-one-copy.exe 18-debug-off-by-one-copy.obj kernel32.lib

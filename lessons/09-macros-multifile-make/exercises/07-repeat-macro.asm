@@ -1,3 +1,12 @@
+; Exercise: 07-repeat-macro
+;
+; Exercise 07: repeat macro
+; REPT 3 increment; exit 3.
+;
+; Contract: implement `ex_07_repeat_macro` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 07-repeat-macro.asm
 ; Use REPT to generate three INC instructions, exit 3.
 ; Task: xor eax; REPT 3; inc eax; ENDM; exit eax.

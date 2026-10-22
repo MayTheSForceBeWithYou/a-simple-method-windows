@@ -1,3 +1,12 @@
+; Exercise: 10-len-equ
+;
+; Exercise 10: len equ
+; Define string "equ works\n" with BYTE; length via EQU $ - label. Write it; exit 0.
+;
+; Contract: implement `ex_10_len_equ` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 10: len equ (Win32 port)
 ;
 ; Declare a message and compute its length with EQU $ - label.

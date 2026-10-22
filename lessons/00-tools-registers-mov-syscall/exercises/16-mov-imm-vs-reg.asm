@@ -1,3 +1,12 @@
+; Exercise: 16-mov-imm-vs-reg
+;
+; Exercise 16: mov imm vs reg
+; Load 100 into rax (imm), copy to rbx, copy rbx to rcx, exit.
+;
+; Contract: implement `ex_16_mov_imm_vs_reg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 100
+;
+
 ; Exercise 16: mov imm vs reg (Win32 port)
 ;
 ; Demonstrate difference between immediate and register operands.

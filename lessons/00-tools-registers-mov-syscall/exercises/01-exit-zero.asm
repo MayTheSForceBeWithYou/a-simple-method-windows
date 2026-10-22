@@ -1,3 +1,12 @@
+; Exercise: 01-exit-zero
+;
+; Exercise 01: exit zero
+; Exit with status 0 using ExitProcess.
+;
+; Contract: implement `ex_01_exit_zero` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 01: exit zero
 ;
 ; Exit with status 0 using ExitProcess.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 01-exit-zero.asm && link /OUT:01-exit-zero.exe /ENTRY:main /SUBSYSTEM:CONSOLE 01-exit-zero.obj kernel32.lib
 ;
 ; Expected exit: 0
-
 
 .CODE
 

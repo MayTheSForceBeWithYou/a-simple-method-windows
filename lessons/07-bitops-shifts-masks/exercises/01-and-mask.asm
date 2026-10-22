@@ -1,3 +1,11 @@
+; Exercise: 01-and-mask
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_01_and_mask` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
+;
+
 ; 01-and-mask.asm
 ;
 ; Use AND to extract the low nibble (low 4 bits) from a value.

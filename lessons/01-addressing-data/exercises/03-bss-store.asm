@@ -1,3 +1,12 @@
+; Exercise: 03-bss-store
+;
+; Exercise 03: bss store
+; BYTE ? in .data? (uninitialized). Store 7 into it, load into rcx, exit.
+;
+; Contract: implement `ex_03_bss_store` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
+
 ; Exercise 03: bss store (Win32 port)
 ;
 ; Declare 1 byte in .DATA? (uninitialized). Store 7 into it, load into RCX, exit.

@@ -1,3 +1,12 @@
+; Exercise: 21-fast-inv-stub
+;
+; Exercise 21: fast inv stub
+; Integer reciprocal stub for 1/2 of 10 -> 5; exit 5.
+;
+; Contract: implement `ex_21_fast_inv_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 21-fast-inv-stub
 .CODE
 EXTRN ExitProcess:PROC

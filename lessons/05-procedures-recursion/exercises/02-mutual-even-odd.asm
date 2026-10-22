@@ -1,18 +1,24 @@
-; Exercise 02: mutual even odd (Win32 port)
+; Exercise: 02-mutual-even-odd
+;
+; Exercise 02: mutual even odd
 ; is_even/is_odd mutual recursion. is_even(4)->1; exit 1.
-; Build: ml64 /c /Fo02-mutual-even-odd.obj 02-mutual-even-odd.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-mutual-even-odd.exe 02-mutual-even-odd.obj kernel32.lib
-; Expected: exit code 1
+;
+; Contract: implement `ex_02_mutual_even_odd` (MS x64). Return exit code in EAX.
+; Expected exit: 1
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement is_even and is_odd with mutual recursion
+EXTRN ExitProcess:PROC
+EXTRN ex_02_mutual_even_odd:PROC
+
+; TODO: write ex_02_mutual_even_odd in this file.
 
 main PROC
-    sub     rsp, 32
-    mov rcx, 4
-    call is_even
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_02_mutual_even_odd
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

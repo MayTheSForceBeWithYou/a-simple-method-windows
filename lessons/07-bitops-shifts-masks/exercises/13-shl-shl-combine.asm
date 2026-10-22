@@ -1,3 +1,11 @@
+; Exercise: 13-shl-shl-combine
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_13_shl_shl_combine` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 171
+;
+
 ; 13-shl-shl-combine.asm
 ;
 ; Combine two values into one register using shifts.

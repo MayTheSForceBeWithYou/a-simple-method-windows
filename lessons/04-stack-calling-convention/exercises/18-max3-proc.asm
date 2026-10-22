@@ -1,20 +1,24 @@
-; Exercise 18: max3 proc (Win32 port)
-; max3(a,b,c) returns max. Call max3(3,9,7); exit 9.
-; Build: ml64 /c /Fo18-max3-proc.obj 18-max3-proc.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:18-max3-proc.exe 18-max3-proc.obj kernel32.lib
-; Expected: exit code 9
+; Exercise: 18-max3-proc
+;
+; Exercise 18: max3 proc
+; max3(3,9,7)=9. MS x64 ABI.
+;
+; Contract: implement `ex_18_max3_proc` (MS x64). Return exit code in EAX.
+; Expected exit: 9
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement max3(RCX, RDX, R8) -> RAX
+EXTRN ExitProcess:PROC
+EXTRN ex_18_max3_proc:PROC
+
+; TODO: write ex_18_max3_proc in this file.
 
 main PROC
-    sub     rsp, 32
-    mov rcx, 3
-    mov rdx, 9
-    mov r8, 7
-    call max3
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_18_max3_proc
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

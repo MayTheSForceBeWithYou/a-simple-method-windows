@@ -1,3 +1,13 @@
+; Exercise: 22-stretch-units-header
+;
+; Exercise 22: stretch units header
+; STRETCH: Define constants for API calls; print "U\n" exit 0.
+; Expected stdout: "U\n"
+;
+; Contract: implement `ex_22_stretch_units_header` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 22-stretch-units-header.asm (stretch)
 ; Define constants, write "U\n", exit 0.
 

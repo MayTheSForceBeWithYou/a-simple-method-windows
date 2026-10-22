@@ -1,3 +1,11 @@
+; Exercise: 05-sar-sign
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_05_sar_sign` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 252
+;
+
 ; 05-sar-sign.asm
 ;
 ; Use SAR (shift arithmetic right) to divide a signed negative number.

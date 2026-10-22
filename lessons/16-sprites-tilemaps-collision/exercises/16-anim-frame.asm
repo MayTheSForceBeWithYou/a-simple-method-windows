@@ -1,3 +1,13 @@
+; Exercise: 16-anim-frame
+;
+; Exercise 16: anim frame
+; frame = (t/ticks)%n; t=10 ticks=4 n=3 -> 2; exit 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_16_anim_frame` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 16-anim-frame: anim frame
 .CODE
 EXTRN ExitProcess:PROC

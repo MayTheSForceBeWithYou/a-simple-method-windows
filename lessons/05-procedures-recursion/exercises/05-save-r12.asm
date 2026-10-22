@@ -1,18 +1,24 @@
-; Exercise 05: save r12 (Win32 port)
-; Use R12 in callee; must push/pop. Caller expects R12=42 still; exit 42.
-; Build: ml64 /c /Fo05-save-r12.obj 05-save-r12.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-save-r12.exe 05-save-r12.obj kernel32.lib
-; Expected: exit code 42
+; Exercise: 05-save-r12
+;
+; Exercise 05: save r12
+; Use r12 in callee; must push/pop. r12=42 preserved. Exit 42.
+;
+; Contract: implement `ex_05_save_r12` (MS x64). Return exit code in EAX.
+; Expected exit: 42
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement function that uses R12 but preserves it
+EXTRN ExitProcess:PROC
+EXTRN ex_05_save_r12:PROC
+
+; TODO: write ex_05_save_r12 in this file.
 
 main PROC
-    sub     rsp, 32
-    mov r12, 42
-    call use_r12
-    mov rcx, r12               ; Should still be 42
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_05_save_r12
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

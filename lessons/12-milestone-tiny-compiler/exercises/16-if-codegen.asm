@@ -1,3 +1,12 @@
+; Exercise: 16-if-codegen
+;
+; Exercise 16: if codegen
+; if 1 then 7 else 9; exit 7.
+;
+; Contract: implement `ex_16_if_codegen` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
+
 ; 16-if-codegen.asm: Generate if-branch jump, exit 0
 .CODE
 EXTRN ExitProcess:PROC

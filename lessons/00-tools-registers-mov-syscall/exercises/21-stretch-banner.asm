@@ -1,3 +1,12 @@
+; Exercise: 21-stretch-banner
+;
+; Exercise 21: stretch banner
+; STRETCH: Print a 3-line ASCII banner, exit 0.
+;
+; Contract: implement `ex_21_stretch_banner` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 21: stretch banner
 ;
 ; STRETCH: Print a 3-line ASCII banner, exit 0.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 21-stretch-banner.asm && link /OUT:21-stretch-banner.exe /ENTRY:main /SUBSYSTEM:CONSOLE 21-stretch-banner.obj kernel32.lib
 ;
 ; Expected exit: 0
-
 
 .CODE
 

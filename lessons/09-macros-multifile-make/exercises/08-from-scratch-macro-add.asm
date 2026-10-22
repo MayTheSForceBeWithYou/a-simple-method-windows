@@ -1,3 +1,12 @@
+; Exercise: 08-from-scratch-macro-add
+;
+; Exercise 08: from scratch macro add
+; FROM SCRATCH: MACRO ADD_IMM reg,imm; use to build 40+2 exit 42.
+;
+; Contract: implement `ex_08_from_scratch_macro_add` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; 08-from-scratch-macro-add.asm (from scratch)
 ; Define ADD_IMM macro, use it: mov rax, 40; ADD_IMM rax, 2; exit 42.
 

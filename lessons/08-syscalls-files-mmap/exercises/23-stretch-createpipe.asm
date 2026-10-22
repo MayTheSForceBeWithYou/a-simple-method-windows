@@ -1,19 +1,12 @@
-; 23-stretch-createpipe.asm (stretch)
+; Exercise: 23-stretch-createpipe
 ;
-; Create an anonymous pipe, exit 0 (do not read/write).
+; CreatePipe, write "ABC" through the pipe, read it back; exit 3 (byte count).
 ;
-; Task: Call CreatePipe to create a pipe (read and write handles),
-;       close both handles, exit 0.
-;
-; Hint: CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
-
-.DATA
-hReadPipe QWORD ?
-hWritePipe QWORD ?
+; Contract: implement `ex_23_stretch_createpipe` (MS x64). Return exit code in EAX.
+; Expected exit: 3
 
 .CODE
 
-EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_createpipe:PROC
 

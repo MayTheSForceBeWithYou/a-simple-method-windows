@@ -1,3 +1,12 @@
+; Exercise: 15-exit-sum
+;
+; Exercise 15: exit sum
+; Set r8=10, r9=20, r10=12. Sum into rcx; exit (42).
+;
+; Contract: implement `ex_15_exit_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 15: exit sum (Win32 port)
 ;
 ; Add three numbers and exit with their sum.

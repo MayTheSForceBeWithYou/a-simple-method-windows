@@ -1,3 +1,12 @@
+; Exercise: 06-popcount-naive
+;
+; Exercise 06: popcount naive
+; Popcount of 0b101101 = 4.
+;
+; Contract: implement `ex_06_popcount_naive` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 06-popcount-naive.asm
 ;
 ; Implement popcount (count set bits) using a loop.

@@ -1,3 +1,13 @@
+; Exercise: 09-spawn-entity
+;
+; Exercise 09: spawn entity
+; Bump entity id; first spawn id=1; exit 1.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_09_spawn_entity` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 09-spawn-entity: spawn entity
 .CODE
 EXTRN ExitProcess:PROC

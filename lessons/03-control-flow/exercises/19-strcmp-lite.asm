@@ -1,3 +1,12 @@
+; Exercise: 19-strcmp-lite
+;
+; Exercise 19: strcmp lite
+; Compare 'ab' and 'ab' bytewise; exit 0 if equal else 1. Should exit 0.
+;
+; Contract: implement `ex_19_strcmp_lite` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 19: strcmp lite
 ;
 ; Compare 'ab' and 'ab' bytewise; exit 0 if equal else 1. Should exit 0.

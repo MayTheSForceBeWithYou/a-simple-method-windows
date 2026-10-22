@@ -1,3 +1,12 @@
+; Exercise: 13-fizz-count
+;
+; Exercise 13: fizz count
+; AoC-lite: count numbers 1..20 divisible by 3 (6). Exit 6.
+;
+; Contract: implement `ex_13_fizz_count` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; Exercise 13: fizz count
 ;
 ; AoC-lite: count numbers 1..20 divisible by 3 (6). Exit 6.

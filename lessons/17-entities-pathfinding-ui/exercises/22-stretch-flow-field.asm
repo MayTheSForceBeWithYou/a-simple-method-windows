@@ -1,3 +1,13 @@
+; Exercise: 22-stretch-flow-field
+;
+; Exercise 22: stretch flow field
+; STRETCH: flow cell cost 4; exit 4.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_22_stretch_flow_field` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 22-stretch-flow-field: stretch flow field
 .CODE
 EXTRN ExitProcess:PROC

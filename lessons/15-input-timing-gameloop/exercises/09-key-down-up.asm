@@ -1,3 +1,13 @@
+; Exercise: 09-key-down-up
+;
+; Exercise 09: key down up
+; Track key state: down sets, up clears; exit 0.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_09_key_down_up` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 09-key-down-up: key down up
 .CODE
 EXTRN ExitProcess:PROC

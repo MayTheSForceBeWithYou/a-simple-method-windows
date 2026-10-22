@@ -1,3 +1,12 @@
+; Exercise: 07-scaled-index
+;
+; Exercise 07: scaled index
+; arr QWORD 5,10,15,20. Set r8=2, load arr[r8] with [arr+r8*8] into rcx, exit (15).
+;
+; Contract: implement `ex_07_scaled_index` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
+;
+
 ; Exercise 07: scaled index (Win32 port)
 ;
 ; Array DQ 11,22,33,44. Index 2. Use scaled indexing [base+index*8]. Exit with 33.

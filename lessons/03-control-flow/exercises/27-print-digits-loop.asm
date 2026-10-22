@@ -1,3 +1,12 @@
+; Exercise: 27-print-digits-loop
+;
+; Exercise 27: print digits loop
+; Print "01234\n" using a loop that stores digits into a buffer then one write. Exit 0.
+;
+; Contract: implement `ex_27_print_digits_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 27: print digits loop
 ;
 ; Print "01234\n" using a loop that stores digits into a buffer then one write. Exit 0.

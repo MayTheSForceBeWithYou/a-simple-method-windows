@@ -1,3 +1,12 @@
+; Exercise: 01-add-sub
+;
+; Exercise 01: add sub
+; rcx=100; add 20; sub 78; exit (42).
+;
+; Contract: implement `ex_01_add_sub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 01: add sub (Win32 port)
 ;
 ; RAX=100; add 20; sub 78; exit (42).

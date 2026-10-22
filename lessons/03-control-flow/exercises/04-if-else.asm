@@ -1,3 +1,12 @@
+; Exercise: 04-if-else
+;
+; Exercise 04: if else
+; If rax>10 exit 1 else exit 2. Set rax=11.
+;
+; Contract: implement `ex_04_if_else` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; Exercise 04: if else
 ;
 ; If rax>10 exit 1 else exit 2. Set rax=11.

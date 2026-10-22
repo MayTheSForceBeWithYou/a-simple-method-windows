@@ -1,3 +1,13 @@
+; Exercise: 05-entity-alive
+;
+; Exercise 05: entity alive
+; flags bit0 alive; exit 1.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_05_entity_alive` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 05-entity-alive: entity alive
 .CODE
 EXTRN ExitProcess:PROC

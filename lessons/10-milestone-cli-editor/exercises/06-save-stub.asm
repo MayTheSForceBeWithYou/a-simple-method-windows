@@ -1,3 +1,12 @@
+; Exercise: 06-save-stub
+;
+; Exercise 06: save stub
+; Pretend save ok; exit 0.
+;
+; Contract: implement `ex_06_save_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 06-save-stub.asm: CreateFile, WriteFile buffer, CloseHandle, exit 0
 .DATA
 fname DB "test.txt", 0

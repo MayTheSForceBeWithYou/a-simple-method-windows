@@ -1,3 +1,13 @@
+; Exercise: 16-ui-focus
+;
+; Exercise 16: ui focus
+; Tab cycles focus index mod 3; from 2 -> 0; exit 0.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_16_ui_focus` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 16-ui-focus: ui focus
 .CODE
 EXTRN ExitProcess:PROC

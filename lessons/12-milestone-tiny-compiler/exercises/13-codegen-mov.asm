@@ -1,3 +1,12 @@
+; Exercise: 13-codegen-mov
+;
+; Exercise 13: codegen mov
+; Emit conceptual: store imm 42 into slot; exit 42.
+;
+; Contract: implement `ex_13_codegen_mov` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; 13-codegen-mov.asm: Emit MOV between registers, exit 0
 .CODE
 EXTRN ExitProcess:PROC

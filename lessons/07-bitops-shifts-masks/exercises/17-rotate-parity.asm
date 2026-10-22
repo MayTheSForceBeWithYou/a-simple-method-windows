@@ -1,3 +1,11 @@
+; Exercise: 17-rotate-parity
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_17_rotate_parity` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 128
+;
+
 ; 17-rotate-parity.asm
 ;
 ; Use rotate to compute simple parity (XOR of all bits).

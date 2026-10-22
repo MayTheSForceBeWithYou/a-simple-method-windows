@@ -1,3 +1,13 @@
+; Exercise: 12-bfs-queue
+;
+; Exercise 12: bfs queue
+; BFS visit count 5; exit 5.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_12_bfs_queue` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 12-bfs-queue: bfs queue
 .CODE
 EXTRN ExitProcess:PROC

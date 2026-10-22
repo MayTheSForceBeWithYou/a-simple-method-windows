@@ -1,3 +1,12 @@
+; Exercise: 12-line-start-end
+;
+; Exercise 12: line start end
+; In "ab\ncd" find line start for cur=4 (index of c)->3; exit 3.
+;
+; Contract: implement `ex_12_line_start_end` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 12-line-start-end.asm: Find line start (scan back for \n), exit line_start
 .DATA?
 buf DB 256 DUP(?)

@@ -1,3 +1,12 @@
+; Exercise: 09-xor-checksum
+;
+; Exercise 09: xor checksum
+; XOR-fold bytes 1,2,4,8 -> 15.
+;
+; Contract: implement `ex_09_xor_checksum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
+;
+
 ; 09-xor-checksum.asm
 ;
 ; Compute a simple XOR checksum of a sequence of bytes.

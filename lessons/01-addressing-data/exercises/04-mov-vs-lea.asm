@@ -1,3 +1,12 @@
+; Exercise: 04-mov-vs-lea
+;
+; Exercise 04: mov vs lea
+; Label x QWORD 99. lea rbx,[x] then mov rcx,[rbx]. Exit with 99. Comment which is address vs load.
+;
+; Contract: implement `ex_04_mov_vs_lea` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 99
+;
+
 ; Exercise 04: mov vs lea (Win32 port)
 ;
 ; Label x DQ 99. LEA RBX,[x] then MOV RAX,[RBX]. Exit with 99.

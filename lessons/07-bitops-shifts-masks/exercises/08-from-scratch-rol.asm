@@ -1,3 +1,11 @@
+; Exercise: 08-from-scratch-rol
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_08_from_scratch_rol` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 08-from-scratch-rol.asm (from scratch)
 ;
 ; Use ROL (rotate left) to move bits without losing them.

@@ -1,3 +1,12 @@
+; Exercise: 24-from-scratch-q8-mul
+;
+; Exercise 24: from scratch q8 mul
+; FROM SCRATCH: Q8.8 2.5 * 2 = 5; exit 5.
+;
+; Contract: implement `ex_24_from_scratch_q8_mul` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 24-from-scratch-q8-mul
 .CODE
 EXTRN ExitProcess:PROC

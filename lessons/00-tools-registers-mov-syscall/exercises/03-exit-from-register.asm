@@ -1,3 +1,12 @@
+; Exercise: 03-exit-from-register
+;
+; Exercise 03: exit from register
+; Put 42 in rbx, copy to rcx, exit with that status. Immediate only allowed when loading rbx.
+;
+; Contract: implement `ex_03_exit_from_register` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 03: exit from register (Win32 port)
 ;
 ; Put 42 into RAX, then move it to the correct register for ExitProcess.

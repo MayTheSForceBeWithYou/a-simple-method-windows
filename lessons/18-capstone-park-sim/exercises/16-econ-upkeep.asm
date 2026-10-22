@@ -1,3 +1,13 @@
+; Exercise: 16-econ-upkeep
+;
+; Exercise 16: econ upkeep
+; cash -= 3; from 10 exit 7.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_16_econ_upkeep` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
+
 ; 16-econ-upkeep: econ upkeep
 .CODE
 EXTRN ExitProcess:PROC

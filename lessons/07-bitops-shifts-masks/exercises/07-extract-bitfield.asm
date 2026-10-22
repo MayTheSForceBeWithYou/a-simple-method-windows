@@ -1,3 +1,11 @@
+; Exercise: 07-extract-bitfield
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_07_extract_bitfield` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
+;
+
 ; 07-extract-bitfield.asm
 ;
 ; Extract a bitfield by shifting and masking.

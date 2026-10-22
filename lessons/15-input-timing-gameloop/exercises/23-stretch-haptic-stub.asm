@@ -1,3 +1,13 @@
+; Exercise: 23-stretch-haptic-stub
+;
+; Exercise 23: stretch haptic stub
+; STRETCH: rumble frames remaining 2; exit 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_23_stretch_haptic_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 23-stretch-haptic-stub: stretch haptic stub
 .CODE
 EXTRN ExitProcess:PROC

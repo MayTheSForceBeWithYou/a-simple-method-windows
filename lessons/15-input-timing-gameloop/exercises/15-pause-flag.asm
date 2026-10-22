@@ -1,3 +1,13 @@
+; Exercise: 15-pause-flag
+;
+; Exercise 15: pause flag
+; Paused skips update; updates=0; exit 0.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_15_pause_flag` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 15-pause-flag: pause flag
 .CODE
 EXTRN ExitProcess:PROC

@@ -1,3 +1,12 @@
+; Exercise: 20-count-leading-zeros-loop
+;
+; Exercise 20: clz loop
+; Count leading zeros in 000F0h (16-bit) -> 8.
+;
+; Contract: implement `ex_20_count_leading_zeros_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 8
+;
+
 ; 20-count-leading-zeros-loop.asm
 ;
 ; Count leading zeros in a 16-bit value using a loop.

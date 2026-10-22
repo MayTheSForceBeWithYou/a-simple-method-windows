@@ -1,3 +1,12 @@
+; Exercise: 09-nested-calls
+;
+; Exercise 09: nested calls
+; double(x)=x*2; add(a,b)=a+b. Compute add(double(10),double(11))=42. MS x64 ABI.
+;
+; Contract: implement `ex_09_nested_calls` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 09: nested calls (Win32 port)
 ;
 ; double(x)=x*2; add(a,b)=a+b. Compute add(double(10),double(11))=42.

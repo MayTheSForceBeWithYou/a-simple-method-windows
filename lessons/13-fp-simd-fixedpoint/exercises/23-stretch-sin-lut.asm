@@ -1,3 +1,12 @@
+; Exercise: 23-stretch-sin-lut
+;
+; Exercise 23: stretch sin lut
+; STRETCH: LUT[0]=0 LUT[1]=1; index 1 exit 1.
+;
+; Contract: implement `ex_23_stretch_sin_lut` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 23-stretch-sin-lut
 .CODE
 EXTRN ExitProcess:PROC

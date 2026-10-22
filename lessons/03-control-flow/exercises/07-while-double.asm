@@ -1,3 +1,12 @@
+; Exercise: 07-while-double
+;
+; Exercise 07: while double
+; rax=1; while rax<100 rax*=2; exit with final rax clamped: put rax in rcx then and 255; 128&255=128.
+;
+; Contract: implement `ex_07_while_double` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 128
+;
+
 ; Exercise 07: while double
 ;
 ; rax=1; while rax<100 rax*=2; exit with final rax clamped: put rax in rcx then and 255; 128&255=128.

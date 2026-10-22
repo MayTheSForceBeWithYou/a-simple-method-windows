@@ -1,3 +1,13 @@
+; Exercise: 09-tile-at
+;
+; Exercise 09: tile at
+; map 4-wide; get(1,1)= tile index 5 stored; exit 5.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_09_tile_at` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 09-tile-at: tile at
 .CODE
 EXTRN ExitProcess:PROC

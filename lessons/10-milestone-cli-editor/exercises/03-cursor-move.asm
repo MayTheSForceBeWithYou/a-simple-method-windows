@@ -1,3 +1,12 @@
+; Exercise: 03-cursor-move
+;
+; Exercise 03: cursor move
+; cursor; move right then left; exit cursor 0.
+;
+; Contract: implement `ex_03_cursor_move` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 03-cursor-move.asm: Move cursor right with clamping, exit cursor value
 .DATA?
 len QWORD ?

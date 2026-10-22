@@ -1,3 +1,12 @@
+; Exercise: 28-from-scratch-expr
+;
+; Exercise 28: from scratch expr
+; FROM SCRATCH: exit status = (12*12 - 100) / 4 + 1 = 12. Show work with idiv.
+;
+; Contract: implement `ex_28_from_scratch_expr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
+;
+
 ; Exercise 28: from scratch expr
 ;
 ; FROM SCRATCH: exit status = (12*12 - 100) / 4 + 1 = 12. Show work with idiv.

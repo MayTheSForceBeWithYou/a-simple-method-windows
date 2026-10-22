@@ -1,3 +1,13 @@
+; Exercise: 07-hello-world
+;
+; Exercise 07: hello world
+; Write "Hello, world\n" to stdout, then exit 0.
+; Expected stdout: "Hello, world\n"
+;
+; Contract: implement `ex_07_hello_world` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 07: hello world (Win32 port)
 ;
 ; Write "Hello, world\n" to stdout, then exit 0.

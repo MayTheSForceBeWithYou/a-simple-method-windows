@@ -1,3 +1,12 @@
+; Exercise: 18-strlen-loop
+;
+; Exercise 18: strlen loop
+; Cstring 'hello',0. Count length 5 into rcx.
+;
+; Contract: implement `ex_18_strlen_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; Exercise 18: strlen loop
 ;
 ; Cstring 'hello',0. Count length 5 into rcx.

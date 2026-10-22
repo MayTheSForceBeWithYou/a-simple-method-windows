@@ -1,3 +1,12 @@
+; Exercise: 04-codegen-add
+;
+; Exercise 04: codegen add
+; Fold 2+3 at compile-time; exit 5.
+;
+; Contract: implement `ex_04_codegen_add` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 04-codegen-add.asm: Generate ADD instruction sequence, exit 0
 .CODE
 EXTRN ExitProcess:PROC

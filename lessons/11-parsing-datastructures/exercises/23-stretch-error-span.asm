@@ -1,3 +1,12 @@
+; Exercise: 23-stretch-error-span
+;
+; Exercise 23: stretch error span
+; STRETCH: error at offset 4 length 1; exit 4.
+;
+; Contract: implement `ex_23_stretch_error_span` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 23-stretch-error-span
 .CODE
 EXTRN ExitProcess:PROC

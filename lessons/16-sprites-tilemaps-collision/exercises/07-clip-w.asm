@@ -1,3 +1,13 @@
+; Exercise: 07-clip-w
+;
+; Exercise 07: clip w
+; sprite w clipped; exit 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_07_clip_w` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 07-clip-w: clip w
 .CODE
 EXTRN ExitProcess:PROC

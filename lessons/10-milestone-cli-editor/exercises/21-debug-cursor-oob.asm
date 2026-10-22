@@ -1,3 +1,12 @@
+; Exercise: 21-debug-cursor-oob
+;
+; Exercise 21: debug cursor oob
+; BUG: cursor can exceed len. Clamp cur to len; start cur=9 len=3; exit 3.
+;
+; Contract: implement `ex_21_debug_cursor_oob` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 21-debug-cursor-oob.asm: Clamp out-of-range cursor, exit clamped value
 ; BUG: cursor can exceed len. Clamp cur to len; start cur=9 len=3; exit 3.
 ; Expected exit: 3

@@ -1,3 +1,13 @@
+; Exercise: 11-hline
+;
+; Exercise 11: hline
+; Horizontal line y=0 x=0..2 set 1; sum first 3=3.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_11_hline` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 11-hline: hline
 .CODE
 EXTRN ExitProcess:PROC

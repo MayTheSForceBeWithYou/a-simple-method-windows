@@ -1,3 +1,12 @@
+; Exercise: 04-imul-two
+;
+; Exercise 04: imul two
+; imul-style: rax=6, imul rax,7; mov rcx,rax; exit 42.
+;
+; Contract: implement `ex_04_imul_two` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 04: imul two (Win32 port)
 ;
 ; RAX=6, RBX=7. IMUL RAX, RBX. Exit with 42.

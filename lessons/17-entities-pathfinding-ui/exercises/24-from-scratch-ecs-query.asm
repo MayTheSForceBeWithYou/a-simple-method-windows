@@ -1,3 +1,13 @@
+; Exercise: 24-from-scratch-ecs-query
+;
+; Exercise 24: from scratch ecs query
+; FROM SCRATCH: count entities with mask POS; 3 of 4; exit 3.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_24_from_scratch_ecs_query` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 24-from-scratch-ecs-query: from scratch ecs query
 .CODE
 EXTRN ExitProcess:PROC

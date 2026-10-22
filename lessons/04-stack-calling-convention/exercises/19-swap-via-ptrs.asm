@@ -1,23 +1,24 @@
-; Exercise 19: swap via ptrs (Win32 port)
-; swap(RCX=&a, RDX=&b). a=1, b=2; after swap exit a (2).
-; Build: ml64 /c /Fo19-swap-via-ptrs.obj 19-swap-via-ptrs.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:19-swap-via-ptrs.exe 19-swap-via-ptrs.obj kernel32.lib
-; Expected: exit code 2
-
-.DATA
-a DQ 1
-b DQ 2
+; Exercise: 19-swap-via-ptrs
+;
+; Exercise 19: swap via ptrs
+; swap(&a,&b). a=1,b=2; after swap exit a (2). MS x64 ABI.
+;
+; Contract: implement `ex_19_swap_via_ptrs` (MS x64). Return exit code in EAX.
+; Expected exit: 2
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement swap(RCX=ptr1, RDX=ptr2)
+EXTRN ExitProcess:PROC
+EXTRN ex_19_swap_via_ptrs:PROC
+
+; TODO: write ex_19_swap_via_ptrs in this file.
 
 main PROC
-    sub     rsp, 32
-    lea rcx, a
-    lea rdx, b
-    call swap
-    mov rcx, a
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_19_swap_via_ptrs
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

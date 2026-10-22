@@ -1,3 +1,12 @@
+; Exercise: 24-from-scratch-kill-line
+;
+; Exercise 24: from scratch kill line
+; FROM SCRATCH: "ab\ncd" kill from cur=0 to newline -> len becomes 3 ("\ncd"); exit 3.
+;
+; Contract: implement `ex_24_from_scratch_kill_line` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 24-from-scratch-kill-line.asm: Delete from cursor to newline, exit len
 .DATA?
 buf DB 256 DUP(?)

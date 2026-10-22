@@ -1,3 +1,12 @@
+; Exercise: 17-while-codegen
+;
+; Exercise 17: while codegen
+; while i<3 i++; exit i=3.
+;
+; Contract: implement `ex_17_while_codegen` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 17-while-codegen.asm: Generate while-loop jump, exit 0
 .CODE
 EXTRN ExitProcess:PROC

@@ -1,3 +1,11 @@
+; Exercise: 21-gray-code
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_21_gray_code` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 21-gray-code.asm
 ;
 ; Convert binary to Gray code using XOR and shift.

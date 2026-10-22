@@ -1,44 +1,78 @@
-; Exercise 23: stretch pipe note
+; Exercise 23: stretch create pipe
 ;
-; STRETCH: CreatePipe into handles; if success exit 0. (Should work)
+; CreatePipe, write "ABC", read back; exit byte count (3).
 ;
-; Build: ml64 /c 23-stretch-createpipe.asm && link /OUT:23-stretch-createpipe.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-createpipe.obj kernel32.lib
-;
-; Expected exit: 0
+; Expected exit: 3
 
 EXTERN CreatePipe:PROC
+EXTERN WriteFile:PROC
+EXTERN ReadFile:PROC
+EXTERN CloseHandle:PROC
 EXTERN ExitProcess:PROC
 
+.data
+payload BYTE "ABC"
+
 .data?
-hReadPipe QWORD ?
-hWritePipe QWORD ?
+hRead QWORD ?
+hWrite QWORD ?
+readBuf BYTE 8 DUP(?)
+bytesWritten DWORD ?
+bytesRead DWORD ?
 
 .code
 ex_23_stretch_createpipe PROC
-    sub rsp, 40
+    sub rsp, 88
     
-    ; CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
-    lea rcx, hReadPipe
-    lea rdx, hWritePipe
-    mov r8, 0               ; lpPipeAttributes = NULL
-    mov r9d, 0              ; nSize = 0 (default)
+    lea rcx, hRead
+    lea rdx, hWrite
+    xor r8, r8
+    xor r9d, r9d
     call CreatePipe
-    
-    ; Returns nonzero on success
     test eax, eax
     jz L_fail
-    
-    ; Success - exit 0
-    mov rcx, 0
-    jmp L_o
-    
+
+    mov rcx, hWrite
+    lea rdx, payload
+    mov r8d, 3
+    lea r9, bytesWritten
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    test eax, eax
+    jz L_fail_close
+
+    mov rcx, hRead
+    lea rdx, readBuf
+    mov r8d, 3
+    lea r9, bytesRead
+    mov QWORD PTR [rsp+32], 0
+    call ReadFile
+    test eax, eax
+    jz L_fail_close
+
+    mov eax, DWORD PTR bytesRead
+    jmp L_cleanup
+
+L_fail_close:
+    mov rcx, hRead
+    call CloseHandle
+    mov rcx, hWrite
+    call CloseHandle
+    mov eax, 1
+    jmp L_done
+
+L_cleanup:
+    mov rcx, hRead
+    call CloseHandle
+    mov rcx, hWrite
+    call CloseHandle
+    jmp L_done
+
 L_fail:
-    ; Failure - exit 1
-    mov rcx, 1
-    
-L_o:
-    mov     eax, ecx
-    add     rsp, 40
+    mov eax, 1
+
+L_done:
+    add rsp, 88
     ret
 ex_23_stretch_createpipe ENDP
 main PROC

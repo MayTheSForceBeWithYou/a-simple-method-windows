@@ -1,3 +1,12 @@
+; Exercise: 04-zero-with-xor
+;
+; Exercise 04: zero with xor
+; Zero rdi using xor, then exit 0. No mov immediate.
+;
+; Contract: implement `ex_04_zero_with_xor` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 04: zero with xor (Win32 port)
 ;
 ; Use the XOR idiom to zero RCX, then exit with that status.

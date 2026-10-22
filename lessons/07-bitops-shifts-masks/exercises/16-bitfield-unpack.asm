@@ -1,3 +1,11 @@
+; Exercise: 16-bitfield-unpack
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_16_bitfield_unpack` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 16-bitfield-unpack.asm
 ;
 ; Unpack a 4-bit field from bits 4-7 of a packed value.

@@ -1,3 +1,13 @@
+; Exercise: 22-stretch-bresenham-count
+;
+; Exercise 22: stretch bresenham count
+; STRETCH: line from 0,0 to 3,0 plots 4 pixels; exit 4.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_22_stretch_bresenham_count` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 22-stretch-bresenham-count: stretch bresenham count
 .CODE
 EXTRN ExitProcess:PROC

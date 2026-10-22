@@ -1,3 +1,12 @@
+; Exercise: 07-stack-ds
+;
+; Exercise 07: stack ds
+; Push 1,2 pop to rdi; exit 2.
+;
+; Contract: implement `ex_07_stack_ds` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 07-stack-ds
 .CODE
 EXTRN ExitProcess:PROC

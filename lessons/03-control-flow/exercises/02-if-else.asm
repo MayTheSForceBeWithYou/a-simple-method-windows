@@ -1,3 +1,11 @@
+; Exercise: 02-if-else
+;
+; Exercise 02: if else (Win32 port) - SOLUTION
+;
+; Contract: implement `ex_02_if_else` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 20
+;
+
 ; Exercise 02: if else (Win32 port)
 ;
 ; RAX=5. If RAX < 10, exit 20; else exit 30.

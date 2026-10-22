@@ -1,3 +1,12 @@
+; Exercise: 12-virtualalloc-read-write
+;
+; Exercise 12: mmap write read
+; VirtualAlloc 4096; write 99 at +100; read back; exit 99.
+;
+; Contract: implement `ex_12_virtualalloc_read_write` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 99
+;
+
 ; 12-virtualalloc-read-write.asm
 ;
 ; Allocate memory, store 99 at offset 100, read it back, exit 99.

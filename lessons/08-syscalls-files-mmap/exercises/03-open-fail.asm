@@ -1,3 +1,12 @@
+; Exercise: 03-open-fail
+;
+; Exercise 03: open fail
+; open nonexistent path; if CreateFileA returns INVALID_HANDLE_VALUE exit 1 else 0. Expect 1.
+;
+; Contract: implement `ex_03_open_fail` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 03-open-fail.asm
 ;
 ; Try to open a missing file, exit 1 on failure.

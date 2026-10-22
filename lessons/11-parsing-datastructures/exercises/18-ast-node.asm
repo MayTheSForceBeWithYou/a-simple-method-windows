@@ -1,3 +1,12 @@
+; Exercise: 18-ast-node
+;
+; Exercise 18: ast node
+; AST node kind=1 left=2 right=3; exit kind+left+right=6.
+;
+; Contract: implement `ex_18_ast_node` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; 18-ast-node
 .CODE
 EXTRN ExitProcess:PROC

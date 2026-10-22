@@ -1,3 +1,12 @@
+; Exercise: 14-abs-fixed
+;
+; Exercise 14: abs fixed
+; Absolute value of Q16.16 -3.0; exit 3.
+;
+; Contract: implement `ex_14_abs_fixed` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 14-abs-fixed.asm: Absolute value Q16.16, exit abs
 .CODE
 EXTRN ExitProcess:PROC

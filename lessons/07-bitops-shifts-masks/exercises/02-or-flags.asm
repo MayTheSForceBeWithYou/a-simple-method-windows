@@ -1,3 +1,12 @@
+; Exercise: 02-or-flags
+;
+; Exercise 02: or flags
+; Set bits 0 and 2; exit 5.
+;
+; Contract: implement `ex_02_or_flags` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 02-or-flags.asm
 ;
 ; Use OR to set specific bits (set flags).

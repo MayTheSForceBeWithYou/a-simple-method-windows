@@ -1,3 +1,11 @@
+; Exercise: 15-bitfield-pack
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_15_bitfield_pack` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 85
+;
+
 ; 15-bitfield-pack.asm
 ;
 ; Pack three 4-bit values into a 12-bit field.

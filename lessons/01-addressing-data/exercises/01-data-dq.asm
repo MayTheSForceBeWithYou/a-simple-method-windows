@@ -1,3 +1,12 @@
+; Exercise: 01-data-dq
+;
+; Exercise 01: data dq
+; Define count QWORD 41 in .data. Load into rcx, add 1, exit (42).
+;
+; Contract: implement `ex_01_data_dq` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 01: data dq (Win32 port)
 ;
 ; Define count DQ 41 in .DATA. Load into RAX, add 1, exit with result (42).

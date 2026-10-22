@@ -1,19 +1,24 @@
-; Exercise 08: from scratch rec pow (Win32 port)
-; FROM SCRATCH: pow(base,exp) recursive multiply. pow(2,5)=32; exit 32.
-; Build: ml64 /c /Fo08-from-scratch-rec-pow.obj 08-from-scratch-rec-pow.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-from-scratch-rec-pow.exe 08-from-scratch-rec-pow.obj kernel32.lib
-; Expected: exit code 32
+; Exercise: 08-from-scratch-rec-pow
+;
+; Exercise 08: from scratch rec pow
+; pow(base,exp) recursive. pow(2,5)=32.
+;
+; Contract: implement `ex_08_from_scratch_rec_pow` (MS x64). Return exit code in EAX.
+; Expected exit: 32
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement recursive pow(RCX=base, RDX=exp)
+EXTRN ExitProcess:PROC
+EXTRN ex_08_from_scratch_rec_pow:PROC
+
+; TODO: write ex_08_from_scratch_rec_pow in this file.
 
 main PROC
-    sub     rsp, 32
-    mov rcx, 2
-    mov rdx, 5
-    call pow
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_08_from_scratch_rec_pow
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

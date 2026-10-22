@@ -1,3 +1,13 @@
+; Exercise: 09-write-len-check
+;
+; Exercise 09: write len check
+; write "Z\n"; if written==2 exit 0 else 1.
+; Expected stdout: "Z\n"
+;
+; Contract: implement `ex_09_write_len_check` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 09-write-len-check.asm
 ;
 ; Write a message to stdout, verify bytes written matches expected.

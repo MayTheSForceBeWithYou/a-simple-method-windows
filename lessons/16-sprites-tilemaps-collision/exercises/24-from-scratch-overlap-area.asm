@@ -1,3 +1,13 @@
+; Exercise: 24-from-scratch-overlap-area
+;
+; Exercise 24: from scratch overlap area
+; FROM SCRATCH: overlap width 2 height 3 area 6; exit 6.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_24_from_scratch_overlap_area` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; 24-from-scratch-overlap-area: from scratch overlap area
 .CODE
 EXTRN ExitProcess:PROC

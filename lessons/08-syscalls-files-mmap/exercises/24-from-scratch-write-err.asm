@@ -1,3 +1,12 @@
+; Exercise: 24-from-scratch-write-err
+;
+; Exercise 24: from scratch write err
+; FROM SCRATCH: write to invalid handle=-1; expect error; exit 1.
+;
+; Contract: implement `ex_24_from_scratch_write_err` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 24-from-scratch-write-err.asm (from scratch)
 ;
 ; Try to write to an invalid handle, detect error, exit 1.

@@ -1,3 +1,11 @@
+; Exercise: 22-stretch-swar-avg
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_22_stretch_swar_avg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 150
+;
+
 ; 22-stretch-swar-avg.asm (stretch)
 ;
 ; Compute average of two unsigned bytes without overflow using SWAR technique.

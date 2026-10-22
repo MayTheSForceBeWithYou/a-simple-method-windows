@@ -1,3 +1,12 @@
+; Exercise: 14-print-A
+;
+; Exercise 14: print A
+; Write "A\n". Exit 0.
+;
+; Contract: implement `ex_14_print_A` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 14: print A
 ;
 ; Write "A\n". Exit 0.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 14-print-A.asm && link /OUT:14-print-A.exe /ENTRY:main /SUBSYSTEM:CONSOLE 14-print-A.obj kernel32.lib
 ;
 ; Expected exit: 0
-
 
 .CODE
 

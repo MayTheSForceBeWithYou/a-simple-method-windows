@@ -1,15 +1,13 @@
-; 14-heapalloc.asm
+; Exercise 14: heapalloc
 ;
-; Windows doesn't have brk. Demonstrate VirtualAlloc instead, exit 0.
+; Use GetProcessHeap / HeapAlloc (not VirtualAlloc). Exit 0 if heap handle is valid.
 ;
-; Task: VirtualAlloc one page, check for nonzero, exit 0 if successful.
-;
-; Hint: This exercise adapts the Linux brk concept to Windows VirtualAlloc.
+; Contract: implement `ex_14_heapalloc`; return 0 on success, 1 on failure.
+; Expected exit: 0
 
 .CODE
 
-EXTRN VirtualAlloc:PROC
-EXTRN VirtualFree:PROC
+EXTRN GetProcessHeap:PROC
 EXTRN ExitProcess:PROC
 EXTRN ex_14_heapalloc:PROC
 

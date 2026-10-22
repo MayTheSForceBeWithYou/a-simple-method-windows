@@ -1,3 +1,12 @@
+; Exercise: 16-debug-missing-pop
+;
+; Exercise 16: debug missing pop
+; BUG fixed: balanced stack. fact(3)=6.
+;
+; Contract: implement `ex_16_debug_missing_pop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; Exercise 16: debug missing pop
 ; BUG HUNT: recursive fact-like leaves stack unbalanced. Fix; fact(3)=6 exit 6.
 ; Build: ml64 /c /Fo16-debug-missing-pop.obj 16-debug-missing-pop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-debug-missing-pop.exe 16-debug-missing-pop.obj kernel32.lib

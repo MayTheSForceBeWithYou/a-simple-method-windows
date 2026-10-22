@@ -1,3 +1,12 @@
+; Exercise: 14-dirty-flag
+;
+; Exercise 14: dirty flag
+; Edit sets dirty=1; save clears; exit dirty 0.
+;
+; Contract: implement `ex_14_dirty_flag` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 14-dirty-flag.asm: Set dirty=1 on edit, clear on save, exit dirty
 .DATA?
 dirty QWORD ?

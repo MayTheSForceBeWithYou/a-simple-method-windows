@@ -1,3 +1,12 @@
+; Exercise: 12-next-power-of-two-bit
+;
+; Exercise 12: next power check
+; Test if 16 is power of two; exit 1.
+;
+; Contract: implement `ex_12_next_power_of_two_bit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 12-next-power-of-two-bit.asm
 ;
 ; Find the highest set bit and return the next power of 2.

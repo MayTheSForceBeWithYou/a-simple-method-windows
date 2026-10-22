@@ -1,3 +1,12 @@
+; Exercise: 25-comment-trace
+;
+; Exercise 25: comment trace
+; Exit 9. Every instruction needs an end-of-line comment.
+;
+; Contract: implement `ex_25_comment_trace` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
+;
+
 ; Exercise 25: comment trace
 ;
 ; Exit 9. Every instruction needs an end-of-line comment.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 25-comment-trace.asm && link /OUT:25-comment-trace.exe /ENTRY:main /SUBSYSTEM:CONSOLE 25-comment-trace.obj kernel32.lib
 ;
 ; Expected exit: 9
-
 
 .CODE
 

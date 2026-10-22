@@ -1,3 +1,12 @@
+; Exercise: 16-sum-1-to-n-unroll
+;
+; Exercise 16: sum 1 to n unroll
+; Without jumps: sum 1+2+...+8 into rcx (36) using add chain; exit.
+;
+; Contract: implement `ex_16_sum_1_to_n_unroll` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 36
+;
+
 ; Exercise 16: sum 1 to n unroll
 ;
 ; Without jumps: sum 1+2+...+8 into rcx (36) using add chain; exit.

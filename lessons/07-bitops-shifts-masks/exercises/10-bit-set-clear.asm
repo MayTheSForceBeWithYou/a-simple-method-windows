@@ -1,3 +1,12 @@
+; Exercise: 10-bit-set-clear
+;
+; Exercise 10: bit set clear
+; Set bit 3, then clear it; exit 0.
+;
+; Contract: implement `ex_10_bit_set_clear` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 10-bit-set-clear.asm
 ;
 ; Set and clear specific bits using OR and AND.

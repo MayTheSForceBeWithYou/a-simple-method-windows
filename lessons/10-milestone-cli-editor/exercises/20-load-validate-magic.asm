@@ -1,3 +1,12 @@
+; Exercise: 20-load-validate-magic
+;
+; Exercise 20: load validate magic
+; Magic "ED01"; check first two ED; exit 1 if ok.
+;
+; Contract: implement `ex_20_load_validate_magic` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 20-load-validate-magic.asm: Load file, check magic, exit 0 if valid else 1
 .DATA
 fname DB "save.dat", 0

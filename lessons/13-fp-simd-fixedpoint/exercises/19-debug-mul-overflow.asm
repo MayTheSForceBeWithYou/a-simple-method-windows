@@ -1,3 +1,12 @@
+; Exercise: 19-debug-mul-overflow
+;
+; Exercise 19: debug mul overflow
+; Q16.16 multiply 2.0 * 3.0; exit 6.
+;
+; Contract: implement `ex_19_debug_mul_overflow` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; 19-debug-mul-overflow.asm: Debug Q16.16 mul overflow handling
 ; BUG: full 64-bit product used without high-half discard. Fix small Q mul.
 ; Expected exit: 6

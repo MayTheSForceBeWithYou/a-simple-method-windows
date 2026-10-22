@@ -1,3 +1,12 @@
+; Exercise: 16-expr-stack
+;
+; Exercise 16: expr stack
+; Shunting: push 2,3, add -> 5; exit 5.
+;
+; Contract: implement `ex_16_expr_stack` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 16-expr-stack
 .CODE
 EXTRN ExitProcess:PROC

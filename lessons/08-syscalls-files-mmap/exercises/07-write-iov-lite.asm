@@ -1,3 +1,13 @@
+; Exercise: 07-write-iov-lite
+;
+; Exercise 07: write iov lite
+; Two writes simulating writev; print 'A\nB\n'; exit 0.
+; Expected stdout: "A\nB\n"
+;
+; Contract: implement `ex_07_write_iov_lite` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 07-write-iov-lite.asm
 ;
 ; Write two separate buffers to stdout using two WriteFile calls.

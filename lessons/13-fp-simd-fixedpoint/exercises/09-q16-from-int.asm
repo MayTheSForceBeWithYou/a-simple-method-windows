@@ -1,3 +1,12 @@
+; Exercise: 09-q16-from-int
+;
+; Exercise 09: q16 from int
+; Convert 5 to Q16.16; >>16 back exit 5.
+;
+; Contract: implement `ex_09_q16_from_int` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; 09-q16-from-int.asm: Encode 5 in Q16.16, decode, exit 5
 .CODE
 EXTRN ExitProcess:PROC

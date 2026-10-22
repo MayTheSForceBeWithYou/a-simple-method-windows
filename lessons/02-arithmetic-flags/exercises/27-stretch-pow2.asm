@@ -1,3 +1,12 @@
+; Exercise: 27-stretch-pow2
+;
+; Exercise 27: stretch pow2
+; STRETCH: compute 2^8 with successive imuls. Exit (256 - 256)=0.
+;
+; Contract: implement `ex_27_stretch_pow2` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 27: stretch pow2
 ;
 ; STRETCH: compute 2^8 with successive imuls. Exit (256 - 256)=0.

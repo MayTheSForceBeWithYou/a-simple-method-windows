@@ -1,3 +1,12 @@
+; Exercise: 18-struct-offsets
+;
+; Exercise 18: struct offsets
+; Simulate struct {QWORD a; QWORD b; BYTE c;}: set a=1,b=2,c=3. Exit a+b+c=6 using explicit offsets 0,8,16.
+;
+; Contract: implement `ex_18_struct_offsets` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; Exercise 18: struct offsets
 ;
 ; Simulate struct {QWORD a; QWORD b; BYTE c;}: set a=1,b=2,c=3. Exit a+b+c=6 using explicit offsets 0,8,16.

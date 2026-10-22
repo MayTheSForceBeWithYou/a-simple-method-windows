@@ -1,3 +1,12 @@
+; Exercise: 06-sum-1-n
+;
+; Exercise 06: sum 1 n
+; Sum 1..n for n=10 into rcx (55).
+;
+; Contract: implement `ex_06_sum_1_n` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 55
+;
+
 ; Exercise 06: sum 1 n
 ;
 ; Sum 1..n for n=10 into rcx (55).

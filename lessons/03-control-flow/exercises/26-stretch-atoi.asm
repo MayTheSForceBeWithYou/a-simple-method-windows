@@ -1,3 +1,12 @@
+; Exercise: 26-stretch-atoi
+;
+; Exercise 26: stretch atoi
+; STRETCH: parse "42" decimal ascii into rcx (42) with a loop.
+;
+; Contract: implement `ex_26_stretch_atoi` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 26: stretch atoi
 ;
 ; STRETCH: parse "42" decimal ascii into rcx (42) with a loop.

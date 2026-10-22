@@ -1,3 +1,13 @@
+; Exercise: 02-pack-rgb
+;
+; Exercise 02: pack rgb
+; Pack R=1,G=2,B=3 into 0010203h then &255 exit 3.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_02_pack_rgb` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 02-pack-rgb: pack rgb
 .CODE
 EXTRN ExitProcess:PROC

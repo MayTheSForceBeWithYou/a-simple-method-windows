@@ -1,3 +1,11 @@
+; Exercise: 18-mask-range
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_18_mask_range` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 31
+;
+
 ; 18-mask-range.asm
 ;
 ; Create a mask for a range of bits.

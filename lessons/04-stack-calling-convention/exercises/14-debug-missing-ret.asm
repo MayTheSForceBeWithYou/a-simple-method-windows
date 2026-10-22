@@ -1,3 +1,12 @@
+; Exercise: 14-debug-missing-ret
+;
+; Exercise 14: debug missing ret
+; BUG fixed: added ret. Exit 3.
+;
+; Contract: implement `ex_14_debug_missing_ret` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; Exercise 14: debug missing ret (Win32 port)
 ; BUG: function falls through without RET. Fix it. Should exit 3.
 ; Build: ml64 /c /Fo14-debug-missing-ret.obj 14-debug-missing-ret.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:14-debug-missing-ret.exe 14-debug-missing-ret.obj kernel32.lib

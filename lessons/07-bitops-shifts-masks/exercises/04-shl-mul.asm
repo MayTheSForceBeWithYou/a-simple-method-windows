@@ -1,3 +1,11 @@
+; Exercise: 04-shl-mul
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_04_shl_mul` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 24
+;
+
 ; 04-shl-mul.asm
 ;
 ; Use SHL (shift left) to multiply by a power of 2.

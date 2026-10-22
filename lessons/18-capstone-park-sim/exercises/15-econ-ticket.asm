@@ -1,3 +1,13 @@
+; Exercise: 15-econ-ticket
+;
+; Exercise 15: econ ticket
+; cash += ticket 15; from 0 exit 15.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_15_econ_ticket` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
+;
+
 ; 15-econ-ticket: econ ticket
 .CODE
 EXTRN ExitProcess:PROC

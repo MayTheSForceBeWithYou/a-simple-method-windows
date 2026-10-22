@@ -1,22 +1,24 @@
-; Exercise 03: add two args (Win32 port)
+; Exercise: 03-add-two-args
 ;
-; Function add2(RCX, RDX) -> RAX. Call with 10, 32; exit 42.
-; Note: MS x64 uses RCX, RDX (not RDI, RSI)
+; Exercise 03: add two args
+; Function add(rcx,rdx)->rax. Call with 10,32; exit 42.
 ;
-; Build: ml64 /c /Fo03-add-two-args.obj 03-add-two-args.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-add-two-args.exe 03-add-two-args.obj kernel32.lib
-; Expected: exit code 42
+; Contract: implement `ex_03_add_two_args` (MS x64). Return exit code in EAX.
+; Expected exit: 42
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement add2(RCX, RDX) that returns RCX + RDX in RAX
+EXTRN ExitProcess:PROC
+EXTRN ex_03_add_two_args:PROC
+
+; TODO: write ex_03_add_two_args in this file.
 
 main PROC
-    sub     rsp, 32
-    mov rcx, 10
-    mov rdx, 32
-    call add2
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_03_add_two_args
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

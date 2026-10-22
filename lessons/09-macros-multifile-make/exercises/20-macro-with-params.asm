@@ -1,3 +1,12 @@
+; Exercise: 20-macro-with-params
+;
+; Exercise 20: macro with params
+; MACRO ADD3 with 3 params; mov rax,a; add b; add c; ADD3 10,20,12 exit 42.
+;
+; Contract: implement `ex_20_macro_with_params` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; 20-macro-with-params.asm
 ; ADD3 macro: ADD3 10, 20, 12; exit 42.
 

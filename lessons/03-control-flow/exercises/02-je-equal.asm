@@ -1,3 +1,12 @@
+; Exercise: 02-je-equal
+;
+; Exercise 02: je equal
+; rax=3,rbx=3. If equal exit 1 else 0.
+;
+; Contract: implement `ex_02_je_equal` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; Exercise 02: je equal
 ;
 ; rax=3,rbx=3. If equal exit 1 else 0.

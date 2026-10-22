@@ -1,3 +1,12 @@
+; Exercise: 13-ifdef-debug
+;
+; Exercise 13: ifdef debug
+; Define DEBUG; IFDEF DEBUG mov rcx,1 ELSE 0; exit 1.
+;
+; Contract: implement `ex_13_ifdef_debug` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 13-ifdef-debug.asm
 ; IFDEF DEBUG should affect exit code inside ex_13_ifdef_debug (see solutions/).
 

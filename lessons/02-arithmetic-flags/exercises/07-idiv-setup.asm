@@ -1,3 +1,12 @@
+; Exercise: 07-idiv-setup
+;
+; Exercise 07: idiv setup
+; Divide 84 by 2 using idiv. cqo; idiv. Exit with quotient in rcx.
+;
+; Contract: implement `ex_07_idiv_setup` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; Exercise 07: idiv setup (Win32 port)
 ;
 ; RAX=126, divisor=3. Use CQO and IDIV. Exit with quotient (42).

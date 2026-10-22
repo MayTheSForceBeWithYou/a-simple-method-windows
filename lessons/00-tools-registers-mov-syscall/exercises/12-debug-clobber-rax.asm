@@ -1,11 +1,17 @@
+; Exercise: 12-debug-clobber-rax
+;
+; Exercise 12: debug clobber rax
+; BUG HUNT: Should write "X\n" then exit 0. Register set wrong before write. Fix.
+;
+; Contract: implement `ex_12_debug_clobber_rax` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 12: debug clobber rax
 ;
 ; BUG HUNT: Should write "X\n" then exit 0. Register set wrong before write. Fix.
 ;
-; Build: ml64 /c 12-debug-clobber-rax.asm && link /OUT:12-debug-clobber-rax.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-debug-clobber-rax.obj kernel32.lib
-;
 ; Expected exit: 0
-
 
 .DATA
 msg BYTE "X", 13, 10
@@ -18,16 +24,11 @@ EXTRN ex_12_debug_clobber_rax:PROC
 
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
     jmp     __ex_call
-    mov rcx, 1    ; BUG: fix in ex_12_debug_clobber_rax
-    mov rdx, msg    ; BUG: fix in ex_12_debug_clobber_rax
-    mov rdx, msg_len    ; BUG: fix in ex_12_debug_clobber_rax
-    mov rax, 60    ; BUG: fix in ex_12_debug_clobber_rax
-    ; syscall removed — use ExitProcess in student routine
-    mov rax, 60    ; BUG: fix in ex_12_debug_clobber_rax
-    xor rdi, rdi    ; BUG: fix in ex_12_debug_clobber_rax
-    ; syscall removed — use ExitProcess in student routine
+    mov rcx, 1                  ; BUG: wrong handle — fix in ex_12_debug_clobber_rax
+    lea rdx, msg
+    mov r8d, msg_len
+    mov rax, rcx                ; BUG: clobbered RAX before syscall-style setup
 __ex_call:
     ; TODO: write ex_12_debug_clobber_rax in this file.
     call    ex_12_debug_clobber_rax

@@ -1,3 +1,12 @@
+; Exercise: 05-byte-store
+;
+; Exercise 05: byte store
+; buf: 3 bytes. Store "O" and "K", write both + newline. Exit 0.
+;
+; Contract: implement `ex_05_byte_store` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 05: byte store (Win32 port)
 ;
 ; Declare buffer in .DATA?. Store byte 88 to it, load back, exit.

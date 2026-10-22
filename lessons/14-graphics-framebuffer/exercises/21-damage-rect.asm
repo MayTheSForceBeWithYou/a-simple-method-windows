@@ -1,3 +1,13 @@
+; Exercise: 21-damage-rect
+;
+; Exercise 21: damage rect
+; Damage union width; exit 16.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_21_damage_rect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 16
+;
+
 ; 21-damage-rect: damage rect
 .CODE
 EXTRN ExitProcess:PROC

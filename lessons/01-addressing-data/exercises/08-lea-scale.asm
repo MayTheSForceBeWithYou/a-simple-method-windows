@@ -1,3 +1,12 @@
+; Exercise: 08-lea-scale
+;
+; Exercise 08: lea scale
+; Without memory load: rbx=100, r8=3. lea rcx,[rbx+r8*4] (112), exit.
+;
+; Contract: implement `ex_08_lea_scale` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 112
+;
+
 ; Exercise 08: lea scale (Win32 port)
 ;
 ; Use LEA to multiply: RAX=7, compute RAX*4 with LEA RAX,[RAX*4]. Exit with 28.

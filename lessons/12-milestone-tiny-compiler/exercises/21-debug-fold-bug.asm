@@ -1,3 +1,12 @@
+; Exercise: 21-debug-fold-bug
+;
+; Exercise 21: debug fold bug
+; BUG: 2*3+4 computed as 2*(3+4). Fix to 10.
+;
+; Contract: implement `ex_21_debug_fold_bug` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
+;
+
 ; Exercise 21: debug fold bug
 ; BUG: 2*3+4 computed as 2*(3+4). Fix to 10.
 ; Expected exit: 10

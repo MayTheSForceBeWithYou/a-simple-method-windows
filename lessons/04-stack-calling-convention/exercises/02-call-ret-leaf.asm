@@ -1,19 +1,24 @@
-; Exercise 02: call ret leaf (Win32 port)
+; Exercise: 02-call-ret-leaf
 ;
-; Write leaf function answer() that returns 42 in RAX. Call it; exit with that.
+; Exercise 02: call ret leaf
+; Write leaf answer that returns 42 in rax. call it; exit with that.
 ;
-; Build: ml64 /c /Fo02-call-ret-leaf.obj 02-call-ret-leaf.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-call-ret-leaf.exe 02-call-ret-leaf.obj kernel32.lib
-; Expected: exit code 42
+; Contract: implement `ex_02_call_ret_leaf` (MS x64). Return exit code in EAX.
+; Expected exit: 42
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement answer() function that returns 42 in RAX
+EXTRN ExitProcess:PROC
+EXTRN ex_02_call_ret_leaf:PROC
+
+; TODO: write ex_02_call_ret_leaf in this file.
 
 main PROC
-    sub     rsp, 32
-    call answer
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_02_call_ret_leaf
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

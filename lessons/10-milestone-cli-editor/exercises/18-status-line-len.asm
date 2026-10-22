@@ -1,3 +1,12 @@
+; Exercise: 18-status-line-len
+;
+; Exercise 18: status line len
+; Status encodes len=12; exit 12.
+;
+; Contract: implement `ex_18_status_line_len` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
+;
+
 ; 18-status-line-len.asm: Format status (len, cur) as string, exit len
 .DATA?
 buf DB 256 DUP(?)

@@ -1,3 +1,11 @@
+; Exercise: 05-signed-cmp
+;
+; Exercise 05: signed cmp (Win32 port) - SOLUTION
+;
+; Contract: implement `ex_05_signed_cmp` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; Exercise 05: signed cmp (Win32 port)
 ;
 ; RAX=-5, RBX=3. Signed comparison: if RAX < RBX, exit 1; else exit 0.

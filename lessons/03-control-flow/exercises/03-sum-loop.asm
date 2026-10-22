@@ -1,3 +1,11 @@
+; Exercise: 03-sum-loop
+;
+; Exercise 03: sum loop (Win32 port) - SOLUTION
+;
+; Contract: implement `ex_03_sum_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 55
+;
+
 ; Exercise 03: sum loop (Win32 port)
 ;
 ; Sum numbers 1 to 10 with a while loop. Exit with sum (55).

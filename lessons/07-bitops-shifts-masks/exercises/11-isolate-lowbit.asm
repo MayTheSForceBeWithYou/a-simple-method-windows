@@ -1,3 +1,11 @@
+; Exercise: 11-isolate-lowbit
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_11_isolate_lowbit` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 11-isolate-lowbit.asm
 ;
 ; Isolate the lowest set bit using bitwise trick: x & (-x).

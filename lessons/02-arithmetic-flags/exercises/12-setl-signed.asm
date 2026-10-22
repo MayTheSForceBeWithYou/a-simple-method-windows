@@ -1,3 +1,12 @@
+; Exercise: 12-setl-signed
+;
+; Exercise 12: setl signed
+; rax=-1 (or 0FFFFFFFFFFFFFFFFh), rbx=0. cmp rax,rbx; setl al; exit 1.
+;
+; Contract: implement `ex_12_setl_signed` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; Exercise 12: setl signed
 ;
 ; rax=-1 (or 0FFFFFFFFFFFFFFFFh), rbx=0. cmp rax,rbx; setl al; exit 1.

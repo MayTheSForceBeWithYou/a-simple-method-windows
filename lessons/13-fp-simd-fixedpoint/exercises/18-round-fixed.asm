@@ -1,3 +1,12 @@
+; Exercise: 18-round-fixed
+;
+; Exercise 18: round fixed
+; Round Q16.16 3.75 to 4.
+;
+; Contract: implement `ex_18_round_fixed` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 18-round-fixed.asm: Round Q16.16 to nearest int, exit rounded
 .CODE
 EXTRN ExitProcess:PROC

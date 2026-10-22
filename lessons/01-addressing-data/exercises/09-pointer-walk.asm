@@ -1,3 +1,12 @@
+; Exercise: 09-pointer-walk
+;
+; Exercise 09: pointer walk
+; bytes BYTE 1,2,3,4. rsi=&bytes. Sum four byte loads with inc rsi into rcx, exit (10).
+;
+; Contract: implement `ex_09_pointer_walk` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
+;
+
 ; Exercise 09: pointer walk (Win32 port)
 ;
 ; String DB "ABC",0. Load address, read first byte, increment pointer, read second byte. Exit with sum.

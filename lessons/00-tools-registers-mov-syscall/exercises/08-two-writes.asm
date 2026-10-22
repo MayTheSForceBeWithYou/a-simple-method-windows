@@ -1,3 +1,12 @@
+; Exercise: 08-two-writes
+;
+; Exercise 08: two writes
+; Write "alpha\n" then "beta\n" with two write syscalls. Exit 0.
+;
+; Contract: implement `ex_08_two_writes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 08: two writes (Win32 port)
 ;
 ; Write two separate strings to stdout.

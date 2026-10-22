@@ -1,3 +1,13 @@
+; Exercise: 17-duplicate-handle
+;
+; Exercise 17: dup concept
+; Without DuplicateHandle: write to stdout; exit 0. Documents handle reuse.
+; Expected stdout: "d\n"
+;
+; Contract: implement `ex_17_duplicate_handle` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 17-duplicate-handle.asm
 ;
 ; Write to stdout (no DuplicateHandle call needed), exit 0.

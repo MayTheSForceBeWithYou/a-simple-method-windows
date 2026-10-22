@@ -1,3 +1,12 @@
+; Exercise: 03-jne-branch
+;
+; Exercise 03: jne branch
+; rax=1,rbx=2. jne -> exit 5; if equal would exit 0.
+;
+; Contract: implement `ex_03_jne_branch` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; Exercise 03: jne branch
 ;
 ; rax=1,rbx=2. jne -> exit 5; if equal would exit 0.

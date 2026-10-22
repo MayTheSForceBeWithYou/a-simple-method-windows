@@ -1,3 +1,12 @@
+; Exercise: 11-fixed-div
+;
+; Exercise 11: fixed div
+; Q16: (6<<16)/(2<<16) via (a<<16)/b style: ((6<<16)<<16)/(2<<16) careful. Simpler int: 6/2=3 exit 3.
+;
+; Contract: implement `ex_11_fixed_div` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 11-fixed-div.asm: Q16.16 division, exit result
 .CODE
 EXTRN ExitProcess:PROC

@@ -1,3 +1,12 @@
+; Exercise: 04-virtualalloc
+;
+; Exercise 04: mmap anon
+; VirtualAlloc 4096 bytes RW; store 42; exit 42.
+;
+; Contract: implement `ex_04_virtualalloc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
+
 ; 04-virtualalloc.asm
 ;
 ; Allocate memory with VirtualAlloc, store 42, exit with that value.

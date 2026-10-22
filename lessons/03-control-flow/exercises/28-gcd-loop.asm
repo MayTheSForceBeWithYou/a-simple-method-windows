@@ -1,3 +1,12 @@
+; Exercise: 28-gcd-loop
+;
+; Exercise 28: gcd loop
+; Euclid GCD(48,18)=6. Exit 6.
+;
+; Contract: implement `ex_28_gcd_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
+;
+
 ; Exercise 28: gcd loop
 ;
 ; Euclid GCD(48,18)=6. Exit 6.

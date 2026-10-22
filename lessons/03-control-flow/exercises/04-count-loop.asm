@@ -1,3 +1,11 @@
+; Exercise: 04-count-loop
+;
+; Exercise 04: count loop (Win32 port) - SOLUTION
+;
+; Contract: implement `ex_04_count_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; Exercise 04: count loop (Win32 port)
 ;
 ; For loop from 0 to 4. Count iterations. Exit with count (5).

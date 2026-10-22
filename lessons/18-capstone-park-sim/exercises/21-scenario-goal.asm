@@ -1,3 +1,13 @@
+; Exercise: 21-scenario-goal
+;
+; Exercise 21: scenario goal
+; Guests>=100 goal; guests=100; exit 1 success.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_21_scenario_goal` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 21-scenario-goal: scenario goal
 .CODE
 EXTRN ExitProcess:PROC

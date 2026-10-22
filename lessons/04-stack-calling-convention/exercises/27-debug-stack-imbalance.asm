@@ -1,3 +1,13 @@
+; Exercise: 27-debug-stack-imbalance
+;
+; Exercise 27: debug stack imbalance
+; BUG: extra push without pop before ret corrupts return. Fix; exit 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_27_debug_stack_imbalance` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; Exercise 27: debug stack imbalance (Win32 port)
 ; BUG: extra push without pop before ret corrupts return. Fix; exit 2.
 ; Build: ml64 /c /Fo27-debug-stack-imbalance.obj 27-debug-stack-imbalance.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:27-debug-stack-imbalance.exe 27-debug-stack-imbalance.obj kernel32.lib

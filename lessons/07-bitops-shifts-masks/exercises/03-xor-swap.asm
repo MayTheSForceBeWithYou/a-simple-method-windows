@@ -1,3 +1,11 @@
+; Exercise: 03-xor-swap
+;
+; Implement the student routine in this file.
+;
+; Contract: implement `ex_03_xor_swap` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; 03-xor-swap.asm
 ;
 ; Swap two registers using the XOR swap algorithm.

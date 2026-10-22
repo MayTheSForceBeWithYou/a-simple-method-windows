@@ -1,3 +1,12 @@
+; Exercise: 29-from-scratch-factorial-loop
+;
+; Exercise 29: from scratch factorial loop
+; FROM SCRATCH: 6! with a counted loop = 720. Exit 720&255=208.
+;
+; Contract: implement `ex_29_from_scratch_factorial_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 208
+;
+
 ; Exercise 29: from scratch factorial loop
 ;
 ; FROM SCRATCH: 6! with a counted loop = 720. Exit 720&255=208.

@@ -1,3 +1,12 @@
+; Exercise: 11-assign-macro
+;
+; Exercise 11: assign macro
+; Use = (MASM assignment) with REPT loop; exit 4 after 4 incs.
+;
+; Contract: implement `ex_11_assign_macro` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
+
 ; 11-assign-macro.asm
 ; Use counter in REPT, generate four INC, exit 4.
 ; Note: counter is assembly-time only, not loaded into register.

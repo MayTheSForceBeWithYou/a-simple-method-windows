@@ -1,3 +1,12 @@
+; Exercise: 02-insert-char
+;
+; Exercise 02: insert char
+; Insert 'A' at end; len=1; exit 1.
+;
+; Contract: implement `ex_02_insert_char` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 02-insert-char.asm: Append 'A', exit with length (1)
 .DATA?
 buf DB 256 DUP(?)

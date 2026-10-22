@@ -1,3 +1,12 @@
+; Exercise: 22-stretch-emit-elf-note
+;
+; Exercise 22: stretch emit elf note
+; STRETCH: document emitting ELF; exit header size stub 64.
+;
+; Contract: implement `ex_22_stretch_emit_elf_note` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 64
+;
+
 ; 22-stretch-emit-elf-note.asm: Track ELF note section size, exit size
 .CODE
 EXTRN ExitProcess:PROC

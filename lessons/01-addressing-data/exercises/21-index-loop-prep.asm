@@ -1,3 +1,12 @@
+; Exercise: 21-index-loop-prep
+;
+; Exercise 21: index loop prep
+; arr BYTE 7,8,9. Without loops yet: sum using three scaled/byte loads into rcx (24).
+;
+; Contract: implement `ex_21_index_loop_prep` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 24
+;
+
 ; Exercise 21: index loop prep
 ;
 ; arr BYTE 7,8,9. Without loops yet: sum using three scaled/byte loads into rcx (24).

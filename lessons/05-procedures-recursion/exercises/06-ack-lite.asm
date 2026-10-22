@@ -1,19 +1,24 @@
-; Exercise 06: ack lite (Win32 port)
-; ack(1,1) classic = 3. Implement ack(m,n). Exit 3.
-; Build: ml64 /c /Fo06-ack-lite.obj 06-ack-lite.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:06-ack-lite.exe 06-ack-lite.obj kernel32.lib
-; Expected: exit code 3
+; Exercise: 06-ack-lite
+;
+; Exercise 06: ack lite
+; ack(1,1) = 3. MS x64 ABI.
+;
+; Contract: implement `ex_06_ack_lite` (MS x64). Return exit code in EAX.
+; Expected exit: 3
+;
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement Ackermann function ack(RCX=m, RDX=n)
+EXTRN ExitProcess:PROC
+EXTRN ex_06_ack_lite:PROC
+
+; TODO: write ex_06_ack_lite in this file.
 
 main PROC
-    sub     rsp, 32
-    mov rcx, 1
-    mov rdx, 1
-    call ack
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_06_ack_lite
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

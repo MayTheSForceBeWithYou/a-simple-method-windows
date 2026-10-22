@@ -1,3 +1,12 @@
+; Exercise: 03-neg
+;
+; Exercise 03: neg
+; mov rcx, 5; neg rcx; add rcx, 10; exit (5).
+;
+; Contract: implement `ex_03_neg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
+;
+
 ; Exercise 03: neg (Win32 port)
 ;
 ; RAX=-42; negate it; exit (42).

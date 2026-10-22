@@ -1,3 +1,12 @@
+; Exercise: 20-max-via-flags
+;
+; Exercise 20: max via flags
+; a=17,b=23 in regs. cmp; use cmovg to put max in rcx. Exit 23.
+;
+; Contract: implement `ex_20_max_via_flags` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 23
+;
+
 ; Exercise 20: max via flags
 ;
 ; a=17,b=23 in regs. cmp; use cmovg to put max in rcx. Exit 23.

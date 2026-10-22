@@ -1,3 +1,13 @@
+; Exercise: 08-from-scratch-point-in-rect
+;
+; Exercise 08: from scratch point in rect
+; FROM SCRATCH: point in rect -> 1.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_08_from_scratch_point_in_rect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
+
 ; 08-from-scratch-point-in-rect: from scratch point in rect
 .CODE
 EXTRN ExitProcess:PROC

@@ -1,3 +1,13 @@
+; Exercise: 03-aabb-reject
+;
+; Exercise 03: aabb reject
+; No overlap -> 0.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_03_aabb_reject` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 03-aabb-reject: aabb reject
 .CODE
 EXTRN ExitProcess:PROC

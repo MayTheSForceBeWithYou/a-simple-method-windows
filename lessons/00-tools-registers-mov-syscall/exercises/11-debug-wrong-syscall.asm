@@ -1,3 +1,12 @@
+; Exercise: 11-debug-wrong-syscall
+;
+; Exercise 11: debug wrong syscall
+; BUG HUNT: Intends to exit status 3 but uses wrong function. Fix it.
+;
+; Contract: implement `ex_11_debug_wrong_syscall` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; Exercise 11: debug wrong syscall
 ;
 ; BUG HUNT: Intends to exit status 3 but uses wrong function. Fix it.
@@ -5,7 +14,6 @@
 ; Build: ml64 /c 11-debug-wrong-syscall.asm && link /OUT:11-debug-wrong-syscall.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-debug-wrong-syscall.obj kernel32.lib
 ;
 ; Expected exit: 3
-
 
 .CODE
 
@@ -18,7 +26,7 @@ main PROC
     jmp     __ex_call
     mov rax, 1    ; BUG: fix in ex_11_debug_wrong_syscall
     mov rcx, 3    ; BUG: fix in ex_11_debug_wrong_syscall
-    ; syscall removed — use ExitProcess in student routine
+
 __ex_call:
     ; TODO: write ex_11_debug_wrong_syscall in this file.
     call    ex_11_debug_wrong_syscall

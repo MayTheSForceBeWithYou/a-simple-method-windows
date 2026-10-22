@@ -1,3 +1,13 @@
+; Exercise: 17-clock-diff
+;
+; Exercise 17: clock diff
+; t1-t0 = 40; exit 40.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_17_clock_diff` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 40
+;
+
 ; 17-clock-diff: clock diff
 .CODE
 EXTRN ExitProcess:PROC

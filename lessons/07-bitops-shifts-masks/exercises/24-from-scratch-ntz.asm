@@ -1,3 +1,12 @@
+; Exercise: 24-from-scratch-ntz
+;
+; Exercise 24: from scratch ntz
+; Number of trailing zeros in 0b1011000 = 3.
+;
+; Contract: implement `ex_24_from_scratch_ntz` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
+
 ; 24-from-scratch-ntz.asm (from scratch)
 ;
 ; Count trailing zeros (number of zeros at the right before first 1 bit).

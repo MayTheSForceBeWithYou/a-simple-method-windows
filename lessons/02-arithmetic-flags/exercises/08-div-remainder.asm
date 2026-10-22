@@ -1,3 +1,12 @@
+; Exercise: 08-div-remainder
+;
+; Exercise 08: div remainder
+; Unsigned: 20 / 6. Exit with remainder (rdx) = 2.
+;
+; Contract: implement `ex_08_div_remainder` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
+
 ; Exercise 08: div remainder (Win32 port)
 ;
 ; RAX=100, divisor=7. XOR RDX and DIV. Exit with remainder (2).

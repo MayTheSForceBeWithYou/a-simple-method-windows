@@ -1,10 +1,9 @@
-; 15-getpid.asm
+; Exercise 15: getpid
 ;
-; Get current process ID, exit with low 7 bits.
+; Call GetCurrentProcessId. Exit 0 if the PID is nonzero, else 1.
 ;
-; Task: Call GetCurrentProcessId, AND with 07Fh, exit with result.
-;
-; Hint: GetCurrentProcessId returns DWORD in EAX.
+; Contract: implement `ex_15_getpid`; return exit code in EAX.
+; Expected exit: 0
 
 .CODE
 

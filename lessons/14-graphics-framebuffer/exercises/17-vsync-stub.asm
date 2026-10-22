@@ -1,3 +1,13 @@
+; Exercise: 17-vsync-stub
+;
+; Exercise 17: vsync stub
+; Frame ready flag clear; exit 0.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_17_vsync_stub` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; 17-vsync-stub: vsync stub
 .CODE
 EXTRN ExitProcess:PROC

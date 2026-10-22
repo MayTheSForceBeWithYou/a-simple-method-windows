@@ -312,9 +312,34 @@ function Test-IsPrimaryListing {
     return $true
 }
 
+function Get-ExerciseExternSymbol {
+    param([string]$AsmPath)
+    $content = Read-TextOrEmpty $AsmPath
+    if ($content -match '(?im)EXTRN\s+(ex_[A-Za-z0-9_]+)\s*:\s*PROC') {
+        return $Matches[1]
+    }
+    return $null
+}
+
 function Test-IsScaffoldLinkOrAsmFailure {
-    param([string]$Message)
-    return ($Message -match '(?i)ml64 failed|LNK20|LNK11|unresolved external|undefined symbol|error A[0-9]{4}:')
+    param(
+        [string]$Message,
+        [string]$ExpectedExternSymbol
+    )
+    if ([string]::IsNullOrWhiteSpace($ExpectedExternSymbol)) {
+        return $false
+    }
+    $sym = [regex]::Escape($ExpectedExternSymbol)
+    if ($Message -match '(?i)LNK2019|LNK2001') {
+        return ($Message -match $sym)
+    }
+    if ($Message -match '(?i)ml64 failed') {
+        if ($Message -notmatch '(?i)error A2006') {
+            return $false
+        }
+        return ($Message -match $sym)
+    }
+    return $false
 }
 
 function Test-RunnableAsm {
@@ -401,7 +426,8 @@ function Test-ExerciseScaffold {
         }
     } catch {
         $msg = $_.Exception.Message
-        $isLinkOrAsm = ($msg -match '(?i)ml64 failed|LNK20|LNK11|unresolved external|undefined symbol|error A[0-9]{4}:')
+        $expectedSym = Get-ExerciseExternSymbol -AsmPath $AsmPath
+        $isLinkOrAsm = Test-IsScaffoldLinkOrAsmFailure -Message $msg -ExpectedExternSymbol $expectedSym
         if ($isLinkOrAsm) {
             Add-Result -File $relativePath -Status "SCAFFOLD OK" -Details "Failed as expected ($msg)" -Kind "exercise"
             if ($VerbosePreference -eq "Continue") {

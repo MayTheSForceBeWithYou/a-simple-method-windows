@@ -1,3 +1,13 @@
+; Exercise: 10-put-pixel
+;
+; Exercise 10: put pixel
+; put_pixel(x,y) with stride 8 bpp1; x=2 y=1 -> offset 10; store 9; exit 9.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_10_put_pixel` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
+;
+
 ; 10-put-pixel: put pixel
 .CODE
 EXTRN ExitProcess:PROC

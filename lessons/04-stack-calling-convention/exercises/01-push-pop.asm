@@ -1,3 +1,12 @@
+; Exercise: 01-push-pop
+;
+; Exercise 01: push pop
+; push 3; push 4; pop rax; pop rcx; add rcx,rax; exit 7.
+;
+; Contract: implement `ex_01_push_pop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
+
 ; Exercise 01: push pop (Win32 port)
 ;
 ; Push 42 onto stack, push 99, pop both in reverse order, exit with first value (42).

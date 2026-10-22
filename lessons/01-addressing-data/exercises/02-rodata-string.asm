@@ -1,3 +1,12 @@
+; Exercise: 02-rodata-string
+;
+; Exercise 02: rodata string
+; Put "rodata\n" in .const (read-only data), write it, exit 0.
+;
+; Contract: implement `ex_02_rodata_string` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
+
 ; Exercise 02: rodata string (Win32 port)
 ;
 ; Put "rodata\r\n" in .CONST (read-only), write it, exit 0.
