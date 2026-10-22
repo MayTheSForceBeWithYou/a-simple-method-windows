@@ -1311,6 +1311,6 @@ The exercises use the Win32 API and MASM syntax this lesson quotes.
 
 **Memory:** one page via `VirtualAlloc`, store 42, exit 42; store 99 at offset 100, exit 99; allocate then `VirtualFree`, exit 0; `GetProcessHeap` nonzero, exit 0; fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
 
-**Other imports:** `GetCurrentProcessId`, exit `pid AND 07Fh` (status varies). `QueryPerformanceCounter`, exit 0. `CreatePipe`, exit 0 (do not read or write the pipe).
+**Other imports:** `GetCurrentProcessId`, then `test eax, eax` / `seta cl` so the status is **1** when the PID is above 0 (listing `06-get-process-id` — not `pid AND 07Fh`). `QueryPerformanceCounter`, exit 0. `CreatePipe`, write `"ABC"`, read three bytes, exit **3** (listing `15-create-pipe`).
 
-Refer to `exercises/08-syscalls-files-mmap/README.md` for expected exit codes.
+Expected exits are in each file header under `exercises/` (there is no `exercises/08-syscalls-files-mmap/README.md`).

@@ -1,8 +1,8 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`eed2348`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`ef6701c`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
 
-Quoted listings in `lessons/*/LESSON.md` are verbatim from PR #5 at `eed2348`.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `ef6701c` (L04 `01-push-pop` omits the stale NASM/SysV header comment; see pending).
 
 **ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39696427463](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39696427463)), not by hand traces.
 
@@ -14,9 +14,9 @@ Quoted listings in `lessons/*/LESSON.md` are verbatim from PR #5 at `eed2348`.
 | L00 `07-stderr-output` | Writes `"Error message"` with **no CRLF**. `bytes_written` is `DWORD`. Plain `main PROC`, `sub rsp, 56`, HANDLE stays in RAX then RCX. Header: `Expected output: (to stderr) Error message`. Exit **0**. |
 | L01 `08-size-specifiers` | `WORD PTR [rbx+1], 4342h` (MASM hex, not `0x4342`). |
 | L02 `08-test-instruction` | Binary literal is `101b`. ml64 CI assembled it. |
-| L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
+| L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. The `.SETFRAME` offset is 48 (multiple of 16, ≤ 240); it does not have to equal the allocation. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
 | L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
-| L05 `04-recursive-sum` epilogue | Single `done:` path; `sub rsp, 40` / `add rax, [rsp+40]` / `add rsp, 40`. |
+| L05 `04-recursive-sum` epilogue | Single `done:` path; current file is still `push rcx` + `sub rsp, 40` / `add rax, [rsp+40]`. That frame is **misaligned**. Corrected listing pending on PR #5. |
 | L07 `01-bit-operations` | MASM hex `0FFh` / `0Fh`; OR path is `8` / `4`; `sub rsp, 40`; exit **12**. |
 | L07 `17-rgb-extract-no-mask` harness | Header `Expected exit: 171`; comment documents full code `0xFFAB` (65451). |
 | L07 `ror` | `18-ror-rotate.asm`: `ror al, 1` on 1 → 128. Quoted; exit **128**. |
@@ -44,7 +44,7 @@ Quoted listings in `lessons/*/LESSON.md` are verbatim from PR #5 at `eed2348`.
 | L13 Q16 divide / lerp / SIMD | `06-q16-divide` (3), `07-lerp-fixed` (5), `08-simd-lane-sum` (`pshufd`/`paddd`, 10). No length-squared / Q8.8 listing. |
 | L14 `01` / `02` / `03` | CI exits **0**. |
 | L14 pitch / pack / clip / Bresenham | `06-pitch-pixel-offset` (40), `07-rgb-pack-low-byte` (3), `08-clip-half-open` (1), `10-bresenham-pixel-count` (`delta_x` / `delta_y`, 4). |
-| L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, then exit **3**. Not QPC, not display vsync. `FRAME` + `sub rsp, 40`. |
+| L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment at `ef6701c` says the same. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
 | L15 rising-edge / chord / Sleep pad | `11-rising-edge` (1), `12-two-key-chord` (1). `13-sleep-frame-pad`: clamp keeps status in EBX, Sleep ms in ECX, then `mov ecx, ebx` — exit **1**. |
 | L16 listing exits | `01` → 1; `02` → 53; `07` → 160; `09` → 2. |
@@ -83,7 +83,7 @@ These three were fixed at `ec4d05c` and are now CI-green at `eed2348`:
 **Why unchanged:** Same never-returns `main` pattern.
 
 ### Lesson 04 — `01-push-pop.asm` NASM header comment
-**Why unchanged:** Stale prose in header only; code is MS x64.
+**Jack still has it** at `ef6701c`. The LESSON.md quote omits those two lines so students do not see a SysV/NASM note on an MS x64 listing.
 
 ### Lesson 01 — `03-register-indirect.asm` RSI without save
 **Why unchanged:** Never-returns `main`.
@@ -120,6 +120,12 @@ Clip, Sleep pace, and Bresenham now have files. Double-buffer flip, alpha, and d
 
 ### Lesson 17 — no `parent[]` / panel y-cursor stack
 BFS counts visits and does not store parents. Hit-test is the four-compare panel; there is no y-cursor stack listing.
+
+## Pending on Jack (PR #5)
+
+- **L05 `04-recursive-sum`:** still `push rcx` + `sub rsp, 40` (misaligned). Need 1 push + `sub rsp, 32` and saved `n` at `[rsp+32]`. Quote of the corrected file is pending.
+- **L04 `01-push-pop`:** NASM/SysV header comment still in the listing; omitted from the lesson quote.
+- **L07 comments** in `10-not-instruction`, `11-unpack-bitfield`, `15-count-leading-zeros`, `16-rgb-extraction`: still `0x` hex (`0xF0`, `0x55`, `0x00F0`, `0xABCDEF`). Left verbatim.
 
 ## Remaining LISTING-PENDING (no matching Jack file)
 

@@ -2,7 +2,7 @@
 
 Lesson 14 gave you pixels. This lesson gives you **time** and **input** on Windows: `QueryPerformanceCounter` plus `QueryPerformanceFrequency` for a high-resolution tick, a frame delta you bank into an accumulator, fixed-size simulation steps with a spiral-of-death clamp, hold-to-repeat and mouse Manhattan, and a non-blocking look at the console input buffer via `GetStdHandle` / `PeekConsoleInputA`. By the end you treat a frame as **input → bank dt → update(fixed dt) → render → wait**, and you see why a second `xor rdx, rdx` is not optional before the next unsigned `div`.
 
-Windows user-mode code does not call `clock_gettime` or `poll`. You import `kernel32` functions, place arguments in RCX / RDX / R8 / R9, allocate 32 bytes of shadow space before every `call`, and read BOOL or HANDLE returns in RAX.
+Windows user-mode code does not call `clock_gettime` or `poll`. You import `kernel32` functions, place arguments in RCX / RDX / R8 / R9, allocate 32 bytes of shadow space before every `call`, and read a BOOL in **EAX** (or a HANDLE in RAX).
 
 ## What this lesson asks of you
 
@@ -10,7 +10,7 @@ You measure elapsed time as a counter difference, not as a wall-clock `timespec`
 
 ## High-resolution ticks: QueryPerformanceCounter
 
-`QueryPerformanceFrequency` writes a QWORD ticks-per-second through the pointer in RCX. `QueryPerformanceCounter` writes a QWORD monotonic tick through RCX. Both return a BOOL in RAX (nonzero = success). Elapsed seconds are `(end - start) / frequency`. Elapsed milliseconds are `(end - start) * 1000 / frequency`. That is the Win32 counterpart of a monotonic clock, not `GetTickCount` (millisecond granularity, wraps) and not a Linux `timespec`.
+`QueryPerformanceFrequency` writes a QWORD ticks-per-second through the pointer in RCX. `QueryPerformanceCounter` writes a QWORD monotonic tick through RCX. Both return a BOOL in **EAX** (nonzero = success). Elapsed seconds are `(end - start) / frequency`. Elapsed milliseconds are `(end - start) * 1000 / frequency`. That is the Win32 counterpart of a monotonic clock, not `GetTickCount` (millisecond granularity, wraps) and not a Linux `timespec`.
 
 Listing `01-qpc-timing` is the call pair. `main PROC FRAME` records `sub rsp, 32` / `.allocstack 32` so the unwinder sees the shadow space. RCX receives `&freq`, then `&counter`. The listing does **not** subtract two counters, does **not** divide by frequency, and does **not** test the BOOL returns. It zeros ECX and calls `ExitProcess`. Expected exit: **0**.
 
@@ -505,7 +505,7 @@ END
 
 ## Key takeaways
 
-- `QueryPerformanceCounter` / `QueryPerformanceFrequency` are imported `kernel32` calls (pointer in RCX, BOOL in RAX). Listing `01-qpc-timing` calls both and exits **0** without computing a delta.
+- `QueryPerformanceCounter` / `QueryPerformanceFrequency` are imported `kernel32` calls (pointer in RCX, BOOL in EAX). Listing `01-qpc-timing` calls both and exits **0** without computing a delta.
 - Delta time is a subtraction of two stamps. Listing `02-delta-time` exits **42** from 142 − 100.
 - Hold-repeat fires when a counter reaches a threshold while the key byte stays down (listing `03-hold-repeat`, exit **1**). A rising edge is `prev == 0 && cur == 1` (listing `11-rising-edge`, exit **1**). A chord is two key bytes ANDed (listing `12-two-key-chord`, exit **1**). Mouse Manhattan is `|dx| + |dy|` after a sign test (listing `04-mouse-delta-sum`, exit **7**).
 - `GetStdHandle(-10)` is `STD_INPUT_HANDLE`. `PeekConsoleInputA` is the non-blocking peek; listing `05-peek-console-input` declares it and exits **0** without calling it.

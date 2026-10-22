@@ -21,9 +21,6 @@ Windows has **no red zone**. Do not store below RSP.
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
-; Note: MS x64 ABI differs from System V - this lesson's NASM examples 
-; assume System V, but these listings follow MS x64.
-;
 ; Build: ml64 /c /Fo01-push-pop.obj 01-push-pop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-push-pop.exe 01-push-pop.obj kernel32.lib
 
 .CODE
@@ -48,7 +45,7 @@ main ENDP
 END
 ```
 
-The listing header still mentions NASM/System V; the code is MS x64. Flagged, not edited. `push` after `sub rsp, 32` moves RSP by 8; `pop` restores it before `call ExitProcess`.
+The Jack file still carries a NASM/System V header note; that comment is omitted here so the quote matches the MS x64 code. `push` after `sub rsp, 40` moves RSP by 8; `pop` restores it before `call ExitProcess`.
 
 ## Shadow space and argument registers
 
@@ -308,7 +305,7 @@ Immediately before `call sum3`: RCX=10, RDX=20, R8=30. `main` allocated **40** b
 
 *"Four register arguments exist, so I can `call` with RSP unaligned and with no shadow space, like a Linux leaf using the red zone."*
 
-**Why it fails:** Windows has no red zone. Win32 and CRT functions assume 32 bytes below the incoming RSP (after the return address) are scratch for homing, and they assume 16-byte alignment for XMM spills. With entry RSP ≡ 8 (mod 16), `sub rsp, 32` would leave RSP ≡ 8 at `call`. Listing `06-sum3-example` and listing `05-stack-alignment` both use `sub rsp, 40` so the `call` is 16-byte aligned. Integer-only `sum3` may still run with a 32-byte frame; SSE-using callees may not.
+**Why it fails:** Windows has no red zone. On callee entry the return address is at `[rsp]`. The 32-byte shadow sits **above** that return address, at `[rsp+8, rsp+40)` — the caller allocated it before `call`. It is not the memory below the incoming RSP. Callees home RCX/RDX/R8/R9 there and assume 16-byte alignment for XMM spills. With entry RSP ≡ 8 (mod 16), `sub rsp, 32` would leave RSP ≡ 8 at `call`. Listing `06-sum3-example` and listing `05-stack-alignment` both use `sub rsp, 40` so RSP is 0 mod 16 at the `call`. Integer-only `sum3` may still run with a 32-byte frame; SSE-using callees may not.
 
 ## Frame pointer
 
@@ -369,7 +366,7 @@ main ENDP
 END
 ```
 
-Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`, `.allocstack 48`. The `.SETFRAME` offset must equal that allocation (a multiple of 16, at most 240). `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
+Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`, `.allocstack 48`. The `.SETFRAME` offset must be a **multiple of 16 and at most 240**. It does **not** have to equal the stack allocation. This listing happens to use 48 for both `lea`/`setframe` and `.allocstack`. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
 
 ```asm
 ; Listing 08: RBP saved as nonvolatile only (no .SETFRAME)
@@ -418,7 +415,8 @@ After a form-1 prologue, locals are `[rbp-8]`, `[rbp-16]`, … independent of fu
 | Linux 6 register args | Windows 4: RCX, RDX, R8, R9. |
 | Red zone | None on Windows. |
 | RSI/RDI | Nonvolatile here; volatile on Linux. |
-| Shadow vs arg 5 | Arg 5 is `[rsp+32]`, extra to the 32-byte home area. |
+| Shadow vs arg 5 | On the caller, arg 5 is `[rsp+32]` above the 32-byte home area. On callee entry the return address is at `[rsp]`; shadow is `[rsp+8, rsp+40)`. |
+| Shadow is below incoming RSP | No. Shadow is **above** the return address. Memory below incoming RSP is unused (no red zone). |
 | `PROC` vs `PROC FRAME` | FRAME emits unwind metadata. |
 | 32 vs 40 | 32 is shadow size; 40 is a common shadow+alignment total after the return address. |
 

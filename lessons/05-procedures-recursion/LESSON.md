@@ -219,7 +219,9 @@ END
 
 The push comment is explicit: RCX is **volatile**. Saving `n` on the stack is not ABI preservation of a callee-saved register; it is how this listing keeps the argument across the recursive `call`. `.pushreg rcx` still describes that push to the unwinder.
 
-Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 40` / `pop rcx` / `ret`. After `push rcx` then `sub rsp, 40`, the saved `n` lives at `[rsp+40]`, so the recursive path adds it with `add rax, [rsp+40]` *before* tearing the frame down. That is the same shared-epilogue shape as listing `01-factorial`.
+Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 40` / `pop rcx` / `ret`. After `push rcx` then `sub rsp, 40`, the saved `n` lives at `[rsp+40]`, so the recursive path adds it with `add rax, [rsp+40]` *before* tearing the frame down.
+
+That frame is **not** the model to copy. At procedure entry RSP ≡ 8 (mod 16). One `push` leaves RSP ≡ 0; the aligned allocation after a single push is `sub rsp, 32`, so the recursive `call` sees RSP ≡ 0. `push rcx` plus `sub rsp, 40` leaves RSP ≡ 8 at `call` — misaligned. A corrected listing (1 push + `sub rsp, 32`, saved `n` at `[rsp+32]`) is pending on Jack's PR #5. Quote the file that exists; do not treat `push` + 40 as a correct prologue.
 
 ## Tail recursion (concept)
 
@@ -231,7 +233,8 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 |-----------|---------|
 | RCX survives `call` | It does not. Stash in RBX/R12 or a local. |
 | Pushing RCX = ABI preserve | RCX is volatile; the push is your private save. |
-| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `sum_to`'s `done` is `add rsp, 40` / `pop` / `ret`. |
+| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `sum_to`'s `done` is `add rsp, 40` / `pop` / `ret` in the current file. |
+| `push rcx` + `sub rsp, 40` is aligned | One push needs `sub rsp, 32`. The current listing is misaligned; a fix is pending on PR #5. |
 | `leave` | `mov rsp, rbp` / `pop rbp`. |
 | Linux RDI argument | Windows RCX. |
 
@@ -240,7 +243,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 1. In listing `01-factorial`, why `mov rbx, rcx` before `dec rcx`?
 2. `sum_locals(10)`: what is at `[rbp-16]` after the three stores?
 3. After `call wipe` in listing 03, what is in R12?
-4. In listing 04, where is saved `n` after `sub rsp, 40`, and which instruction adds it on the recursive path?
+4. In listing 04 as quoted, where is saved `n` after `push rcx` / `sub rsp, 40`? Why is that allocation the wrong size after one push?
 5. Is `factorial` tail recursive?
 
 ## Key takeaways
@@ -248,6 +251,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 - Locals live in the frame; `leave` tears a RBP frame down.
 - Nonvolatiles (RBX, R12, …) must be saved if used.
 - Recursion must stash live volatile arguments before `call`.
+- One push plus `sub rsp, 40` is misaligned; after a single push the allocation is `sub rsp, 32`.
 - `PROC FRAME` unwind directives belong in the prologue.
 - Prefer one epilogue that always deallocates.
 

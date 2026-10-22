@@ -356,7 +356,9 @@ main ENDP
 END
 ```
 
-Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40` (no `push rbx`). The loop does `mov ecx, 1` / `call Sleep` / `inc ebx` / `cmp ebx, 3` / `jl frame_wait_loop`. Three completed `Sleep(1)` calls leave EBX = 3. Expected exit: **3**. That is three millisecond sleeps for CI, not a QPC spin, not a vertical-blank interrupt, and not `DwmFlush`.
+Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40` (no `push rbx`). The loop does `mov ecx, 1` / `call Sleep` / `inc ebx` / `cmp ebx, 3` / `jl frame_wait_loop`. Three completed waits leave EBX = 3. Expected exit: **3**.
+
+`Sleep(1)` is not “sleep one millisecond.” It waits until the next timer tick, so each call lasts roughly **1 to 15.6 ms** depending on the process timer resolution. The listing uses `Sleep` instead of a `QueryPerformanceCounter` spin because Sleep is coarse but **leaves the CPU free**; a QPC spin can pace more precisely but **burns a core**. Lesson 15 is where QPC frame timing lives. This is still not a vertical-blank interrupt and not `DwmFlush`.
 
 ```asm
 ; Listing 09: Frame pacing with Sleep (three 1ms waits)
@@ -364,6 +366,10 @@ Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `main 
 ; Expected stdout: (none)
 ;
 ; Completes three frame waits; exit code equals the wait count.
+;
+; We use Sleep(1) here instead of a QueryPerformanceCounter spin-wait: QPC can pace
+; frames precisely but burns CPU. Sleep is coarse (often ~1-16 ms per call depending
+; on timer resolution). Lesson 15 teaches QPC frame timing (01-qpc-timing, 02-delta-time).
 
 .CODE
 EXTRN Sleep:PROC
@@ -496,7 +502,7 @@ END
 - P6 is an 11-byte header plus 3-byte RGB. Listing 05 uses Win32 file calls and exits 0 on success, 1 if `CreateFileA` returns −1.
 - Little-endian dword stores are not P6 channel order.
 - Half-open clip is `x >= lo && x < hi`. Listing `08-clip-half-open` tests only `x < 4` for x=5 and exits **1** (outside).
-- Listing `09-vsync-ready-flag` exits **3** after three `Sleep(1)` calls — not a display vsync and not a QPC spin.
+- Listing `09-vsync-ready-flag` exits **3** after three `Sleep(1)` waits. Each wait is a timer tick (about 1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin would be tighter and would burn a core. Not a display vsync.
 - Listing `10-bresenham-pixel-count` plots four columns from (0,0) to (3,2) and exits **4**.
 
 ## Lookup

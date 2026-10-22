@@ -459,4 +459,4 @@ END
 
 ## Exercises
 
-Work in `exercises/`. Build commands are in each file header. Solutions mirror names under `solutions/`. The standalone listings quoted above live on the listings branch as `lessons/00-tools-registers-mov-syscall/listings/01-exit-code.asm` through `07-stderr-output.asm`.
+Work in `exercises/`. Build commands are in each file header. Solutions mirror names under `solutions/`. The standalone listings quoted above are `lessons/00-tools-registers-mov-syscall/listings/01-exit-code.asm` through `07-stderr-output.asm` on Jack's PR #5.
