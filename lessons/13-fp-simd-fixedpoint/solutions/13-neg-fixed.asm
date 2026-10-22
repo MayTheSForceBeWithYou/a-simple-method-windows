@@ -9,7 +9,8 @@ ex_13_neg_fixed PROC
     sub rsp, 40
     mov eax, 2
     shl eax, 16
-    neg eax
+    neg eax                 ; -2.0 Q16.16
+    neg eax                 ; negate -> +2.0
     sar eax, 16
     mov     eax, eax
     add rsp, 40

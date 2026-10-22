@@ -9,7 +9,7 @@ ex_18_round_fixed PROC
     sub rsp, 40
     mov eax, 3
     shl eax, 16
-    add eax, 32768
+    add eax, 32768 + 1      ; 3.5 Q16.16 rounded up
     sar eax, 16
     mov     eax, eax
     add rsp, 40
