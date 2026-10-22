@@ -42,6 +42,7 @@ ex_22_stretch_units_header PROC
     ret
 ex_22_stretch_units_header ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_units_header
     mov     rcx, rax
     call    ExitProcess

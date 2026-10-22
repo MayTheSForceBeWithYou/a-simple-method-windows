@@ -22,6 +22,7 @@ ex_18_ast_node PROC
     ret
 ex_18_ast_node ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_ast_node
     mov     rcx, rax
     call    ExitProcess

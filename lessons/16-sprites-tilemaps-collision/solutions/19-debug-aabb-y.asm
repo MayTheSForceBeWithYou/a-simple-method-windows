@@ -18,6 +18,7 @@ ex_19_debug_aabb_y PROC
     ret
 ex_19_debug_aabb_y ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_aabb_y
     mov     rcx, rax
     call    ExitProcess

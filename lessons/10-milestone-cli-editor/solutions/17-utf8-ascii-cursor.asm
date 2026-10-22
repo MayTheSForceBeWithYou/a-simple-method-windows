@@ -27,6 +27,7 @@ L_l:
     ret
 ex_17_utf8_ascii_cursor ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_utf8_ascii_cursor
     mov     rcx, rax
     call    ExitProcess

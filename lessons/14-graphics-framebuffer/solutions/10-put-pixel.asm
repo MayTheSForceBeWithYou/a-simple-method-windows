@@ -27,6 +27,7 @@ ex_10_put_pixel PROC
     ret
 ex_10_put_pixel ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_put_pixel
     mov     rcx, rax
     call    ExitProcess

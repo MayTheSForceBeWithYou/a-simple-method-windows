@@ -19,6 +19,7 @@ ex_10_world_to_tile PROC
     ret
 ex_10_world_to_tile ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_world_to_tile
     mov     rcx, rax
     call    ExitProcess

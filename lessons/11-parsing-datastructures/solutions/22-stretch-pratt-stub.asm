@@ -13,6 +13,7 @@ ex_22_stretch_pratt_stub PROC
     ret
 ex_22_stretch_pratt_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_pratt_stub
     mov     rcx, rax
     call    ExitProcess

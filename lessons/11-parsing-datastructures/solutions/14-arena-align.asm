@@ -21,6 +21,7 @@ ex_14_arena_align PROC
     ret
 ex_14_arena_align ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_arena_align
     mov     rcx, rax
     call    ExitProcess

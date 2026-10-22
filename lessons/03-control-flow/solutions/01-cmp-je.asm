@@ -21,6 +21,7 @@ done:
     ret
 ex_01_cmp_je ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_cmp_je
     mov     rcx, rax
     call    ExitProcess

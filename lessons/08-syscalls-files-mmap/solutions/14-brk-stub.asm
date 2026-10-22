@@ -34,6 +34,7 @@ L_o:
     ret
 ex_14_brk_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_brk_stub
     mov     rcx, rax
     call    ExitProcess

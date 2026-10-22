@@ -46,6 +46,7 @@ ex_10_macro_syscall PROC
 
 ex_10_macro_syscall ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_macro_syscall
     mov     rcx, rax
     call    ExitProcess

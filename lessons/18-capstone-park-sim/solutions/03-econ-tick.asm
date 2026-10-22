@@ -21,6 +21,7 @@ ex_03_econ_tick PROC
     ret
 ex_03_econ_tick ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_econ_tick
     mov     rcx, rax
     call    ExitProcess

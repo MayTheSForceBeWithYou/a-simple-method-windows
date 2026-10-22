@@ -23,6 +23,7 @@ ex_24_from_scratch_vector_push PROC
     ret
 ex_24_from_scratch_vector_push ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_vector_push
     mov     rcx, rax
     call    ExitProcess

@@ -26,6 +26,7 @@ tick_done:
     ret
 ex_08_from_scratch_tick ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_tick
     mov     rcx, rax
     call    ExitProcess

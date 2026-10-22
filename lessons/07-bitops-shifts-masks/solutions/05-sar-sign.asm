@@ -13,6 +13,7 @@ ex_05_sar_sign PROC
     ret
 ex_05_sar_sign ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_sar_sign
     mov     rcx, rax
     call    ExitProcess

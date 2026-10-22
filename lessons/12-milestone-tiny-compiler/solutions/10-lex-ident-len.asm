@@ -28,6 +28,7 @@ done_len:
     ret
 ex_10_lex_ident_len ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_lex_ident_len
     mov     rcx, rax
     call    ExitProcess

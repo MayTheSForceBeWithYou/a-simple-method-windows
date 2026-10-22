@@ -23,6 +23,7 @@ ex_15_lerp_fixed PROC
     ret
 ex_15_lerp_fixed ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_lerp_fixed
     mov     rcx, rax
     call    ExitProcess

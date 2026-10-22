@@ -21,6 +21,7 @@ ex_01_data_dq PROC
     ret
 ex_01_data_dq ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_data_dq
     mov     rcx, rax
     call    ExitProcess

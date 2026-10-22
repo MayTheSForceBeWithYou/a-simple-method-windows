@@ -22,6 +22,7 @@ ex_17_flip_flags PROC
     ret
 ex_17_flip_flags ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_flip_flags
     mov     rcx, rax
     call    ExitProcess

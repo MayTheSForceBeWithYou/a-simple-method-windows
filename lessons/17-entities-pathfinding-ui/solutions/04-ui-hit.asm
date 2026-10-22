@@ -17,6 +17,7 @@ ex_04_ui_hit PROC
     ret
 ex_04_ui_hit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_ui_hit
     mov     rcx, rax
     call    ExitProcess

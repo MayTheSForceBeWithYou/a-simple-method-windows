@@ -48,6 +48,7 @@ ex_03_macro_write PROC
     ret
 ex_03_macro_write ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_macro_write
     mov     rcx, rax
     call    ExitProcess

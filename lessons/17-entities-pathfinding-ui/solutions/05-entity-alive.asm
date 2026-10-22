@@ -22,6 +22,7 @@ ex_05_entity_alive PROC
     ret
 ex_05_entity_alive ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_entity_alive
     mov     rcx, rax
     call    ExitProcess

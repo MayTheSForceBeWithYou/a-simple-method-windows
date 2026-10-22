@@ -29,6 +29,7 @@ loop_done:
     ret
 ex_02_dt_accum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_dt_accum
     mov     rcx, rax
     call    ExitProcess

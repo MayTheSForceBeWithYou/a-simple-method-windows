@@ -22,6 +22,7 @@ ex_06_ride_open PROC
     ret
 ex_06_ride_open ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_ride_open
     mov     rcx, rax
     call    ExitProcess

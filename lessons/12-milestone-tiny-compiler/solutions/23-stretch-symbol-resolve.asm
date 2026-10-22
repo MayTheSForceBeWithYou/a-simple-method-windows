@@ -17,6 +17,7 @@ ex_23_stretch_symbol_resolve PROC
     ret
 ex_23_stretch_symbol_resolve ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_symbol_resolve
     mov     rcx, rax
     call    ExitProcess

@@ -44,6 +44,7 @@ ex_05_byte_store PROC
     ret
 ex_05_byte_store ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_byte_store
     mov     rcx, rax
     call    ExitProcess

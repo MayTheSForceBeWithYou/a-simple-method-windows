@@ -26,6 +26,7 @@ ex_08_from_scratch_gap_start PROC
     ret
 ex_08_from_scratch_gap_start ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_gap_start
     mov     rcx, rax
     call    ExitProcess

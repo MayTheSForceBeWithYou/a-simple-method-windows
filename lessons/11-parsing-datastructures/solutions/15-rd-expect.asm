@@ -23,6 +23,7 @@ done:
     ret
 ex_15_rd_expect ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_rd_expect
     mov     rcx, rax
     call    ExitProcess

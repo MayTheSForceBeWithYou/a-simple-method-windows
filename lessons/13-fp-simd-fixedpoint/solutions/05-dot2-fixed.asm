@@ -13,6 +13,7 @@ ex_05_dot2_fixed PROC
     ret
 ex_05_dot2_fixed ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_dot2_fixed
     mov     rcx, rax
     call    ExitProcess

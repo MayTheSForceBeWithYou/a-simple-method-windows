@@ -26,6 +26,7 @@ ex_24_from_scratch_reverse_string PROC
     ret
 ex_24_from_scratch_reverse_string ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_reverse_string
     mov     rcx, rax
     call    ExitProcess

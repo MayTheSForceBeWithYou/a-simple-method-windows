@@ -19,6 +19,7 @@ ex_09_strcmp PROC
     ret
 ex_09_strcmp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_strcmp
     mov     rcx, rax
     call    ExitProcess

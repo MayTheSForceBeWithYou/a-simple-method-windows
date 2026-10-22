@@ -18,6 +18,7 @@ ex_05_array_reverse PROC
     ret
 ex_05_array_reverse ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_array_reverse
     mov     rcx, rax
     call    ExitProcess

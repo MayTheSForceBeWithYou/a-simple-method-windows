@@ -23,6 +23,7 @@ ex_22_stretch_itoa PROC
     ret
 ex_22_stretch_itoa ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_itoa
     mov     rcx, rax
     call    ExitProcess

@@ -16,6 +16,7 @@ ex_01_token_kind PROC
     ret
 ex_01_token_kind ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_token_kind
     mov     rcx, rax
     call    ExitProcess

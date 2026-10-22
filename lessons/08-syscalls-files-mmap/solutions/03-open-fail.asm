@@ -44,6 +44,7 @@ L_out:
     ret
 ex_03_open_fail ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_open_fail
     mov     rcx, rax
     call    ExitProcess

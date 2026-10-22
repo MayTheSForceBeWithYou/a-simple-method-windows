@@ -17,6 +17,7 @@ ex_04_zero_with_xor PROC
     ret
 ex_04_zero_with_xor ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_zero_with_xor
     mov     rcx, rax
     call    ExitProcess

@@ -21,6 +21,7 @@ loop_done:
     ret
 ex_03_sum_loop ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_sum_loop
     mov     rcx, rax
     call    ExitProcess

@@ -47,6 +47,7 @@ L_put:
     ret
 ex_10_insert_middle ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_insert_middle
     mov     rcx, rax
     call    ExitProcess

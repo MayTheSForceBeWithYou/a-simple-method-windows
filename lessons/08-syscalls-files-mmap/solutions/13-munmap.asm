@@ -46,6 +46,7 @@ L_f:
 
 ex_13_munmap ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_munmap
     mov     rcx, rax
     call    ExitProcess

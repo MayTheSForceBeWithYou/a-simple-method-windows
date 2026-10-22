@@ -22,6 +22,7 @@ ex_11_map_array_proc PROC
     ret
 ex_11_map_array_proc ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_map_array_proc
     mov     rcx, rax
     call    ExitProcess

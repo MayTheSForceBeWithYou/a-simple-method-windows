@@ -25,6 +25,7 @@ ex_24_from_scratch_sim_integrate PROC
     ret
 ex_24_from_scratch_sim_integrate ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_sim_integrate
     mov     rcx, rax
     call    ExitProcess

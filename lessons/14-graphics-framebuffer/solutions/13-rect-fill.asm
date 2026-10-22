@@ -33,6 +33,7 @@ ex_13_rect_fill PROC
     ret
 ex_13_rect_fill ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_rect_fill
     mov     rcx, rax
     call    ExitProcess

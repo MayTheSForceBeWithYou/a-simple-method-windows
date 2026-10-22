@@ -19,6 +19,7 @@ ex_23_stretch_ui_modal PROC
     ret
 ex_23_stretch_ui_modal ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_ui_modal
     mov     rcx, rax
     call    ExitProcess

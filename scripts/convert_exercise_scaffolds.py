@@ -283,13 +283,11 @@ def convert_solution_text(text: str, sym: str) -> str:
             count=1,
         )
 
+    student = balance_stack_before_ret(student)
     proc = f"{sym} PROC\n{student}\n{sym} ENDP\n"
-    if re.search(r"\bsub\s+rsp\b", student, re.I):
-        main_prolog = ""
-    else:
-        main_prolog = f"    sub     rsp, {stack}\n"
     new_main = f"""main PROC
-{main_prolog}    call    {sym}
+    sub     rsp, 40
+    call    {sym}
     mov     rcx, rax
     call    ExitProcess
 main ENDP"""

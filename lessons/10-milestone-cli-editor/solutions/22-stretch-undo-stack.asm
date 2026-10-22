@@ -40,6 +40,7 @@ ex_22_stretch_undo_stack PROC
     ret
 ex_22_stretch_undo_stack ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_undo_stack
     mov     rcx, rax
     call    ExitProcess

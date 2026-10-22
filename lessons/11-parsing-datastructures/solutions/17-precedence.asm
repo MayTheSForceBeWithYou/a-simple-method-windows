@@ -16,6 +16,7 @@ ex_17_precedence PROC
     ret
 ex_17_precedence ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_precedence
     mov     rcx, rax
     call    ExitProcess

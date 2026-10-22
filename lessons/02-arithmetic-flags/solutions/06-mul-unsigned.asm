@@ -21,6 +21,7 @@ ex_06_mul_unsigned PROC
     ret
 ex_06_mul_unsigned ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_mul_unsigned
     mov     rcx, rax
     call    ExitProcess

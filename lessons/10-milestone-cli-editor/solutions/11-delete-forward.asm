@@ -44,6 +44,7 @@ L_fin:
     ret
 ex_11_delete_forward ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_delete_forward
     mov     rcx, rax
     call    ExitProcess

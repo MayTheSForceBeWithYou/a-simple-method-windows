@@ -18,6 +18,7 @@ ex_05_imul_three PROC
     ret
 ex_05_imul_three ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_imul_three
     mov     rcx, rax
     call    ExitProcess

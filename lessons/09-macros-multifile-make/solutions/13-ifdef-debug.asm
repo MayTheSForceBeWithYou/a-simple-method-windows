@@ -26,6 +26,7 @@ ex_13_ifdef_debug PROC
     ret
 ex_13_ifdef_debug ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_ifdef_debug
     mov     rcx, rax
     call    ExitProcess

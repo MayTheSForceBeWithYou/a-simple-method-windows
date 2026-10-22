@@ -48,6 +48,7 @@ L_o:
     ret
 ex_18_error_eacces_sim ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_error_eacces_sim
     mov     rcx, rax
     call    ExitProcess

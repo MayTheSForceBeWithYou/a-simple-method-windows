@@ -25,6 +25,7 @@ exit_proc:
     ret
 ex_06_clip_test ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_clip_test
     mov     rcx, rax
     call    ExitProcess

@@ -26,6 +26,7 @@ exit_proc:
     ret
 ex_15_camera_cull ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_camera_cull
     mov     rcx, rax
     call    ExitProcess

@@ -20,6 +20,7 @@ ex_10_strncmp PROC
     ret
 ex_10_strncmp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_strncmp
     mov     rcx, rax
     call    ExitProcess

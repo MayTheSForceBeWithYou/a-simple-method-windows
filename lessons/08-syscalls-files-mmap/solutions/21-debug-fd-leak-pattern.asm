@@ -49,6 +49,7 @@ L_o:
     ret
 ex_21_debug_fd_leak_pattern ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_debug_fd_leak_pattern
     mov     rcx, rax
     call    ExitProcess

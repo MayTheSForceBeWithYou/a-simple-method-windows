@@ -21,6 +21,7 @@ ex_04_mov_vs_lea PROC
     ret
 ex_04_mov_vs_lea ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_mov_vs_lea
     mov     rcx, rax
     call    ExitProcess

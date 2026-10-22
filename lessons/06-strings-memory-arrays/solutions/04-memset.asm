@@ -28,6 +28,7 @@ ex_04_memset PROC
     ret
 ex_04_memset ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_memset
     mov     rcx, rax
     call    ExitProcess

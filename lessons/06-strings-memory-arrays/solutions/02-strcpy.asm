@@ -23,6 +23,7 @@ ex_02_strcpy PROC
     ret
 ex_02_strcpy ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_strcpy
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_17_save_header PROC
     ret
 ex_17_save_header ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_save_header
     mov     rcx, rax
     call    ExitProcess

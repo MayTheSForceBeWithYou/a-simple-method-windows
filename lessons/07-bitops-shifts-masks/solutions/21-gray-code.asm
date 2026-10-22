@@ -15,6 +15,7 @@ ex_21_gray_code PROC
     ret
 ex_21_gray_code ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_gray_code
     mov     rcx, rax
     call    ExitProcess

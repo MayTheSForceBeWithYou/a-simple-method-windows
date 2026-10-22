@@ -28,6 +28,7 @@ done_parse:
     ret
 ex_09_lex_number ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_lex_number
     mov     rcx, rax
     call    ExitProcess

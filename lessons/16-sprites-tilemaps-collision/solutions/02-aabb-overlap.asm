@@ -18,6 +18,7 @@ ex_02_aabb_overlap PROC
     ret
 ex_02_aabb_overlap ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_aabb_overlap
     mov     rcx, rax
     call    ExitProcess

@@ -19,6 +19,7 @@ ex_22_stretch_quicksort_partition PROC
     ret
 ex_22_stretch_quicksort_partition ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_quicksort_partition
     mov     rcx, rax
     call    ExitProcess

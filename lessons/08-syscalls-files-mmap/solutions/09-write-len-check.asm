@@ -51,6 +51,7 @@ L_o:
     ret
 ex_09_write_len_check ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_write_len_check
     mov     rcx, rax
     call    ExitProcess

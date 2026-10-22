@@ -18,6 +18,7 @@ ex_04_imul_two PROC
     ret
 ex_04_imul_two ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_imul_two
     mov     rcx, rax
     call    ExitProcess

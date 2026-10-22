@@ -18,6 +18,7 @@ ex_17_panel_layout PROC
     ret
 ex_17_panel_layout ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_panel_layout
     mov     rcx, rax
     call    ExitProcess

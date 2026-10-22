@@ -32,6 +32,7 @@ ex_09_insert_at_cursor PROC
     ret
 ex_09_insert_at_cursor ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_insert_at_cursor
     mov     rcx, rax
     call    ExitProcess

@@ -22,6 +22,7 @@ ex_07_repeat_macro PROC
     ret
 ex_07_repeat_macro ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_repeat_macro
     mov     rcx, rax
     call    ExitProcess

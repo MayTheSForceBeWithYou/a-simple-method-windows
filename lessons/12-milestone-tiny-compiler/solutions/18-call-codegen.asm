@@ -14,6 +14,7 @@ ex_18_call_codegen PROC
     ret
 ex_18_call_codegen ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_call_codegen
     mov     rcx, rax
     call    ExitProcess

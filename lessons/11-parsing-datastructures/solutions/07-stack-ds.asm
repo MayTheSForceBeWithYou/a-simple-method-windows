@@ -29,6 +29,7 @@ ex_07_stack_ds PROC
     ret
 ex_07_stack_ds ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_stack_ds
     mov     rcx, rax
     call    ExitProcess

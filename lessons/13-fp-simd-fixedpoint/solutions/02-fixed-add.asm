@@ -17,6 +17,7 @@ ex_02_fixed_add PROC
     ret
 ex_02_fixed_add ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_fixed_add
     mov     rcx, rax
     call    ExitProcess

@@ -33,6 +33,7 @@ val_done:
     ret
 ex_23_stretch_utf8_ascii_validate ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_utf8_ascii_validate
     mov     rcx, rax
     call    ExitProcess

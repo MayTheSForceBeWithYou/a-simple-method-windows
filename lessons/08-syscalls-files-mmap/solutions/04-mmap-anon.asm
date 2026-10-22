@@ -39,6 +39,7 @@ L_fail:
 
 ex_04_mmap_anon ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_mmap_anon
     mov     rcx, rax
     call    ExitProcess

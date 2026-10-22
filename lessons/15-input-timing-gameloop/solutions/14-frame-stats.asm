@@ -21,6 +21,7 @@ ex_14_frame_stats PROC
     ret
 ex_14_frame_stats ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_frame_stats
     mov     rcx, rax
     call    ExitProcess

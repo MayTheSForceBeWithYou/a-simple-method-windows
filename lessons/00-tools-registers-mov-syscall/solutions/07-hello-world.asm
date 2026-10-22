@@ -42,6 +42,7 @@ ex_07_hello_world PROC
     ret
 ex_07_hello_world ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_hello_world
     mov     rcx, rax
     call    ExitProcess

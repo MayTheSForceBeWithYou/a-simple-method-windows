@@ -21,6 +21,7 @@ ex_09_xor_checksum PROC
     ret
 ex_09_xor_checksum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_xor_checksum
     mov     rcx, rax
     call    ExitProcess

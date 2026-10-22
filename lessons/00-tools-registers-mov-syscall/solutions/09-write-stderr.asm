@@ -41,6 +41,7 @@ ex_09_write_stderr PROC
     ret
 ex_09_write_stderr ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_write_stderr
     mov     rcx, rax
     call    ExitProcess

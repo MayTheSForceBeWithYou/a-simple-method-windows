@@ -39,6 +39,7 @@ ex_17_dup_concept PROC
     ret
 ex_17_dup_concept ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_dup_concept
     mov     rcx, rax
     call    ExitProcess

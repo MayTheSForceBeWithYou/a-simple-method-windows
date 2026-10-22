@@ -24,6 +24,7 @@ ex_14_multifile_sim_globals PROC
     ret
 ex_14_multifile_sim_globals ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_multifile_sim_globals
     mov     rcx, rax
     call    ExitProcess

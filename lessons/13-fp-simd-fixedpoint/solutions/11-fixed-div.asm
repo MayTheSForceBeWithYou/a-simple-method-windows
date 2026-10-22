@@ -23,6 +23,7 @@ ex_11_fixed_div PROC
     ret
 ex_11_fixed_div ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_fixed_div
     mov     rcx, rax
     call    ExitProcess

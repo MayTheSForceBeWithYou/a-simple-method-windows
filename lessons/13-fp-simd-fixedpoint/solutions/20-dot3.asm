@@ -13,6 +13,7 @@ ex_20_dot3 PROC
     ret
 ex_20_dot3 ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_dot3
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_06_extern_sim_onefile PROC
     ret
 ex_06_extern_sim_onefile ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_extern_sim_onefile
     mov     rcx, rax
     call    ExitProcess

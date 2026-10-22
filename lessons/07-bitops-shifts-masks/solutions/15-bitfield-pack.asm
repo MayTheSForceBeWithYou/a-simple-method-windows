@@ -21,6 +21,7 @@ ex_15_bitfield_pack PROC
     ret
 ex_15_bitfield_pack ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_bitfield_pack
     mov     rcx, rax
     call    ExitProcess

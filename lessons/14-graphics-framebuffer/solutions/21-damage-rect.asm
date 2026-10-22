@@ -17,6 +17,7 @@ ex_21_damage_rect PROC
     ret
 ex_21_damage_rect ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_damage_rect
     mov     rcx, rax
     call    ExitProcess

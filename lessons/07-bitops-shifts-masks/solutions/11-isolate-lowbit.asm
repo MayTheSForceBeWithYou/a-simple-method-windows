@@ -15,6 +15,7 @@ ex_11_isolate_lowbit PROC
     ret
 ex_11_isolate_lowbit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_isolate_lowbit
     mov     rcx, rax
     call    ExitProcess

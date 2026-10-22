@@ -37,6 +37,7 @@ ex_16_expr_stack PROC
     ret
 ex_16_expr_stack ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_expr_stack
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_27_debug_stack_imbalance PROC
     ret
 ex_27_debug_stack_imbalance ENDP
 main PROC
+    sub     rsp, 40
     call    ex_27_debug_stack_imbalance
     mov     rcx, rax
     call    ExitProcess

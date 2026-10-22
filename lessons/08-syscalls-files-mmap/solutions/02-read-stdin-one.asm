@@ -48,6 +48,7 @@ L_fail:
     ret
 ex_02_read_stdin_one ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_read_stdin_one
     mov     rcx, rax
     call    ExitProcess

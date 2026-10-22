@@ -21,6 +21,7 @@ ex_10_cmp_setne PROC
     ret
 ex_10_cmp_setne ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_cmp_setne
     mov     rcx, rax
     call    ExitProcess

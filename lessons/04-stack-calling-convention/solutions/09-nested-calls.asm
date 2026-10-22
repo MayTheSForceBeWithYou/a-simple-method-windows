@@ -24,6 +24,7 @@ ex_09_nested_calls PROC
     ret
 ex_09_nested_calls ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_nested_calls
     mov     rcx, rax
     call    ExitProcess

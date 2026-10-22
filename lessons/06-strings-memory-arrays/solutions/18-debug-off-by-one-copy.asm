@@ -28,6 +28,7 @@ ex_18_debug_off_by_one_copy PROC
     ret
 ex_18_debug_off_by_one_copy ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_debug_off_by_one_copy
     mov     rcx, rax
     call    ExitProcess

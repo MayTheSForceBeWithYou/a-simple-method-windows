@@ -16,6 +16,7 @@ ex_02_exit_seven PROC
     ret
 ex_02_exit_seven ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_exit_seven
     mov     rcx, rax
     call    ExitProcess

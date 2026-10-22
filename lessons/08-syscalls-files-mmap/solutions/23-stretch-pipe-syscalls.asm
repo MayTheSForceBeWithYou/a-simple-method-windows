@@ -42,6 +42,7 @@ L_o:
     ret
 ex_23_stretch_pipe_syscalls ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_pipe_syscalls
     mov     rcx, rax
     call    ExitProcess

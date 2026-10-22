@@ -29,6 +29,7 @@ rev_loop:
     ret
 ex_23_stretch_bit_reverse8 ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_bit_reverse8
     mov     rcx, rax
     call    ExitProcess

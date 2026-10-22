@@ -20,6 +20,7 @@ ex_06_quit_flag PROC
     ret
 ex_06_quit_flag ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_quit_flag
     mov     rcx, rax
     call    ExitProcess

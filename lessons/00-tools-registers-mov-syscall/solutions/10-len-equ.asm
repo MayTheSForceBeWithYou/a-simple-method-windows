@@ -41,6 +41,7 @@ ex_10_len_equ PROC
     ret
 ex_10_len_equ ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_len_equ
     mov     rcx, rax
     call    ExitProcess

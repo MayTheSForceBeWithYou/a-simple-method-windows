@@ -49,6 +49,7 @@ vm_halt:
     ret
 ex_19_bytecode_jump ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_bytecode_jump
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_08_from_scratch_point_in_rect PROC
     ret
 ex_08_from_scratch_point_in_rect ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_point_in_rect
     mov     rcx, rax
     call    ExitProcess

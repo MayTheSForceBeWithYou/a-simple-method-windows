@@ -18,6 +18,7 @@ ex_22_stretch_swar_avg PROC
     ret
 ex_22_stretch_swar_avg ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_swar_avg
     mov     rcx, rax
     call    ExitProcess

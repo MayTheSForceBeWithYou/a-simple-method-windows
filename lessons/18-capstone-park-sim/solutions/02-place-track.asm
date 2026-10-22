@@ -17,6 +17,7 @@ ex_02_place_track PROC
     ret
 ex_02_place_track ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_place_track
     mov     rcx, rax
     call    ExitProcess

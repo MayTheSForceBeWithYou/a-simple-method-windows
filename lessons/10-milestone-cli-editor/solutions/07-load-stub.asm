@@ -21,6 +21,7 @@ ex_07_load_stub PROC
     ret
 ex_07_load_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_load_stub
     mov     rcx, rax
     call    ExitProcess

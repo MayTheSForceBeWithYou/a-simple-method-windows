@@ -23,6 +23,7 @@ done:
     ret
 ex_02_lexer_digit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_lexer_digit
     mov     rcx, rax
     call    ExitProcess

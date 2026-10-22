@@ -17,6 +17,7 @@ ex_11_sprite_layer PROC
     ret
 ex_11_sprite_layer ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_sprite_layer
     mov     rcx, rax
     call    ExitProcess

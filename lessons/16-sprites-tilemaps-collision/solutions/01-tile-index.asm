@@ -20,6 +20,7 @@ ex_01_tile_index PROC
     ret
 ex_01_tile_index ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_tile_index
     mov     rcx, rax
     call    ExitProcess

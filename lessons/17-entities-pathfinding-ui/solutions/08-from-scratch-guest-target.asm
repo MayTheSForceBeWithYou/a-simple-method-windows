@@ -17,6 +17,7 @@ ex_08_from_scratch_guest_target PROC
     ret
 ex_08_from_scratch_guest_target ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_guest_target
     mov     rcx, rax
     call    ExitProcess

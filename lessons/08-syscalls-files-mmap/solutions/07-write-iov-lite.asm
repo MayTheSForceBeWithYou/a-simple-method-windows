@@ -50,6 +50,7 @@ ex_07_write_iov_lite PROC
     ret
 ex_07_write_iov_lite ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_write_iov_lite
     mov     rcx, rax
     call    ExitProcess

@@ -30,6 +30,7 @@ ex_15_gap_insert PROC
     ret
 ex_15_gap_insert ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_gap_insert
     mov     rcx, rax
     call    ExitProcess

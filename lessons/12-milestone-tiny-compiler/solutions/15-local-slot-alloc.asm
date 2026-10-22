@@ -20,6 +20,7 @@ ex_15_local_slot_alloc PROC
     ret
 ex_15_local_slot_alloc ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_local_slot_alloc
     mov     rcx, rax
     call    ExitProcess

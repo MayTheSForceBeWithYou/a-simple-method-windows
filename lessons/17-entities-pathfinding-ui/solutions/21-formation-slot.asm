@@ -18,6 +18,7 @@ ex_21_formation_slot PROC
     ret
 ex_21_formation_slot ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_formation_slot
     mov     rcx, rax
     call    ExitProcess

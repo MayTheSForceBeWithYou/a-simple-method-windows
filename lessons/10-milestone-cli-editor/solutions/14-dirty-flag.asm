@@ -27,6 +27,7 @@ ex_14_dirty_flag PROC
     ret
 ex_14_dirty_flag ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_dirty_flag
     mov     rcx, rax
     call    ExitProcess

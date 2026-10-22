@@ -36,6 +36,7 @@ ex_05_blit_copy PROC
     ret
 ex_05_blit_copy ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_blit_copy
     mov     rcx, rax
     call    ExitProcess

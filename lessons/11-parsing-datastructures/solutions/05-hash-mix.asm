@@ -18,6 +18,7 @@ ex_05_hash_mix PROC
     ret
 ex_05_hash_mix ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_hash_mix
     mov     rcx, rax
     call    ExitProcess

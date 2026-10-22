@@ -14,6 +14,7 @@ ex_21_rec_binary_digits PROC
     ret
 ex_21_rec_binary_digits ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_rec_binary_digits
     mov     rcx, rax
     call    ExitProcess

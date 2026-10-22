@@ -22,6 +22,7 @@ ex_19_matrix_index PROC
     ret
 ex_19_matrix_index ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_matrix_index
     mov     rcx, rax
     call    ExitProcess

@@ -74,6 +74,7 @@ L_o:
     ret
 ex_19_pwrite_emul ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_pwrite_emul
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_13_hashmap_put_get PROC
     ret
 ex_13_hashmap_put_get ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_hashmap_put_get
     mov     rcx, rax
     call    ExitProcess

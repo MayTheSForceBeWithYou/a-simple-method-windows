@@ -32,6 +32,7 @@ done_copy:
     ret
 ex_10_token_buffer ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_token_buffer
     mov     rcx, rax
     call    ExitProcess

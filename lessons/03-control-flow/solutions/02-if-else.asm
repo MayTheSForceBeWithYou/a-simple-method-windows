@@ -20,6 +20,7 @@ done:
     ret
 ex_02_if_else ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_if_else
     mov     rcx, rax
     call    ExitProcess

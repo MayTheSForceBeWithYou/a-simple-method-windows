@@ -23,6 +23,7 @@ clear_loop:
     ret
 ex_23_stretch_memo_fib_slot ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_memo_fib_slot
     mov     rcx, rax
     call    ExitProcess

@@ -25,6 +25,7 @@ exit_proc:
     ret
 ex_01_keymap ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_keymap
     mov     rcx, rax
     call    ExitProcess

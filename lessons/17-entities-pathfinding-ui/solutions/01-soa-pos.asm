@@ -23,6 +23,7 @@ ex_01_soa_pos PROC
     ret
 ex_01_soa_pos ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_soa_pos
     mov     rcx, rax
     call    ExitProcess

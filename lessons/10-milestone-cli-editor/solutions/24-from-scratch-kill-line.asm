@@ -57,6 +57,7 @@ L_done:
     ret
 ex_24_from_scratch_kill_line ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_kill_line
     mov     rcx, rax
     call    ExitProcess

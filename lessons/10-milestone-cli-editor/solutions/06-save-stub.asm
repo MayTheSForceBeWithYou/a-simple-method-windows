@@ -16,6 +16,7 @@ ex_06_save_stub PROC
     ret
 ex_06_save_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_save_stub
     mov     rcx, rax
     call    ExitProcess

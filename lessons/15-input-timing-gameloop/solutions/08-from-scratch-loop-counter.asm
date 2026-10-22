@@ -24,6 +24,7 @@ loop_done:
     ret
 ex_08_from_scratch_loop_counter ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_loop_counter
     mov     rcx, rax
     call    ExitProcess

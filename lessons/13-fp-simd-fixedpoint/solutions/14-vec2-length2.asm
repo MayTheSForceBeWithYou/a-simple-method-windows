@@ -18,6 +18,7 @@ ex_14_vec2_length2 PROC
     ret
 ex_14_vec2_length2 ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_vec2_length2
     mov     rcx, rax
     call    ExitProcess

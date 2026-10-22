@@ -15,6 +15,7 @@ ex_10_bit_set_clear PROC
     ret
 ex_10_bit_set_clear ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_bit_set_clear
     mov     rcx, rax
     call    ExitProcess

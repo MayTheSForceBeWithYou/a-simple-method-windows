@@ -40,6 +40,7 @@ ex_01_write_only PROC
     ret
 ex_01_write_only ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_write_only
     mov     rcx, rax
     call    ExitProcess

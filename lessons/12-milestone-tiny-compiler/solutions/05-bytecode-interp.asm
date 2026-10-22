@@ -57,6 +57,7 @@ vm_halt:
     ret
 ex_05_bytecode_interp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_bytecode_interp
     mov     rcx, rax
     call    ExitProcess

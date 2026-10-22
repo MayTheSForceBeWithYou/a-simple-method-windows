@@ -28,6 +28,7 @@ exit_proc:
     ret
 ex_16_repeat_delay ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_repeat_delay
     mov     rcx, rax
     call    ExitProcess

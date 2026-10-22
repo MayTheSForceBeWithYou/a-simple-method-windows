@@ -19,6 +19,7 @@ ex_09_spawn_entity PROC
     ret
 ex_09_spawn_entity ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_spawn_entity
     mov     rcx, rax
     call    ExitProcess

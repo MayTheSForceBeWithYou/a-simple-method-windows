@@ -17,6 +17,7 @@ ex_02_bfs_dist PROC
     ret
 ex_02_bfs_dist ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_bfs_dist
     mov     rcx, rax
     call    ExitProcess

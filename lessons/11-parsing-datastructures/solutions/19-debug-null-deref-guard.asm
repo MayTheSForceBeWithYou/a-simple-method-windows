@@ -22,6 +22,7 @@ done_walk:
     ret
 ex_19_debug_null_deref_guard ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_null_deref_guard
     mov     rcx, rax
     call    ExitProcess

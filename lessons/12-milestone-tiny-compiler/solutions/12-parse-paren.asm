@@ -16,6 +16,7 @@ ex_12_parse_paren PROC
     ret
 ex_12_parse_paren ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_parse_paren
     mov     rcx, rax
     call    ExitProcess

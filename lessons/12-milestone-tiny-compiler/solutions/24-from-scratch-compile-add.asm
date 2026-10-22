@@ -15,6 +15,7 @@ ex_24_from_scratch_compile_add PROC
     ret
 ex_24_from_scratch_compile_add ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_compile_add
     mov     rcx, rax
     call    ExitProcess

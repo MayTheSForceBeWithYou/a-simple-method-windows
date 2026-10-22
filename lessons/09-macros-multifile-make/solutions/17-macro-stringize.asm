@@ -39,6 +39,7 @@ ex_17_macro_stringize PROC
     ret
 ex_17_macro_stringize ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_macro_stringize
     mov     rcx, rax
     call    ExitProcess

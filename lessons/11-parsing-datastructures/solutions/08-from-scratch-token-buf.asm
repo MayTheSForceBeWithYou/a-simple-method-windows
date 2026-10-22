@@ -19,6 +19,7 @@ ex_08_from_scratch_token_buf PROC
     ret
 ex_08_from_scratch_token_buf ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_token_buf
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_03_exit_from_register PROC
     ret
 ex_03_exit_from_register ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_exit_from_register
     mov     rcx, rax
     call    ExitProcess

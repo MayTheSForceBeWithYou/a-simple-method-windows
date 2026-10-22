@@ -21,6 +21,7 @@ ex_07_scaled_index PROC
     ret
 ex_07_scaled_index ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_scaled_index
     mov     rcx, rax
     call    ExitProcess

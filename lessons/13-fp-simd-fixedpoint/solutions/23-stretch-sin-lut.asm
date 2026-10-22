@@ -16,6 +16,7 @@ ex_23_stretch_sin_lut PROC
     ret
 ex_23_stretch_sin_lut ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_sin_lut
     mov     rcx, rax
     call    ExitProcess

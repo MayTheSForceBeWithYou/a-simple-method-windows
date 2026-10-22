@@ -39,6 +39,7 @@ L_f:
     ret
 ex_12_mmap_write_read ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_mmap_write_read
     mov     rcx, rax
     call    ExitProcess

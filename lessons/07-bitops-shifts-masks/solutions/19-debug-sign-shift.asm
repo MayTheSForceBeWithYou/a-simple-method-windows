@@ -13,6 +13,7 @@ ex_19_debug_sign_shift PROC
     ret
 ex_19_debug_sign_shift ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_sign_shift
     mov     rcx, rax
     call    ExitProcess

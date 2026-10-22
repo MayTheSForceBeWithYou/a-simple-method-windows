@@ -21,6 +21,7 @@ ex_05_tile_solid PROC
     ret
 ex_05_tile_solid ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_tile_solid
     mov     rcx, rax
     call    ExitProcess

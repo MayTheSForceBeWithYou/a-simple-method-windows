@@ -25,6 +25,7 @@ ex_09_clear_color PROC
     ret
 ex_09_clear_color ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_clear_color
     mov     rcx, rax
     call    ExitProcess

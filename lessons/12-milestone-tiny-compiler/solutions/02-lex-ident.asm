@@ -23,6 +23,7 @@ done:
     ret
 ex_02_lex_ident ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_lex_ident
     mov     rcx, rax
     call    ExitProcess

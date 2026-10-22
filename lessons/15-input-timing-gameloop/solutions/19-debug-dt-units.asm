@@ -24,6 +24,7 @@ ex_19_debug_dt_units PROC
     ret
 ex_19_debug_dt_units ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_dt_units
     mov     rcx, rax
     call    ExitProcess

@@ -21,6 +21,7 @@ ex_05_save_magic PROC
     ret
 ex_05_save_magic ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_save_magic
     mov     rcx, rax
     call    ExitProcess

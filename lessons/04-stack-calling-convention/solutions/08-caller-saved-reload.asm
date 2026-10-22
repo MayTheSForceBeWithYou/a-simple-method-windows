@@ -21,6 +21,7 @@ ex_08_caller_saved_reload PROC
     ret
 ex_08_caller_saved_reload ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_caller_saved_reload
     mov     rcx, rax
     call    ExitProcess

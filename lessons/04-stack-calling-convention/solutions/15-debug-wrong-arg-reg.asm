@@ -15,6 +15,7 @@ ex_15_debug_wrong_arg_reg PROC
     ret
 ex_15_debug_wrong_arg_reg ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_debug_wrong_arg_reg
     mov     rcx, rax
     call    ExitProcess

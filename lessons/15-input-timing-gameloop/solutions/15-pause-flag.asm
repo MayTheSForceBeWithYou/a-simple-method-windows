@@ -26,6 +26,7 @@ skip_update:
     ret
 ex_15_pause_flag ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_pause_flag
     mov     rcx, rax
     call    ExitProcess

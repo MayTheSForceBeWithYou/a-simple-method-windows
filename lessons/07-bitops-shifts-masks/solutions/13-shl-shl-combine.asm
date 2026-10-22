@@ -14,6 +14,7 @@ ex_13_shl_shl_combine PROC
     ret
 ex_13_shl_shl_combine ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_shl_shl_combine
     mov     rcx, rax
     call    ExitProcess

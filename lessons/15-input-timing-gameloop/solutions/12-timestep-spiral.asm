@@ -25,6 +25,7 @@ clamp_ok:
     ret
 ex_12_timestep_spiral ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_timestep_spiral
     mov     rcx, rax
     call    ExitProcess

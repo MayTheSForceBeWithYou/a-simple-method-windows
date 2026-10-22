@@ -23,6 +23,7 @@ frame_loop:
     ret
 ex_24_from_scratch_loop_phases ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_loop_phases
     mov     rcx, rax
     call    ExitProcess

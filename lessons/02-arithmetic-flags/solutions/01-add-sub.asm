@@ -19,6 +19,7 @@ ex_01_add_sub PROC
     ret
 ex_01_add_sub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_add_sub
     mov     rcx, rax
     call    ExitProcess

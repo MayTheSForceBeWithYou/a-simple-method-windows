@@ -21,6 +21,7 @@ ex_10_map_erase PROC
     ret
 ex_10_map_erase ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_map_erase
     mov     rcx, rax
     call    ExitProcess

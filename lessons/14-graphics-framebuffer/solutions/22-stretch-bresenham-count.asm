@@ -17,6 +17,7 @@ ex_22_stretch_bresenham_count PROC
     ret
 ex_22_stretch_bresenham_count ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_bresenham_count
     mov     rcx, rax
     call    ExitProcess

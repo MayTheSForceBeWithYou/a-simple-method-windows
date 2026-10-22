@@ -24,6 +24,7 @@ ex_07_row_fill PROC
     ret
 ex_07_row_fill ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_row_fill
     mov     rcx, rax
     call    ExitProcess

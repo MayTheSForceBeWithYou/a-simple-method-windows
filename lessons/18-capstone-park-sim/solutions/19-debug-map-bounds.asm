@@ -22,6 +22,7 @@ bounds_ok:
     ret
 ex_19_debug_map_bounds ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_map_bounds
     mov     rcx, rax
     call    ExitProcess

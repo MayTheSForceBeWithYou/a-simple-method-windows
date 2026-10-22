@@ -24,6 +24,7 @@ ex_06_hash_cell PROC
     ret
 ex_06_hash_cell ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_hash_cell
     mov     rcx, rax
     call    ExitProcess

@@ -24,6 +24,7 @@ ex_11_assign_macro PROC
     ret
 ex_11_assign_macro ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_assign_macro
     mov     rcx, rax
     call    ExitProcess

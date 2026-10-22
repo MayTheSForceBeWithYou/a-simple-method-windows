@@ -34,6 +34,7 @@ ex_05_errno_neg PROC
     ret
 ex_05_errno_neg ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_errno_neg
     mov     rcx, rax
     call    ExitProcess

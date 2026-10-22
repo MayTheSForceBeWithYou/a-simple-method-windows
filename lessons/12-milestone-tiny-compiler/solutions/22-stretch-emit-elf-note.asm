@@ -13,6 +13,7 @@ ex_22_stretch_emit_elf_note PROC
     ret
 ex_22_stretch_emit_elf_note ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_emit_elf_note
     mov     rcx, rax
     call    ExitProcess

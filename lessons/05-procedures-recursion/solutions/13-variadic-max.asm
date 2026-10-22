@@ -17,6 +17,7 @@ ex_13_variadic_max PROC
     ret
 ex_13_variadic_max ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_variadic_max
     mov     rcx, rax
     call    ExitProcess

@@ -23,6 +23,7 @@ done_pop:
     ret
 ex_06_popcount_naive ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_popcount_naive
     mov     rcx, rax
     call    ExitProcess

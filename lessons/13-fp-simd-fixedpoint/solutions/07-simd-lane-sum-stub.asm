@@ -25,6 +25,7 @@ ex_07_simd_lane_sum_stub PROC
     ret
 ex_07_simd_lane_sum_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_simd_lane_sum_stub
     mov     rcx, rax
     call    ExitProcess

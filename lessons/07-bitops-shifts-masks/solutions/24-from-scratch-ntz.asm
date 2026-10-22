@@ -21,6 +21,7 @@ done_ntz:
     ret
 ex_24_from_scratch_ntz ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_ntz
     mov     rcx, rax
     call    ExitProcess

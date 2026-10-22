@@ -15,6 +15,7 @@ ex_21_fast_inv_stub PROC
     ret
 ex_21_fast_inv_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_fast_inv_stub
     mov     rcx, rax
     call    ExitProcess

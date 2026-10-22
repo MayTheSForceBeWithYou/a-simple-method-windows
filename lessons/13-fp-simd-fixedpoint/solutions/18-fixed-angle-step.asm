@@ -21,6 +21,7 @@ done_wrap:
     ret
 ex_18_fixed_angle_step ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_fixed_angle_step
     mov     rcx, rax
     call    ExitProcess

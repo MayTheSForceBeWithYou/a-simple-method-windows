@@ -45,6 +45,7 @@ L_o:
     ret
 ex_24_from_scratch_write_err ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_write_err
     mov     rcx, rax
     call    ExitProcess

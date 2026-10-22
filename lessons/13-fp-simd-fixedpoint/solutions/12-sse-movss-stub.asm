@@ -13,6 +13,7 @@ ex_12_sse_movss_stub PROC
     ret
 ex_12_sse_movss_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_sse_movss_stub
     mov     rcx, rax
     call    ExitProcess

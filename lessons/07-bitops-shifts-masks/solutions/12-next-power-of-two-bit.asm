@@ -24,6 +24,7 @@ done_pow2:
     ret
 ex_12_next_power_of_two_bit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_next_power_of_two_bit
     mov     rcx, rax
     call    ExitProcess

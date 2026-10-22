@@ -22,6 +22,7 @@ ex_04_plot_stub PROC
     ret
 ex_04_plot_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_plot_stub
     mov     rcx, rax
     call    ExitProcess

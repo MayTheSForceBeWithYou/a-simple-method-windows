@@ -21,6 +21,7 @@ ex_01_push_pop PROC
     ret
 ex_01_push_pop ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_push_pop
     mov     rcx, rax
     call    ExitProcess

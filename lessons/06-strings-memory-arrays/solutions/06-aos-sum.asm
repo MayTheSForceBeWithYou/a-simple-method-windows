@@ -20,6 +20,7 @@ ex_06_aos_sum PROC
     ret
 ex_06_aos_sum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_aos_sum
     mov     rcx, rax
     call    ExitProcess

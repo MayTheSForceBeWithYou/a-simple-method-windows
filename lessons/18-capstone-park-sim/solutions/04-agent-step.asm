@@ -21,6 +21,7 @@ ex_04_agent_step PROC
     ret
 ex_04_agent_step ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_agent_step
     mov     rcx, rax
     call    ExitProcess

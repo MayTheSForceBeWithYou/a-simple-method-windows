@@ -17,6 +17,7 @@ ex_07_clip_w PROC
     ret
 ex_07_clip_w ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_clip_w
     mov     rcx, rax
     call    ExitProcess

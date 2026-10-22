@@ -17,6 +17,7 @@ ex_13_codegen_mov PROC
     ret
 ex_13_codegen_mov ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_codegen_mov
     mov     rcx, rax
     call    ExitProcess

@@ -30,6 +30,7 @@ ex_11_hline PROC
     ret
 ex_11_hline ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_hline
     mov     rcx, rax
     call    ExitProcess

@@ -24,6 +24,7 @@ ex_08_from_scratch_macro_add PROC
     ret
 ex_08_from_scratch_macro_add ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_macro_add
     mov     rcx, rax
     call    ExitProcess

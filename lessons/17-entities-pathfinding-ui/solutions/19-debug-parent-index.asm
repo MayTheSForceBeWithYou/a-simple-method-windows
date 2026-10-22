@@ -18,6 +18,7 @@ ex_19_debug_parent_index PROC
     ret
 ex_19_debug_parent_index ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_parent_index
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_20_fold_list PROC
     ret
 ex_20_fold_list ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_fold_list
     mov     rcx, rax
     call    ExitProcess

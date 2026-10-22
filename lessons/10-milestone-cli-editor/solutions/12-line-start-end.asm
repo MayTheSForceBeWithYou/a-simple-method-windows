@@ -32,6 +32,7 @@ L_d:
     ret
 ex_12_line_start_end ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_line_start_end
     mov     rcx, rax
     call    ExitProcess

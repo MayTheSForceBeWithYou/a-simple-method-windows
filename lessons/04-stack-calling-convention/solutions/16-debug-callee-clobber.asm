@@ -14,6 +14,7 @@ ex_16_debug_callee_clobber PROC
     ret
 ex_16_debug_callee_clobber ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_debug_callee_clobber
     mov     rcx, rax
     call    ExitProcess

@@ -20,6 +20,7 @@ ex_02_inc_dec PROC
     ret
 ex_02_inc_dec ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_inc_dec
     mov     rcx, rax
     call    ExitProcess

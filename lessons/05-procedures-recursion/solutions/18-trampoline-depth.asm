@@ -14,6 +14,7 @@ ex_18_trampoline_depth PROC
     ret
 ex_18_trampoline_depth ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_trampoline_depth
     mov     rcx, rax
     call    ExitProcess

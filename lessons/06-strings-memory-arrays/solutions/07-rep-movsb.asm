@@ -33,6 +33,7 @@ ex_07_rep_movsb PROC
     ret
 ex_07_rep_movsb ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_rep_movsb
     mov     rcx, rax
     call    ExitProcess

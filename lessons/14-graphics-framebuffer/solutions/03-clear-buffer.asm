@@ -25,6 +25,7 @@ ex_03_clear_buffer PROC
     ret
 ex_03_clear_buffer ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_clear_buffer
     mov     rcx, rax
     call    ExitProcess

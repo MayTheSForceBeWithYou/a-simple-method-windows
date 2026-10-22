@@ -19,6 +19,7 @@ ex_06_displacement PROC
     ret
 ex_06_displacement ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_displacement
     mov     rcx, rax
     call    ExitProcess

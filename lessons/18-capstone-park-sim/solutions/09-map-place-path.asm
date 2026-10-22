@@ -27,6 +27,7 @@ ex_09_map_place_path PROC
     ret
 ex_09_map_place_path ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_map_place_path
     mov     rcx, rax
     call    ExitProcess

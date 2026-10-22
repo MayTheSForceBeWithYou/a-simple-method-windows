@@ -49,6 +49,7 @@ ex_22_stretch_file_copy_mem PROC
     ret
 ex_22_stretch_file_copy_mem ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_file_copy_mem
     mov     rcx, rax
     call    ExitProcess

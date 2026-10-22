@@ -17,6 +17,7 @@ ex_21_sim_real_ratio PROC
     ret
 ex_21_sim_real_ratio ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_sim_real_ratio
     mov     rcx, rax
     call    ExitProcess

@@ -26,6 +26,7 @@ ex_20_macro_with_params PROC
     ret
 ex_20_macro_with_params ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_macro_with_params
     mov     rcx, rax
     call    ExitProcess

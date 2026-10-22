@@ -18,6 +18,7 @@ ex_12_track_connect PROC
     ret
 ex_12_track_connect ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_track_connect
     mov     rcx, rax
     call    ExitProcess

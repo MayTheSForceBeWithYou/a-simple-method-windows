@@ -53,6 +53,7 @@ L_o:
     ret
 ex_11_read_dev_zero ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_read_dev_zero
     mov     rcx, rax
     call    ExitProcess

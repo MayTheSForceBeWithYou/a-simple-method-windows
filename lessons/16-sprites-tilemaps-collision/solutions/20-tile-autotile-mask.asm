@@ -22,6 +22,7 @@ ex_20_tile_autotile_mask PROC
     ret
 ex_20_tile_autotile_mask ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_tile_autotile_mask
     mov     rcx, rax
     call    ExitProcess

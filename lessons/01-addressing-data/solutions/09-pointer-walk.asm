@@ -32,6 +32,7 @@ ex_09_pointer_walk PROC
     ret
 ex_09_pointer_walk ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_pointer_walk
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_21_sprite_batch_count PROC
     ret
 ex_21_sprite_batch_count ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_sprite_batch_count
     mov     rcx, rax
     call    ExitProcess

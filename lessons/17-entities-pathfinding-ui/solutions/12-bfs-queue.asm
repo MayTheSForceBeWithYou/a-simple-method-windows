@@ -18,6 +18,7 @@ ex_12_bfs_queue PROC
     ret
 ex_12_bfs_queue ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_bfs_queue
     mov     rcx, rax
     call    ExitProcess

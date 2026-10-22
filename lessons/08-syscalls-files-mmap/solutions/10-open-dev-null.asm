@@ -49,6 +49,7 @@ L_o:
     ret
 ex_10_open_dev_null ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_open_dev_null
     mov     rcx, rax
     call    ExitProcess

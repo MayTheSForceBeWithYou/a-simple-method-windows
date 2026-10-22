@@ -17,6 +17,7 @@ ex_22_stretch_sat_axes PROC
     ret
 ex_22_stretch_sat_axes ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_sat_axes
     mov     rcx, rax
     call    ExitProcess

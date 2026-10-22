@@ -19,6 +19,7 @@ ex_10_despawn_freelist PROC
     ret
 ex_10_despawn_freelist ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_despawn_freelist
     mov     rcx, rax
     call    ExitProcess

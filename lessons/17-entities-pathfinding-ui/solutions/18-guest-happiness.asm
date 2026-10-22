@@ -21,6 +21,7 @@ happy_ok:
     ret
 ex_18_guest_happiness ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_guest_happiness
     mov     rcx, rax
     call    ExitProcess

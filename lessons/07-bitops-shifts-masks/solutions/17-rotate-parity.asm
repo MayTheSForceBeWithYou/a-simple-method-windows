@@ -13,6 +13,7 @@ ex_17_rotate_parity PROC
     ret
 ex_17_rotate_parity ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_rotate_parity
     mov     rcx, rax
     call    ExitProcess

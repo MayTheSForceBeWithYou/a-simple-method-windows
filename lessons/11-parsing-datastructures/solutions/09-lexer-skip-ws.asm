@@ -25,6 +25,7 @@ done_skip:
     ret
 ex_09_lexer_skip_ws ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_lexer_skip_ws
     mov     rcx, rax
     call    ExitProcess

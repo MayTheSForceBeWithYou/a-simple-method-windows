@@ -21,6 +21,7 @@ ex_02_macro_exit PROC
 
 ex_02_macro_exit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_macro_exit
     mov     rcx, rax
     call    ExitProcess

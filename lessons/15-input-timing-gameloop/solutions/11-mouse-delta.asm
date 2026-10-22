@@ -21,6 +21,7 @@ ex_11_mouse_delta PROC
     ret
 ex_11_mouse_delta ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_mouse_delta
     mov     rcx, rax
     call    ExitProcess

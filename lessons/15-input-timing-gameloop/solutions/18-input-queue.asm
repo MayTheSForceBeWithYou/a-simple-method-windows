@@ -30,6 +30,7 @@ ex_18_input_queue PROC
     ret
 ex_18_input_queue ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_input_queue
     mov     rcx, rax
     call    ExitProcess

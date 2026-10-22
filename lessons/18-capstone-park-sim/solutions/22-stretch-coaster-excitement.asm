@@ -18,6 +18,7 @@ ex_22_stretch_coaster_excitement PROC
     ret
 ex_22_stretch_coaster_excitement ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_coaster_excitement
     mov     rcx, rax
     call    ExitProcess

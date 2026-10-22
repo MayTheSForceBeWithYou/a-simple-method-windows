@@ -20,6 +20,7 @@ ex_06_lseek_concept PROC
     ret
 ex_06_lseek_concept ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_lseek_concept
     mov     rcx, rax
     call    ExitProcess

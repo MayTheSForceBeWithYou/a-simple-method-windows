@@ -22,6 +22,7 @@ ex_21_abi_quiz_exit PROC
     ret
 ex_21_abi_quiz_exit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_abi_quiz_exit
     mov     rcx, rax
     call    ExitProcess

@@ -28,6 +28,7 @@ ex_24_from_scratch_macro_abs PROC
     ret
 ex_24_from_scratch_macro_abs ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_macro_abs
     mov     rcx, rax
     call    ExitProcess

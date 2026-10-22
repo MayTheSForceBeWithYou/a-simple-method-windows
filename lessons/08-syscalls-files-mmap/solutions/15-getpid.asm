@@ -22,6 +22,7 @@ ex_15_getpid PROC
     ret
 ex_15_getpid ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_getpid
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_15_rec_strlen PROC
     ret
 ex_15_rec_strlen ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_rec_strlen
     mov     rcx, rax
     call    ExitProcess

@@ -25,6 +25,7 @@ ex_12_strstr_macro_label PROC
     ret
 ex_12_strstr_macro_label ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_strstr_macro_label
     mov     rcx, rax
     call    ExitProcess

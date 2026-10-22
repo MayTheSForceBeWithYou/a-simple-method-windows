@@ -23,6 +23,7 @@ ex_01_pixel_offset PROC
     ret
 ex_01_pixel_offset ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_pixel_offset
     mov     rcx, rax
     call    ExitProcess

@@ -16,6 +16,7 @@ ex_09_q16_from_int PROC
     ret
 ex_09_q16_from_int ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_q16_from_int
     mov     rcx, rax
     call    ExitProcess

@@ -26,6 +26,7 @@ goal_done:
     ret
 ex_21_scenario_goal ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_scenario_goal
     mov     rcx, rax
     call    ExitProcess

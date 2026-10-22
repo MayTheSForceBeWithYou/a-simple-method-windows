@@ -18,6 +18,7 @@ ex_14_path_reconstruct PROC
     ret
 ex_14_path_reconstruct ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_path_reconstruct
     mov     rcx, rax
     call    ExitProcess

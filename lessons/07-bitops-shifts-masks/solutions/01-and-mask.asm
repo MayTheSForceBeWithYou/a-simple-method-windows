@@ -12,6 +12,7 @@ ex_01_and_mask PROC
     ret
 ex_01_and_mask ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_and_mask
     mov     rcx, rax
     call    ExitProcess

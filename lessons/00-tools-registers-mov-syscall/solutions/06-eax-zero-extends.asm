@@ -18,6 +18,7 @@ ex_06_eax_zero_extends PROC
     ret
 ex_06_eax_zero_extends ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_eax_zero_extends
     mov     rcx, rax
     call    ExitProcess

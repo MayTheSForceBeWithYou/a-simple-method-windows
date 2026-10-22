@@ -20,6 +20,7 @@ ex_17_simd_horizontal_stub PROC
     ret
 ex_17_simd_horizontal_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_simd_horizontal_stub
     mov     rcx, rax
     call    ExitProcess

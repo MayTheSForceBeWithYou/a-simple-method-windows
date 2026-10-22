@@ -22,6 +22,7 @@ ex_01_buffer_init PROC
     ret
 ex_01_buffer_init ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_buffer_init
     mov     rcx, rax
     call    ExitProcess

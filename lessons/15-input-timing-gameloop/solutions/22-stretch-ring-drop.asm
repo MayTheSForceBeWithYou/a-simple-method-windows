@@ -21,6 +21,7 @@ ex_22_stretch_ring_drop PROC
     ret
 ex_22_stretch_ring_drop ENDP
 main PROC
+    sub     rsp, 40
     call    ex_22_stretch_ring_drop
     mov     rcx, rax
     call    ExitProcess

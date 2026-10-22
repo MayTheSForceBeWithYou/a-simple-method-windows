@@ -39,6 +39,7 @@ ex_05_render_line PROC
     ret
 ex_05_render_line ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_render_line
     mov     rcx, rax
     call    ExitProcess

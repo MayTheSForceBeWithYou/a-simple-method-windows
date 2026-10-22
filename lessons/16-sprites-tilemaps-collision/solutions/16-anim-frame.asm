@@ -24,6 +24,7 @@ ex_16_anim_frame PROC
     ret
 ex_16_anim_frame ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_anim_frame
     mov     rcx, rax
     call    ExitProcess

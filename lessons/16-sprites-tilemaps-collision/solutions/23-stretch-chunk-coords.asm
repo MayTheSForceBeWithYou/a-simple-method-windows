@@ -19,6 +19,7 @@ ex_23_stretch_chunk_coords PROC
     ret
 ex_23_stretch_chunk_coords ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_chunk_coords
     mov     rcx, rax
     call    ExitProcess

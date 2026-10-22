@@ -19,6 +19,7 @@ ex_08_from_scratch_stride PROC
     ret
 ex_08_from_scratch_stride ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_stride
     mov     rcx, rax
     call    ExitProcess

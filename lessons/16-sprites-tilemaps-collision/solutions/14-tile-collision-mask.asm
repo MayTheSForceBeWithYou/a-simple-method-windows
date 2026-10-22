@@ -22,6 +22,7 @@ ex_14_tile_collision_mask PROC
     ret
 ex_14_tile_collision_mask ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_tile_collision_mask
     mov     rcx, rax
     call    ExitProcess

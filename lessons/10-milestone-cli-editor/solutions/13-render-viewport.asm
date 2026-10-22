@@ -39,6 +39,7 @@ ex_13_render_viewport PROC
     ret
 ex_13_render_viewport ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_render_viewport
     mov     rcx, rax
     call    ExitProcess

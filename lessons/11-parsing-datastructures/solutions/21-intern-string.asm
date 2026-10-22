@@ -29,6 +29,7 @@ done:
     ret
 ex_21_intern_string ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_intern_string
     mov     rcx, rax
     call    ExitProcess

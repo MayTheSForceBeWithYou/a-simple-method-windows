@@ -38,6 +38,7 @@ sum_done:
     ret
 ex_13_memcpy_overlap_safe ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_memcpy_overlap_safe
     mov     rcx, rax
     call    ExitProcess

@@ -14,6 +14,7 @@ ex_13_pack_rgba8888 PROC
     ret
 ex_13_pack_rgba8888 ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_pack_rgba8888
     mov     rcx, rax
     call    ExitProcess

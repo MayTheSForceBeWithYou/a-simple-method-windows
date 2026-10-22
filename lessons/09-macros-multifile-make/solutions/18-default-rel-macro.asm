@@ -40,6 +40,7 @@ ex_18_default_rel_macro PROC
     ret
 ex_18_default_rel_macro ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_default_rel_macro
     mov     rcx, rax
     call    ExitProcess

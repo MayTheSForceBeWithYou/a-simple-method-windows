@@ -19,6 +19,7 @@ ex_15_econ_ticket PROC
     ret
 ex_15_econ_ticket ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_econ_ticket
     mov     rcx, rax
     call    ExitProcess

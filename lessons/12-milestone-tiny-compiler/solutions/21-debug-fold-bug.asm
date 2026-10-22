@@ -16,6 +16,7 @@ ex_21_debug_fold_bug PROC
     ret
 ex_21_debug_fold_bug ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_debug_fold_bug
     mov     rcx, rax
     call    ExitProcess

@@ -13,6 +13,7 @@ ex_14_debug_missing_ret PROC
     ret
 ex_14_debug_missing_ret ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_debug_missing_ret
     mov     rcx, rax
     call    ExitProcess

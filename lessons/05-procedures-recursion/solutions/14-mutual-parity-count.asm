@@ -14,6 +14,7 @@ ex_14_mutual_parity_count PROC
     ret
 ex_14_mutual_parity_count ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_mutual_parity_count
     mov     rcx, rax
     call    ExitProcess

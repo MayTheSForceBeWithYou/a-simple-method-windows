@@ -22,6 +22,7 @@ ex_15_exit_sum PROC
     ret
 ex_15_exit_sum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_exit_sum
     mov     rcx, rax
     call    ExitProcess

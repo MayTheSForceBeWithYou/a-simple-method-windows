@@ -19,6 +19,7 @@ ex_19_debug_offset_bpp PROC
     ret
 ex_19_debug_offset_bpp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_debug_offset_bpp
     mov     rcx, rax
     call    ExitProcess

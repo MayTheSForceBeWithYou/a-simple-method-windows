@@ -21,6 +21,7 @@ ex_12_strcat_lite PROC
     ret
 ex_12_strcat_lite ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_strcat_lite
     mov     rcx, rax
     call    ExitProcess

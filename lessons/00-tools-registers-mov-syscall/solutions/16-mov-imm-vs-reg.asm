@@ -18,6 +18,7 @@ ex_16_mov_imm_vs_reg PROC
     ret
 ex_16_mov_imm_vs_reg ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_mov_imm_vs_reg
     mov     rcx, rax
     call    ExitProcess

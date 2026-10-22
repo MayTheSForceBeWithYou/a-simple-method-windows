@@ -22,6 +22,7 @@ ex_01_map_cell PROC
     ret
 ex_01_map_cell ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_map_cell
     mov     rcx, rax
     call    ExitProcess

@@ -20,6 +20,7 @@ ex_19_extern_declare PROC
     ret
 ex_19_extern_declare ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_extern_declare
     mov     rcx, rax
     call    ExitProcess

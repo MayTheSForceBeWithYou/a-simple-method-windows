@@ -31,6 +31,7 @@ done_sum:
     ret
 ex_12_ll_sum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_ll_sum
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_20_alpha_stub PROC
     ret
 ex_20_alpha_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_alpha_stub
     mov     rcx, rax
     call    ExitProcess

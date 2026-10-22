@@ -25,6 +25,7 @@ ex_16_ui_focus PROC
     ret
 ex_16_ui_focus ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_ui_focus
     mov     rcx, rax
     call    ExitProcess

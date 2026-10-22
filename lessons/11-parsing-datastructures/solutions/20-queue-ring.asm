@@ -32,6 +32,7 @@ ex_20_queue_ring PROC
     ret
 ex_20_queue_ring ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_queue_ring
     mov     rcx, rax
     call    ExitProcess

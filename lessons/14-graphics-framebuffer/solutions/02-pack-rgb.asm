@@ -24,6 +24,7 @@ ex_02_pack_rgb PROC
     ret
 ex_02_pack_rgb ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_pack_rgb
     mov     rcx, rax
     call    ExitProcess

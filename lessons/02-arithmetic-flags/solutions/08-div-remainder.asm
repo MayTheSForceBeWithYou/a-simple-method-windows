@@ -20,6 +20,7 @@ ex_08_div_remainder PROC
     ret
 ex_08_div_remainder ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_div_remainder
     mov     rcx, rax
     call    ExitProcess

@@ -27,6 +27,7 @@ exit_proc:
     ret
 ex_05_frame_limit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_frame_limit
     mov     rcx, rax
     call    ExitProcess

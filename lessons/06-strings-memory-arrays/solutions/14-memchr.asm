@@ -24,6 +24,7 @@ ex_14_memchr PROC
     ret
 ex_14_memchr ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_memchr
     mov     rcx, rax
     call    ExitProcess

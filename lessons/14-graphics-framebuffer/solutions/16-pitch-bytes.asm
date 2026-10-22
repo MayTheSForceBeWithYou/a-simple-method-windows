@@ -19,6 +19,7 @@ ex_16_pitch_bytes PROC
     ret
 ex_16_pitch_bytes ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_pitch_bytes
     mov     rcx, rax
     call    ExitProcess

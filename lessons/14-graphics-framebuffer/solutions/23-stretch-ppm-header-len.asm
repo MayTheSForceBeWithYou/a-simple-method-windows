@@ -20,6 +20,7 @@ ex_23_stretch_ppm_header_len PROC
     ret
 ex_23_stretch_ppm_header_len ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_ppm_header_len
     mov     rcx, rax
     call    ExitProcess

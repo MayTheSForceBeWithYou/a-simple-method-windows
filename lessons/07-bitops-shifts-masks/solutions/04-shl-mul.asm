@@ -12,6 +12,7 @@ ex_04_shl_mul PROC
     ret
 ex_04_shl_mul ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_shl_mul
     mov     rcx, rax
     call    ExitProcess

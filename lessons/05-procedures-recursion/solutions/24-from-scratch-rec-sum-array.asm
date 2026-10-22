@@ -23,6 +23,7 @@ ex_24_from_scratch_rec_sum_array PROC
     ret
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_rec_sum_array
     mov     rcx, rax
     call    ExitProcess

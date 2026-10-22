@@ -23,6 +23,7 @@ ex_11_track_piece_rotate PROC
     ret
 ex_11_track_piece_rotate ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_track_piece_rotate
     mov     rcx, rax
     call    ExitProcess

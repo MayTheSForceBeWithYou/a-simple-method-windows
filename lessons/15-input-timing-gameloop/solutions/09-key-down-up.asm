@@ -23,6 +23,7 @@ ex_09_key_down_up PROC
     ret
 ex_09_key_down_up ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_key_down_up
     mov     rcx, rax
     call    ExitProcess

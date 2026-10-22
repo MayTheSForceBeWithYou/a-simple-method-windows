@@ -17,6 +17,7 @@ ex_06_path_step PROC
     ret
 ex_06_path_step ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_path_step
     mov     rcx, rax
     call    ExitProcess

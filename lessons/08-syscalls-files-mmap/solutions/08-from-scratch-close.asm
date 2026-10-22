@@ -49,6 +49,7 @@ L_o:
     ret
 ex_08_from_scratch_close ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_close
     mov     rcx, rax
     call    ExitProcess

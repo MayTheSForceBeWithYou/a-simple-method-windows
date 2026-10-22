@@ -19,6 +19,7 @@ ex_12_aabb_minkowski PROC
     ret
 ex_12_aabb_minkowski ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_aabb_minkowski
     mov     rcx, rax
     call    ExitProcess

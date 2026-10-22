@@ -20,6 +20,7 @@ ex_16_econ_upkeep PROC
     ret
 ex_16_econ_upkeep ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_econ_upkeep
     mov     rcx, rax
     call    ExitProcess

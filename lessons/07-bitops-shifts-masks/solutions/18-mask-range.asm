@@ -14,6 +14,7 @@ ex_18_mask_range PROC
     ret
 ex_18_mask_range ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_mask_range
     mov     rcx, rax
     call    ExitProcess

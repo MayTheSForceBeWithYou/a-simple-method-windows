@@ -15,6 +15,7 @@ ex_20_type_check_int PROC
     ret
 ex_20_type_check_int ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_type_check_int
     mov     rcx, rax
     call    ExitProcess

@@ -22,6 +22,7 @@ ex_17_vsync_stub PROC
     ret
 ex_17_vsync_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_vsync_stub
     mov     rcx, rax
     call    ExitProcess

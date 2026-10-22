@@ -21,6 +21,7 @@ ex_23_stretch_haptic_stub PROC
     ret
 ex_23_stretch_haptic_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_haptic_stub
     mov     rcx, rax
     call    ExitProcess

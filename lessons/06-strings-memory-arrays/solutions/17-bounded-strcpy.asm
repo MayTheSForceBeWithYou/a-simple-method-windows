@@ -29,6 +29,7 @@ ex_17_bounded_strcpy PROC
     ret
 ex_17_bounded_strcpy ENDP
 main PROC
+    sub     rsp, 40
     call    ex_17_bounded_strcpy
     mov     rcx, rax
     call    ExitProcess

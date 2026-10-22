@@ -38,6 +38,7 @@ L_o:
     ret
 ex_16_clock_gettime_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_clock_gettime_stub
     mov     rcx, rax
     call    ExitProcess

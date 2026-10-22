@@ -25,6 +25,7 @@ ex_09_tile_at PROC
     ret
 ex_09_tile_at ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_tile_at
     mov     rcx, rax
     call    ExitProcess

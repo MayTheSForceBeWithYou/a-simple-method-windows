@@ -24,6 +24,7 @@ ex_23_stretch_raw_mode_flag PROC
     ret
 ex_23_stretch_raw_mode_flag ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_raw_mode_flag
     mov     rcx, rax
     call    ExitProcess

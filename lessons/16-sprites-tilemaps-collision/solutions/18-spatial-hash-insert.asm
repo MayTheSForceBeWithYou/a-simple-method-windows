@@ -21,6 +21,7 @@ ex_18_spatial_hash_insert PROC
     ret
 ex_18_spatial_hash_insert ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_spatial_hash_insert
     mov     rcx, rax
     call    ExitProcess

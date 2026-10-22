@@ -25,6 +25,7 @@ ex_16_soa_sum PROC
     ret
 ex_16_soa_sum ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_soa_sum
     mov     rcx, rax
     call    ExitProcess

@@ -31,6 +31,7 @@ done_clz:
     ret
 ex_20_count_leading_zeros_loop ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_count_leading_zeros_loop
     mov     rcx, rax
     call    ExitProcess

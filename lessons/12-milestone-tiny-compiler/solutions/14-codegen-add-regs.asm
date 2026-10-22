@@ -22,6 +22,7 @@ ex_14_codegen_add_regs PROC
     ret
 ex_14_codegen_add_regs ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_codegen_add_regs
     mov     rcx, rax
     call    ExitProcess

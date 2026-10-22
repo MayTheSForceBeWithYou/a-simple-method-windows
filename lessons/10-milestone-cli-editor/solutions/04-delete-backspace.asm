@@ -26,6 +26,7 @@ L_o:
     ret
 ex_04_delete_backspace ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_delete_backspace
     mov     rcx, rax
     call    ExitProcess

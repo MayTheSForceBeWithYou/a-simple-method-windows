@@ -19,6 +19,7 @@ ex_13_peep_pathfind_step PROC
     ret
 ex_13_peep_pathfind_step ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_peep_pathfind_step
     mov     rcx, rax
     call    ExitProcess

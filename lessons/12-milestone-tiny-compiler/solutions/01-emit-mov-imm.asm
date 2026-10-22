@@ -17,6 +17,7 @@ ex_01_emit_mov_imm PROC
     ret
 ex_01_emit_mov_imm ENDP
 main PROC
+    sub     rsp, 40
     call    ex_01_emit_mov_imm
     mov     rcx, rax
     call    ExitProcess

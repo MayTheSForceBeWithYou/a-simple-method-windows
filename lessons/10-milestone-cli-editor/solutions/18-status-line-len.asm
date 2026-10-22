@@ -21,6 +21,7 @@ ex_18_status_line_len PROC
     ret
 ex_18_status_line_len ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_status_line_len
     mov     rcx, rax
     call    ExitProcess

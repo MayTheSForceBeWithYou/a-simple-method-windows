@@ -13,6 +13,7 @@ ex_08_from_scratch_rol PROC
     ret
 ex_08_from_scratch_rol ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_from_scratch_rol
     mov     rcx, rax
     call    ExitProcess

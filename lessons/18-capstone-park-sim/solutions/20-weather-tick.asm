@@ -21,6 +21,7 @@ ex_20_weather_tick PROC
     ret
 ex_20_weather_tick ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_weather_tick
     mov     rcx, rax
     call    ExitProcess

@@ -19,6 +19,7 @@ ex_16_include_path_sim PROC
     ret
 ex_16_include_path_sim ENDP
 main PROC
+    sub     rsp, 40
     call    ex_16_include_path_sim
     mov     rcx, rax
     call    ExitProcess

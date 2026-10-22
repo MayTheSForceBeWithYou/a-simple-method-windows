@@ -24,6 +24,7 @@ ex_03_cursor_move PROC
     ret
 ex_03_cursor_move ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_cursor_move
     mov     rcx, rax
     call    ExitProcess

@@ -17,6 +17,7 @@ ex_13_astar_fscore PROC
     ret
 ex_13_astar_fscore ENDP
 main PROC
+    sub     rsp, 40
     call    ex_13_astar_fscore
     mov     rcx, rax
     call    ExitProcess

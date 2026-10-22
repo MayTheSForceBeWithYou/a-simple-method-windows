@@ -17,6 +17,7 @@ ex_24_from_scratch_q8_mul PROC
     ret
 ex_24_from_scratch_q8_mul ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_q8_mul
     mov     rcx, rax
     call    ExitProcess

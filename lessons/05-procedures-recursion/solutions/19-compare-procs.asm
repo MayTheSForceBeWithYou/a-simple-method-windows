@@ -15,6 +15,7 @@ ex_19_compare_procs PROC
     ret
 ex_19_compare_procs ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_compare_procs
     mov     rcx, rax
     call    ExitProcess

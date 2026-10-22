@@ -20,6 +20,7 @@ ex_07_idiv_setup PROC
     ret
 ex_07_idiv_setup ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_idiv_setup
     mov     rcx, rax
     call    ExitProcess

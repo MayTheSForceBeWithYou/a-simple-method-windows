@@ -19,6 +19,7 @@ ex_14_ride_queue_len PROC
     ret
 ex_14_ride_queue_len ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_ride_queue_len
     mov     rcx, rax
     call    ExitProcess

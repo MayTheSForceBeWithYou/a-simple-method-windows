@@ -21,6 +21,7 @@ ex_03_bss_store PROC
     ret
 ex_03_bss_store ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_bss_store
     mov     rcx, rax
     call    ExitProcess

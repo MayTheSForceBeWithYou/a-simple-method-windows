@@ -21,6 +21,7 @@ done:
     ret
 ex_05_signed_cmp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_signed_cmp
     mov     rcx, rax
     call    ExitProcess

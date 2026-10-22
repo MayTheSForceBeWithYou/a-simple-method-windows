@@ -26,6 +26,7 @@ ex_10_chord PROC
     ret
 ex_10_chord ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_chord
     mov     rcx, rax
     call    ExitProcess

@@ -48,6 +48,7 @@ L_o:
     ret
 ex_20_mmap_pagesize_fill ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_mmap_pagesize_fill
     mov     rcx, rax
     call    ExitProcess

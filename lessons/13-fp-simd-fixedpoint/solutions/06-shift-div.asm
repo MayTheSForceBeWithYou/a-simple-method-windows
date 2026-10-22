@@ -15,6 +15,7 @@ ex_06_shift_div PROC
     ret
 ex_06_shift_div ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_shift_div
     mov     rcx, rax
     call    ExitProcess

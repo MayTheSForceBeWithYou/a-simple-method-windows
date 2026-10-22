@@ -23,6 +23,7 @@ ex_05_mov_chain PROC
     ret
 ex_05_mov_chain ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_mov_chain
     mov     rcx, rax
     call    ExitProcess

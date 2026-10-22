@@ -28,6 +28,7 @@ ex_11_ll_push_front PROC
     ret
 ex_11_ll_push_front ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_ll_push_front
     mov     rcx, rax
     call    ExitProcess

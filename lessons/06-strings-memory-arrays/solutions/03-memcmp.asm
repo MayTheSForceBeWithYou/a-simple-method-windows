@@ -20,6 +20,7 @@ ex_03_memcmp PROC
     ret
 ex_03_memcmp ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_memcmp
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_05_makefile_note PROC
     ret
 ex_05_makefile_note ENDP
 main PROC
+    sub     rsp, 40
     call    ex_05_makefile_note
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_15_ui_button_press PROC
     ret
 ex_15_ui_button_press ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_ui_button_press
     mov     rcx, rax
     call    ExitProcess

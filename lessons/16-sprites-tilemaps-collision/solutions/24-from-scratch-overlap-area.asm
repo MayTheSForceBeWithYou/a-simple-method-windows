@@ -19,6 +19,7 @@ ex_24_from_scratch_overlap_area PROC
     ret
 ex_24_from_scratch_overlap_area ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_overlap_area
     mov     rcx, rax
     call    ExitProcess

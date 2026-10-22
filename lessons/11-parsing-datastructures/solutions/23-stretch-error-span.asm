@@ -17,6 +17,7 @@ ex_23_stretch_error_span PROC
     ret
 ex_23_stretch_error_span ENDP
 main PROC
+    sub     rsp, 40
     call    ex_23_stretch_error_span
     mov     rcx, rax
     call    ExitProcess

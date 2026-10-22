@@ -27,6 +27,7 @@ ex_02_insert_char PROC
     ret
 ex_02_insert_char ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_insert_char
     mov     rcx, rax
     call    ExitProcess

@@ -21,6 +21,7 @@ ex_21_debug_macro_arity PROC
 
 ex_21_debug_macro_arity ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_debug_macro_arity
     mov     rcx, rax
     call    ExitProcess

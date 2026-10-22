@@ -15,6 +15,7 @@ ex_12_nested_frame PROC
     ret
 ex_12_nested_frame ENDP
 main PROC
+    sub     rsp, 40
     call    ex_12_nested_frame
     mov     rcx, rax
     call    ExitProcess

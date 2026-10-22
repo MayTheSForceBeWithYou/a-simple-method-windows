@@ -14,6 +14,7 @@ ex_07_emit_syscall_exit PROC
     ret
 ex_07_emit_syscall_exit ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_emit_syscall_exit
     mov     rcx, rax
     call    ExitProcess

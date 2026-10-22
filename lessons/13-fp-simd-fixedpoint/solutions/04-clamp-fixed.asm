@@ -20,6 +20,7 @@ clamp_ok:
     ret
 ex_04_clamp_fixed ENDP
 main PROC
+    sub     rsp, 40
     call    ex_04_clamp_fixed
     mov     rcx, rax
     call    ExitProcess

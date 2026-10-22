@@ -33,6 +33,7 @@ ex_09_macro_pushregs PROC
     ret
 ex_09_macro_pushregs ENDP
 main PROC
+    sub     rsp, 40
     call    ex_09_macro_pushregs
     mov     rcx, rax
     call    ExitProcess

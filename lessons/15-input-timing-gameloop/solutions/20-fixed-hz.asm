@@ -17,6 +17,7 @@ ex_20_fixed_hz PROC
     ret
 ex_20_fixed_hz ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_fixed_hz
     mov     rcx, rax
     call    ExitProcess

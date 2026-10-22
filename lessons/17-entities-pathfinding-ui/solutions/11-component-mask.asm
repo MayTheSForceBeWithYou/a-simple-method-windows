@@ -20,6 +20,7 @@ ex_11_component_mask PROC
     ret
 ex_11_component_mask ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_component_mask
     mov     rcx, rax
     call    ExitProcess

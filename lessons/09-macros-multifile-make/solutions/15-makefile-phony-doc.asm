@@ -24,6 +24,7 @@ ex_15_makefile_phony_doc PROC
     ret
 ex_15_makefile_phony_doc ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_makefile_phony_doc
     mov     rcx, rax
     call    ExitProcess

@@ -30,6 +30,7 @@ L_o:
     ret
 ex_20_load_validate_magic ENDP
 main PROC
+    sub     rsp, 40
     call    ex_20_load_validate_magic
     mov     rcx, rax
     call    ExitProcess

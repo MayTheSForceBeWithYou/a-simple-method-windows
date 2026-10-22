@@ -15,6 +15,7 @@ ex_02_or_flags PROC
     ret
 ex_02_or_flags ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_or_flags
     mov     rcx, rax
     call    ExitProcess

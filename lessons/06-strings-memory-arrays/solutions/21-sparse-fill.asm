@@ -41,6 +41,7 @@ sum_done:
     ret
 ex_21_sparse_fill ENDP
 main PROC
+    sub     rsp, 40
     call    ex_21_sparse_fill
     mov     rcx, rax
     call    ExitProcess

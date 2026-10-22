@@ -22,6 +22,7 @@ ex_03_astar_h PROC
     ret
 ex_03_astar_h ENDP
 main PROC
+    sub     rsp, 40
     call    ex_03_astar_h
     mov     rcx, rax
     call    ExitProcess

@@ -41,6 +41,7 @@ ex_02_rodata_string PROC
     ret
 ex_02_rodata_string ENDP
 main PROC
+    sub     rsp, 40
     call    ex_02_rodata_string
     mov     rcx, rax
     call    ExitProcess

@@ -21,6 +21,7 @@ ex_10_word_dword PROC
     ret
 ex_10_word_dword ENDP
 main PROC
+    sub     rsp, 40
     call    ex_10_word_dword
     mov     rcx, rax
     call    ExitProcess

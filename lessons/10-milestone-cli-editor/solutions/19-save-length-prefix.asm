@@ -19,6 +19,7 @@ ex_19_save_length_prefix PROC
     ret
 ex_19_save_length_prefix ENDP
 main PROC
+    sub     rsp, 40
     call    ex_19_save_length_prefix
     mov     rcx, rax
     call    ExitProcess

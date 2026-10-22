@@ -18,6 +18,7 @@ ex_11_strchr PROC
     ret
 ex_11_strchr ENDP
 main PROC
+    sub     rsp, 40
     call    ex_11_strchr
     mov     rcx, rax
     call    ExitProcess

@@ -26,6 +26,7 @@ done_clip:
     ret
 ex_15_clip_rect ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_clip_rect
     mov     rcx, rax
     call    ExitProcess

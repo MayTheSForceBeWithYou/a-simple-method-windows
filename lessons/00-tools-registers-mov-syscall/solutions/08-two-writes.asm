@@ -51,6 +51,7 @@ ex_08_two_writes PROC
     ret
 ex_08_two_writes ENDP
 main PROC
+    sub     rsp, 40
     call    ex_08_two_writes
     mov     rcx, rax
     call    ExitProcess

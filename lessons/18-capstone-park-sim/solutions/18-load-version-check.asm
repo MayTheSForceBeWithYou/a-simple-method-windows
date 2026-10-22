@@ -25,6 +25,7 @@ ver_done:
     ret
 ex_18_load_version_check ENDP
 main PROC
+    sub     rsp, 40
     call    ex_18_load_version_check
     mov     rcx, rax
     call    ExitProcess

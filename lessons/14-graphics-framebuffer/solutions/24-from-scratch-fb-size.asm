@@ -21,6 +21,7 @@ ex_24_from_scratch_fb_size PROC
     ret
 ex_24_from_scratch_fb_size ENDP
 main PROC
+    sub     rsp, 40
     call    ex_24_from_scratch_fb_size
     mov     rcx, rax
     call    ExitProcess

@@ -18,6 +18,7 @@ ex_06_rd_parse_num PROC
     ret
 ex_06_rd_parse_num ENDP
 main PROC
+    sub     rsp, 40
     call    ex_06_rd_parse_num
     mov     rcx, rax
     call    ExitProcess

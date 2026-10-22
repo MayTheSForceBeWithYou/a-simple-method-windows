@@ -19,6 +19,7 @@ ex_15_aos_scale PROC
     ret
 ex_15_aos_scale ENDP
 main PROC
+    sub     rsp, 40
     call    ex_15_aos_scale
     mov     rcx, rax
     call    ExitProcess

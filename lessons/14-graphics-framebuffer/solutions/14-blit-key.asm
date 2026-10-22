@@ -50,6 +50,7 @@ loop_end:
     ret
 ex_14_blit_key ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_blit_key
     mov     rcx, rax
     call    ExitProcess

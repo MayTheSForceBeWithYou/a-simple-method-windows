@@ -17,6 +17,7 @@ ex_14_sar_vs_shr PROC
     ret
 ex_14_sar_vs_shr ENDP
 main PROC
+    sub     rsp, 40
     call    ex_14_sar_vs_shr
     mov     rcx, rax
     call    ExitProcess

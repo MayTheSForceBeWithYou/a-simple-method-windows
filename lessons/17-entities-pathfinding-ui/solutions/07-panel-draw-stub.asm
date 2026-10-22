@@ -17,6 +17,7 @@ ex_07_panel_draw_stub PROC
     ret
 ex_07_panel_draw_stub ENDP
 main PROC
+    sub     rsp, 40
     call    ex_07_panel_draw_stub
     mov     rcx, rax
     call    ExitProcess
