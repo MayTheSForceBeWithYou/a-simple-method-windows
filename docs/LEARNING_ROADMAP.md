@@ -38,6 +38,8 @@ Install:
 
 **Do not** use MinGW, MSYS2, or WSL for this Windows course—use native Windows tools.
 
+Listing exit values quoted in the lessons are confirmed by the Windows ml64 CI on Jack's listings branch (PR #5, tip `eed2348`, [run 39696427463](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39696427463)), not by hand traces.
+
 Canonical build for freestanding programs in early lessons (from x64 Native Tools Command Prompt):
 
 ```bat

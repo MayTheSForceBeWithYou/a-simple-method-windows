@@ -46,7 +46,7 @@ sum_locals PROC FRAME
 sum_locals ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 10
     call sum_locals
     mov rcx, rax
@@ -90,7 +90,7 @@ wipe PROC FRAME
 wipe ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov r12, 42
     call wipe
     mov rcx, r12               ; Still 42 (preserved)
@@ -145,7 +145,7 @@ done:
 factorial ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 5
     call factorial             ; 5! = 120
@@ -167,14 +167,14 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 
 **Why it fails:** RCX is volatile. The recursive `factorial` uses RCX as its argument and does not restore it for the caller. Without RBX (or a stack slot), `imul rax, rcx` multiplies by leftover garbage. Listing `01-factorial` copies `n` to RBX **before** `dec rcx` / `call`.
 
-## Recursive sum (stack save)
+## Recursive sum (RBX save)
 
 ```asm
 ; Listing 04: Recursive sum_to (lines 70-94 of LESSON.md)
 ;
 ; Purpose: sum_to(n) = n + sum_to(n-1), base case 0.
-; Expected exit code: 15 (1+2+3+4+5)
-; Expected output: (none)
+; Expected exit: 15
+; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo04-recursive-sum.obj 04-recursive-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:04-recursive-sum.exe 04-recursive-sum.obj kernel32.lib
 
@@ -182,33 +182,34 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 
 EXTRN ExitProcess:PROC
 
+; One push (8) + sub rsp,32 (32) => 40 bytes; RSP ≡ 0 mod 16 at the call (entry 8 + push 8 + sub 32).
 sum_to PROC FRAME
-    push rcx                   ; Save RCX (nonvolatile preservation)
-    .pushreg rcx
+    push rbx
+    .pushreg rbx
     sub rsp, 32
     .allocstack 32
     .endprolog
-    
+    mov rbx, rcx
+
     cmp rcx, 0
     jg recursive
-    xor eax, eax               ; Base case: return 0
+    xor eax, eax
     jmp done
-    
+
 recursive:
     dec rcx
     call sum_to
-    pop rcx                    ; Restore original n
-    add rax, rcx               ; Add n to sum(n-1)
-    ret
-    
+    add rax, rbx
+    jmp done
+
 done:
     add rsp, 32
-    pop rcx
+    pop rbx
     ret
 sum_to ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 5
     call sum_to
     mov rcx, rax
@@ -218,9 +219,11 @@ main ENDP
 END
 ```
 
-Header comment says "Save RCX (nonvolatile preservation)". RCX is **volatile**. Pushing it is a way to keep `n` across the call, not ABI preservation of a callee-saved register.
+RCX is **volatile**. This listing copies `n` into RBX before `dec rcx` / `call`, the same stash `factorial` uses. RBX is nonvolatile, so each frame’s `n` survives the recursive `call`. `.pushreg rbx` describes that push to the unwinder.
 
-The **recursive** path does `pop rcx` / `ret` without `add rsp, 32`. After `sub rsp, 32`, that `pop` reads the shadow space, not the saved RCX. The **base** path does `add rsp, 32` then `pop rcx`. Treat listing 04 as a contrast with listing 01's shared epilogue. Flagged in `docs/PROSE_TECH_FLAGS.md`. Do not "fix" the listing in prose by rewriting it.
+Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 32` / `pop rbx` / `ret`. After the recursive return, `add rax, rbx` adds this frame’s `n`. For `n = 5` the sum is 5+4+3+2+1+0 = 15.
+
+This frame is the model to copy. Entry RSP ≡ 8 (mod 16). The `push` subtracts 8 and `sub rsp, 32` subtracts 32, so RSP ≡ 0 at the recursive `call`. That is the aligned 1-push allocation. `main` uses the aligned 0-push frame (`sub rsp, 40`) before `call sum_to`.
 
 ## Tail recursion (concept)
 
@@ -232,7 +235,8 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 |-----------|---------|
 | RCX survives `call` | It does not. Stash in RBX/R12 or a local. |
 | Pushing RCX = ABI preserve | RCX is volatile; the push is your private save. |
-| Shared epilogue vs split `ret` | Factorial shares `done`. `sum_to` splits paths; the recursive path omits `add rsp, 32`. |
+| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `sum_to`'s `done` is `add rsp, 32` / `pop rbx` / `ret`. |
+| One push + `sub rsp, 32` | That is the aligned 1-push frame. Listing `04-recursive-sum` is the model. |
 | `leave` | `mov rsp, rbp` / `pop rbp`. |
 | Linux RDI argument | Windows RCX. |
 
@@ -241,7 +245,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 1. In listing `01-factorial`, why `mov rbx, rcx` before `dec rcx`?
 2. `sum_locals(10)`: what is at `[rbp-16]` after the three stores?
 3. After `call wipe` in listing 03, what is in R12?
-4. Does the recursive path of listing 04 deallocate the 32-byte frame before `pop rcx`?
+4. In listing 04 as quoted, where is saved `n` after `push rbx` / `sub rsp, 32` / `mov rbx, rcx`? Why is `sub rsp, 32` the right allocation after one push?
 5. Is `factorial` tail recursive?
 
 ## Key takeaways
@@ -249,6 +253,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 - Locals live in the frame; `leave` tears a RBP frame down.
 - Nonvolatiles (RBX, R12, …) must be saved if used.
 - Recursion must stash live volatile arguments before `call`.
+- One push plus `sub rsp, 32` is the aligned frame. Listing `04-recursive-sum` uses that model and keeps `n` in RBX.
 - `PROC FRAME` unwind directives belong in the prologue.
 - Prefer one epilogue that always deallocates.
 

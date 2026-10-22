@@ -1,662 +1,1167 @@
-# 10 — Milestone: CLI Text Editor
+# Lesson 10 — Milestone: CLI Text Editor
 
-You've spent nine lessons mastering x86-64 mechanics. This milestone lesson asks you to synthesize that knowledge into a real-world artifact: a command-line text editor. Not a toy—a program that manages a buffer, tracks a cursor, inserts and deletes characters, handles line-based operations, saves and loads files with integrity checks, and flips the console into raw mode so every keypress arrives immediately. By the end, you'll have drilled the twenty-four buffer primitives that make an editor work, and you'll understand the acceptance criteria for a complete milestone binary.
+Nine lessons of x86-64 and Win32 are now one program: a command-line editor. You keep a byte buffer, a length, and a cursor, insert and delete by shifting the tail, keep free space at the cursor in a gap buffer, find a line start by scanning for `10`, persist a magic-prefixed image with `CreateFileA` / `WriteFile` / `ReadFile` / `CloseHandle`, and put the console into raw mode with `GetConsoleMode` / `SetConsoleMode`. The twenty listings isolate those primitives. The milestone binary composes them.
+
+Every listing is a complete `ml64` program (or, for the editor you build later, several objects linked as in lesson 09). Assemble and link from an x64 Native Tools prompt:
+
+```bat
+ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
+```
 
 ## What this lesson asks of you
 
-- Maintain a byte buffer with a length and a cursor index, clamping the cursor to the valid range `[0, len]`.
-- Insert a byte by shifting the tail rightward, and delete by shifting the tail leftward—never assume memory moves itself.
-- Manage a **gap buffer**: keep free space at the cursor so inserts are cheap, and move the gap by copying bytes when the cursor moves.
-- Scan backward from the cursor to find a line start (the byte after the previous `\r\n` or `\n`, or 0), and implement kill-line (delete text up to the newline, leaving the newline itself).
-- Track a dirty flag (set by edits, cleared by save), store a length-prefixed file image with a magic number, and validate that magic on load (using `CreateFileA`, `ReadFile`, `WriteFile`, `CloseHandle`).
-- Flip the console into raw mode with `GetConsoleMode` and `SetConsoleMode` (clearing `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT`) so the editor receives keypresses immediately without echo.
+You keep live text in a byte array with a length and a cursor index clamped to `[0, length]`. You insert by shifting the tail right and delete by shifting it left — memory does not move itself. You keep a gap (`gap_start` … `gap_end`) at the cursor so a typed byte is a store plus an increment, and you move that gap by copying one byte when the cursor moves. You scan backward for byte `10` to find the line start. You set a dirty flag on edit and clear it on save. You write a file image that starts with magic `"ED01"` and an 8-byte length using `CreateFileA` and `WriteFile`, and you reject a bad magic on load. You clear `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT` with `GetConsoleMode` / `SetConsoleMode` so each key arrives without echo, and you restore the original mode before `ExitProcess`.
 
 ## Why a text editor as milestone 1
 
-An editor touches every concept from lessons 00–09:
-- **Memory layout** (`.data`, `.data?`, `.const`, buffers)
-- **Arithmetic and flags** (length checks, cursor clamping, gap math)
-- **Control flow** (loops for scanning, conditionals for edge cases)
-- **Procedures** (insert, delete, move, render as separate routines with MS x64 calling convention)
-- **Strings and arrays** (byte buffers, null-terminated paths)
-- **Bitwise operations** (flag manipulation in console mode)
-- **Win32 API** (`GetStdHandle`, `ReadFile`, `WriteFile`, `CreateFileA`, `CloseHandle`, `GetConsoleMode`, `SetConsoleMode`)
-- **Macros and multi-file** (factoring the editor into modules with MASM `MACRO`, `EXTERN`, `PUBLIC`, and NMake)
+An editor touches lessons 00–09:
 
-The milestone is not a single drill—it's a capstone binary you build by composing the patterns from the 24 drills below, applying lesson 09's multi-file build, and meeting six acceptance criteria. The drills isolate each primitive so you can verify it in a 10-line testbench before integrating it into a 500-line editor.
+- **Memory layout** — `.DATA`, `.DATA?`, buffers
+- **Arithmetic and flags** — length checks, cursor clamps, gap subtraction
+- **Control flow** — shift loops, scans, edge branches
+- **Procedures** — insert, delete, move, render as separate `PROC`s under the Microsoft x64 ABI (lesson 04)
+- **Strings and arrays** — byte buffers, NUL-terminated paths
+- **Bitwise operations** — console-mode masks (lesson 07)
+- **Win32 API** — `GetStdHandle`, `ReadFile`, `WriteFile`, `CreateFileA`, `CloseHandle`, `GetConsoleMode`, `SetConsoleMode` (lessons 00 and 08)
+- **Macros and multi-file** — `MACRO`, `EXTRN`, `PUBLIC`, NMake (lesson 09)
+
+The milestone is a capstone binary. The listings are testbenches for one primitive at a time. You do not start by writing 500 lines.
 
 ## Buffer, cursor, length
 
-The editor's state starts with three values:
+Editor state is three values: the bytes, how many are live, and where the cursor sits. Listings `01`–`04` name them `buffer`, `buf_len`, and `cursor`. Listings `05`–`08` and `20` name them `buf`, `len`, and `cur`. Same roles.
+
+An empty buffer has length 0 and cursor 0. Appending writes at the live end and increments `buf_len` (or `len`). The cursor may be any index in `[0, buf_len]`, including `buf_len` (past the last live byte). Insert at the end is an append. Insert in the middle shifts the tail.
+
+Indexed stores do not use `buffer[rax]` / `buf[rcx]` as a memory operand. Each of those listings does `lea r10, buffer` (or `lea r10, buf`) once, then addresses `[r10+rax]`, `[r10+rcx]`, and so on. That is RIP-relative: `lea` materializes the buffer address, then the index is a register offset.
+
+### Append
+
+Listing `01-buffer-append` starts empty, appends `'A'`, `'B'`, then `'C'`, and exits with the length. After `lea r10, buffer`, each append is `mov rax, buf_len` / `mov BYTE PTR [r10+rax], …` / `inc buf_len`. The cursor is initialized to 0 and never moved. `mov ecx, DWORD PTR buf_len` takes the low 32 bits for `ExitProcess`. Expected exit: **3**.
 
 ```asm
-.data?
-buf BYTE 4096 DUP(?)        ; the text bytes
-len QWORD ?                 ; how many bytes are live
-cur QWORD ?                 ; cursor index in [0, len]
+; 01-buffer-append.asm
+;
+; Purpose: Demonstrate buffer append operation
+; Expected exit code: 3
+; Expected stdout: (none)
+;
+; Core buffer primitive: append byte to end
+
+.DATA?
+buffer DB 256 DUP(?)
+buf_len QWORD ?
+cursor QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buffer
+    ; Initialize empty buffer
+    mov     buf_len, 0
+    mov     cursor, 0
+    
+    ; Append 'A'
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'A'
+    inc     buf_len
+    
+    ; Append 'B'
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     buf_len
+    
+    ; Append 'C'
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'C'
+    inc     buf_len
+    
+    ; Exit with buf_len (3)
+    mov     ecx, DWORD PTR buf_len
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-An empty buffer has `len = 0` and `cur = 0`. Appending a byte means writing `buf[len]`, then incrementing `len`. The cursor can sit anywhere in `[0, len]`, including at the end (past the last character). When the cursor is at the end, an insert appends. When the cursor is in the middle, an insert shifts the tail.
+### Append and advance the cursor
 
-### Cursor movement
-
-Moving right increments `cur` if `cur < len`. Moving left decrements `cur` if `cur > 0`. The clamp is **mandatory**—a cursor past `len` or below 0 causes memory corruption.
+Listing `05-append-advance-cursor` appends one `'A'` and increments both `len` and `cur`. The process status is the new length. Expected exit: **1**.
 
 ```asm
-; move right
-mov rax, [cur]
-cmp rax, [len]
-jae .done               ; already at end
-inc qword [cur]
-.done:
+; Listing 05: Append byte and advance cursor (LESSON.md block 5)
+;
+; Purpose: Append 'A' at end and move cursor with length.
+; Expected exit code: 1
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     len, 0
+    mov     cur, 0
+    mov     rax, len
+    mov     BYTE PTR [r10+rax], 'A'
+    inc     len
+    inc     cur
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-Use **unsigned** comparisons (`jae`, `jbe`) for indices because they're always nonnegative. A signed compare would misinterpret a corrupted negative index as a valid small number.
+### Cursor clamp
 
-**Clamping a out-of-range cursor:** If a bug produces `cur > len`, clamp it:
+Moving right increments the cursor only when it is less than length. Moving left decrements only when it is greater than 0. A cursor past length or wrapped below 0 is memory corruption. Use unsigned compares (`jae`, `jbe`) on indices.
+
+Listing `04-cursor-clamp` sets `buf_len` to 3 and `cursor` to 9, then `cmp rax, buf_len` / `jbe cursor_ok`. 9 is above 3, so it stores 3 back into `cursor`. Expected exit: **3**.
+
+A corrupted cursor of `0FFFFFFFFFFFFFFFFh` (all bits 1) is **greater** than 3 as unsigned, so `jbe` fails and the clamp still stores 3. A signed `jle` would treat that value as −1, which is less than 3, and would skip the clamp.
 
 ```asm
-mov rax, [cur]
-cmp rax, [len]
-jbe .ok                 ; cur <= len
-mov rax, [len]
-mov [cur], rax          ; clamp to len
-.ok:
+; 04-cursor-clamp.asm
+;
+; Purpose: Demonstrate cursor clamping to valid range [0, buf_len]
+; Expected exit code: 3
+; Expected stdout: (none)
+;
+; Clamps out-of-range cursor to [0, buf_len]
+
+.DATA?
+buffer DB 256 DUP(?)
+buf_len QWORD ?
+cursor QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    ; Setup: buffer with buf_len 3
+    mov     buf_len, 3
+    
+    ; Simulate corrupted cursor (cursor = 9, out of range)
+    mov     cursor, 9
+    
+    ; Clamp cursor to [0, buf_len]
+    mov     rax, cursor
+    cmp     rax, buf_len
+    jbe     cursor_ok
+    mov     rax, buf_len
+    mov     cursor, rax
+    
+cursor_ok:
+    ; Cursor now clamped to 3
+    ; Exit with clamped cursor value
+    mov     ecx, DWORD PTR cursor
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-This is defensive: if `cur` is 9 and `len` is 3, the clamp sets `cur = 3`. The drill `21-debug-cursor-oob.asm` exits 3 after this clamp.
+### Backspace at the end
 
-### Appending a character
+When the cursor equals the length, backspace is two decrements: drop the last byte and pull the cursor back. Listing `06-backspace-at-end` starts with `'X'`, `len = 1`, `cur = 1`. It refuses to run if `cur` is 0, then checks `cur == len`, then `dec len` / `dec cur`. Expected exit: **0** (the new length). A backspace in the middle needs the delete-forward tail shift below.
 
 ```asm
-; append 'A' to the end
-mov rax, [len]
-mov byte [buf + rax], 'A'
-inc qword [len]
+; Listing 06: Backspace when cursor at end (LESSON.md block 6)
+;
+; Purpose: Decrement len and cur when cur == len at end of buffer.
+; Expected exit code: 0
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'X'
+    mov     len, 1
+    mov     cur, 1
+    cmp     cur, 0
+    je      done
+    mov     rax, cur
+    cmp     rax, len
+    jne     done
+    dec     len
+    dec     cur
+done:
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
+main ENDP
+
+END
 ```
-
-This is `02-insert-char.asm`. It exits 1 (the new length). The cursor is not moved in this drill, so an append-then-move-right pattern would be:
-
-```asm
-; append and advance cursor
-mov rax, [len]
-mov byte [buf + rax], 'A'
-inc qword [len]
-inc qword [cur]
-```
-
-### Deleting at the end (backspace)
-
-If the cursor is at the end, backspace just decrements `len`:
-
-```asm
-; backspace when cur == len
-cmp qword [cur], 0
-je .done                ; can't backspace at start
-mov rax, [cur]
-cmp rax, [len]
-jne .middle
-; at end
-dec qword [len]
-dec qword [cur]
-.done:
-```
-
-This is `04-delete-backspace.asm` (simplified: it only does the decrement, no cursor move). A full backspace that works in the middle requires a tail shift.
 
 ## Inserting and deleting in the middle: tail shifts
 
-When the cursor is not at the end, insertion and deletion must **shift the tail**. Memory does not move itself.
+When the cursor is not at the end, insert and delete **shift the tail**.
 
 ### Insert in the middle
 
-To insert `'B'` at index 1 in `"AC"`, producing `"ABC"`:
+To insert `'B'` at index 1 in `"AC"` (length 2), producing `"ABC"`:
 
 1. Shift `buf[1..len)` one byte rightward to `buf[2..len+1)`.
 2. Store `'B'` at `buf[1]`.
 3. Increment `len`.
-4. Increment `cur` (optional, depending on desired cursor behavior).
+4. Increment `cur` if the cursor should sit after the new byte.
 
-**Shift loop (reverse order to avoid overwriting):**
+The shift walks `rcx` from `len` downward. Copy `buf[rcx-1]` to `buf[rcx]`. Stop before you copy the byte at the cursor (that slot is about to become the new character).
 
-```asm
-    mov rcx, [len]
-.shift:
-    cmp rcx, [cur]
-    jle .done_shift         ; stop when rcx reaches cur
-    mov al, [buf + rcx - 1]
-    mov [buf + rcx], al
-    dec rcx
-    jmp .shift
-.done_shift:
-    ; now store the new byte at buf[cur]
-    mov rax, [cur]
-    mov byte [buf + rax], 'B'
-    inc qword [len]
-    inc qword [cur]
-```
-
-The loop starts at `rcx = len` and copies `buf[rcx-1]` to `buf[rcx]`, decrementing until `rcx == cur`. This preserves the tail without overwriting any live data.
-
-**Drill:** `10-insert-middle.asm` starts with `"AC"`, cursor at 1, inserts `'B'`, and exits 66 (the byte value of `'B'`). The final buffer is `"ABC"`.
-
-### Delete in the middle (delete-forward)
-
-To delete the character at the cursor (delete-forward), shift `buf[cur+1..len)` one byte leftward to `buf[cur..len-1)`:
+Listing `02-insert-middle` uses `jle shift_done` — the loop continues while `rcx > cursor`. After `lea r10, buffer`, from `rcx = 2` and `cursor = 1` that is one copy: `[r10+2] = [r10+1]` (`'C'`). Then it stores `'B'` at `[r10+cursor]`, increments `buf_len` and `cursor`, and exits with the immediate 66 (`'B'`). Final buffer `"ABC"`. Expected exit: **66**.
 
 ```asm
-    mov rcx, [cur]
-.shift:
-    inc rcx
-    cmp rcx, [len]
-    jge .done_shift
-    mov al, [buf + rcx]
-    mov [buf + rcx - 1], al
-    jmp .shift
-.done_shift:
-    dec qword [len]
+; 02-insert-middle.asm
+;
+; Purpose: Insert character in middle of buffer with tail shift
+; Expected exit code: 66 (ASCII 'B')
+; Expected stdout: (none)
+;
+; Demonstrates: Shifting tail rightward to make room for insertion
+
+.DATA?
+buffer DB 256 DUP(?)
+buf_len QWORD ?
+cursor QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buffer
+    ; Setup: "AC" with cursor at 1
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
+    mov     buf_len, 2
+    mov     cursor, 1
+    
+    ; Insert 'B' at cursor (index 1)
+    ; Shift tail rightward
+    mov     rcx, buf_len
+shift_loop:
+    cmp     rcx, cursor
+    jle     shift_done
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
+    dec     rcx
+    jmp     shift_loop
+    
+shift_done:
+    ; Store new byte at cursor
+    mov     rax, cursor
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     buf_len
+    inc     cursor
+    
+    ; Buffer now contains "ABC"
+    ; Exit with 'B' (66)
+    mov     ecx, 66
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-The loop starts at `cur` and copies `buf[rcx]` to `buf[rcx-1]` for all `rcx` from `cur+1` to `len-1`.
+Listing `07-insert-middle-shift` is the same algorithm on `buf` / `len` / `cur` with `jle done_shift`. Same exit: **66**.
 
-**Drill:** `11-delete-forward.asm` starts with `"ABCD"`, cursor at 1, deletes `'B'`, and exits 3 (the new length, `"ACD"`).
+```asm
+; Listing 07: Insert in middle with tail shift (LESSON.md block 7)
+;
+; Purpose: Shift tail right and insert 'B' at cursor.
+; Expected exit code: 66
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
+    mov     len, 2
+    mov     cur, 1
+    mov     rcx, len
+shift:
+    cmp     rcx, cur
+    jle     done_shift
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
+    dec     rcx
+    jmp     shift
+done_shift:
+    mov     rax, cur
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     len
+    inc     cur
+    mov     ecx, 66
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+`jle` is signed. Indices in these listings stay small and non-negative, so it matches `jbe`. Listing `20-insert-shift-jl` uses `jl` instead; that extra iteration is the worked example.
+
+### Delete-forward
+
+Delete-forward removes the byte at the cursor and slides `buf[cur+1..len)` left onto `buf[cur..len-1)`.
+
+Listing `03-delete-forward` starts with `"ABC"` (`buf_len` 3), cursor at 1 (the `'B'`). After `lea r10, buffer`, the loop increments RCX from the cursor, copies `[r10+rcx]` to `[r10+rcx-1]`, and stops when `rcx >= buf_len`. Then `dec buf_len`. The buffer is `"AC"`, length 2. Expected exit: **2**.
+
+That is not `"ABCD"` and not exit 3. Three live bytes, one deletion, status 2.
+
+```asm
+; 03-delete-forward.asm
+;
+; Purpose: Delete character at cursor (shift tail leftward)
+; Expected exit code: 2
+; Expected stdout: (none)
+;
+; Demonstrates: Delete-forward operation with tail shift
+
+.DATA?
+buffer DB 256 DUP(?)
+buf_len QWORD ?
+cursor QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buffer
+    ; Setup: "ABC" with cursor at 1
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
+    mov     buf_len, 3
+    mov     cursor, 1
+    
+    ; Delete byte at cursor (delete 'B')
+    ; Shift tail leftward
+    mov     rcx, cursor
+shift_loop:
+    inc     rcx
+    cmp     rcx, buf_len
+    jge     shift_done
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
+    jmp     shift_loop
+    
+shift_done:
+    dec     buf_len
+    ; Buffer now contains "AC" (buf_len 2)
+    
+    ; Exit with buf_len (2)
+    mov     ecx, DWORD PTR buf_len
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+Listing `08-delete-forward-shift` repeats the same `"ABC"` / cursor 1 / `jge done_shift` pattern on `buf` / `len` / `cur`. Expected exit: **2**.
+
+```asm
+; Listing 08: Delete-forward tail shift (LESSON.md block 8)
+;
+; Purpose: Shift [r10+cur+1..len) left and decrement len.
+; Expected exit code: 2
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
+    mov     len, 3
+    mov     cur, 1
+    mov     rcx, cur
+shift:
+    inc     rcx
+    cmp     rcx, len
+    jge     done_shift
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
+    jmp     shift
+done_shift:
+    dec     len
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
+main ENDP
+
+END
+```
 
 ## The gap buffer: amortizing tail shifts
 
-Shifting the tail on every insert is expensive if you're typing in the middle of a 10KB file. A **gap buffer** keeps the free space at the cursor, so inserts just consume gap space—no shift unless the gap is empty.
+Shifting a 10 KB tail on every keystroke is the cost you are avoiding. A **gap buffer** keeps the unused capacity at the cursor. An insert at the gap is a store and an increment. You pay a copy only when the cursor (and therefore the gap) moves.
 
-**Structure:**
+Live text is `buf[0..gap_start)` on the left and `buf[gap_end..capacity)` on the right. Free space is `gap_end - gap_start`.
 
-```asm
-section .bss
-    buf: resb 4096
-    gap_start: resq 1       ; first free byte
-    gap_end: resq 1         ; first byte of right-hand text
-```
-
-The text is `buf[0..gap_start)` (left half) and `buf[gap_end..capacity)` (right half). Free space is `gap_end - gap_start`.
-
-**Empty buffer:**
+Listing `09-gap-buffer-fields` declares `buf BYTE 4096 DUP(?)`, `gap_start`, and `gap_end`, sets them to 0 and 4096, and exits 0. That is an empty buffer: every byte is gap.
 
 ```asm
-mov qword [gap_start], 0
-mov qword [gap_end], 4096
-; free space = 4096
+; Listing 09: Gap buffer layout (LESSON.md block 9)
+;
+; Purpose: Declare gap buffer with gap_start and gap_end pointers.
+; Expected exit code: 0
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     gap_start, 0
+    mov     gap_end, 4096
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+
+END
+
 ```
 
-**Insert at the gap:**
+Listing `10-gap-empty-init` computes `gap_end - gap_start` (4096) and passes that value to `ExitProcess` in ECX. The harness compares the full 32-bit status. Expected exit: **4096**.
 
 ```asm
-; store character at gap_start
-mov rax, [gap_start]
-mov byte [buf + rax], 'X'
-inc qword [gap_start]
-; free space decreased by 1
+; Listing 10: Empty gap buffer (LESSON.md block 10)
+;
+; Purpose: Initialize empty gap; free space = gap_end - gap_start.
+; Expected exit: 4096
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     gap_start, 0
+    mov     gap_end, 4096
+    mov     rax, gap_end
+    sub     rax, gap_start
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-The cursor is conceptually at `gap_start`. No tail shift—just write and advance the gap start.
+### Insert at the gap
 
-**Drill:** `15-gap-insert.asm` starts with `gap_start = 2` and `gap_end = 6` (free space 4). After one insert, `gap_start` becomes 3, and the exit is 3 (the remaining free space). The drill does not actually store the character—it only verifies the arithmetic.
-
-### Moving the gap
-
-When the cursor moves away from the gap, you must **move the gap** by copying bytes:
-
-**Move gap left (cursor moves left):**
+Listing `11-gap-insert-byte` starts at `gap_start = 2`, `gap_end = 6` (4 free bytes). It stores `'X'` at `buf[gap_start]`, increments `gap_start` to 3, then exits with the remaining free space `6 - 3`. The store is real — this listing writes the byte. Expected exit: **3**.
 
 ```asm
-; copy buf[gap_start - 1] to buf[gap_end - 1]
-; then dec gap_start, dec gap_end
-.move_left:
-    mov rax, [gap_start]
-    dec rax
-    mov al, [buf + rax]
-    mov rcx, [gap_end]
-    dec rcx
-    mov [buf + rcx], al
-    mov [gap_start], rax
-    mov [gap_end], rcx
+; Listing 11: Insert at gap_start (LESSON.md block 11)
+;
+; Purpose: Store at gap_start and advance; exit remaining free bytes.
+; Expected exit code: 3
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     gap_start, 2
+    mov     gap_end, 6
+    mov     rax, gap_start
+    mov     BYTE PTR [r10+rax], 'X'
+    inc     gap_start
+    mov     rax, gap_end
+    sub     rax, gap_start
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-This moves one byte from the left half to the right half, effectively shifting the gap left by one.
+### Moving the gap left
 
-**Drill:** `16-gap-move-left.asm` starts with `gap_start = 3` and `gap_end = 5`. After moving left, `gap_start = 2` and the exit is 2.
+Cursor left means the gap slides left one byte: copy `buf[gap_start-1]` to `buf[gap_end-1]`, then decrement both bounds.
 
-**Move gap right (cursor moves right):**
+Listing `12-gap-move-left` plants `'Q'` at `buf[2]`, sets `gap_start = 3` and `gap_end = 5`, then:
+
+1. `mov rax, gap_start` / `dec rax` — RAX is the source index 2.
+2. `mov r8, rax` keeps that index. After `lea r10, buf`, `movzx edx, BYTE PTR [r10+r8]` loads `'Q'` without clobbering the index.
+3. `mov rcx, gap_end` / `dec rcx` — RCX is 4. `mov BYTE PTR [r10+rcx], dl` writes `'Q'` to `buf[4]`.
+4. `mov gap_start, r8` stores 2. `mov gap_end, rcx` stores 4. `mov ecx, 2` is the process status.
+
+Expected exit: **2**. A `mov al, BYTE PTR [r10+rax]` here would have overwritten the index with `'Q'` (81). The listing uses `r8` / `movzx edx` so that does not happen.
 
 ```asm
-; copy buf[gap_end] to buf[gap_start]
-; then inc gap_start, inc gap_end
-.move_right:
-    mov rax, [gap_end]
-    mov al, [buf + rax]
-    mov rcx, [gap_start]
-    mov [buf + rcx], al
-    inc qword [gap_start]
-    inc qword [gap_end]
+; Listing 12: Move gap left one byte (LESSON.md block 12)
+;
+; Purpose: Copy byte left of gap into gap from the right side.
+; Expected exit code: 2
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+2], 'Q'
+    mov     gap_start, 3
+    mov     gap_end, 5
+    mov     rax, gap_start
+    dec     rax
+    mov     r8, rax                 ; index 2 (do not clobber with AL load)
+    movzx   edx, BYTE PTR [r10+r8]
+    mov     rcx, gap_end
+    dec     rcx
+    mov     BYTE PTR [r10+rcx], dl
+    mov     gap_start, r8
+    mov     gap_end, rcx
+    mov     ecx, 2                  ; gap_start after move
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-The gap buffer optimization pays off when you type continuously at one spot: all inserts are `O(1)` until the gap runs out. Moving the cursor costs one byte copy per position, so cursor motion is still `O(distance)`, but that's much cheaper than shifting a 10KB tail on every keystroke.
+To keep the index, copy the byte into a register that is not holding the index (`movzx edx, BYTE PTR [r10+rax]` after `dec rax`, or save the decremented index in another register before loading AL).
+
+### Moving the gap right
+
+Cursor right copies `buf[gap_end]` onto `buf[gap_start]` and increments both bounds. Listing `13-gap-move-right` plants `'Z'` at `buf[5]`, starts at `gap_start = 2` and `gap_end = 5`, does that copy (AL is overwritten the same way, but the listing reloads `gap_end` afterward), then exits with remaining free space `6 - 3`. Expected exit: **3**.
+
+```asm
+; Listing 13: Move gap right one byte (LESSON.md block 13)
+;
+; Purpose: Copy byte at gap_end into gap_start and advance gap.
+; Expected exit code: 3
+; Expected stdout: (none)
+
+.DATA?
+buf BYTE 4096 DUP(?)
+gap_start QWORD ?
+gap_end QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+5], 'Z'
+    mov     gap_start, 2
+    mov     gap_end, 5
+    mov     rax, gap_end
+    mov     al, BYTE PTR [r10+rax]
+    mov     rcx, gap_start
+    mov     BYTE PTR [r10+rcx], al
+    inc     gap_start
+    inc     gap_end
+    mov     rax, gap_end
+    sub     rax, gap_start
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+Typing at a fixed gap is O(1) until the gap is empty. Moving the cursor is one byte copy per position.
 
 ## Lines: scanning and kill-line
 
-A **line** is the text between two newlines (byte value `10`, ASCII `\n`). The **line start** is the index immediately after the previous newline, or 0 if there is none.
+A line is the text between newline bytes (`10`). Windows files often use CR LF (`13, 10`); the scan in this listing looks for `10`. The **line start** is the index after the previous `10`, or 0 if there is none.
 
-### Finding the line start
-
-Scan backward from the cursor:
+Listing `14-line-start-scan` uses `.DATA` bytes `"ab", 10, "cd", 0` — indices `0='a'`, `1='b'`, `2=10`, `3='c'`, `4='d'`. RSI is the cursor 4. The scan decrements RCX until it sees `10` or hits 0, then `inc rcx` to step past the newline. RCX is 3. `mov ecx, ecx` is a no-op; `ExitProcess` takes that 3. Expected exit: **3**.
 
 ```asm
-; input: rsi = cursor
-; output: rcx = line start index
-    mov rcx, rsi
-.scan:
-    test rcx, rcx
-    jz .done                ; reached beginning of buffer
-    dec rcx
-    cmp byte [buf + rcx], 10
-    jne .scan
-    inc rcx                 ; step past the newline
-.done:
-    ; rcx is the line start
-```
+; Listing 14: Scan backward for line start (LESSON.md block 14)
+;
+; Purpose: Find line start index for cursor in buffer with newlines.
+; Expected exit code: 3
+; Expected stdout: (none)
 
-**Example:** In `"ab\ncd"` (bytes `'a', 'b', 10, 'c', 'd'`), cursor at index 4 (the `'d'`):
-- `rcx = 4`, `buf[3] = 'c'`, not `10`, continue.
-- `rcx = 3`, `buf[2] = 10`, found newline, `inc rcx` → `rcx = 3`.
-- Line start is 3 (the `'c'`).
+.DATA
+buf BYTE "ab", 10, "cd", 0
 
-**Drill:** `12-line-start-end.asm` computes the line start for cursor 4 and exits 3. (The filename says "end"; the code computes the start. This is a known naming mismatch.)
+.CODE
+EXTRN ExitProcess:PROC
 
-### Kill-line
-
-**Kill-line** deletes the text from the cursor to the end of the line, **leaving the newline**. In `"ab\ncd"`, kill from cursor 0 produces `"\ncd"` (length 3).
-
-**Algorithm:**
-
-1. Scan forward from cursor to find the newline (or end of buffer).
-2. Copy `buf[newline_index..len)` down to `buf[cursor..cursor + (len - newline_index))`.
-3. Update `len`.
-
-**Drill:** `24-from-scratch-kill-line.asm` starts with `"ab\ncd"` (length 5), cursor 0. The newline is at index 2. Copy `buf[2..5)` to `buf[0..3)`, set `len = 3`, exit 3. The buffer is now `"\ncd"`.
-
-The newline is copied, which is why the lesson says "the newline stays." If you wanted to delete the newline too (kill including newline), you'd start the copy at `newline_index + 1`.
-
-## Rendering the buffer
-
-An editor must display the buffer. The simplest rendering is to write the entire buffer to stdout:
-
-```asm
-mov rax, 1              ; sys_write
-mov rdi, 1              ; stdout
-lea rsi, [buf]
-mov rdx, [len]
-syscall
-```
-
-**Drill:** `05-render-line.asm` writes a short string (e.g., `"ed\n"`) and exits 0.
-
-For a full-screen editor, you'd render a **viewport**: a subset of the buffer around the cursor. The drills model this with a fixed-size view:
-
-**Drill:** `13-render-viewport.asm` writes the first 3 bytes of the buffer (e.g., `"L1\n"`) and exits 0. A real editor would compute the starting line based on the cursor position and terminal height.
-
-## Save, load, dirty flag, and magic numbers
-
-An editor must persist its buffer to disk and reload it. To detect corruption or version mismatches, the file format includes a **magic number** and a **length prefix**.
-
-### File format
-
-```
-Offset  Size  Field
-0       4     Magic: "ED01" (0x4445 0x3130 on little-endian load)
-4       4     (padding/reserved, optional)
-8       8     Length (qword)
-16      N     Buffer contents (N bytes)
-```
-
-The magic `"ED01"` is `'E'`, `'D'`, `'0'`, `'1'` (ASCII `69, 68, 48, 49`). On a little-endian load of the first word, the bytes appear as `0x44 0x45` (in memory order), which is `0x4544` as a 16-bit word. Wait—let's check:
-
-- Little-endian stores the **least significant byte first**.
-- `"ED"` as bytes: `'E' = 0x45`, `'D' = 0x44`.
-- In memory: `[0x45, 0x44, ...]`.
-- Load as a word: `word [magic]` reads the first two bytes in little-endian order: `0x4445` (not `0x4544`).
-
-**Drill:** `20-load-validate-magic.asm` checks `cmp word [magic], 0x4445` and exits 1 if it matches. The drill inverts the test (exits 1 on match, 0 on mismatch), which is backwards from a real editor, but it verifies the comparison works.
-
-### Dirty flag
-
-A **dirty flag** tracks unsaved changes. Any edit sets it; a successful save clears it.
-
-```asm
-section .bss
-    dirty: resb 1
-
-; on insert, delete, or any edit:
-mov byte [dirty], 1
-
-; on save:
-; ... write file ...
-mov byte [dirty], 0
-```
-
-**Drill:** `14-dirty-flag.asm` sets the flag to 1, performs a mock save (just clearing the flag), and exits 0.
-
-### Saving with length prefix
-
-To save the buffer, open the file with `O_CREAT | O_TRUNC | O_WRONLY`, write the magic and length, write the buffer, close.
-
-```asm
-section .data
-    path: db "editor.save", 0
-    magic: db "ED01"
-section .bss
-    fd: resq 1
-    len: resq 1
-    buf: resb 4096
-
-; save
-mov rax, 2              ; open
-lea rdi, [path]
-mov rsi, 577            ; O_WRONLY | O_CREAT | O_TRUNC
-mov rdx, 420            ; mode 0644
-syscall
-mov [fd], rax
-
-; write magic (4 bytes)
-mov rax, 1
-mov rdi, [fd]
-lea rsi, [magic]
-mov rdx, 4
-syscall
-
-; write length (8 bytes)
-mov rax, 1
-mov rdi, [fd]
-lea rsi, [len]
-mov rdx, 8
-syscall
-
-; write buffer
-mov rax, 1
-mov rdi, [fd]
-lea rsi, [buf]
-mov rdx, [len]
-syscall
-
-; close
-mov rax, 3
-mov rdi, [fd]
-syscall
-```
-
-**Drill:** `19-save-length-prefix.asm` computes the total byte count (4 magic + 8 length + N content, so 12 + N) but does not actually write. For a buffer of length 0, it exits 12.
-
-### Loading and validating
-
-To load, open the file, read magic and length, validate the magic, read the content, close.
-
-```asm
-; load
-mov rax, 2              ; open
-lea rdi, [path]
-xor rsi, rsi            ; O_RDONLY
-syscall
-mov [fd], rax
-
-; read magic
-mov rax, 0              ; sys_read
-mov rdi, [fd]
-lea rsi, [magic]
-mov rdx, 4
-syscall
-
-; validate
-cmp word [magic], 0x4445
-jne .bad_magic
-
-; read length
-mov rax, 0
-mov rdi, [fd]
-lea rsi, [len]
-mov rdx, 8
-syscall
-
-; read buffer
-mov rax, 0
-mov rdi, [fd]
-lea rsi, [buf]
-mov rdx, [len]
-syscall
-
-; close
-mov rax, 3
-mov rdi, [fd]
-syscall
-
-.bad_magic:
-; exit with error
-mov rdi, 1
-mov rax, 60
-syscall
-```
-
-**Drill:** `07-load-stub.asm` mocks loading by setting `len = 3` and exiting 3. `06-save-stub.asm` exits 0 without writing.
-
-## Raw mode: capturing keypresses
-
-A terminal in **canonical mode** (the default) buffers input until Enter is pressed and echoes each character. An editor needs **raw mode**: every keypress arrives immediately, and nothing is echoed.
-
-On Windows, console behavior is controlled by a 32-bit **console mode** bitmask, manipulated with `GetConsoleMode` and `SetConsoleMode`.
-
-### Console mode and GetConsoleMode/SetConsoleMode
-
-Windows console mode is a `DWORD` (32-bit integer) bitmask. Two bits matter for raw mode:
-
-- `ENABLE_LINE_INPUT` (0x2): canonical mode (line buffering). When set, `ReadFile` waits for Enter.
-- `ENABLE_ECHO_INPUT` (0x4): echo input. When set, typed characters appear on screen.
-
-To enter raw mode, clear both bits. To restore, set them.
-
-**Console mode constants (input):**
-
-| Flag | Value | Meaning |
-|------|------:|---------|
-| `ENABLE_PROCESSED_INPUT` | 0x1 | Process Ctrl+C |
-| `ENABLE_LINE_INPUT` | 0x2 | Line-buffered input |
-| `ENABLE_ECHO_INPUT` | 0x4 | Echo input to console |
-| `ENABLE_WINDOW_INPUT` | 0x8 | Report window events |
-| `ENABLE_MOUSE_INPUT` | 0x10 | Report mouse events |
-
-**Entering raw mode:**
-
-```asm
-EXTERN GetStdHandle:PROC
-EXTERN GetConsoleMode:PROC
-EXTERN SetConsoleMode:PROC
-EXTERN ExitProcess:PROC
-
-.data?
-mode DWORD ?
-original_mode DWORD ?
-stdin_handle QWORD ?
-
-.code
 main PROC
-    sub rsp, 56             ; shadow space + alignment
-    
-    ; Get stdin handle
-    mov rcx, -10            ; STD_INPUT_HANDLE
-    call GetStdHandle
-    mov stdin_handle, rax   ; save handle
-    
-    ; Get current mode
-    mov rcx, stdin_handle
-    lea rdx, original_mode
-    call GetConsoleMode
-    test rax, rax
-    jz error_exit
-    
-    ; Clear ENABLE_LINE_INPUT (0x2) and ENABLE_ECHO_INPUT (0x4)
-    mov eax, original_mode
-    and eax, NOT (2 OR 4)   ; clear bits 2 and 4
-    mov mode, eax
-    
-    ; Set new mode
-    mov rcx, stdin_handle
-    mov edx, mode
-    call SetConsoleMode
-    test rax, rax
-    jz error_exit
-    
-    ; Now in raw mode
-    ; ... editor loop ...
-    
-    ; Restore original mode on exit
-    mov rcx, stdin_handle
-    mov edx, original_mode
-    call SetConsoleMode
-    
-    add rsp, 56
-    mov rcx, 0
-    call ExitProcess
-    
-error_exit:
-    add rsp, 56
-    mov rcx, 1
-    call ExitProcess
+    sub rsp, 40
+    lea     r10, buf
+    mov     rsi, 4
+    mov     rcx, rsi
+scan:
+    test    rcx, rcx
+    jz      done
+    dec     rcx
+    cmp     BYTE PTR [r10+rcx], 10
+    jne     scan
+    inc     rcx
+done:
+    mov     ecx, ecx
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+**Kill-line** deletes from the cursor through the last character before the newline and **leaves the newline**.
+
+Listing `21-kill-line` uses the same `"ab", 10, "cd"` bytes as listing 14, with `len = 5` and `cur = 0` (the cursor field is written and never read). The scan starts at index 0 and walks forward until `buf[rcx] == 10`. That newline is at index 2. Then it copies `buf[2..5)` down to `buf[0..)`: the three bytes `10`, `'c'`, `'d'`. `len` becomes the destination count 3. Expected exit: **3**. After the copy the buffer is `"\ncd"` plus the leftover terminator; the newline stayed. The prologue is `push rdi` / `push rsi` / `sub rsp, 40` (two nonvolatile saves plus a 40-byte frame; RSP ≡ 8 at the `call`).
+
+The drill `exercises/24-from-scratch-kill-line.asm` is still the from-scratch version.
+
+```asm
+; Listing 21: Kill-line deletes to newline, keeps newline (LESSON.md)
+; Expected exit: 3
+; Expected stdout: (none)
+
+.DATA
+buf BYTE "ab", 10, "cd", 0
+
+.DATA?
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    push    rdi
+    push    rsi
+    sub     rsp, 40
+    mov     len, 5
+    mov     cur, 0
+
+    mov     rcx, 0
+    lea     rdx, buf
+find_nl:
+    cmp     BYTE PTR [rdx + rcx], 10
+    je      found_nl
+    inc     rcx
+    jmp     find_nl
+
+found_nl:
+    mov     r8, rcx
+    mov     r9, len
+    mov     rdi, 0
+    mov     rsi, r8
+copy_rest:
+    cmp     rsi, r9
+    jge     copy_done
+    movzx   eax, BYTE PTR [rdx + rsi]
+    mov     BYTE PTR [rdx + rdi], al
+    inc     rsi
+    inc     rdi
+    jmp     copy_rest
+
+copy_done:
+    mov     len, rdi
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
 main ENDP
 END
 ```
 
-**Drill:** `23-stretch-raw-mode-flag.asm` sets a byte flag (modeling the `ENABLE_LINE_INPUT` bit), clears it (modeling the `and` operation), and exits 0. It does not call `SetConsoleMode`—it's a logic drill.
+## Rendering the buffer
 
-**Important:** A real editor must **restore** the original console mode on exit. If you forget, the console remains in raw mode (no echo, no line editing), and the user must close the terminal window or run `cmd` to open a fresh console.
+The smallest render is `WriteFile` of the live bytes to standard output. Listing `15-render-buffer` writes `"ed"` plus CR LF (`13, 10`). `len EQU $ - buf` is 4. The frame is `main PROC FRAME` / `sub rsp, 56` / `.allocstack 56`. `GetStdHandle` is called with RCX = −11, then `WriteFile` uses `lea rdx, buf`, `mov r8d, len`, `lea r9, written`, and a NULL overlapped QWORD at `[rsp+32]`. Expected exit: **0**. Expected stdout: `ed` and a CRLF.
 
-## Worked example: how far does the tail shift in insert-middle?
-
-**Task:** Starting with buffer `"AC"` (length 2), cursor at 1, insert `'B'` to produce `"ABC"`. What does the shift loop do?
-
-**Shift loop from `10-insert-middle.asm`:**
+There is no `syscall` and no `nasm` `section .bss` in this listing. Console output is `GetStdHandle` + `WriteFile`, as in lesson 00.
 
 ```asm
-mov rcx, [len]          ; rcx = 2
-.shift:
-    cmp rcx, [cur]      ; compare rcx to 1
-    jl .put
-    mov al, [buf + rcx - 1]
-    mov [buf + rcx], al
-    dec rcx
-    jmp .shift
-.put:
-    mov byte [buf + 1], 'B'
-    inc qword [len]
+; Listing 15: Write buffer to stdout (LESSON.md block 15)
+;
+; Purpose: Write live buffer bytes with WriteFile to stdout.
+; Expected exit code: 0
+; Expected stdout: "ed\r\n"
+
+.DATA
+buf BYTE "ed", 13, 10
+len EQU $ - buf
+
+.DATA?
+written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    mov     rcx, -11
+    call    GetStdHandle
+    mov     rcx, rax
+    lea     rdx, buf
+    mov     r8d, len
+    lea     r9, written
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+
+END
 ```
+
+A full-screen editor writes a viewport — a window of lines around the cursor — not necessarily the whole buffer. The listing is the write primitive, not the viewport math.
+
+## Save, load, dirty flag, and magic numbers
+
+A save file needs a way to reject garbage. These listings use a 4-byte magic `"ED01"` and an 8-byte length.
+
+### Dirty flag
+
+Any edit sets the flag; a successful save clears it. Listing `16-dirty-flag` stores 1, then stores 0, then `movzx ecx, BYTE PTR dirty` so the status is the cleared flag. Expected exit: **0**.
+
+```asm
+; Listing 16: Dirty flag on edit, clear on save (LESSON.md block 16)
+;
+; Purpose: Set dirty on edit and clear after mock save.
+; Expected exit code: 0
+; Expected stdout: (none)
+
+.DATA?
+dirty BYTE ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     BYTE PTR dirty, 1
+    mov     BYTE PTR dirty, 0
+    movzx   ecx, BYTE PTR dirty
+    call    ExitProcess
+main ENDP
+
+END
+
+```
+
+### File layout and save
+
+```
+Offset  Size  Field
+0       4     Magic "ED01" ('E','D','0','1' = 45h, 44h, 30h, 31h)
+4       8     Length (QWORD)
+12      N     Buffer bytes (omitted when N is 0)
+```
+
+Little-endian, the first two magic bytes as a word are `4445h` (low byte `'E'` = 45h, next byte `'D'` = 44h).
+
+Listing `17-save-length-prefix` creates or truncates `editor.save` with `CreateFileA`:
+
+| Argument | Register / slot | Value in the listing |
+|----------|-----------------|----------------------|
+| path | RCX | `lea rcx, path` |
+| access | EDX | `40000000h` (`GENERIC_WRITE`) |
+| share | R8D | 0 |
+| security | R9D | 0 |
+| disposition | `[rsp+32]` | 2 (`CREATE_ALWAYS`) |
+| attributes | `[rsp+40]` | `80h` (`FILE_ATTRIBUTE_NORMAL`) |
+| template | `[rsp+48]` | 0 |
+
+`cmp rax, -1` / `je fail` rejects `INVALID_HANDLE_VALUE`. The HANDLE is saved in RBX. Two `WriteFile` calls write 4 magic bytes and the 8-byte `len` (the listing initializes `len QWORD 0`). There is no third `WriteFile` for buffer contents. `CloseHandle`, then `xor ecx, ecx` / `call ExitProcess`. Failure exits 1.
+
+Frame: `push rbx` / `.pushreg rbx` / `sub rsp, 64` / `.allocstack 64`. Expected exit on success: **0**. Side effect: `editor.save` holds 12 bytes (`ED01` plus eight `00h` bytes).
+
+```asm
+; Listing 17: Save editor image with Win32 I/O (LESSON.md block 17)
+;
+; Purpose: CreateFileA/WriteFile/CloseHandle write magic, length, and buffer.
+; Expected exit code: 0
+; Expected stdout: (none)
+
+.DATA
+path DB "editor.save", 0
+magic DB "ED01"
+len QWORD 0
+
+.DATA?
+bytesWritten DWORD ?
+hFile QWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea     rcx, path
+    mov     edx, 40000000h
+    xor     r8d, r8d
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 2
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    je      fail
+    mov     rbx, rax
+
+    mov     rcx, rbx
+    lea     rdx, magic
+    mov     r8d, 4
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    lea     rdx, len
+    mov     r8d, 8
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    call    CloseHandle
+
+    xor     ecx, ecx
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+
+END
+
+```
+
+### Load and magic check
+
+Listing `18-load-validate-magic` does not call `CreateFileA` or `ReadFile`. It compares `WORD PTR magic` to `4445h`. On match it sets ECX = 1; on mismatch it clears ECX. The drill exits **1** when the prefix is `"ED"` — inverted from a real editor, which would accept a good magic and reject a bad one.
+
+```asm
+; Listing 18: Load and validate magic (LESSON.md block 18)
+;
+; Purpose: Compare magic word; exit 1 on "ED" prefix match (drill semantics).
+; Expected exit code: 1
+; Expected stdout: (none)
+
+.DATA
+magic DB "ED01", 0
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    cmp     WORD PTR magic, 4445h
+    jne     bad_magic
+    mov     ecx, 1
+    jmp     done
+bad_magic:
+    xor     ecx, ecx
+done:
+    call    ExitProcess
+main ENDP
+
+END
+
+```
+
+A production load opens the path (`OPEN_EXISTING` = 3, `GENERIC_READ` = `80000000h`), `ReadFile`s 4 + 8 bytes, compares the word to `4445h`, then `ReadFile`s `len` bytes into the buffer, then `CloseHandle`. Lesson 08 is the API contract.
+
+## Raw mode: capturing keypresses
+
+A console starts in canonical mode: `ReadFile` on stdin waits for Enter and echoes. An editor needs **raw mode**: each key arrives immediately, with no echo.
+
+Console mode is a `DWORD` bitmask from `GetConsoleMode` / `SetConsoleMode`. Two input bits matter here:
+
+| Flag | Value | Meaning |
+|------|------:|---------|
+| `ENABLE_PROCESSED_INPUT` | 1 | Process Ctrl+C |
+| `ENABLE_LINE_INPUT` | 2 | Line-buffered input |
+| `ENABLE_ECHO_INPUT` | 4 | Echo input |
+| `ENABLE_WINDOW_INPUT` | 8 | Window events |
+| `ENABLE_MOUSE_INPUT` | 10h | Mouse events |
+
+Raw mode clears bits 2 and 4. `2 OR 4` is 6. Listing `19-raw-console-mode` writes that as `and eax, NOT 6`.
+
+The listing:
+
+1. `GetStdHandle` with RCX = −10 (`STD_INPUT_HANDLE`), stores the HANDLE in `stdin_handle`.
+2. `GetConsoleMode(stdin_handle, &original_mode)`. FALSE (`test eax, eax` / `jz`) exits 1.
+3. `and eax, NOT 6`, store in `mode`, `SetConsoleMode(stdin_handle, mode)`. FALSE exits 1.
+4. Restores `original_mode` with a second `SetConsoleMode`.
+5. `xor ecx, ecx` / `call ExitProcess`.
+
+Frame: `sub rsp, 56` / `.allocstack 56`. Expected exit on success: **0**. Forget the restore and the console stays raw after the process dies — no echo, no line editing — until the user opens a new console.
+
+```asm
+; Listing 19: Raw console mode via Get/SetConsoleMode (LESSON.md block 19)
+;
+; Purpose: Clear ENABLE_LINE_INPUT and ENABLE_ECHO_INPUT, then restore mode.
+; Expected exit code: 0
+; Expected stdout: (none)
+
+.DATA?
+mode DWORD ?
+original_mode DWORD ?
+stdin_handle QWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN GetConsoleMode:PROC
+EXTRN SetConsoleMode:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    mov     rcx, -10
+    call    GetStdHandle
+    mov     stdin_handle, rax
+
+    mov     rcx, stdin_handle
+    lea     rdx, original_mode
+    call    GetConsoleMode
+    test    eax, eax
+    jz      no_console
+
+    mov     eax, original_mode
+    and     eax, NOT 6
+    mov     mode, eax
+
+    mov     rcx, stdin_handle
+    mov     edx, mode
+    call    SetConsoleMode
+    test    eax, eax
+    jz      error_exit
+
+    mov     rcx, stdin_handle
+    mov     edx, original_mode
+    call    SetConsoleMode
+
+    xor     ecx, ecx
+    call    ExitProcess
+
+no_console:
+    xor     ecx, ecx
+    call    ExitProcess
+
+error_exit:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+## Worked example: how far does the tail shift under `jl`?
+
+**Task:** Buffer `"AC"` (length 2), cursor at 1, insert `'B'`. Listing `20-insert-shift-jl` uses `jl put_byte` as the shift exit test and stores `'B'` at the literal `buf[1]`. What does the loop do, and what is the process status?
+
+**The loop:**
+
+- `rcx` starts at `len` (2).
+- `cmp rcx, cur` (1). `jl` fires only when RCX < 1.
+- Otherwise copy `buf[rcx-1]` to `buf[rcx]`, decrement RCX, jump back.
 
 **Trace:**
 
-| Iteration | `rcx` | `cmp rcx, [cur]` (1) | Action | Buffer after |
-|-----------|------:|----------------------|--------|--------------|
-| 1 | 2 | 2 ≥ 1, continue | `buf[2] = buf[1]` (`'C'`) | `A C C` |
-| 2 | 1 | 1 ≥ 1, continue | `buf[1] = buf[0]` (`'A'`) | `A A C` |
-| 3 | 0 | 0 < 1, exit to `.put` | — | `A A C` |
-| — | — | — | `buf[1] = 'B'` | `A B C` |
+| Iteration | RCX | `cmp rcx, cur` | Action | Buffer |
+|-----------|----:|----------------|--------|--------|
+| 1 | 2 | 2 ≥ 1, not less | `buf[2] = buf[1]` (`'C'`) | `A C C` |
+| 2 | 1 | 1 ≥ 1, not less | `buf[1] = buf[0]` (`'A'`) | `A A C` |
+| 3 | 0 | 0 < 1, `jl` | — | `A A C` |
+| — | — | — | `buf[1] = 'B'`, `inc len` | `A B C` |
 
-**Plausible wrong reading:**
+`mov ecx, DWORD PTR len` then `call ExitProcess`. Expected exit: **3**.
 
-*"The loop moves every byte from the cursor to the end one place right, so it runs once, for the `'C'`, and stops."*
+Listings `02-insert-middle` and `07-insert-middle-shift` use `jle` / `jle done_shift` and stop when `rcx == cur`. They copy `'C'` once, then store `'B'` at `buf[cur]`. Listing `20` copies one extra slot (`buf[0]` onto `buf[1]`) and then overwrites that slot with `'B'`. The extra copy is wasted work, not a wrong final buffer.
 
-**Why it's wrong:** The exit test is `jl` (jump if less), so the loop continues while `rcx >= cur`. The loop stops only when `rcx < cur`, which happens when `rcx = 0`. The second iteration copies `buf[0]` to `buf[1]`, overwriting the `'C'` that was just moved. This is wasted work, but harmless because `.put` immediately overwrites `buf[1]` with `'B'`.
+```asm
+; Listing 20: Insert-middle shift with jl exit test (LESSON.md block 20)
+;
+; Purpose: Shift loop using jl; store 'B' at index 1; len becomes 3.
+; Expected exit code: 3
+; Expected stdout: (none)
 
-**The correct reading:** The loop performs **two** copies, not one. To avoid the wasted copy, change `jl` to `jle` (or `jbe` for unsigned indices), so the loop stops when `rcx == cur`. Also note that `.put` stores at the literal `[buf + 1]`, not `[buf + cur]`, so the drill only works because `cur` happens to be 1. A real editor would compute `buf + cur` and also increment `cur` after the insert.
+.DATA?
+buf BYTE 4096 DUP(?)
+len QWORD ?
+cur QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
+    mov     len, 2
+    mov     cur, 1
+    mov     rcx, len
+shift:
+    cmp     rcx, cur
+    jl      put_byte
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
+    dec     rcx
+    jmp     shift
+put_byte:
+    mov     BYTE PTR [r10+1], 'B'
+    inc     len
+    mov     ecx, DWORD PTR len
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+### A plausible wrong reading (and why it fails)
+
+*"The loop moves every tail byte one place right, so it runs once — just the `'C'` — and stops."*
+
+The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It stops only at RCX = 0. The second iteration overwrites `buf[1]` with `'A'` before `put_byte` stores `'B'` at the literal `[buf+1]`. That store is not `buf[cur]`; the listing is correct only because `cur` happens to be 1. A real insert writes `buf[cur]` (as listings `02` and `07` do) and increments `cur`. Changing `jl` to `jle` (or unsigned `jbe`) drops the wasted copy.
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| `len` is the capacity | `len` is the number of live bytes; capacity is the allocated buffer size |
-| The cursor is a pointer | The cursor is an **index** (offset from `buf`), not a pointer |
-| Insert moves the tail automatically | You must explicitly shift `buf[cur..len)` rightward before storing the new byte |
-| Gap buffer eliminates all shifts | Gap buffer eliminates shifts for inserts **at the gap**; moving the cursor still copies bytes |
-| Kill-line deletes the newline | Kill-line deletes **up to** the newline; the newline remains |
-| Raw mode is on by default | Consoles start in canonical mode (line-buffered, echoed); you must call `SetConsoleMode` to enter raw mode |
-| Console mode is a structure | Console mode is a single `DWORD` (32-bit integer) bitmask, not a structure |
-| Windows line endings are `\n` | Windows uses `\r\n` (CRLF, 13 10) by default; `\n` (LF, 10) alone works in raw mode |
+| `len` is the capacity | `len` / `buf_len` is live bytes. Capacity is the `DUP` size (256 in listings `01`–`04`, 4096 in the `buf` listings) |
+| The cursor is a pointer | It is an index. Address the buffer with `lea r10, buf` then `[r10+rax]`, not `buf[rax]` and not a raw pointer in a register |
+| Insert moves the tail by itself | You shift `buf[cur..len)` right, then store. Listings `02`, `07`, and `20` |
+| Delete-forward on `"ABCD"` exits 3 | Listings `03` and `08` start with `"ABC"`, delete `'B'`, and exit **2** |
+| Gap buffer removes every copy | Inserts **at the gap** are a store. Cursor motion still copies (listings `12`, `13`) |
+| Listing `11` only does arithmetic | It stores `'X'` at `buf[gap_start]` before incrementing |
+| Listing `10` exits 4096 | `ExitProcess` gets 4096 in ECX; the harness compares that full 32-bit status |
+| Kill-line deletes the newline | Kill-line deletes **up to** the newline; the newline stays. No Jack listing; the drill is exercise 24 |
+| Save writes a computed 12 and exits 12 | Listing `17-save-length-prefix` writes magic + length with `CreateFileA` / `WriteFile` and exits **0** |
+| Magic word is `4544h` | Little-endian `"ED"` as a word is `4445h` (listing `18-load-validate-magic`) |
+| Raw mode is the default | You clear bits with `and eax, NOT 6` and you restore `original_mode` (listing `19-raw-console-mode`) |
+| Linux `syscall` / `nasm` `section .bss` | These listings call `GetStdHandle`, `WriteFile`, `CreateFileA`, `GetConsoleMode`, `SetConsoleMode`, `ExitProcess` |
 
 ## Check yourself
 
-1. In `24-from-scratch-kill-line.asm`, the buffer is `"ab\ncd"` (length 5), cursor 0. The newline is at index 2. After kill-line, what is in `buf[0]`, `buf[1]`, `buf[2]`, and what is the new length?
-
-2. `22-stretch-undo-stack.asm` pushes opcodes 1 and 2, then pops one entry (`dec qword [usp]`). The code then does `dec rcx` before reading `[ustk + rcx*8]`. Why is the extra `dec` needed?
-
-3. `21-debug-cursor-oob.asm` clamps an out-of-range cursor using `jbe` (unsigned compare). If a bug made `cur` equal to `0xffffffffffffffff` (−1 as a signed value), would the clamp catch it? Would a signed `jle` catch it?
-
-4. You have a gap buffer with `gap_start = 5` and `gap_end = 8`. How many bytes of free space remain? After one insert (no gap move), what are the new values?
-
-5. The console mode holds `0x0000001F` (all input flags set) before clearing `ENABLE_LINE_INPUT` (0x2) and `ENABLE_ECHO_INPUT` (0x4). What is the value after `and eax, NOT (2 OR 4)`? (Express `NOT (2 OR 4)` as a hexadecimal mask.)
+1. Listing `03-delete-forward` starts with `"ABC"`, cursor 1. After the shift and `dec buf_len`, what three bytes sit in `buffer[0..2]`, and what is the process status?
+2. Listing `20-insert-shift-jl` uses `jl`; listings `02` and `07` use `jle`. Starting at `"AC"` / cursor 1, how many byte copies does each loop perform before the store of `'B'`?
+3. Listing `04-cursor-clamp` uses `jbe`. If a bug set `cursor` to `0FFFFFFFFFFFFFFFFh` with `buf_len = 3`, would the clamp write 3? Would a signed `jle` write 3?
+4. Listing `11-gap-insert-byte` starts at `gap_start = 2`, `gap_end = 6`. After the store and increment, what is `gap_start`, what is the remaining free space, and what byte is in `buf[2]`?
+5. Listing `19-raw-console-mode` does `and eax, NOT 6`. If `original_mode` were `0000001Fh`, what 32-bit value is written to `mode`? Why does the listing call `SetConsoleMode` a second time with `original_mode`?
 
 ## Key takeaways
 
-- An editor is a byte buffer with a length, a cursor index in `[0, len]`, and insert/delete operations that shift the tail.
-- Inserting in the middle requires copying `buf[cur..len)` one byte rightward in reverse order to avoid overwriting data.
-- A gap buffer keeps free space at the cursor, making inserts `O(1)` until the gap runs out; moving the cursor copies bytes to move the gap.
-- Line operations scan for newline (`10`, or `13 10` for CRLF) characters; kill-line deletes text up to the newline but leaves the newline itself.
-- A save file includes a magic number (`"ED01"`) and a length prefix to detect corruption and version mismatches (using `CreateFileA`, `WriteFile`, `ReadFile`, `CloseHandle`).
-- Raw mode (entered via `GetConsoleMode` and `SetConsoleMode` by clearing `ENABLE_LINE_INPUT` and `ENABLE_ECHO_INPUT`) delivers keypresses immediately without echo.
+- An editor is a byte buffer plus a length and a cursor in `[0, length]`. Listing `01-buffer-append` exits 3 after three appends; listing `04-cursor-clamp` pulls a cursor of 9 back to 3.
+- Insert in the middle copies the tail rightward, then stores. `jle` stops at the cursor (listings `02`, `07`, exit 66). `jl` copies one extra slot (listing `20`, exit 3).
+- Delete-forward copies the tail left. Listings `03` and `08` turn `"ABC"` into `"AC"` and exit 2.
+- A gap buffer stores at `gap_start` (listing `11` writes `'X'` and exits 3 remaining). Moving the gap copies one byte (listings `12`, `13`). Listing `10` computes 4096 free bytes and exits **4096**.
+- Line start is a backward scan for `10` (listing `14` exits 3 on `"ab", 10, "cd"` at cursor 4). Kill-line leaves the newline: listing `21-kill-line` copies `"\ncd"` down and exits **3**.
+- Save is `CreateFileA` + `WriteFile` of `"ED01"` and an 8-byte length (listing `17` exits 0). Load checks `WORD PTR magic` against `4445h` (listing `18` exits 1 on a match).
+- Raw mode is `GetConsoleMode`, `and eax, NOT 6`, `SetConsoleMode`, then a restore (listing `19` exits 0).
 
 ## Lookup
 
-- Console mode functions: [GetConsoleMode](https://learn.microsoft.com/en-us/windows/console/getconsolemode), [SetConsoleMode](https://learn.microsoft.com/en-us/windows/console/setconsolemode)
-- Console input flags: [Console Modes (Microsoft Learn)](https://learn.microsoft.com/en-us/windows/console/console-modes)
-- Gap buffer algorithm: [Wikipedia: Gap buffer](https://en.wikipedia.org/wiki/Gap_buffer), [Emacs source `src/insdel.c`](https://github.com/emacs-mirror/emacs/blob/master/src/insdel.c)
-- Windows console Virtual Terminal Sequences (for cursor positioning, not covered in these drills): [Console Virtual Terminal Sequences](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences)
+- Console mode: [GetConsoleMode](https://learn.microsoft.com/en-us/windows/console/getconsolemode), [SetConsoleMode](https://learn.microsoft.com/en-us/windows/console/setconsolemode), [Console Modes](https://learn.microsoft.com/en-us/windows/console/console-modes)
+- File API (lesson 08): [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea), [WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile), [ReadFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile), [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle)
+- Standard handles: [GetStdHandle](https://learn.microsoft.com/en-us/windows/console/getstdhandle)
+- Gap buffer: [Wikipedia: Gap buffer](https://en.wikipedia.org/wiki/Gap_buffer)
+- Virtual terminal sequences (cursor positioning; not in these listings): [Console Virtual Terminal Sequences](https://learn.microsoft.com/en-us/windows/console/console-virtual-terminal-sequences)
 
 ## Acceptance criteria
 
-The milestone binary is complete when it satisfies all six criteria:
+The milestone binary is complete when all six hold:
 
-1. **Open, edit, quit:** Opens a text file (or starts empty), displays it, accepts keypresses, and quits on a defined key (e.g., `Ctrl+Q`) without losing the buffer.
-2. **Cursor discipline:** The cursor never leaves `[0, len]`. Every move and edit applies the clamp from `21-debug-cursor-oob.asm`.
-3. **Kill-line semantics:** Kill-line removes text from the cursor to the end of the line but leaves the newline, per `24-from-scratch-kill-line.asm`.
-4. **Save/load integrity:** Save writes a length-prefixed image with magic `"ED01"` using `CreateFileA` and `WriteFile`. Loading a file with a bad magic is rejected with an error message.
-5. **Dirty flag:** Any edit sets the dirty flag; only a successful save clears it. Quitting with unsaved changes warns the user.
-6. **Viewport rendering:** The editor renders the buffer with `WriteFile` calls (to stdout obtained via `GetStdHandle`), one screenful at a time. No C runtime. Use lesson 09's multi-file build (NMake or PowerShell) to factor rendering, buffer ops, and I/O into separate modules.
+1. **Open, edit, quit.** Opens a text file or starts empty, displays it, accepts keypresses, quits on a defined key (for example Ctrl+Q) without dropping the buffer.
+2. **Cursor discipline.** The cursor never leaves `[0, len]`. Every move and edit applies the clamp from listing `04-cursor-clamp`.
+3. **Kill-line semantics.** Kill-line removes text from the cursor to the end of the line and leaves the newline, per `exercises/24-from-scratch-kill-line.asm`.
+4. **Save/load integrity.** Save writes `"ED01"` and a length prefix with `CreateFileA` and `WriteFile` (listing `17-save-length-prefix`). A bad magic is rejected.
+5. **Dirty flag.** Any edit sets the flag; only a successful save clears it (listing `16-dirty-flag`). Quit with unsaved changes warns.
+6. **Viewport rendering.** The editor writes the buffer with `WriteFile` to the HANDLE from `GetStdHandle` (listing `15-render-buffer`). No C runtime. Factor rendering, buffer ops, and I/O with lesson 09's multi-file `ml64` / `link` (NMake or PowerShell).
 
-Raw mode (from the console mode section) is what makes criterion 1's "accepts keypresses" work—without it, the editor would wait for Enter after every command.
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/01-buffer-append.asm -->
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/02-insert-middle.asm -->
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/03-delete-forward.asm -->
-<!-- LISTING-PENDING: lessons/10-milestone-cli-editor/listings/04-cursor-clamp.asm -->
+Listing `19-raw-console-mode` is what makes criterion 1's keypresses arrive without waiting for Enter.
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
 ```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-The exercises and solutions are written by a separate author and use MASM syntax and Win32 API covered in lessons 00-09. They are organized by category:
+The exercises use MASM and the Win32 APIs from lessons 00–09.
 
-**Buffer basics:** Empty buffer, exit 0. Append `'A'`, exit 1. Move right then left, exit 0. Backspace at end (dec `len` from 2 to 1). Insert `'X'` in empty buffer, cursor becomes 1. Insert `'B'` into `"AC"`, exit 66 (`'B'`). Delete from `"ABCD"`, length becomes 3.
-- `17-utf8-ascii-cursor.asm` — five byte steps, exit 5 (no UTF-8 decoding)
-- `21-debug-cursor-oob.asm` — clamp `cur = 9` with `len = 3`, exit 3
+**Buffer basics:** empty buffer, exit 0. Append `'A'`, exit 1. Move right then left, exit 0. Backspace at end (decrement `len`). Insert `'X'` in an empty buffer, cursor becomes 1. Insert `'B'` into `"AC"`, exit 66. Delete from a short buffer, new length in the status. Five single-byte cursor steps, exit 5 (no UTF-8 decode). Clamp `cur = 9` with `len = 3`, exit 3.
 
-**Gap buffer:**
-- `08-from-scratch-gap-start.asm` — empty gap, `gap_end - gap_start` = 8, exit 8
-- `15-gap-insert.asm` — one insert, `gap_start` 2→3, free space 4→3, exit 3 (does not store byte)
-- `16-gap-move-left.asm` — move gap left, `gap_start` 3→2, exit 2
+**Gap buffer:** empty gap arithmetic. One insert at `gap_start`, store a byte, increment, exit `gap_start` or remaining free space. Move the gap left one byte.
 
-**Line operations:**
-- `05-render-line.asm` — write `"ed\n"`, exit 0
-- `12-line-start-end.asm` — find line start from cursor 4 in `"ab\ncd"`, exit 3 (filename says "end"; code computes start)
-- `13-render-viewport.asm` — write first 3 bytes `"L1\n"`, exit 0
-- `24-from-scratch-kill-line.asm` — kill from 0 in `"ab\ncd"`, new length 3, exit 3
+**Line operations:** `WriteFile` of a short line plus CRLF, exit 0. Line-start scan from a cursor past a `10`. Viewport write of the first bytes. Kill-line from cursor 0 in `"ab", 10, "cd"`, new length 3.
 
-**File and state:** Exit 0 (no write, stub). Set `len = 3`, exit 3 (load stub). Set dirty, mock save (clear dirty), exit 0. Length-only status, exit 12. Compute 4 (magic) + 8 (length) + 0 (content) = 12, exit 12. Check `WORD PTR [magic] == 0x4445`, exit 1 if match (inverted test). Push 1, push 2, pop, exit 1 (remaining top). Set byte, clear byte, exit 0 (models `ENABLE_LINE_INPUT` bit, no `SetConsoleMode`).
+**File and state:** save stub, exit 0. Load stub sets a length. Dirty set then clear, exit 0. Length-prefix image via `CreateFileA` / `WriteFile`. Magic word `4445h`. Undo-stack push/pop arithmetic. A byte flag cleared to model `ENABLE_LINE_INPUT` (the raw-mode listing above calls `SetConsoleMode` for real).
 
-Refer to `exercises/10-milestone-cli-editor/README.md` for detailed descriptions and expected exit codes.
+Expected exits are in each file header under `exercises/` — all 494 exercise `.asm` files on this tree carry one. There is no `exercises/10-milestone-cli-editor/README.md`.

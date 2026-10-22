@@ -1,581 +1,720 @@
-# 18 — Capstone: Park Simulation
+# Lesson 18 — Capstone: Park Simulation
 
-Lesson 17 gave you entities, pathfinding, and UI. This capstone lesson synthesizes all 18 lessons into one integrated program: a **park simulation** with a tile map, track pieces that connect by direction, guests that walk BFS paths, an economy with income and upkeep (never going negative), and a binary save/load format with magic-number verification. By the end you'll have drilled the primitives that compose into the capstone binary, and you'll understand the six acceptance criteria that define "done."
+Lesson 17 gave you entities, a heuristic, and a wrap-around focus index. This capstone composes those primitives with a tile grid, a parent-array walk, an economy qword that must not go negative, and a binary save/load path that uses `CreateFileA`, `WriteFile`, `ReadFile`, and `CloseHandle`. By the end you treat “the park sim” as those concrete listings linked together, not as a framework.
+
+Windows file I/O is the lesson 08 contract: arguments in RCX / RDX / R8 / R9 and `[rsp+32]…`, 32 bytes of shadow space, HANDLE −1 on `CreateFileA` failure, BOOL in RAX for `WriteFile` / `ReadFile` / `CloseHandle`.
 
 ## What this lesson asks of you
 
-- Clamp every map index to the map bounds **before** it becomes a memory address (`0 <= x < width`, `0 <= y < height`).
-- Place at least three track piece types (straight, curve, station) with direction `0..3` (N, E, S, W), and connect pieces by matching their entry/exit directions (`dir[a] == (dir[b] + 2) & 3`).
-- Step one agent along a BFS parent walk, one tile per tick (`pos = parent[pos]`), until it reaches the goal.
-- Tick cash and upkeep on a single qword that **never goes negative**: subtract upkeep only when `cash >= upkeep`.
-- Save and load the map with syscalls `open`/`write`/`read`/`close`, with an 8-byte header (magic `"PK01"` + version dword `1`), rejecting bad magic or wrong version.
-- Render the final map to a P6 PPM file (lesson 14) so the sim has visible state.
+You spawn by incrementing a visitor counter. You treat an empty A* listing as status 0, not as a search. You validate an 8-byte header against a DWORD magic and a DWORD version, and you can decode what `"PK01"` actually is in little-endian. You reserve an 8×8 `tilemap` in `.DATA?` (`grid_w` / `grid_h` = 8) and you clamp an x of 99 into `[0, grid_w)` two ways (signed then unsigned), both of which exit 7. You walk `parent[pos]` one hop. You subtract upkeep from cash only after an unsigned compare, and you can show why an unguarded `sub` is not that compare. You write `park.sav` with `CreateFileA` / `WriteFile` / `CloseHandle` and you load a header with a missing-file harness that still exits 1.
 
-## Why a park sim as the capstone
+## Acceptance criteria (what “done” means)
 
-The park simulation touches **every lesson**:
-- **Lessons 00–02:** Registers, arithmetic, data sections, flags.
-- **Lessons 03–05:** Control flow, procedures, recursion.
-- **Lesson 06:** Strings, arrays, row-major map indexing.
-- **Lesson 07:** Bitwise direction wrapping (`& 3`), connection masks.
-- **Lesson 08:** File I/O (`open`, `write`, `read`, `close`) for save/load.
-- **Lesson 09:** Multi-file build (`global`/`extern`, Makefile).
-- **Lesson 10:** (Editor techniques, less directly used here.)
-- **Lesson 11:** Data structures (queues for BFS, stacks for undo).
-- **Lesson 12:** (Compiler techniques, less directly used.)
-- **Lesson 13:** Fixed-point (if you add smooth camera or entity positions).
-- **Lesson 14:** Framebuffer, P6 PPM output for map rendering.
-- **Lesson 15:** Game loop, fixed timestep, tick counter.
-- **Lesson 16:** Tile map indexing, bounds checking, sprite blitting (if you add guest sprites).
-- **Lesson 17:** ECS (guest/ride entities), BFS pathfinding, UI panels (if you add menus).
-- **Lesson 18:** Integration—composing all primitives into one running program.
+The park binary is done when all of these hold:
 
-The capstone is **not 24 drills**. It's **one program** that you build by composing the patterns from all 18 lessons, using your own names and design. The drills below isolate the park-specific primitives (map cells, track piece types, agent stepping, cash guarding, save format). You link them into the capstone binary for the milestone.
+1. **Multi-file build.** `main`, map, economy, and save are separate `.asm` files with `PUBLIC` / `EXTRN`, linked with `link.exe` and `kernel32.lib`. No unresolved externals.
+2. **Map and pieces.** An 8×8 (or larger) byte grid holds path and at least three track types. Indices are clamped **before** they become addresses.
+3. **One agent walks a path.** BFS or A* produces a `parent[]` array; each tick does `pos = parent[pos]` until `pos == goal`.
+4. **Cash never goes negative.** Each tick adds income and subtracts upkeep only when `cash >= upkeep` (unsigned compare, then `sub`).
+5. **Save / load with a header.** Eight bytes: four-byte magic plus a version DWORD, then `width * height` map bytes. Reject a bad magic or a wrong version.
+6. **Visible state.** A P6 PPM of the map (lesson 14) or another file the user can open. The sim does not need `/dev/fb0`.
 
-## Acceptance criteria
+The Jack listings isolate those primitives. They are not the whole binary.
 
-The park simulation is **done** when all six criteria hold:
+### Track connect, 100 ticks, and a 2×2 P6 map
 
-### 1. Multi-file build with no undefined symbols
-
-Use lesson 09's `global`/`extern` to split the program across at least three `.asm` files:
-- `main.asm`: owns `_start`, calls the other modules.
-- `map.asm`: exposes `map_place`, `map_read`, etc.
-- `econ.asm`: exposes `econ_tick`, `econ_add_cash`, etc.
-- `save.asm`: exposes `save_game`, `load_game`.
-
-**Makefile:**
-
-```make
-park: main.o map.o econ.o save.o
-	ld -o park main.o map.o econ.o save.o
-
-%.o: %.asm
-	ml64 /c $< /Fo:$@
-```
-
-`$@` is the target, `$<` is the first prerequisite. Run `make` and `ld` must succeed with no undefined symbols.
-
-### 2. Place and read back at least three track piece types
-
-- **Straight** (type 1)
-- **Curve** (type 2)
-- **Station** (type 3)
-
-Each piece has a **direction** `0..3` (N, E, S, W). Placing a station at `(x, y)` writes type 3 to `map[y * width + x]`. Reading that cell back returns 3.
-
-Two adjacent pieces **connect** when one's exit direction is the other's entry:
-
-```
-connect = (dir[a] == (dir[b] + 2) & 3)
-```
-
-**Example:** Piece A faces east (1), piece B is to the east of A and faces west (3):
-- `(3 + 2) & 3` = `5 & 3` = 1
-- Matches `dir[a]` = 1, so they connect.
-
-### 3. Agent reaches goal via BFS parent walk
-
-Lesson 17's BFS runs on the park's path cells (type 1). The search produces a `parent[]` array. Each tick, the agent steps one tile along the parent walk:
-
-```
-pos = parent[pos]
-```
-
-The agent starts at a source tile (e.g., park entrance) and steps toward the goal (e.g., a ride). When `pos == goal`, the agent has arrived.
-
-The simulation must complete this walk within the tick budget (e.g., 100 ticks). If BFS found a path of length 10, the agent reaches the goal in 10 ticks.
-
-### 4. 100 ticks with cash never negative
-
-Cash is a qword in `.bss` (starts at 0). Each tick:
-- **Income:** Add ticket sales, ride fees, etc.
-- **Upkeep:** Subtract maintenance costs, **only if** `cash >= upkeep`.
-
-**Critical guard:**
+Listing `13-track-piece-connect` encodes a four-way direction wrap. Directions are 0..3. The opposite of a facing is `(facing + 2) AND 3`. Here the piece heading is 1 and the neighbor facing is 3: `(3 + 2) AND 3 = 1`, which matches. Expected exit: **1**. A mismatch would exit 0. RBX is saved: `push rbx` / `sub rsp, 32`.
 
 ```asm
-mov rax, [cash]
-cmp rax, [upkeep]
-jb .skip_upkeep         ; cash < upkeep, do not subtract
-sub rax, [upkeep]
-mov [cash], rax
-.skip_upkeep:
+; Listing 13: Track piece direction connect rule
+; Expected exit: 1
+; Expected stdout: (none)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    push    rbx
+    sub     rsp, 32
+    mov     rax, 1
+    mov     rbx, 3
+    mov     rcx, rbx
+    add     rcx, 2
+    and     rcx, 3
+    cmp     rax, rcx
+    je      connected
+    xor     ecx, ecx
+    jmp     done
+connected:
+    mov     ecx, 1
+done:
+    call    ExitProcess
+main ENDP
+END
 ```
 
-Run 100 ticks. Cash must never be negative (as a signed qword) or wrap to a huge unsigned value. The guard ensures the invariant holds.
-
-### 5. Save/load with magic and version check
-
-**Save format (binary):**
-- Offset 0: Magic `"PK01"` (4 bytes)
-- Offset 4: Version dword `1` (4 bytes)
-- Offset 8: Map bytes (width × height bytes)
-
-**Save:**
+Listing `14-hundred-tick-loop` zeros `tick` and `accum`, then while `tick < 100` adds 1 to `accum` and increments `tick`. One hundred iterations leave `accum = 100`. Expected exit: **100**. The compare is `tick >= 100` to stop, i.e. the body runs for `tick` in `tick >= 0 && tick < 100`.
 
 ```asm
-mov rax, 2              ; open
-lea rdi, [path]
-mov rsi, 577            ; O_WRONLY | O_CREAT | O_TRUNC
-mov rdx, 420            ; 0644
-syscall
-mov rbx, rax            ; fd
+; Listing 14: Fixed 100-tick simulation loop with per-tick work
+; Expected exit: 100
+; Expected stdout: (none)
 
-mov rax, 1              ; write header (8 bytes)
-mov rdi, rbx
-lea rsi, [header]
-mov rdx, 8
-syscall
+.DATA?
+tick QWORD ?
+accum QWORD ?
 
-mov rax, 1              ; write map
-mov rdi, rbx
-lea rsi, [map]
-mov rdx, MAP_SIZE
-syscall
+.CODE
+EXTRN ExitProcess:PROC
 
-mov rax, 3              ; close
-syscall
+main PROC
+    sub rsp, 40
+    mov     tick, 0
+    mov     accum, 0
+
+tick_loop:
+    cmp     tick, 100
+    jge     tick_done
+    add     accum, 1
+    inc     tick
+    jmp     tick_loop
+
+tick_done:
+    mov     ecx, DWORD PTR accum
+    call    ExitProcess
+main ENDP
+END
 ```
 
-**Load:**
-
-Read header, check magic and version:
+Listing `15-render-map-p6` writes `map.ppm`. The header is `"P6\n2 2\n255\n"` — `HLEN EQU $ - hdr` is 11. The payload is 12 RGB bytes (2×2 pixels). `CreateFileA` uses `GENERIC_WRITE` (`40000000h`) and disposition 2 (`CREATE_ALWAYS`). Two `WriteFile`s add into `totalWritten`. On success that sum is 11 + 12 = 23. Expected exit: **23**. `CreateFileA` or `WriteFile` failure exits **1**.
 
 ```asm
-mov rax, 0              ; read
-mov rdi, fd
-lea rsi, [header_buf]
-mov rdx, 8
-syscall
+; Listing 15: Write 2x2 map as P6 PPM (LESSON.md)
+; Expected exit: 23
+; Expected stdout: (none)
+; Expected side effect: creates map.ppm (11-byte P6 header + 12 RGB bytes = 23 written)
 
-; check magic
-cmp dword [header_buf], 0x314B5050   ; "PK01" little-endian
-jne .bad_magic
+.DATA
+path DB "map.ppm", 0
+hdr DB "P6", 10, "2 2", 10, "255", 10
+HLEN EQU $ - hdr
+map_cells BYTE 255, 0, 0, 0, 0, 255, 0, 0, 0, 0, 255, 0
+PIXEL_BYTES EQU 12
+TOTAL_BYTES EQU HLEN + PIXEL_BYTES
 
-; check version
-cmp dword [header_buf + 4], 1
-jne .bad_version
+.DATA?
+bytesWritten DWORD ?
+hFile QWORD ?
+totalWritten DWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    mov     totalWritten, 0
+
+    lea     rcx, path
+    mov     edx, 40000000h
+    xor     r8d, r8d
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 2
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    je      fail
+    mov     rbx, rax
+
+    mov     rcx, rbx
+    lea     rdx, hdr
+    mov     r8d, HLEN
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    eax, eax
+    jz      fail_close
+    mov     eax, bytesWritten
+    add     totalWritten, eax
+
+    mov     rcx, rbx
+    lea     rdx, map_cells
+    mov     r8d, PIXEL_BYTES
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    eax, eax
+    jz      fail_close
+    mov     eax, bytesWritten
+    add     totalWritten, eax
+
+    mov     rcx, rbx
+    call    CloseHandle
+
+    mov     ecx, DWORD PTR totalWritten
+    call    ExitProcess
+
+fail_close:
+    mov     rcx, rbx
+    call    CloseHandle
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
 ```
 
-The loader must **reject** a file with bad magic or wrong version (exit with error).
+## Spawn a visitor
 
-### 6. Visible state: P6 PPM map render
-
-After the simulation runs, render the final map to a P6 PPM file (lesson 14):
-
-- Empty cell (0): black `(0, 0, 0)`
-- Path (1): green `(0, 255, 0)`
-- Straight (2): brown `(139, 69, 19)`
-- Curve (3): orange `(255, 165, 0)`
-- Station (4): white `(255, 255, 255)`
-
-Open the `.ppm` file in an image viewer. The park is visible. The sim never touches `/dev/fb0`—the file is the output.
-
-## Map: bounds checking and cell types
-
-### Cell storage
-
-The map is a flat byte array, row-major:
+Listing `01-visitor-spawn` zeros `visitor_count`, increments it, and exits the new count. Expected exit: **1**.
 
 ```asm
-section .bss
-    map: resb 64            ; 8×8 map
-    width equ 8
-    height equ 8
+; Spawn visitor entity, exit visitor count
+; Expected exit: 1
+; Expected stdout: (none)
+.DATA?
+visitor_count QWORD ?
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    sub rsp, 40
+    mov visitor_count, 0
+    inc visitor_count
+    mov rax, visitor_count
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+END
 ```
 
-Cell at `(x, y)`: `map[y * width + x]`.
+A real spawn also writes the new id into a SoA slot (lesson 17) and sets `alive`. This listing is the counter.
 
-**Drill:** `01-map-cell.asm` writes 1 at a fixed offset, reads it back, exits 1.
+## Pathfinding step as a stub
 
-**Drill:** `09-map-place-path.asm` — column 2, row 3, width 8 → index 26. Stores `PATH` (1), exits 1.
-
-**Drill:** `10-map-erase.asm` — writes 1 then 0 at the same byte, exits 0.
-
-### Bounds clamping
-
-**Critical:** Clamp `x` and `y` to valid ranges **before** indexing the map. An out-of-bounds index causes a segfault or corrupts adjacent memory.
+Listing `02-pathfind-step` reserves `open_list` and `closed_list` (16 QWORDs each) and exits 0. There is no push, no pop, no heuristic. Expected exit: **0**.
 
 ```asm
-; clamp x to [0, width)
-cmp rax, 0
-jge .x_not_negative
-xor rax, rax
-.x_not_negative:
-cmp rax, width
-jl .x_ok
-mov rax, width
-dec rax                 ; width - 1
-.x_ok:
+; One A* pathfinding step, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
+.DATA?
+open_list QWORD 16 DUP(?)
+closed_list QWORD 16 DUP(?)
+.CODE
+EXTRN ExitProcess:PROC
+main PROC
+    sub rsp, 40
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+END
 ```
 
-**Drill:** `19-debug-map-bounds.asm` — `x = 99`, width 8. The fix clamps to 7, exits 7.
+The walk you actually run each tick is listing `07-agent-parent-step` below. A*’s open/closed sets are not implemented here.
 
-**Bug in drill:** The solution only clamps the **upper bound** (`x >= width`). It does not handle negative `x`. A full clamp needs both comparisons:
+## Map grid in BSS
+
+Listing `04-map-grid-bss` defines `grid_w EQU 8`, `grid_h EQU 8`, and `tilemap DB 64 DUP(?)` in `.DATA?` (zeroed at load). The body does not write a cell. It zeros ECX and exits. Expected exit: **0**. Index of `(x, y)` is still `y * grid_w + x` (lesson 16).
 
 ```asm
-; unsigned clamp to [0, width)
-cmp rax, width
-jb .ok                  ; 0 <= x < width (unsigned)
-mov rax, width
-dec rax
-.ok:
+; Listing 04: Tile map grid in BSS (LESSON.md block 4)
+; Expected exit: 0
+; Expected stdout: (none)
+
+grid_w EQU 8
+grid_h EQU 8
+
+.DATA?
+tilemap DB 64 DUP(?)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+END
 ```
 
-For signed clamps, test `jl 0` first.
+## Clamp x before it is an address
 
-## Track pieces: types, directions, connections
+An x of 99 on a width-8 map is not a cell. Clamp **before** `tilemap[y * grid_w + x]`.
 
-### Piece types
+Listing `05-clamp-x-signed` uses a signed pair of tests. `rax = 99`. `cmp rax, 0` / `jge x_not_negative` keeps 99 (it is not negative). `cmp rax, grid_w` / `jl x_ok` fails (99 < 8 is false), so `rax = grid_w` then `dec rax` → 7. Expected exit: **7**.
 
-| Type | Value | Meaning |
+```asm
+; Listing 05: Signed clamp x to [0, width) (LESSON.md block 5)
+; Expected exit: 7
+; Expected stdout: (none)
+
+grid_w EQU 8
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 99
+    cmp     rax, 0
+    jge     x_not_negative
+    xor     rax, rax
+x_not_negative:
+    cmp     rax, grid_w
+    jl      x_ok
+    mov     rax, grid_w
+    dec     rax
+x_ok:
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
+
+A negative x takes `xor rax, rax` and becomes 0. That is the signed lower bound.
+
+Listing `06-clamp-x-unsigned` uses one unsigned compare. `cmp rax, grid_w` / `jb ok` — 99 is not below 8, so `rax = 7` again. Expected exit: **7**.
+
+```asm
+; Listing 06: Unsigned clamp x to [0, width) (LESSON.md block 6)
+; Expected exit: 7
+; Expected stdout: (none)
+
+grid_w EQU 8
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     rax, 99
+    cmp     rax, grid_w
+    jb      ok
+    mov     rax, grid_w
+    dec     rax
+ok:
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+END
+```
+
+`jb` treats RAX as unsigned. A bit-pattern of −1 is `0FFFFFFFFFFFFFFFFh`, which is **not** below 8, so the unsigned clamp would snap it to 7, not to 0. That is why listing 05 exists: signed x needs the `cmp rax, 0` / `jge` path. Do not use listing 06 on a value that can be negative.
+
+## Parent walk: one hop
+
+BFS / A* writes, for each tile, the tile that enqueued it. Each tick the agent takes one hop: `pos = parent[pos]`.
+
+Listing `07-agent-parent-step` sets `agent_pos = 5`, stores 2 at `parent[5*8]`, reloads the position into RAX, reads `parent[rax*8]` into RBX, writes RBX back to `agent_pos`, and exits EBX. Expected exit: **2**.
+
+```asm
+; Listing 07: Walk parent array one step (LESSON.md block 7)
+; Expected exit: 2
+; Expected stdout: (none)
+
+.DATA?
+agent_pos QWORD ?
+parent DQ 8 DUP(?)
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    lea     r10, parent
+    mov     agent_pos, 5
+    mov     QWORD PTR [r10+5*8], 2
+    mov     rax, agent_pos
+    mov     rbx, QWORD PTR [r10+rax*8]
+    mov     agent_pos, rbx
+    mov     ecx, ebx
+    call    ExitProcess
+main ENDP
+END
+```
+
+`5*8` and `rax*8` are byte offsets of QWORD elements. A path of length n is n such hops. When `pos == goal`, the walk is done.
+
+## Economy: unguarded sub versus compare-then-sub
+
+Cash is a QWORD. Criterion 4 says it never goes negative. That is a **compare**, not a hope.
+
+Listing `08-cash-subtract` writes 10, subtracts 3 unconditionally, and exits the low dword. Expected exit: **7**. There is no `cmp`.
+
+```asm
+; Listing 08: Unconditional cash subtraction (LESSON.md block 8)
+; Expected exit: 7
+; Expected stdout: (none)
+
+.DATA?
+cash QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     cash, 10
+    sub     cash, 3
+    mov     ecx, DWORD PTR cash
+    call    ExitProcess
+main ENDP
+END
+
+```
+
+Listing `10-cash-tick-exit` is the same unguarded 10 − 3. Expected exit: **7**.
+
+```asm
+; Listing 10: Economy tick exit cash (LESSON.md block 10)
+; Expected exit: 7
+; Expected stdout: (none)
+
+.DATA?
+cash QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     cash, 10
+    sub     cash, 3
+    mov     ecx, DWORD PTR cash
+    call    ExitProcess
+main ENDP
+END
+
+```
+
+Listing `09-cash-upkeep-guard` is the guard criterion 4 asks for. It writes `cash = 10`, `upkeep = 3`, loads cash into RAX, `cmp rax, upkeep` / `jb skip`, then `sub rax, upkeep` and stores. 10 is not below 3, so the subtract runs. Expected exit: **7**.
+
+```asm
+; Listing 09: Upkeep subtract with unsigned guard (LESSON.md block 9)
+; Expected exit: 7
+; Expected stdout: (none)
+
+.DATA?
+cash QWORD ?
+upkeep QWORD ?
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    mov     cash, 10
+    mov     upkeep, 3
+    mov     rax, cash
+    cmp     rax, upkeep
+    jb      skip
+    sub     rax, upkeep
+    mov     cash, rax
+skip:
+    mov     ecx, DWORD PTR cash
+    call    ExitProcess
+main ENDP
+END
+
+```
+
+`jb` is unsigned. If cash were 2 and upkeep 3, listing 09 would skip and leave 2. Listing 08 would execute `sub` and leave `0FFFFFFFFFFFFFFFFh` (−1 as a signed QWORD). `mov ecx, DWORD PTR cash` would then pass `0FFFFFFFFh` to `ExitProcess`. An exit of 7 from listing 08 proves only that 10 − 3 = 7.
+
+## Save and load: CreateFileA, magic, version
+
+### Header bytes
+
+The on-disk header is 8 bytes: four ASCII magic bytes, then a little-endian version DWORD. Listing `03-load-header-magic` stores
+
+```
+header_buf DB "PK01", 1, 0, 0, 0
+```
+
+That is bytes `50 4B 30 31 01 00 00 00`. The first DWORD, read little-endian, is **`31304B50h`** (`'P' | 'K'<<8 | '0'<<16 | '1'<<24`). The second DWORD is 1.
+
+The listing compares that first DWORD to **`31304B50h`** and the version DWORD to 1. Both match. ECX is set to 1. Expected exit: **1**. The comment in the listing notes this is **not** the ZIP local-header signature `02014B50h` (`PK\x03\x04` is actually `04034B50h`; `PK\x01\x02` is `02014B50h`). Do not write `314B5050h`: that immediate is bytes `50 50 4B 31` (`P P K 1`).
+
+```asm
+; Listing 03: Validate save header magic/version (LESSON.md block 3)
+; Expected exit: 1
+; Expected stdout: (none)
+
+.DATA
+header_buf DB "PK01", 1, 0, 0, 0
+
+.CODE
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    ; LE DWORD for ASCII PK01: 31h,30h,4Bh,50h -> 31304B50h (not ZIP 02014B50h)
+    cmp     DWORD PTR header_buf, 31304B50h
+    jne     bad
+    cmp     DWORD PTR header_buf[4], 1
+    jne     bad
+    mov     ecx, 1
+    jmp     done
+bad:
+    xor     ecx, ecx
+done:
+    call    ExitProcess
+main ENDP
+END
+
+```
+
+A loader that must accept ASCII `"PK01"` compares against `31304B50h`. Listing 12 uses that same immediate for both the harness seed and the `cmp`.
+
+### Write park.sav
+
+Listing `11-save-park-file` creates or truncates `park.sav` and writes the 8-byte header plus 64 map bytes.
+
+`CreateFileA` arguments:
+
+| Slot | Value | Meaning |
 |------|------:|---------|
-| Empty | 0 | No structure |
-| Path | 1 | Walkable path for guests |
-| Straight | 2 | Straight track segment |
-| Curve | 3 | Curved track segment |
-| Station | 4 | Ride station (guests board here) |
+| RCX | `&path` | `"park.sav"` |
+| EDX | `40000000h` | `GENERIC_WRITE` |
+| R8D | 0 | exclusive share |
+| R9D | 0 | no security attributes |
+| `[rsp+32]` | 2 | `CREATE_ALWAYS` |
+| `[rsp+40]` | `80h` | `FILE_ATTRIBUTE_NORMAL` |
+| `[rsp+48]` | 0 | no template |
 
-**Drill:** `02-place-track.asm` — the lesson describes "stores the type byte and exits the type: placing a station exits 3." The **solution** is `mov rdi, 3` (placeholder constant). No store is performed.
+`cmp rax, -1` / `je fail` is the `INVALID_HANDLE_VALUE` test (lesson 08). The HANDLE is kept in RBX across later calls. Two `WriteFile` calls follow: header (`HLEN EQU $ - header` = 8) and `map` (64). Overlapped is NULL at `[rsp+32]`. `CloseHandle` then `ExitProcess(0)`. The fail path exits 1.
 
-### Directions
-
-Directions wrap with `& 3`:
-
-| Value | Direction |
-|------:|-----------|
-| 0 | North |
-| 1 | East |
-| 2 | South |
-| 3 | West |
-
-**Rotate clockwise:** `(dir + 1) & 3`
-
-**Drill:** `11-track-piece-rotate.asm` — direction 3 (west), increment and wrap: `(3 + 1) & 3` = 0 (north), exits 0.
-
-### Connection rule
-
-Two adjacent pieces connect when one's **exit direction** is the other's **entry direction**:
-
-```
-connect = (dir[a] == (dir[b] + 2) & 3)
-```
-
-Adding 2 rotates by 180° (opposite direction).
-
-**Drill:** `12-track-connect.asm` — the lesson describes "Piece A faces east (1), piece B faces west (3): `(3 + 2) & 3` = 1, exits 1. It compares; the old constant did not." The **solution** is `mov rdi, 1` (placeholder constant). No comparison is performed.
-
-## Agents: BFS parent walk
-
-Lesson 17's BFS produces a `parent[]` array. Each tick, the agent moves one tile closer to the goal:
+`main PROC FRAME` saves RBX (`.pushreg rbx`) and allocates 64 bytes. After the `push`, `sub rsp, 64` leaves room for shadow space plus the three stack arguments. Expected exit: **0** when the create succeeds.
 
 ```asm
-mov rax, [agent_pos]
-mov rbx, [parent + rax*8]
-mov [agent_pos], rbx
+; Listing 11: Save park file with Win32 I/O (LESSON.md block 11)
+; Expected exit: 0
+; Expected stdout: (none)
+
+.DATA
+path DB "park.sav", 0
+header DB "PK01", 1, 0, 0, 0
+HLEN EQU $ - header
+
+.DATA?
+map DB 64 DUP(?)
+bytesWritten DWORD ?
+hFile QWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea     rcx, path
+    mov     edx, 40000000h
+    xor     r8d, r8d
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 2
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    je      fail
+    mov     rbx, rax
+
+    mov     rcx, rbx
+    lea     rdx, header
+    mov     r8d, HLEN
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    lea     rdx, map
+    mov     r8d, 64
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+
+    mov     rcx, rbx
+    call    CloseHandle
+
+    xor     ecx, ecx
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-**Drill:** `13-peep-pathfind-step.asm` — the lesson describes "Agent at tile 5 with `parent[5] = 2` moves to 2 and exits 2. The parent array is walked, not asserted." The **solution** stores constant 4 in `steps` and exits **4** (mismatch). No parent array is walked.
+`header` is again `"PK01"` plus version bytes `1,0,0,0`. That is the on-disk `"PK01"` / version 1 image — the same little-endian DWORD listing 03 and listing 12 compare (`31304B50h`).
 
-**Drill:** `04-agent-step.asm` — one step from tile 0 to tile 1, exits 1 (placeholder).
+### Read park.sav, or trust a pre-seeded header
 
-## Economy: cash, upkeep, guarding against negative
-
-### Cash initialization
-
-Cash is a qword in `.bss`, starts at 0.
-
-**Drill:** `03-econ-tick.asm` — add 5 to cash, exits 5.
-
-**Drill:** `15-econ-ticket.asm` — add ticket sale 15, exits 15.
-
-### Upkeep: the guard
-
-Each tick, subtract upkeep **only if** `cash >= upkeep`. Otherwise, skip the subtraction.
-
-**Drill:** `16-econ-upkeep.asm` — cash 10, upkeep 3 → `10 - 3` = 7, exits 7. However, the **solution has no guard**:
+Listing `12-load-park-file` pre-seeds `header_buf` with **`31304B50h`** and version 1, then tries `CreateFileA` with `GENERIC_READ` (`80000000h`), `FILE_SHARE_READ` (1), and `OPEN_EXISTING` (3). If the HANDLE is −1, it jumps to `validate` and uses the seed. If the open succeeds, it `ReadFile`s 8 bytes into `header_buf` and `CloseHandle`s. Validation compares the first DWORD to **`31304B50h`** and the version DWORD to 1. Match → exit **1**. Miss → exit **0**.
 
 ```asm
-mov qword [cash], 10
-sub qword [cash], 3     ; unconditional subtraction
+; Listing 12: Load park file header validation (LESSON.md block 12)
+; Expected exit: 1
+; Expected stdout: (none)
+
+.DATA
+path DB "park.sav", 0
+header_buf DB 8 DUP(?)
+
+.DATA?
+map DB 64 DUP(?)
+bytesRead DWORD ?
+hFile QWORD ?
+
+.CODE
+EXTRN CreateFileA:PROC
+EXTRN ReadFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    ; Pre-seed header for harness when file missing
+    mov     DWORD PTR header_buf, 31304B50h   ; LE PK01 (P,K,0,1)
+    mov     DWORD PTR header_buf[4], 1
+
+    lea     rcx, path
+    mov     edx, 80000000h
+    mov     r8d, 1
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 3
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    cmp     rax, -1
+    jne     have_file
+    jmp     validate
+
+have_file:
+    mov     rbx, rax
+    mov     rcx, rbx
+    lea     rdx, header_buf
+    mov     r8d, 8
+    lea     r9, bytesRead
+    mov     QWORD PTR [rsp+32], 0
+    call    ReadFile
+    mov     rcx, rbx
+    call    CloseHandle
+
+validate:
+    cmp     DWORD PTR header_buf, 31304B50h
+    jne     bad
+    mov     eax, DWORD PTR header_buf[4]
+    cmp     eax, 1
+    jne     bad
+    mov     ecx, 1
+    call    ExitProcess
+
+bad:
+    xor     ecx, ecx
+    call    ExitProcess
+main ENDP
+END
+
 ```
 
-If cash were 2, this would produce `-1` (`0xFFFFFFFFFFFFFFFF`), violating criterion 4.
+On a harness with no `park.sav`, the open fails, the seed remains, the compares succeed, status is **1**. After listing 11 has written a real `"PK01"` file, a successful `ReadFile` overwrites the seed with the same `31304B50h` bytes, so the compare still matches (status **1**).
 
-**Correct guard:**
+## Worked example: `31304B50h` is PK01 little-endian
 
-```asm
-mov rax, [cash]
-cmp rax, [upkeep]
-jb .skip_upkeep         ; unsigned: cash < upkeep
-sub rax, [upkeep]
-mov [cash], rax
-.skip_upkeep:
-```
+**Task:** Listing `03-load-header-magic` comments “Expected exit: 1”. The buffer is `DB "PK01", 1, 0, 0, 0`. The compare immediate is `31304B50h`.
 
-The lesson's phrase "Subtract after you know the qword is not still zero" is **insufficient**. Cash of 1 is "not zero," but subtracting upkeep of 3 still goes negative. The test must be `cash >= upkeep`.
+**What the bytes are:**
 
-### Worked example: does `16-econ-upkeep.asm` enforce "cash never negative"?
+| Address | Bytes | LE DWORD |
+|---------|-------|----------|
+| `header_buf+0` | `50 4B 30 31` (`P K 0 1`) | `31304B50h` |
+| `header_buf+4` | `01 00 00 00` | `1` |
 
-**Task:** The drill should demonstrate criterion 4's guard: upkeep is subtracted only when cash covers it.
+**What the compares do:**
 
-**Code (as shipped):**
-
-```asm
-section .bss
-    cash: resq 1
-
-section .text
-global _start
-_start:
-    mov qword [cash], 10
-    sub qword [cash], 3
-    mov rdi, [cash]
-    mov rax, 60
-    syscall
-```
+1. `cmp DWORD PTR header_buf, 31304B50h` — both sides `31304B50h`. Equal. Fall through.
+2. `cmp DWORD PTR header_buf[4], 1` — equal. `mov ecx, 1`. Status **1**.
 
 **Plausible wrong reading:**
 
-*"This drill enforces the guard: upkeep is subtracted only when cash covers it, and the exit of 7 proves it worked."*
+*"Little-endian `"PK01"` is `314B5050h` (or the ZIP signature `02014B50h`), so I compare that immediate."*
 
-**Why it's wrong:** There is **no comparison** anywhere in the file. `sub` runs unconditionally. If cash were 2, `sub qword [cash], 3` would leave `0xFFFFFFFFFFFFFFFF` (−1 as a signed qword), the exit status would be 255 (low byte), and the run would continue with a corrupted balance. An exit of 7 shows only that 10 − 3 = 7, not that a guard exists.
+**Why it's wrong:** `'0'` is `30h`, not an implied nibble inside `31h`. The four letters `P K 0 1` pack as **`31304B50h`**. `314B5050h` unpacks to `50 50 4B 31` (`P P K 1`). ZIP `PK\x01\x02` is `02014B50h`. Either wrong immediate takes `bad` and exits 0. The listing uses `31304B50h` and exits 1.
 
-**The correct reading:** The guard is a **compare-and-branch before the subtraction**. Compare cash (unsigned) against upkeep. If less, skip the subtraction. That block, run every tick for 100 ticks, is what criterion 4 requires.
+**The correct reading:** Store the ASCII letters, then compare the little-endian DWORD those letters form. Listing 12’s harness seed is that same `31304B50h`, so the no-file path and a successful `ReadFile` of listing 11’s file both validate.
 
-### Other economy drills
-
-**Drill:** `07-peep-happy.asm` — happiness 120, clamp to 100, exits 100 (same clamp-after-arithmetic rule as lesson 17).
-
-**Drill:** `21-scenario-goal.asm` — guest count 100, goal `>= 100`, exits 1 (goal met).
-
-## Simulation tick loop
-
-A tick loop runs a fixed number of iterations (e.g., 100):
-
-**Drill:** `08-from-scratch-tick.asm` — increment counter until 5, exits 5.
-
-**Drill:** `24-from-scratch-sim-integrate.asm` — the lesson describes "writes a path byte, steps the agent along the parent walk, ticks cash, and exits the cash, which is 1." The **solution** does `inc qword [peep_x]` and exits 1 (placeholder).
-
-### Other tick drills
-
-**Drill:** `20-weather-tick.asm` — rain counter 3, increment and wrap with `& 3` → 0, exits 0.
-
-**Drill:** `06-ride-open.asm` — ride open flag, exits 1.
-
-**Drill:** `14-ride-queue-len.asm` — queue length 7, exits 7.
-
-**Drill:** `22-stretch-coaster-excitement.asm` — excitement = `airtime * 3 + length`: `10 * 3 + 12` = 42, exits 42.
-
-**Drill:** `23-stretch-multiplayer-stub.asm` — net tick ID 2 (placeholder, not a socket).
-
-## Save and load: binary format with magic and version
-
-### Save format
-
-**8-byte header:**
-- Offset 0: Magic `"PK01"` (4 bytes, ASCII)
-- Offset 4: Version `1` (dword, 4 bytes)
-
-**Map data:** width × height bytes (one byte per cell).
-
-**Drill:** `05-save-magic.asm` — magic's first byte is `'P'` (80), exits 80.
-
-**Drill:** `17-save-header.asm` — the lesson describes "the first `write`: it exits the byte count, 8." The **solution** is `mov rdi, 8` (placeholder). No `write` is performed.
-
-**Drill:** `18-load-version-check.asm` — the lesson describes "version 1 compared equal exits 1, and any other version is rejected." The **solution** checks `ver dq 1` (a **qword**, not a dword as the format specifies) with `cmp qword`. Against a real 8-byte header at offset 4, a qword compare would read 4 bytes past the header into the map. The drill does not read from a file.
-
-### Full save sequence
-
-```asm
-section .data
-    path db "park.sav", 0
-    header db "PK01"
-           dd 1            ; version dword
-
-section .bss
-    map resb 64
-
-section .text
-global _start
-_start:
-    ; open
-    mov rax, 2
-    lea rdi, [path]
-    mov rsi, 577            ; O_WRONLY | O_CREAT | O_TRUNC
-    mov rdx, 420            ; 0644
-    syscall
-    mov rbx, rax            ; fd
-
-    ; write header
-    mov rax, 1
-    mov rdi, rbx
-    lea rsi, [header]
-    mov rdx, 8
-    syscall
-
-    ; write map
-    mov rax, 1
-    mov rdi, rbx
-    lea rsi, [map]
-    mov rdx, 64
-    syscall
-
-    ; close
-    mov rax, 3
-    mov rdi, rbx
-    syscall
-
-    xor rdi, rdi
-    mov rax, 60
-    syscall
-```
-
-### Load sequence
-
-Read header, validate magic and version, read map:
-
-```asm
-; open
-mov rax, 2
-lea rdi, [path]
-xor rsi, rsi            ; O_RDONLY
-syscall
-mov rbx, rax            ; fd
-
-; read header
-mov rax, 0
-mov rdi, rbx
-lea rsi, [header_buf]
-mov rdx, 8
-syscall
-
-; check magic (little-endian)
-mov eax, [header_buf]
-cmp eax, 0x314B5050     ; "PK01" reversed
-jne .bad_magic
-
-; check version
-mov eax, [header_buf + 4]
-cmp eax, 1
-jne .bad_version
-
-; read map
-mov rax, 0
-mov rdi, rbx
-lea rsi, [map]
-mov rdx, 64
-syscall
-
-; close
-mov rax, 3
-syscall
-```
-
-## Visible output: P6 PPM rendering
-
-After the simulation, render the map to a P6 file (lesson 14):
-
-**Header:** `"P6\n<width> <height>\n255\n"`
-
-**Body:** 3 bytes per pixel (R, G, B), row-major.
-
-**Color mapping:**
-
-| Cell type | Color | RGB |
-|-----------|-------|-----|
-| Empty (0) | Black | `(0, 0, 0)` |
-| Path (1) | Green | `(0, 255, 0)` |
-| Straight (2) | Brown | `(139, 69, 19)` |
-| Curve (3) | Orange | `(255, 165, 0)` |
-| Station (4) | White | `(255, 255, 255)` |
-
-Open `output.ppm` in an image viewer. The park is visible. Criterion 6 is met.
+A second wrong reading lives in the economy listings: *“Listing 08 exits 7, therefore upkeep is guarded.”* 7 is 10 − 3. The guard is the `cmp` / `jb skip` in listing 09. Delete that branch, set cash to 2, and the unguarded `sub` wraps.
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| Clamp after indexing | Clamp `x` and `y` **before** computing `map[y * width + x]` |
-| Direction is `0..4` | Direction is `0..3` (four cardinal directions); wrap with `& 3` |
-| Connection is adjacency | Connection requires **direction match**: `dir[a] == (dir[b] + 2) & 3` |
-| Upkeep subtracts unconditionally | Subtract **only if** `cash >= upkeep`; otherwise skip (criterion 4 guard) |
-| Version is a qword | Save format defines version as a **dword** (4 bytes), not qword |
-| The sim runs in `/dev/fb0` | The sim outputs a P6 PPM **file**; no device access |
+| Spawn writes a SoA slot | Listing `01-visitor-spawn` increments a counter and exits **1**. |
+| Listing 02 runs A* | It reserves two arrays and exits **0**. |
+| `"PK01"` LE is `314B5050h` | `"PK01"` LE is **`31304B50h`**. Listing 03 compares that value and exits **1**. `314B5050h` is `P P K 1`. |
+| The map listing writes a cell | Listing `04-map-grid-bss` reserves 64 bytes and exits **0**. |
+| Signed and unsigned clamp agree on −1 | Signed clamp (listing 05) maps −1 to 0. Unsigned `jb` (listing 06) maps −1 to 7. Both map **99** to **7**. |
+| Parent walk is a BFS loop | Listing `07-agent-parent-step` does one hop, 5 → **2**. |
+| Exit 7 means the cash guard ran | Listings 08 and 10 subtract unconditionally and exit **7**. Listing 09 has the `jb skip` and also exits **7** for these inputs. |
+| Version is a QWORD | The header’s second field is a **DWORD** at offset 4. |
+| `CreateFileA` failure is 0 | Failure is −1. Listing 11 tests `cmp rax, -1`. |
+| Listing 12 always reads `"PK01"` from disk | On a missing file it validates a pre-seeded **`31304B50h`** and exits **1**. A successful read of listing 11’s file is the same DWORD. |
 
 ## Check yourself
 
-1. `11-track-piece-rotate.asm` computes `(3 + 1) & 3`. Why is `& 3` a correct wrap here, and when would it not be?
-
-2. The connection rule is `dir[a] == (dir[b] + 2) & 3`. With A facing north (0), what must B face to connect, and what does the formula give?
-
-3. `19-debug-map-bounds.asm` uses `jl` to keep `x` when `x < width`. What does it do with `x = -1`, and is that safe as a map index?
-
-4. You have cash = 5 and upkeep = 10. Without the guard, what value is in `cash` after `sub qword [cash], 10`? What is the low-byte exit status?
-
-5. You write the save header with two consecutive `.data` items: `hdr db "PK01"` and `ver dd 1`. Are they contiguous in memory, or could NASM insert padding?
+1. Listing `05-clamp-x-signed` and listing `06-clamp-x-unsigned` both start at 99 and exit 7. What does each do with `rax = -1`, and which one is safe as a map index for that input?
+2. Listing `09-cash-upkeep-guard` uses `cmp rax, upkeep` / `jb skip` before `sub`. What remains in `cash` if you start at 2 with upkeep 3? What would listing `08-cash-subtract` leave for the same inputs?
+3. Write the four bytes of `"PK01"` and the little-endian DWORD they form. What immediate does listing `03-load-header-magic` compare, and what status does that produce?
+4. Listing `07-agent-parent-step` stores 2 at `parent[5*8]`. Why `*8`, and what is in `agent_pos` after the load/`mov` pair?
+5. Listing `11-save-park-file` passes `40000000h` in EDX and `2` at `[rsp+32]`. Name those two `CreateFileA` parameters. What does listing `12-load-park-file` pass instead for access and disposition?
 
 ## Key takeaways
 
-- Multi-file build: split the program across modules with `global`/`extern`, link with `ld`, check for undefined symbols.
-- Clamp map indices **before** indexing: `0 <= x < width`, `0 <= y < height`.
-- Track pieces have types (empty, path, straight, curve, station) and directions (0..3, wrap with `& 3`); connect with `dir[a] == (dir[b] + 2) & 3`.
-- Agents step along BFS `parent[]` array: `pos = parent[pos]` each tick until `pos == goal`.
-- Economy: subtract upkeep **only if** `cash >= upkeep` (unsigned compare before subtraction).
-- Save format: 8-byte header (magic `"PK01"` + version dword `1`) + map bytes; loader validates magic and version.
-- Render map to P6 PPM for visible output (criterion 6).
+- Spawn is a counter increment (listing `01-visitor-spawn`, exit **1**). Listing `02-pathfind-step` is an open/closed reserve that exits **0**.
+- Clamp x **before** indexing. Signed (listing 05) and unsigned (listing 06) both map 99 to **7** on width 8; they disagree on negatives.
+- One hop is `pos = parent[pos]`. Listing `07-agent-parent-step` walks 5 → **2**.
+- Unguarded `sub` (listings 08 and 10) exits **7** for 10 − 3 and wraps if cash < upkeep. Listing `09-cash-upkeep-guard` compares unsigned, then subtracts, and exits **7** for the same 10 and 3.
+- `"PK01"` as a little-endian DWORD is **`31304B50h`**. Listing `03-load-header-magic` compares that value and exits **1**.
+- Save is `CreateFileA` (`GENERIC_WRITE`, `CREATE_ALWAYS`) + two `WriteFile`s + `CloseHandle` (listing 11, exit **0** on success). Load pre-seeds or `ReadFile`s 8 bytes and exits **1** when magic and version match the immediate it uses (listing 12).
+- Track connect is `(facing + 2) AND 3` (listing `13-track-piece-connect`, exit **1**). The 100-tick loop exits **100** (listing 14). Listing `15-render-map-p6` writes an 11-byte P6 header plus 12 RGB bytes and exits **23** on success.
 
 ## Lookup
 
-- Multi-file builds: lesson 09 (Macros, Multi-file, Make)
-- BFS pathfinding: lesson 17 (Entities, Pathfinding, UI)
-- File I/O: lesson 08 (Syscalls, Files, mmap)
-- P6 PPM format: lesson 14 (Graphics: Framebuffer & PPM Output)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/18-capstone-park-sim/listings/01-visitor-spawn.asm -->
-<!-- LISTING-PENDING: lessons/18-capstone-park-sim/listings/02-pathfind-step.asm -->
+- File API: [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea), [WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile), [ReadFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile), [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle)
+- Access and disposition: `GENERIC_READ` = `80000000h`, `GENERIC_WRITE` = `40000000h`, `CREATE_ALWAYS` = 2, `OPEN_EXISTING` = 3, `FILE_ATTRIBUTE_NORMAL` = `80h`
+- Microsoft x64 calling convention: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
+- Multi-file builds: lesson 09. File I/O detail: lesson 08. BFS / SoA: lesson 17. P6 PPM: lesson 14.
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with:
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
-```bash
+```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
+echo %ERRORLEVEL%
 ```
 
-**Map:**
-- `01-map-cell.asm` — write 1, read back, exit 1
-- `09-map-place-path.asm` — place at index 26, exit 1
-- `10-map-erase.asm` — write 1 then 0, exit 0
-- `19-debug-map-bounds.asm` — clamp 99 to 7, exit 7 (only upper bound)
-
-**Track and agents:**
-- `02-place-track.asm` — **placeholder: exits 3 (no store)**
-- `04-agent-step.asm` — **placeholder: exits 1**
-- `06-ride-open.asm` — ride flag, exit 1
-- `11-track-piece-rotate.asm` — `(3+1) & 3`, exit 0
-- `12-track-connect.asm` — **placeholder: exits 1 (no comparison)**
-- `13-peep-pathfind-step.asm` — **placeholder: exits 4 (mismatch, lesson says 2)**
-- `14-ride-queue-len.asm` — queue 7, exit 7
-- `22-stretch-coaster-excitement.asm` — `10*3+12`, exit 42
-- `23-stretch-multiplayer-stub.asm` — net ID 2 (no socket)
-
-**Economy and time:**
-- `03-econ-tick.asm` — add 5, exit 5
-- `07-peep-happy.asm` — clamp 120 to 100, exit 100
-- `08-from-scratch-tick.asm` — tick to 5, exit 5
-- `15-econ-ticket.asm` — add 15, exit 15
-- `16-econ-upkeep.asm` — `10 - 3` = 7, exit 7 (no guard)
-- `20-weather-tick.asm` — `(3+1) & 3`, exit 0
-- `21-scenario-goal.asm` — 100 guests >= 100, exit 1
-- `24-from-scratch-sim-integrate.asm` — **placeholder: exits 1**
-
-**Save/load:**
-- `05-save-magic.asm` — first byte `'P'` = 80, exit 80
-- `17-save-header.asm` — **placeholder: exits 8 (no write)**
-- `18-load-version-check.asm` — **placeholder: exits 1 (qword not dword, no file read)**
+The Jack listings above are the teaching programs. The drill names under `exercises/` (map cell, track connect, cash upkeep, save header, and the rest) are separate student stubs. The capstone binary is the multi-file program that satisfies the six criteria, not any one drill.

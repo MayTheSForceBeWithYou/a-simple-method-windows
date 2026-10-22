@@ -43,7 +43,7 @@ buffer DB 256 DUP(?)           ; Uninitialized 256-byte buffer
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load counter value and exit with it
     mov rax, counter           ; Load from .DATA
@@ -95,7 +95,7 @@ result DQ 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load values from memory
     mov rax, value1            ; RAX = 10
@@ -136,7 +136,7 @@ msg DB "Hello", 0
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load address of msg into RSI
     lea rsi, msg
@@ -176,7 +176,7 @@ person_record:
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load base address
     lea rbx, person_record
@@ -218,7 +218,7 @@ arr_len EQU ($ - arr) / 8
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Load base address
     lea rbx, arr
@@ -259,13 +259,13 @@ buffer DB 64 DUP(?)
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     lea rbx, buffer
     
     ; Store different sizes
     mov BYTE PTR [rbx], 65     ; Store 1 byte: 'A'
-    mov WORD PTR [rbx+1], 0x4342  ; Store 2 bytes: 'BC'
+    mov WORD PTR [rbx+1], 4342h  ; Store 2 bytes: 'BC'
     mov DWORD PTR [rbx+3], 12345678 ; Store 4 bytes
     mov QWORD PTR [rbx+7], -1  ; Store 8 bytes
     
@@ -277,7 +277,7 @@ main ENDP
 END
 ```
 
-`mov [rbx], 65` is ambiguous; MASM errors. `mov BYTE PTR [rbx], 65` stores one byte. Little-endian: `WORD PTR [rbx+1], 0x4342` stores `42h` then `43h` (`'B'`, `'C'`). `movzx rcx, BYTE PTR [rbx]` zero-extends `'A'` (65) into RCX for `ExitProcess`.
+`mov [rbx], 65` is ambiguous; MASM errors. `mov BYTE PTR [rbx], 65` stores one byte. Little-endian: `WORD PTR [rbx+1], 4342h` stores `42h` then `43h` (`'B'`, `'C'`). `movzx rcx, BYTE PTR [rbx]` zero-extends `'A'` (65) into RCX for `ExitProcess`.
 
 ## `lea` vs `mov`
 
@@ -300,7 +300,7 @@ value DQ 20
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; LEA: compute address, no memory access
     lea rax, value             ; RAX = address of value
@@ -321,6 +321,33 @@ END
 ```
 
 After `lea rax, value`, RAX is a pointer (some high canonical user address), not 20. After `mov rbx, value`, RBX is 20. `lea rdx, [rcx+rcx*2]` computes 5×3 = 15 in the address unit; no load occurs. Exit uses RBX (20), not RAX (the address) and not RDX (15).
+
+Listing `09-lea-vs-mov` is **not** a copy of listing 06. It is block 9 only: no `.DATA`, no load of 20. It puts 5 in RCX, computes `lea rdx, [rcx+rcx*2]` (15), and exits RDX. Expected exit: **15**. `sub rsp, 40` is shadow plus alignment (zero pushes at the `call`).
+
+```asm
+; Listing 09: LEA scaled index without a memory load (LESSON.md block 9)
+;
+; Purpose: LEA computes 3*rcx in one instruction; distinct from listing 06 (loads value 20).
+; Expected exit code: 15
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo09-lea-vs-mov.obj 09-lea-vs-mov.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-lea-vs-mov.exe 09-lea-vs-mov.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    
+    mov rcx, 5
+    lea rdx, [rcx+rcx*2]       ; RDX = 5 + 5*2 = 15 (no memory access)
+    mov rcx, rdx
+    call ExitProcess
+main ENDP
+
+END
+```
 
 NASM `lea rdi, [rel msg]` maps to MASM `lea rdi, msg`. `mov rsi, OFFSET msg` is an absolute immediate and is rare in 64-bit code.
 
@@ -344,7 +371,7 @@ arr_len EQU ($ - arr) / 8
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     xor rax, rax               ; Sum = 0
     xor rcx, rcx               ; Index = 0
@@ -386,7 +413,49 @@ echo %ERRORLEVEL%
 
 Then `cmp rcx, arr_len` (`4 >= 4`) takes `jge loop_done`. Exit 100.
 
-Labels inside a `PROC` are local to that procedure. `sub rsp, 32` is shadow space for `ExitProcess`.
+Listing `10-array-sum` is the same walk under its own name (block 10). The build line is `10-array-sum`, not `07-`. Expected exit: **100**. `sub rsp, 40` matches the zero-push alignment rule.
+
+```asm
+; Listing 10: Complete array summing example (LESSON.md block 10)
+;
+; Purpose: Iterate over array, sum all elements.
+; Expected exit code: 100 (10+20+30+40)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo10-array-sum.obj 10-array-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-array-sum.exe 10-array-sum.obj kernel32.lib
+
+.DATA
+arr DQ 10, 20, 30, 40
+arr_len EQU ($ - arr) / 8
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    
+    xor rax, rax               ; Sum = 0
+    xor rcx, rcx               ; Index = 0
+    lea rbx, arr               ; Base address
+    
+loop_start:
+    cmp rcx, arr_len
+    jge loop_done
+    
+    add rax, [rbx+rcx*8]       ; sum += arr[index]
+    inc rcx
+    jmp loop_start
+    
+loop_done:
+    mov rcx, rax               ; Exit with sum (100)
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Labels inside a `PROC` are local to that procedure. `sub rsp, 40` is shadow space plus 8 bytes of alignment so RSP is 0 mod 16 at `call ExitProcess`.
 
 ### A plausible wrong reading (and why it fails)
 
@@ -412,7 +481,7 @@ A second NASM-shaped mistake: treating `mov rax, counter` as "load address." In 
 
 1. You put a string in `.CONST` and execute `mov BYTE PTR [str], 65`. What happens?
 2. Array of DWORDs at `nums`. Load `nums[3]` into EAX with scaled-index addressing.
-3. After listing `06-lea-vs-mov`, what is in RAX versus RBX versus RDX just before `mov rcx, rbx`?
+3. After listing `06-lea-vs-mov`, what is in RAX versus RBX versus RDX just before `mov rcx, rbx`? After listing `09-lea-vs-mov`, what is the process status?
 4. `counter DQ ?` in `.DATA?` is used before a store. What value should you expect?
 5. In listing `07-array-sum`, what is RAX after the iteration that consumed `arr[2]` (30)?
 
@@ -434,4 +503,4 @@ A second NASM-shaped mistake: treating `mov rax, counter` as "load address." In 
 
 ## Exercises
 
-Work in `exercises/`. Standalone listings quoted above are `lessons/01-addressing-data/listings/01-data-sections.asm` through `08-size-specifiers.asm`.
+Work in `exercises/`. Standalone listings quoted above are `lessons/01-addressing-data/listings/01-data-sections.asm` through `10-array-sum.asm`. Listing `09-lea-vs-mov` exits 15 (LEA only). Listing `10-array-sum` exits 100 (the array walk).

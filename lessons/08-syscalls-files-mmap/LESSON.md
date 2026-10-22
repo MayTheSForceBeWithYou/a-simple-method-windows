@@ -1,630 +1,1316 @@
-# 08 — Win32 File API, HANDLEs, VirtualAlloc
+# Lesson 08 — Win32 File API, HANDLEs, VirtualAlloc
 
-You've been calling `GetStdHandle`, `WriteConsoleA`, and `ExitProcess` on faith since lesson 00. This lesson reveals the Microsoft x64 calling convention those imported functions demand, shows you how to read errors encoded as `BOOL` returns and `GetLastError`, and equips you to call `CreateFileA`, `ReadFile`, `WriteFile`, `CloseHandle`, `SetFilePointerEx`, and `VirtualAlloc` without ever invoking the C runtime. By the end you'll see that a Win32 API call is not a magic word—it's just a register contract you honor.
+You have been calling `GetStdHandle`, `WriteFile`, and `ExitProcess` since lesson 00. This lesson makes the Microsoft x64 contract those imports demand explicit, shows you how failure is encoded as `FALSE`, `NULL`, or `INVALID_HANDLE_VALUE` plus `GetLastError`, and walks `CreateFileA`, `ReadFile`, `WriteFile`, `CloseHandle`, `SetFilePointer`, `SetFilePointerEx`, `VirtualAlloc`, `VirtualFree`, `CreateFileMappingA`, and `MapViewOfFile` without the C runtime. A Win32 call is not a magic word. It is a register-and-stack contract you honor.
+
+Windows user-mode code does not issue a raw `syscall` for these services. Syscall numbers change between builds. You declare `EXTRN Name:PROC`, link `kernel32.lib`, and `call` through the Import Address Table.
 
 ## What this lesson asks of you
 
-- Place arguments in `rcx, rdx, r8, r9`, and additional arguments on the stack (starting at `[rsp+32]`), allocate 32-byte shadow space, and interpret the `rax` return.
-- Recognize when `rax` encodes `FALSE` (0), `NULL` (0), or `INVALID_HANDLE_VALUE` (−1), then call `GetLastError` to retrieve the error code.
-- Call `CreateFileA` with path, access flags (`GENERIC_READ`, `GENERIC_WRITE`), share mode, security attributes, creation disposition (`CREATE_ALWAYS`, `OPEN_EXISTING`), and attributes, receiving a `HANDLE`.
-- Pass that `HANDLE` to `ReadFile`, `WriteFile`, `SetFilePointerEx`, or `CloseHandle`.
-- Map anonymous memory with `VirtualAlloc` and release it with `VirtualFree`.
-- Understand that Windows has no raw `syscall` instruction equivalent for user code—all kernel services go through imported DLL functions.
+- Place arguments in RCX, RDX, R8, R9, and further arguments on the stack starting at `[rsp+32]`. Allocate 32 bytes of shadow space before every `call`. Read the return in RAX.
+- Recognize `FALSE` (0), `NULL` (0), and `INVALID_HANDLE_VALUE` (−1), then call `GetLastError` for the thread's last error code.
+- Call `CreateFileA` with path, access (`GENERIC_READ` / `GENERIC_WRITE`), share mode, security attributes, creation disposition (`CREATE_ALWAYS`, `OPEN_EXISTING`, `OPEN_ALWAYS`), attributes, and template, and keep the returned HANDLE.
+- Pass that HANDLE to `ReadFile`, `WriteFile`, `SetFilePointer` or `SetFilePointerEx`, and `CloseHandle`.
+- Allocate anonymous pages with `VirtualAlloc` and release them with `VirtualFree`. Map a file with `CreateFileMappingA` and `MapViewOfFile`.
+- Call `GetCurrentProcessId` and `QueryPerformanceCounter` / `QueryPerformanceFrequency` as ordinary imports.
 
 ## The Microsoft x64 register protocol
 
-A Win32 API call is an imported function from a kernel-mode DLL (typically `kernel32.dll`). The linker resolves `call FunctionName` to an indirect call through the Import Address Table (IAT). The CPU transfers control to the kernel-side implementation, which reads argument registers and stack slots, performs the requested operation, writes a return value into `rax`, and returns control to the next instruction after your `call`.
+A Win32 API call is an imported function, usually from `kernel32.dll`. The linker turns `call FunctionName` into an indirect call through the IAT. The implementation reads RCX/RDX/R8/R9 and the stack slots above shadow space, writes a return value into RAX, and returns to the instruction after your `call`.
 
-**Microsoft x64 calling convention:**
-
-| Register | Role |
-|----------|------|
-| `rcx` | Argument 1 |
-| `rdx` | Argument 2 |
-| `r8` | Argument 3 |
-| `r9` | Argument 4 |
+| Register / slot | Role |
+|-----------------|------|
+| RCX | Argument 1 |
+| RDX | Argument 2 |
+| R8 | Argument 3 |
+| R9 | Argument 4 |
 | `[rsp+32]` | Argument 5 (first stack parameter, above shadow space) |
 | `[rsp+40]` | Argument 6 |
-| `[rsp+48]` | Argument 7, etc. |
-| `rax` | Return value (integer, pointer, or `BOOL`) |
+| `[rsp+48]` | Argument 7 |
+| RAX | Return (integer, pointer, HANDLE, or BOOL) |
 
-The caller must allocate **32 bytes of shadow space** (home space) at `[rsp]` to `[rsp+31]` before every `call`, even if the function has fewer than four arguments. This space is reserved for the callee to spill register arguments if needed.
+The caller allocates **32 bytes of shadow space** (home space) at `[rsp]` through `[rsp+31]` before every `call`, even when the function takes fewer than four arguments. The callee may spill RCX/RDX/R8/R9 there.
 
-**Volatile (caller-saved) registers:** `rax`, `rcx`, `rdx`, `r8`, `r9`, `r10`, `r11`, `xmm0`–`xmm5`  
-**Nonvolatile (callee-saved) registers:** `rbx`, `rbp`, `rdi`, `rsi`, `r12`–`r15`, `xmm6`–`xmm15`
+**Volatile (caller-saved):** RAX, RCX, RDX, R8, R9, R10, R11, XMM0–XMM5.
+**Nonvolatile (callee-saved):** RBX, RBP, RDI, RSI, R12–R15, XMM6–XMM15.
 
-**Note:** On Windows, `rdi` and `rsi` are **nonvolatile** (must be saved/restored if modified). This is the opposite of the Linux System V ABI.
+On Windows, RDI and RSI are **nonvolatile**. That is the opposite of the Linux System V ABI, where they are argument registers. If a returning procedure writes them, it must save and restore them.
 
-**Common Win32 functions:**
-
-| Function | Arg1 (`rcx`) | Arg2 (`rdx`) | Arg3 (`r8`) | Arg4 (`r9`) | Arg5+ (`[rsp+32]…`) |
-|----------|--------------|--------------|-------------|-------------|---------------------|
-| `CreateFileA` | path | access | share | security | disposition, attrs, template |
+| Function | Arg1 (RCX) | Arg2 (RDX) | Arg3 (R8) | Arg4 (R9) | Arg5+ (`[rsp+32]`…) |
+|----------|------------|------------|-----------|-----------|---------------------|
+| `CreateFileA` | path | access | share | security | disposition, attributes, template |
 | `ReadFile` | handle | buffer | count | &read | overlapped |
 | `WriteFile` | handle | buffer | count | &written | overlapped |
 | `CloseHandle` | handle | — | — | — | — |
-| `SetFilePointerEx` | handle | offset | &newpos | whence | — |
+| `SetFilePointer` | handle | low distance | &high distance | whence | — |
+| `SetFilePointerEx` | handle | 64-bit offset | &newpos | whence | — |
 | `VirtualAlloc` | addr | size | type | protect | — |
 | `VirtualFree` | addr | size | type | — | — |
+| `CreateFileMappingA` | file | security | protect | size high | size low, name |
+| `MapViewOfFile` | mapping | access | offset high | offset low | byte count |
 | `GetLastError` | — | — | — | — | — |
+| `GetCurrentProcessId` | — | — | — | — | — |
+| `QueryPerformanceCounter` | &counter | — | — | — | — |
+| `QueryPerformanceFrequency` | &freq | — | — | — | — |
 | `ExitProcess` | exitCode | — | — | — | — |
+
+Listings in this lesson declare imports with `EXTRN Name:PROC`. MASM also accepts `EXTERN`.
 
 ## Interpreting Win32 returns and GetLastError
 
-Most Win32 file functions return `BOOL` (nonzero = `TRUE` = success, zero = `FALSE` = failure) or a pointer/handle (non-null/non-`INVALID_HANDLE_VALUE` = success). On failure, the error code is not returned directly—it's stored in thread-local storage and retrieved by calling `GetLastError`.
-
-**Return patterns:**
+Most file functions return a BOOL (nonzero = TRUE = success, 0 = FALSE = failure) or a HANDLE/pointer. On failure the error code is **not** in RAX. It sits in thread-local storage until you call `GetLastError`, which returns it in RAX (the listings then move EAX into ECX for `ExitProcess`).
 
 | Function | Success | Failure |
 |----------|---------|---------|
-| `CreateFileA` | Valid `HANDLE` (nonzero, ≠ −1) | `INVALID_HANDLE_VALUE` (−1, or `0xFFFFFFFFFFFFFFFF`) |
-| `ReadFile`, `WriteFile` | Nonzero (`TRUE`) | Zero (`FALSE`) |
-| `CloseHandle` | Nonzero (`TRUE`) | Zero (`FALSE`) |
-| `SetFilePointerEx` | Nonzero (`TRUE`) | Zero (`FALSE`) |
-| `VirtualAlloc` | Valid address (nonzero) | `NULL` (0) |
-| `VirtualFree` | Nonzero (`TRUE`) | Zero (`FALSE`) |
+| `CreateFileA` | HANDLE ≠ −1 | `INVALID_HANDLE_VALUE` (−1, all bits 1) |
+| `ReadFile`, `WriteFile`, `CloseHandle` | nonzero TRUE | 0 FALSE |
+| `SetFilePointerEx` | nonzero TRUE | 0 FALSE |
+| `SetFilePointer` | new low DWORD, or `INVALID_SET_FILE_POINTER` (`0FFFFFFFFh`) on failure | check `GetLastError` |
+| `VirtualAlloc`, `CreateFileMappingA`, `MapViewOfFile` | nonzero address/handle | NULL (0) |
+| `VirtualFree`, `UnmapViewOfFile` | nonzero TRUE | 0 FALSE |
+| `QueryPerformanceCounter` / `QueryPerformanceFrequency` | nonzero TRUE | 0 FALSE |
 
-**Detection pattern for `BOOL` functions:**
-
-```asm
-call WriteFile
-test rax, rax
-jz error_handler        ; Zero = FALSE = failure
-; success path: rax was nonzero (TRUE)
-jmp continue
-
-error_handler:
-    call GetLastError   ; rax = error code (e.g., ERROR_ACCESS_DENIED = 5)
-    ; handle error
-```
-
-**Detection pattern for `CreateFileA`:**
-
-```asm
-call CreateFileA
-cmp rax, -1             ; INVALID_HANDLE_VALUE
-je error_handler
-; success path: rax holds a valid HANDLE
-
-error_handler:
-    call GetLastError
-    ; rax = error code (e.g., ERROR_FILE_NOT_FOUND = 2)
-```
-
-**Common error codes:**
+`CreateFileA` failure is −1, not 0. `test rax, rax` / `jz` misses it: −1 is nonzero. Listing `13-open-missing-get-last-error` compares `rax` to −1, then calls `GetLastError` and exits with that code. The path is `C:\no\such\file.txt`, so the missing directory components produce **3** (`ERROR_PATH_NOT_FOUND`), not 2 (`ERROR_FILE_NOT_FOUND`). Listing `09-close-handle` shows the BOOL test: `test eax, eax` / `jz close_failed` after `CloseHandle`.
 
 | Code | Name | Meaning |
 |-----:|------|---------|
 | 2 | `ERROR_FILE_NOT_FOUND` | File does not exist |
 | 3 | `ERROR_PATH_NOT_FOUND` | Directory does not exist |
 | 5 | `ERROR_ACCESS_DENIED` | Permission denied |
-| 32 | `ERROR_SHARING_VIOLATION` | File is locked by another process |
-| 80 | `ERROR_FILE_EXISTS` | File already exists (when using `CREATE_NEW`) |
+| 6 | `ERROR_INVALID_HANDLE` | HANDLE already closed or never valid |
+| 32 | `ERROR_SHARING_VIOLATION` | Another process holds an incompatible share |
+| 80 | `ERROR_FILE_EXISTS` | File already exists (`CREATE_NEW`) |
 
-**Why `GetLastError` is needed:** Unlike Linux, where the return value encodes both success/failure and the error code, Windows separates the two. This allows functions to return useful values (like byte counts or handles) without reserving a special failure range.
+Windows splits “did it work?” (the return) from “which error?” (`GetLastError`). That lets a function return a HANDLE or a byte count without reserving a negative range.
 
-## HANDLEs and the CreateFile-Read-Write-Close cycle
+## HANDLEs and the CreateFile–Write–Close cycle
 
-A **`HANDLE`** is a 64-bit opaque pointer the kernel hands you as a handle for an open file, console, or other kernel object. You pass that handle to `ReadFile`, `WriteFile`, `SetFilePointerEx`, and `CloseHandle`. Three standard handles are pre-opened for every console process:
+A **HANDLE** is an opaque 64-bit kernel object identifier. You pass it to `ReadFile`, `WriteFile`, `SetFilePointer` / `SetFilePointerEx`, and `CloseHandle`. Three standard handles already exist for a console process; `GetStdHandle` returns them (lesson 00):
 
-| Constant | Value | Name | Use |
-|----------|------:|------|-----|
-| `STD_INPUT_HANDLE` | −10 | stdin | Standard input (keyboard, redirected file, or pipe) |
-| `STD_OUTPUT_HANDLE` | −11 | stdout | Standard output (console, redirected file, or pipe) |
-| `STD_ERROR_HANDLE` | −12 | stderr | Standard error (usually the console, unbuffered) |
+| Constant | Value | Use |
+|----------|------:|-----|
+| `STD_INPUT_HANDLE` | −10 | Keyboard, redirected file, or pipe |
+| `STD_OUTPUT_HANDLE` | −11 | Console, redirected file, or pipe |
+| `STD_ERROR_HANDLE` | −12 | Usually the console |
 
-To obtain a standard handle, call `GetStdHandle(constant)`. The returned `HANDLE` is a kernel object identifier, not a small integer like Linux file descriptors.
+Those are not small integer file descriptors. Do not assume a new `CreateFileA` HANDLE is 3, or that HANDLE values recycle from the bottom.
 
-### Opening a file
+### Opening and writing: `CreateFileA` + `WriteFile`
 
-`CreateFileA` (the ANSI version; `CreateFileW` is the Unicode version) takes seven arguments:
+`CreateFileA` (ANSI path; `CreateFileW` is UTF-16) takes seven arguments:
 
-1. `lpFileName` (`rcx`): Null-terminated path string
-2. `dwDesiredAccess` (`rdx`): Access flags (`GENERIC_READ`, `GENERIC_WRITE`, `GENERIC_READ | GENERIC_WRITE`)
-3. `dwShareMode` (`r8`): Share flags (0 = exclusive, `FILE_SHARE_READ` = 1, `FILE_SHARE_WRITE` = 2)
-4. `lpSecurityAttributes` (`r9`): Security descriptor pointer (usually `NULL` = 0)
-5. `dwCreationDisposition` (`[rsp+32]`): Creation mode (`CREATE_ALWAYS`, `OPEN_EXISTING`, `OPEN_ALWAYS`, `CREATE_NEW`, `TRUNCATE_EXISTING`)
-6. `dwFlagsAndAttributes` (`[rsp+40]`): Attributes (e.g., `FILE_ATTRIBUTE_NORMAL` = 0x80)
-7. `hTemplateFile` (`[rsp+48]`): Template file handle (usually `NULL` = 0)
+1. `lpFileName` (RCX) — address of a NUL-terminated path
+2. `dwDesiredAccess` (RDX) — `GENERIC_READ` (`80000000h`), `GENERIC_WRITE` (`40000000h`), or both (`0C0000000h`)
+3. `dwShareMode` (R8) — 0 exclusive; `FILE_SHARE_READ` = 1; `FILE_SHARE_WRITE` = 2
+4. `lpSecurityAttributes` (R9) — usually NULL (0)
+5. `dwCreationDisposition` (`[rsp+32]`) — see table
+6. `dwFlagsAndAttributes` (`[rsp+40]`) — `FILE_ATTRIBUTE_NORMAL` = `080h`
+7. `hTemplateFile` (`[rsp+48]`) — usually NULL
 
-**Common access flags:**
+| Disposition | Value | Meaning |
+|-------------|------:|---------|
+| `CREATE_NEW` | 1 | Create; fail if it exists |
+| `CREATE_ALWAYS` | 2 | Create; truncate if it exists |
+| `OPEN_EXISTING` | 3 | Open; fail if missing |
+| `OPEN_ALWAYS` | 4 | Open; create if missing |
+| `TRUNCATE_EXISTING` | 5 | Open and empty; fail if missing |
 
-| Flag | Value | Meaning |
-|------|------:|---------|
-| `GENERIC_READ` | 0x80000000 | Open for reading |
-| `GENERIC_WRITE` | 0x40000000 | Open for writing |
-| `GENERIC_READ \| GENERIC_WRITE` | 0xC0000000 | Open for reading and writing |
+Windows file permission is an ACL, not a Unix mode such as 0644. For these listings, `FILE_ATTRIBUTE_NORMAL` is enough.
 
-**Creation disposition flags:**
+Listing `01-create-file-write` creates or truncates `test.txt` (`CREATE_ALWAYS` = 2), writes `"Hello, file!"` plus CR LF (`13, 10`), closes the HANDLE, and exits 0. `message_len EQU $ - message` is the byte count. `bytesWritten` is a `DWORD` — `WriteFile` writes a 32-bit count through that pointer, not a QWORD.
 
-| Flag | Value | Meaning |
-|------|------:|---------|
-| `CREATE_NEW` | 1 | Create new file; fail if exists |
-| `CREATE_ALWAYS` | 2 | Create new file; truncate if exists |
-| `OPEN_EXISTING` | 3 | Open existing file; fail if doesn't exist |
-| `OPEN_ALWAYS` | 4 | Open existing file; create if doesn't exist |
-| `TRUNCATE_EXISTING` | 5 | Open and truncate to zero; fail if doesn't exist |
-
-To open an existing file for reading:
+The frame is `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40`. Stack arguments are stored as `DWORD PTR [rsp+32]` = 2, `DWORD PTR [rsp+40]` = `80h`, `QWORD PTR [rsp+48]` = 0. Access is `mov edx, 40000000h` (`GENERIC_WRITE`); share and security are `xor r8d, r8d` / `xor r9d, r9d`. After `CreateFileA`, `cmp rax, -1` / `je error` branches to status 1. The HANDLE is copied into RBX (volatile calls will clobber RAX). Expected exit: **0**. Side effect: `test.txt` holds `Hello, file!` and a CRLF.
 
 ```asm
-EXTERN CreateFileA:PROC
-EXTERN GetLastError:PROC
-EXTERN ExitProcess:PROC
+; 01-create-file-write.asm
+;
+; Purpose: Create/truncate a file and write to it using Win32 APIs
+; Expected exit code: 0
+; Expected stdout: (none)
+; Expected side effect: Creates/truncates test.txt with "Hello, file!\n"
+;
+; Demonstrates:
+; - CreateFileA with CREATE_ALWAYS (equivalent to O_CREAT | O_TRUNC)
+; - WriteFile to write data
+; - CloseHandle to release the file handle
+; - Error checking with INVALID_HANDLE_VALUE
 
-.data
-path BYTE "data.txt", 0
+.DATA
+filename DB "test.txt", 0
+message DB "Hello, file!", 13, 10
+message_len EQU $ - message
 
-.code
-main PROC
-    sub rsp, 56             ; shadow space (32) + 3 args (24) = 56
+bytesWritten DWORD ?
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN WriteFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
     
-    lea rcx, path           ; lpFileName
-    mov rdx, 80000000h      ; dwDesiredAccess = GENERIC_READ
-    xor r8, r8              ; dwShareMode = 0 (exclusive)
-    xor r9, r9              ; lpSecurityAttributes = NULL
-    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
-    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
-    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
-    call CreateFileA
+    ; CreateFileA(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)
+    lea     rcx, filename       ; lpFileName
+    mov     edx, 40000000h      ; dwDesiredAccess = GENERIC_WRITE
+    xor     r8d, r8d            ; dwShareMode = 0
+    xor     r9d, r9d            ; lpSecurityAttributes = NULL
+    mov     DWORD PTR [rsp+32], 2 ; dwCreationDisposition = CREATE_ALWAYS
+    mov     DWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov     QWORD PTR [rsp+48], 0 ; hTemplateFile = NULL
+    call    CreateFileA
     
-    cmp rax, -1             ; INVALID_HANDLE_VALUE
-    je open_failed
-    ; rax now holds the file HANDLE
+    ; Check if handle is valid (not INVALID_HANDLE_VALUE = -1)
+    cmp     rax, -1
+    je      error
     
-    ; (close and exit...)
-    add rsp, 56
-    mov rcx, 0
-    call ExitProcess
+    mov     rbx, rax            ; Save file handle
     
-open_failed:
-    call GetLastError       ; rax = ERROR_FILE_NOT_FOUND (2)
-    mov rcx, rax
-    add rsp, 56
-    call ExitProcess
+    ; WriteFile(hFile, message, message_len, &bytesWritten, NULL)
+    mov     rcx, rbx            ; hFile
+    lea     rdx, message        ; lpBuffer
+    mov     r8d, message_len    ; nNumberOfBytesToWrite
+    lea     r9, bytesWritten    ; lpNumberOfBytesWritten
+    mov     QWORD PTR [rsp+32], 0 ; lpOverlapped = NULL
+    call    WriteFile
+    
+    ; CloseHandle(hFile)
+    mov     rcx, rbx
+    call    CloseHandle
+    
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
 main ENDP
+
 END
 ```
 
-To create a new file (or truncate an existing one) for writing:
+`lpNumberOfBytesWritten` must point at a DWORD. A QWORD pointer lets `WriteFile` update only the low 4 bytes and leave the high 4 stale.
+
+### Opening and reading: `CreateFileA` + `ReadFile`
+
+Listing `02-open-read-file` opens the same `test.txt` with `GENERIC_READ` (`80000000h`), `FILE_SHARE_READ` (1) in R8D, and `OPEN_EXISTING` (3). `ReadFile` asks for 256 bytes into `buffer`. After `CloseHandle`, `movzx ecx, BYTE PTR buffer` exits with the first byte (or 0 if the read left the buffer empty). A missing file takes the `cmp rax, -1` branch and exits 1.
+
+`ReadFile` arguments: HANDLE in RCX, buffer in RDX, count in R8, address of a DWORD receive count in R9, overlapped = NULL at `[rsp+32]`. The frame is again 40 bytes. Expected exit: **72** (`'H'`, the first byte listing `01-create-file-write` stores). Open failure is still 1; ml64 CI runs this after listing 01's `test.txt` exists.
 
 ```asm
-    sub rsp, 56
-    lea rcx, path
-    mov rdx, 40000000h      ; GENERIC_WRITE
-    xor r8, r8
-    xor r9, r9
-    mov QWORD PTR [rsp+32], 2   ; CREATE_ALWAYS (create or truncate)
-    mov QWORD PTR [rsp+40], 80h ; FILE_ATTRIBUTE_NORMAL
-    mov QWORD PTR [rsp+48], 0
-    call CreateFileA
-    add rsp, 56
-```
+; 02-open-read-file.asm
+;
+; Purpose: Open an existing file and read from it
+; Expected exit code: 72
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - CreateFileA with OPEN_EXISTING (equivalent to open with O_RDONLY)
+; - ReadFile to read data
+; - Error handling with INVALID_HANDLE_VALUE
 
-Windows has no direct equivalent to Unix permission modes (0644, etc.). File permissions are controlled by Access Control Lists (ACLs), which are beyond the scope of this lesson. For simple file creation, use `FILE_ATTRIBUTE_NORMAL` (0x80).
-
-### Reading and writing
-
-Once you have a handle, `ReadFile` and `WriteFile` transfer bytes. Both take five arguments:
-
-1. `hFile` (`rcx`): The file `HANDLE`
-2. `lpBuffer` (`rdx`): Pointer to the buffer
-3. `nNumberOfBytesToRead/Write` (`r8`): Byte count
-4. `lpNumberOfBytesRead/Written` (`r9`): Pointer to a `DWORD` (4 bytes) to receive the actual byte count
-5. `lpOverlapped` (`[rsp+32]`): Overlapped I/O structure pointer (use `NULL` = 0 for synchronous I/O)
-
-**ReadFile example:**
-
-```asm
-EXTERN ReadFile:PROC
-
-.data?
-buffer BYTE 256 DUP(?)
+.DATA
+filename DB "test.txt", 0
+buffer DB 256 DUP(?)
 bytesRead DWORD ?
 
-.code
-; assume rax holds file HANDLE from CreateFileA
-    mov rbx, rax            ; save handle in nonvolatile rbx
-    sub rsp, 40             ; shadow space (32) + 1 arg (8) = 40
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN ReadFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
     
-    mov rcx, rbx            ; hFile
-    lea rdx, buffer         ; lpBuffer
-    mov r8, 256             ; nNumberOfBytesToRead
-    lea r9, bytesRead       ; lpNumberOfBytesRead
-    mov QWORD PTR [rsp+32], 0   ; lpOverlapped = NULL
-    call ReadFile
+    ; CreateFileA(filename, GENERIC_READ, FILE_SHARE_READ, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
+    lea     rcx, filename       ; lpFileName
+    mov     edx, 80000000h      ; dwDesiredAccess = GENERIC_READ
+    mov     r8d, 1              ; dwShareMode = FILE_SHARE_READ
+    xor     r9d, r9d            ; lpSecurityAttributes = NULL
+    mov     DWORD PTR [rsp+32], 3 ; dwCreationDisposition = OPEN_EXISTING
+    mov     DWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
+    mov     QWORD PTR [rsp+48], 0 ; hTemplateFile = NULL
+    call    CreateFileA
     
-    add rsp, 40
-    test rax, rax
-    jz read_failed          ; FALSE = failure
-    ; bytesRead now holds the actual count (may be less than 256)
-    ; bytesRead = 0 means end-of-file
+    cmp     rax, -1
+    je      error
+    
+    mov     rbx, rax            ; Save file handle
+    
+    ; ReadFile(hFile, buffer, 256, &bytesRead, NULL)
+    mov     rcx, rbx
+    lea     rdx, buffer
+    mov     r8d, 256
+    lea     r9, bytesRead
+    mov     QWORD PTR [rsp+32], 0
+    call    ReadFile
+    
+    ; CloseHandle
+    mov     rcx, rbx
+    call    CloseHandle
+    
+    ; Exit with first byte (or 0 if empty)
+    movzx   ecx, BYTE PTR buffer
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
+main ENDP
+
+END
 ```
 
-`ReadFile` may return fewer bytes than you requested (short read), especially when reading from a pipe or console. The `lpNumberOfBytesRead` output is zero at end-of-file. A return of `FALSE` (0) means an error occurred; call `GetLastError` to retrieve the code.
+`ReadFile` may return fewer bytes than you asked for (a short read) on a pipe or console. `bytesRead` = 0 with a TRUE return is end-of-file. FALSE means call `GetLastError`. This listing does not inspect `bytesRead`; it uses whatever is in `buffer[0]`.
 
-**WriteFile example:**
+## Seeking: `SetFilePointer` and `SetFilePointerEx`
 
-```asm
-EXTERN WriteFile:PROC
+Two APIs move the file pointer. The listings use both.
 
-.data
-message BYTE "Hello, file!", 13, 10    ; CRLF line ending
-message_len EQU $ - message
+**`SetFilePointer`** (listing `03-set-file-pointer`) is the older form. Arguments: HANDLE in RCX, signed 32-bit distance in EDX, pointer to a high 32-bit LONG in R8 (NULL if the distance fits in 32 bits), move method in R9. Return is the new low DWORD, or `INVALID_SET_FILE_POINTER` on failure.
 
-.data?
-bytesWritten DWORD ?
-
-.code
-    sub rsp, 40
-    
-    mov rcx, rbx            ; hFile (saved from CreateFileA)
-    lea rdx, message        ; lpBuffer
-    mov r8, message_len     ; nNumberOfBytesToWrite
-    lea r9, bytesWritten    ; lpNumberOfBytesWritten
-    mov QWORD PTR [rsp+32], 0
-    call WriteFile
-    
-    add rsp, 40
-    test rax, rax
-    jz write_failed
-    ; bytesWritten now holds the actual count
-```
-
-**Important:** `lpNumberOfBytesWritten` is a pointer to a `DWORD` (32-bit), not a `QWORD` (64-bit). Passing a `QWORD` will cause the function to write the count to the lower 4 bytes and leave the upper 4 bytes untouched, which may corrupt adjacent data.
-
-### Seeking
-
-`SetFilePointerEx` moves the file offset. It takes four arguments:
-
-1. `hFile` (`rcx`): The file `HANDLE`
-2. `liDistanceToMove` (`rdx`): 64-bit signed offset (passed as a `LARGE_INTEGER`, which is just a `QWORD` in assembly)
-3. `lpNewFilePointer` (`r8`): Pointer to a `QWORD` to receive the new offset (can be `NULL` if you don't need it)
-4. `dwMoveMethod` (`r9`): Seek mode
-
-**Seek modes:**
+**`SetFilePointerEx`** (listings `14-set-file-pointer-begin` and `08-set-file-pointer-end`) takes a 64-bit signed offset in RDX, an optional pointer to a QWORD that receives the new position in R8, and the method in R9. Return is BOOL.
 
 | Constant | Value | Meaning |
 |----------|------:|---------|
-| `FILE_BEGIN` | 0 | Set offset to `liDistanceToMove` (absolute) |
-| `FILE_CURRENT` | 1 | Add `liDistanceToMove` to current offset (relative) |
-| `FILE_END` | 2 | Set offset to end of file + `liDistanceToMove` |
+| `FILE_BEGIN` | 0 | Offset is absolute from the start |
+| `FILE_CURRENT` | 1 | Offset is added to the current pointer |
+| `FILE_END` | 2 | Offset is relative to the end (0 seeks to EOF; use this to append) |
 
-**Example: seek to beginning of file:**
+Listing `03-set-file-pointer` opens `test.txt` for read with `FILE_SHARE_READ` and `OPEN_EXISTING`, then calls `SetFilePointer` twice: distance 0 / `FILE_BEGIN`, then distance 5 / `FILE_CURRENT`. It does not read the return value. Open failure exits 1; success exits 0. Frame: `sub rsp, 40`.
 
 ```asm
-EXTERN SetFilePointerEx:PROC
+; 03-set-file-pointer.asm
+;
+; Purpose: Demonstrate seeking in a file using SetFilePointer
+; Expected exit code: 0
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - SetFilePointer to move file position (equivalent to lseek)
+; - FILE_BEGIN (0), FILE_CURRENT (1), FILE_END (2) constants
 
-.data?
+.DATA
+filename DB "test.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN SetFilePointer:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
+    
+    ; Open file for reading
+    lea     rcx, filename
+    mov     edx, 80000000h      ; GENERIC_READ
+    mov     r8d, 1              ; FILE_SHARE_READ
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 3 ; OPEN_EXISTING
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    
+    cmp     rax, -1
+    je      error
+    
+    mov     rbx, rax
+    
+    ; SetFilePointer(hFile, 0, NULL, FILE_BEGIN)
+    ; Seeks to beginning of file
+    mov     rcx, rbx
+    xor     edx, edx            ; lDistanceToMove = 0
+    xor     r8, r8              ; lpDistanceToMoveHigh = NULL
+    xor     r9d, r9d            ; dwMoveMethod = FILE_BEGIN (0)
+    call    SetFilePointer
+    
+    ; SetFilePointer(hFile, 5, NULL, FILE_CURRENT)
+    ; Moves 5 bytes forward from current position
+    mov     rcx, rbx
+    mov     edx, 5
+    xor     r8, r8
+    mov     r9d, 1              ; FILE_CURRENT
+    call    SetFilePointer
+    
+    ; CloseHandle
+    mov     rcx, rbx
+    call    CloseHandle
+    
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+Listing `14-set-file-pointer-begin` uses `SetFilePointerEx` to seek to offset 0 and checks the BOOL plus the reported position. The prologue is `push rbx` / `.pushreg rbx` / `sub rsp, 48` / `.allocstack 48`. Open is `GENERIC_READ`, exclusive share, `OPEN_EXISTING`. Then:
+
+- RCX = HANDLE (from RBX)
+- RDX = 0
+- R8 = address of `newPos` in `.DATA?`
+- R9D = 0 (`FILE_BEGIN`)
+
+`test eax, eax` / `jz seek_failed` exits 2. `cmp newPos, 0` / `jne bad_pos` exits 4. Open failure exits 1. Success closes and exits 0. Expected exit: **0** when `test.txt` exists. BOOL is in EAX.
+
+```asm
+; Listing 14: SetFilePointerEx seek to beginning (LESSON.md asm block 7)
+;
+; Purpose: FILE_BEGIN seek with lpNewFilePointer receiving offset 0.
+; Expected exit: 0
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo14-set-file-pointer-begin.obj 14-set-file-pointer-begin.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:14-set-file-pointer-begin.exe 14-set-file-pointer-begin.obj kernel32.lib
+
+.DATA
+filename DB "test.txt", 0
+
+.DATA?
 newPos QWORD ?
 
-.code
-    sub rsp, 32             ; shadow space only (4 register args)
-    
-    mov rcx, rbx            ; hFile (saved from CreateFileA)
-    xor rdx, rdx            ; liDistanceToMove = 0
-    lea r8, newPos          ; lpNewFilePointer
-    xor r9, r9              ; dwMoveMethod = FILE_BEGIN
-    call SetFilePointerEx
-    
-    add rsp, 32
-    test rax, rax
-    jz seek_failed
-    ; newPos now holds the new file offset (should be 0)
-```
+.CODE
 
-To seek to the end of a file (to append), use `FILE_END` with offset 0:
+EXTRN CreateFileA:PROC
+EXTRN SetFilePointerEx:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
 
-```asm
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea rcx, filename
+    mov edx, 80000000h
+    xor r8d, r8d
+    xor r9d, r9d
+    mov DWORD PTR [rsp+32], 3
+    mov DWORD PTR [rsp+40], 80h
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+    cmp rax, -1
+    jne have_handle
+    mov ecx, 1
+    call ExitProcess
+
+have_handle:
+    mov rbx, rax
+
     mov rcx, rbx
-    xor rdx, rdx            ; offset 0
-    xor r8, r8              ; lpNewFilePointer = NULL (don't need result)
-    mov r9, 2               ; FILE_END
+    xor rdx, rdx
+    lea r8, newPos
+    xor r9d, r9d              ; FILE_BEGIN
     call SetFilePointerEx
-```
+    test eax, eax
+    jz seek_failed
 
-### Closing
+    cmp newPos, 0
+    jne bad_pos
 
-`CloseHandle` releases the handle:
-
-```asm
-EXTERN CloseHandle:PROC
-
-.code
-    sub rsp, 32
-    mov rcx, rbx            ; HANDLE to close
+    mov rcx, rbx
     call CloseHandle
-    add rsp, 32
-    test rax, rax
-    jz close_failed         ; FALSE = failure
-    ; Success: rax was nonzero (TRUE)
+    xor ecx, ecx
+    call ExitProcess
+
+bad_pos:
+    mov ecx, 4
+    call ExitProcess
+
+seek_failed:
+    mov ecx, 2
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-After `CloseHandle`, the handle is invalid. Attempting to use it in subsequent calls will fail with `ERROR_INVALID_HANDLE` (6). Unlike Linux file descriptors, Windows does not guarantee that new handles will be numerically sequential or reuse low values first—handles are opaque kernel pointers.
-
-## Anonymous memory allocation with VirtualAlloc
-
-`VirtualAlloc` asks the kernel for virtual memory. The most common use in freestanding programs is **anonymous allocation**: memory not backed by any file.
-
-**Arguments for VirtualAlloc:**
-
-1. `lpAddress` (`rcx`): Address hint (usually `NULL` = 0, let kernel choose)
-2. `dwSize` (`rdx`): Length in bytes (kernel rounds up to page size, typically 4096)
-3. `flAllocationType` (`r8`): Allocation type flags
-4. `flProtect` (`r9`): Protection flags
-
-**Allocation type flags:**
-
-| Flag | Value | Meaning |
-|------|------:|---------|
-| `MEM_COMMIT` | 0x1000 | Allocate physical memory for pages |
-| `MEM_RESERVE` | 0x2000 | Reserve address space without physical memory |
-| `MEM_COMMIT \| MEM_RESERVE` | 0x3000 | Reserve and commit in one call (most common) |
-
-**Protection flags:**
-
-| Flag | Value | Meaning |
-|------|------:|---------|
-| `PAGE_READONLY` | 2 | Read-only |
-| `PAGE_READWRITE` | 4 | Read and write |
-| `PAGE_EXECUTE_READ` | 0x20 | Execute and read (for JIT code) |
-
-**Example: allocate one page (4096 bytes) of read-write memory:**
+Listing `08-set-file-pointer-end` positions at EOF with `SetFilePointerEx`. It opens `test.txt` with `GENERIC_WRITE` and `OPEN_ALWAYS` (4), so a missing file is created. Offset 0, R8 = NULL (no new-position output), R9D = 2 (`FILE_END`). Seek failure (`test eax, eax` / `jz`) exits 2; open failure exits 1; success closes and exits 0. Frame: `push rbx` + `sub rsp, 48`.
 
 ```asm
-EXTERN VirtualAlloc:PROC
-EXTERN VirtualFree:PROC
-EXTERN ExitProcess:PROC
+; Listing 08: SetFilePointerEx seek to end (LESSON.md asm block 8)
+;
+; Purpose: Position at end of file with FILE_END and offset 0 (append setup).
+; Expected exit: 0
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo08-set-file-pointer-end.obj 08-set-file-pointer-end.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-set-file-pointer-end.exe 08-set-file-pointer-end.obj kernel32.lib
 
-.code
-main PROC
-    sub rsp, 32
+.DATA
+filename DB "test.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN SetFilePointerEx:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea rcx, filename
+    mov edx, 40000000h
+    xor r8d, r8d
+    xor r9d, r9d
+    mov DWORD PTR [rsp+32], 4
+    mov DWORD PTR [rsp+40], 80h
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+    cmp rax, -1
+    jne have_handle
+    mov ecx, 1
+    call ExitProcess
+
+have_handle:
+    mov rbx, rax
+
+    mov rcx, rbx
+    xor rdx, rdx
+    xor r8, r8
+    mov r9d, 2                  ; FILE_END
+    call SetFilePointerEx
+    test eax, eax
+    jz seek_failed
+
+    mov rcx, rbx
+    call CloseHandle
+    xor ecx, ecx
+    call ExitProcess
+
+seek_failed:
+    mov ecx, 2
+    call ExitProcess
+main ENDP
+
+END
+```
+
+## Closing a HANDLE
+
+`CloseHandle` takes the HANDLE in RCX and returns BOOL. After a successful close, that HANDLE is invalid. A later use fails with `ERROR_INVALID_HANDLE` (6). Windows does not promise that new HANDLEs are small or sequential.
+
+Listing `09-close-handle` opens `test.txt` `GENERIC_READ` / exclusive / `OPEN_EXISTING`, then `CloseHandle` and `test eax, eax`. Close failure exits 3; open failure exits 1; success exits 0. Frame: `push rbx` + `sub rsp, 64`. BOOL is in EAX.
+
+```asm
+; Listing 09: CloseHandle success check (LESSON.md asm block 9)
+;
+; Purpose: Close an open file handle and test the BOOL return.
+; Expected exit: 0
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo09-close-handle.obj 09-close-handle.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-close-handle.exe 09-close-handle.obj kernel32.lib
+
+.DATA
+filename DB "test.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea rcx, filename
+    mov edx, 80000000h
+    xor r8d, r8d
+    xor r9d, r9d
+    mov DWORD PTR [rsp+32], 3
+    mov DWORD PTR [rsp+40], 80h
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+    cmp rax, -1
+    jne have_handle
+    mov ecx, 1
+    call ExitProcess
+
+have_handle:
+    mov rbx, rax
+
+    mov rcx, rbx
+    call CloseHandle
+    test eax, eax
+    jz close_failed
+
+    xor ecx, ecx
+    call ExitProcess
+
+close_failed:
+    mov ecx, 3
+    call ExitProcess
+main ENDP
+
+END
+```
+
+## Anonymous memory with VirtualAlloc
+
+`VirtualAlloc` asks the kernel for virtual pages. The usual freestanding use is **anonymous** memory: not backed by a file.
+
+1. `lpAddress` (RCX) — hint; 0 lets the kernel choose
+2. `dwSize` (RDX) — byte length; the kernel rounds up to the page size (typically 4096)
+3. `flAllocationType` (R8) — `MEM_COMMIT` = `1000h`, `MEM_RESERVE` = `2000h`; both = `3000h`
+4. `flProtect` (R9) — `PAGE_READONLY` = 2, `PAGE_READWRITE` = 4, `PAGE_EXECUTE_READ` = `20h`
+
+`VirtualFree` to release the whole allocation: address in RCX, **size 0** in RDX, `MEM_RELEASE` (`8000h`) in R8. A nonzero size with `MEM_RELEASE` is incorrect.
+
+Failure is NULL (0), not −1. `test rax, rax` / `jz` is the right check. Pages come back zeroed.
+
+Listing `04-virtual-alloc` allocates one 4096-byte `PAGE_READWRITE` page (`r8d = 3000h`, `r9d = 4`), writes 42 to `[rbx]`, reads it back into R12D, frees with `MEM_RELEASE`, and exits that 42. Alloc failure exits 1. Frame: `sub rsp, 40`. Expected exit: **42**.
+
+```asm
+; 04-virtual-alloc.asm
+;
+; Purpose: Allocate memory using VirtualAlloc (equivalent to anonymous mmap)
+; Expected exit code: 42
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - VirtualAlloc for anonymous memory allocation
+; - MEM_COMMIT | MEM_RESERVE flags
+; - PAGE_READWRITE protection
+; - VirtualFree to release memory
+
+.CODE
+
+EXTRN VirtualAlloc:PROC
+EXTRN VirtualFree:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub     rsp, 40
+    .allocstack 40
+    .endprolog
     
-    xor rcx, rcx            ; lpAddress = NULL (let kernel choose)
-    mov rdx, 4096           ; dwSize = one page
-    mov r8, 3000h           ; flAllocationType = MEM_COMMIT | MEM_RESERVE
-    mov r9, 4               ; flProtect = PAGE_READWRITE
+    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    xor     ecx, ecx            ; lpAddress = NULL (let system choose)
+    mov     edx, 4096           ; dwSize = 4096 bytes (one page)
+    mov     r8d, 3000h          ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov     r9d, 4              ; flProtect = PAGE_READWRITE
+    call    VirtualAlloc
+    
+    test    rax, rax
+    jz      error
+    
+    mov     rbx, rax            ; Save memory address
+    
+    ; Write value 42 to allocated memory
+    mov     BYTE PTR [rbx], 42
+    
+    ; Read it back
+    movzx   r12d, BYTE PTR [rbx]
+    
+    ; VirtualFree(address, 0, MEM_RELEASE)
+    mov     rcx, rbx
+    xor     edx, edx            ; dwSize = 0 (required for MEM_RELEASE)
+    mov     r8d, 8000h          ; dwFreeType = MEM_RELEASE
+    call    VirtualFree
+    
+    ; Exit with value we stored
+    mov     ecx, r12d
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+Listing `10-virtual-alloc-free` is the same allocate / store 42 / free path with a 32-byte frame and `GetLastError` on both failure legs. Success exits 42 (the stored byte, not a value read back). Alloc or free failure exits the `GetLastError` code.
+
+```asm
+; Listing 10: VirtualAlloc one page, write byte, VirtualFree (LESSON.md asm block 10)
+;
+; Purpose: Anonymous RW page via VirtualAlloc; release with MEM_RELEASE.
+; Expected exit: 42 (byte stored in allocated page)
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo10-virtual-alloc-free.obj 10-virtual-alloc-free.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-virtual-alloc-free.exe 10-virtual-alloc-free.obj kernel32.lib
+
+.CODE
+
+EXTRN VirtualAlloc:PROC
+EXTRN VirtualFree:PROC
+EXTRN GetLastError:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    xor ecx, ecx
+    mov edx, 4096
+    mov r8d, 3000h
+    mov r9d, 4
     call VirtualAlloc
-    
     test rax, rax
-    jz alloc_failed         ; NULL = failure
-    ; rax now holds the base address of the allocated memory
-    
-    ; You can now read and write through the pointer in rax
-    ; The memory is initialized to zero
-    mov BYTE PTR [rax], 42  ; write a byte
-    
-    ; Release the memory
-    mov rcx, rax            ; lpAddress
-    xor rdx, rdx            ; dwSize = 0 (required for MEM_RELEASE)
-    mov r8, 8000h           ; dwFreeType = MEM_RELEASE
-    call VirtualFree
-    
-    add rsp, 32
-    test rax, rax
-    jz free_failed          ; FALSE = failure
-    
-    mov rcx, 0
-    call ExitProcess
-    
-alloc_failed:
-    call GetLastError       ; rax = error code
+    jz alloc_failed
+
+    mov BYTE PTR [rax], 42
+
     mov rcx, rax
-    add rsp, 32
+    xor edx, edx
+    mov r8d, 8000h
+    call VirtualFree
+    test eax, eax
+    jz free_failed
+
+    mov ecx, 42
     call ExitProcess
-    
+
+alloc_failed:
+    call GetLastError
+    mov ecx, eax
+    call ExitProcess
+
 free_failed:
     call GetLastError
-    mov rcx, rax
-    add rsp, 32
+    mov ecx, eax
     call ExitProcess
 main ENDP
+
 END
 ```
 
-**Important differences from Linux `mmap`:**
+`VirtualAlloc` is the replacement for anonymous `mmap`. Lesson 18 can map a save file with the mapping APIs below instead of a separate `ReadFile` into a `VirtualAlloc` buffer.
 
-- `VirtualAlloc` always returns `NULL` (0) on failure, not a negative value. Check with `test rax, rax; jz error`.
-- `VirtualFree` requires `dwSize = 0` and `dwFreeType = MEM_RELEASE` (0x8000) to free the entire allocation.
-- Windows page size is typically 4096 bytes (same as x86-64 Linux), but you can query it with `GetSystemInfo`.
-- Allocated memory is always zeroed by the kernel.
+## Mapping a file: CreateFileMappingA and MapViewOfFile
 
-**Why VirtualAlloc?** Lesson 18's save file will use `CreateFileMapping` and `MapViewOfFile` to map the save data directly into memory, avoiding a separate `ReadFile` call. `VirtualAlloc` is useful when you need scratch space larger than the stack, or when you want to control alignment and page boundaries.
+Listing `05-file-mapping` maps `test.txt` read-only and exits with its first byte.
 
-## Shadow space is mandatory, even for functions with < 4 arguments
+Sequence:
 
-The Microsoft x64 ABI requires the caller to allocate **32 bytes of shadow space** (also called "home space") on the stack before every `call`, even if the function has fewer than four arguments. This space is at `[rsp]` to `[rsp+31]` and is reserved for the callee to spill the four register arguments (`rcx`, `rdx`, `r8`, `r9`) if needed.
+1. `CreateFileA` — `GENERIC_READ`, `FILE_SHARE_READ`, `OPEN_EXISTING`. HANDLE in RBX.
+2. `CreateFileMappingA` — file HANDLE, NULL security, `PAGE_READONLY` (2) in R8D, size high = 0, size low = 0 at `[rsp+32]` (use the file size), name = NULL at `[rsp+40]`. Mapping HANDLE in R12. NULL return jumps to `error_close_file`.
+3. `MapViewOfFile` — mapping HANDLE, `FILE_MAP_READ` (4) in EDX, offset 0, byte count 0 at `[rsp+32]` (entire file). View address in R13. NULL return jumps to `error_close_mapping`.
+4. `movzx r14d, BYTE PTR [r13]` — first mapped byte.
+5. `UnmapViewOfFile(R13)`, `CloseHandle(R12)`, `CloseHandle(RBX)`.
+6. Exit with R14D, or 1 on any error.
 
-**Example: calling a one-argument function:**
+The prologue pushes R12 and R13, then `sub rsp, 40`. Expected exit: **72** (first byte of `test.txt` after listing `01-create-file-write`). Failure paths still exit **1**.
 
 ```asm
-EXTERN ExitProcess:PROC
+; 05-file-mapping.asm
+;
+; Purpose: Map a file into memory (file-backed mmap equivalent)
+; Expected exit code: 72
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - CreateFileMappingA to create a file mapping object
+; - MapViewOfFile to map the file into process address space
+; - UnmapViewOfFile and CloseHandle to clean up
 
-.code
-main PROC
-    sub rsp, 32             ; allocate shadow space (4 × 8 = 32 bytes)
-    mov rcx, 0              ; first argument: exit code 0
-    call ExitProcess
-    ; ExitProcess never returns, but if it did:
-    ; add rsp, 32
-    ; ret
+.DATA
+filename DB "test.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN CreateFileMappingA:PROC
+EXTRN MapViewOfFile:PROC
+EXTRN UnmapViewOfFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    r12
+    .pushreg r12
+    push    r13
+    .pushreg r13
+    sub rsp, 56
+    .allocstack 56
+    .endprolog
+    
+    ; Open file for reading
+    lea     rcx, filename
+    mov     edx, 80000000h      ; GENERIC_READ
+    mov     r8d, 1              ; FILE_SHARE_READ
+    xor     r9d, r9d
+    mov     DWORD PTR [rsp+32], 3 ; OPEN_EXISTING
+    mov     DWORD PTR [rsp+40], 80h
+    mov     QWORD PTR [rsp+48], 0
+    call    CreateFileA
+    
+    cmp     rax, -1
+    je      error
+    
+    mov     rbx, rax            ; File handle
+    
+    ; CreateFileMappingA(hFile, NULL, PAGE_READONLY, 0, 0, NULL)
+    mov     rcx, rbx
+    xor     rdx, rdx            ; lpFileMappingAttributes = NULL
+    mov     r8d, 2              ; flProtect = PAGE_READONLY
+    xor     r9d, r9d            ; dwMaximumSizeHigh = 0
+    mov     QWORD PTR [rsp+32], 0 ; dwMaximumSizeLow = 0 (use file size)
+    mov     QWORD PTR [rsp+40], 0 ; lpName = NULL
+    call    CreateFileMappingA
+    
+    test    rax, rax
+    jz      error_close_file
+    
+    mov     r12, rax            ; Mapping handle
+    
+    ; MapViewOfFile(hFileMappingObject, FILE_MAP_READ, 0, 0, 0)
+    mov     rcx, r12
+    mov     edx, 4              ; dwDesiredAccess = FILE_MAP_READ
+    xor     r8d, r8d            ; dwFileOffsetHigh = 0
+    xor     r9d, r9d            ; dwFileOffsetLow = 0
+    mov     QWORD PTR [rsp+32], 0 ; dwNumberOfBytesToMap = 0 (entire file)
+    call    MapViewOfFile
+    
+    test    rax, rax
+    jz      error_close_mapping
+    
+    mov     r13, rax            ; View address
+    
+    ; Read first byte from mapped view
+    movzx   r14d, BYTE PTR [r13]
+    
+    ; Unmap view
+    mov     rcx, r13
+    call    UnmapViewOfFile
+    
+    ; Close mapping handle
+    mov     rcx, r12
+    call    CloseHandle
+    
+    ; Close file handle
+    mov     rcx, rbx
+    call    CloseHandle
+    
+    ; Exit with first byte
+    mov     ecx, r14d
+    jmp     done
+    
+error_close_mapping:
+    mov     rcx, r12
+    call    CloseHandle
+    
+error_close_file:
+    mov     rcx, rbx
+    call    CloseHandle
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
 main ENDP
+
 END
 ```
 
-Even though `ExitProcess` takes only one argument, you must allocate 32 bytes. If you omit this, the callee may overwrite your return address or local variables when spilling registers.
+## Process id and the performance counter
 
-**Fifth and subsequent arguments** go on the stack **above** the shadow space, starting at `[rsp+32]`, `[rsp+40]`, etc. You saw this in the `CreateFileA` example, which has seven arguments.
-
-**Stack alignment:** At the point of a `call` instruction, `rsp` must be 16-byte aligned. The `call` itself pushes an 8-byte return address, leaving `rsp` misaligned inside the function. To restore alignment, allocate an odd multiple of 8 bytes. For functions that make calls, the typical pattern is:
+Listing `06-get-process-id` calls `GetCurrentProcessId` (no arguments, DWORD in EAX), then `test eax, eax` / `seta cl` / `movzx ecx, cl`. That is 1 when the PID is above 0, else 0 — not a masked PID. Frame: `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40`. Expected exit: **1**.
 
 ```asm
-myFunc PROC
-    sub rsp, 40             ; 32 (shadow) + 8 (alignment) = 40
-    ; now rsp is 16-byte aligned again
+; 06-get-process-id.asm
+;
+; Purpose: Get current process ID (equivalent to getpid)
+; Expected exit code: 1
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - GetCurrentProcessId Win32 API
+
+.CODE
+
+EXTRN GetCurrentProcessId:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    
+    ; GetCurrentProcessId returns DWORD in EAX
+    call    GetCurrentProcessId
+    
+    test    eax, eax
+    seta    cl
+    movzx   ecx, cl
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+Listing `07-query-performance-counter` is the high-resolution timer pair. `QueryPerformanceFrequency` writes a QWORD frequency through RCX; `QueryPerformanceCounter` writes a QWORD tick count through RCX. Both return BOOL. The listing tests EAX after the counter call and exits 0 on success, 1 on failure. Frame: `sub rsp, 32`. This is the Win32 counterpart of a monotonic clock, not `GetTickCount`.
+
+```asm
+; 07-query-performance-counter.asm
+;
+; Purpose: Query high-resolution performance counter (timing)
+; Expected exit code: 0
+; Expected stdout: (none)
+;
+; Demonstrates:
+; - QueryPerformanceCounter for high-resolution timing
+; - QueryPerformanceFrequency to get timer frequency
+; - Equivalent to Linux clock_gettime
+
+.DATA
+counter QWORD ?
+frequency QWORD ?
+
+.CODE
+
+EXTRN QueryPerformanceCounter:PROC
+EXTRN QueryPerformanceFrequency:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    
+    ; QueryPerformanceFrequency(&frequency)
+    lea     rcx, frequency
+    call    QueryPerformanceFrequency
+    
+    ; QueryPerformanceCounter(&counter)
+    lea     rcx, counter
+    call    QueryPerformanceCounter
+    
+    ; Both return nonzero on success
+    test    eax, eax
+    jz      error
+    
+    xor     ecx, ecx
+    jmp     done
+    
+error:
+    mov     ecx, 1
+    
+done:
+    call    ExitProcess
+main ENDP
+
+END
+```
+
+## Shadow space is mandatory, even for one argument
+
+The ABI requires 32 bytes of home space before every `call`. `ExitProcess` takes one argument in RCX; you still allocate the 32 bytes. Omit them and the callee may overwrite your return address or locals when it spills.
+
+Listing `11-mandatory-shadow-space` is that minimum: `sub rsp, 32`, `xor ecx, ecx`, `call ExitProcess`. Expected exit: **0**.
+
+```asm
+; Listing 11: Mandatory 32-byte shadow before ExitProcess (LESSON.md asm block 11)
+;
+; Purpose: Even a one-argument import needs home space on the stack.
+; Expected exit: 0
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo11-mandatory-shadow-space.obj 11-mandatory-shadow-space.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:11-mandatory-shadow-space.exe 11-mandatory-shadow-space.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Argument 5 and later live **above** the shadow space: `[rsp+32]`, `[rsp+40]`, `[rsp+48]`. `CreateFileA` needs those three slots. Listing `01-create-file-write` stores them after a 40-byte allocation; listing `13-open-missing-get-last-error` stores them as QWORDs after a 56-byte allocation (`32 + 24`).
+
+At the point of a `call`, RSP must be 16-byte aligned (0 mod 16). `call` itself pushes an 8-byte return address, so a called procedure sees RSP ≡ 8 (mod 16). Subtracting an odd multiple of 8 (32 + 8 = 40 is the usual extra) restores 0 mod 16 for the next call.
+
+Listing `12-callee-stack-alignment-40` makes that concrete. `myFunc` does `sub rsp, 40`, calls `SomeOtherFunc` (a `ret`-only procedure), then `add rsp, 40` and `ret`. `main` allocates 32 bytes, calls `myFunc`, and exits 0.
+
+```asm
+; Listing 12: Stack alignment with shadow + 8 (LESSON.md asm block 12)
+;
+; Purpose: Allocate 40 bytes before a nested call so RSP is 16-byte aligned at `call`.
+; Expected exit: 0
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo12-callee-stack-alignment-40.obj 12-callee-stack-alignment-40.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:12-callee-stack-alignment-40.exe 12-callee-stack-alignment-40.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+SomeOtherFunc PROC
+    ret
+SomeOtherFunc ENDP
+
+myFunc PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
     call SomeOtherFunc
     add rsp, 40
     ret
 myFunc ENDP
+
+main PROC FRAME
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+    call myFunc
+    xor ecx, ecx
+    call ExitProcess
+main ENDP
+
+END
 ```
 
-If you forget shadow space or misalign the stack, Windows may crash your program with an access violation or silently corrupt data.
+Forget shadow space or alignment and you get an access violation or silent corruption, not a polite assembler diagnostic.
 
-## Windows equivalents to other Linux syscalls
+## Pipes and the process heap
 
-Windows has no direct equivalent to Linux's `brk` syscall, which adjusts the program break (end of the data segment). On Windows, dynamic memory allocation uses one of three mechanisms:
+Windows has no `brk`. Page-sized scratch still goes through `VirtualAlloc` (listings `04-virtual-alloc` and `10-virtual-alloc-free`). Small blocks go through `HeapAlloc` / `HeapFree` on a heap HANDLE from `GetProcessHeap` (or `HeapCreate`). `CreatePipe` writes two HANDLEs — read end, then write end — and `WriteFile` / `ReadFile` move bytes between them.
 
-1. **`VirtualAlloc` / `VirtualFree`:** Low-level page-granular allocation (covered above). Use this when you need large blocks or control over page boundaries.
-2. **`HeapAlloc` / `HeapFree`:** Higher-level heap allocation. Requires a heap handle (obtain with `GetProcessHeap` or `HeapCreate`). Suitable for small, frequent allocations.
-3. **C runtime `malloc` / `free`:** If you link with the CRT (which this course avoids), these wrap `HeapAlloc`.
+### CreatePipe: write three bytes, read them back
 
-For this course, use `VirtualAlloc` for memory allocation. Lesson 18's dynamic data structures (trees, lists) will demonstrate reusable memory pools built on top of `VirtualAlloc`.
+Listing `15-create-pipe` creates an anonymous pipe (`CreatePipe` with NULL security and 0 size), writes the three bytes `"ABC"` to `hWrite`, and reads three bytes into `readBuf`. Success copies `bytesRead` into **EBX**, closes both HANDLEs, then `mov ecx, ebx`. CloseHandle clobbers RCX; EBX is nonvolatile and holds the count across those calls. Expected exit: **3**. Failure of `CreatePipe` / `WriteFile` / `ReadFile` sets `ecx = 1` after the closes (or immediately if `CreatePipe` failed) and exits **1**.
 
-**Pipes, process IDs, and timing:**
-
-- **Pipes:** `CreatePipe` creates a unidirectional pipe (analogous to Linux `pipe(2)`). It takes pointers to two `HANDLE` variables (read end and write end).
-- **Process ID:** `GetCurrentProcessId` returns the process ID as a `DWORD` (32-bit). No arguments.
-- **Timing:** Lesson 15 will cover `QueryPerformanceCounter` and `QueryPerformanceFrequency` (high-resolution timer, analogous to Linux `clock_gettime(CLOCK_MONOTONIC, ...)`), and `Sleep` (millisecond granularity sleep, analogous to `nanosleep` but coarser).
-
-## Worked example: opening a missing file and recovering the error
-
-**Task:** Open `C:\no\such\file.txt` for reading. If it fails, call `GetLastError` and exit with the error code as the status. If it succeeds, close the handle and exit 0.
-
-**Step-by-step reasoning:**
-
-1. **Call `CreateFileA`:** Allocate shadow space (32 bytes) + 3 stack arguments (24 bytes) = 56 bytes total (multiple of 16 for alignment).
-2. **Arguments:** Path in `rcx`, `GENERIC_READ` (0x80000000) in `rdx`, share mode 0 in `r8`, security attributes `NULL` in `r9`, disposition `OPEN_EXISTING` (3) in `[rsp+32]`, attributes `FILE_ATTRIBUTE_NORMAL` (0x80) in `[rsp+40]`, template `NULL` in `[rsp+48]`.
-3. **Check return:** `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1) on failure.
-4. **Distinguish failure:** Use `cmp rax, -1` then `je` (jump if equal).
-5. **Recover error code:** Call `GetLastError` with no arguments; it returns the error code in `rax`.
-6. **Exit with error code:** Move `rax` to `rcx` and call `ExitProcess`.
+The frame is `push rbx` / `.pushreg rbx` / `sub rsp, 64` / `.allocstack 64` so `[rsp+32]` can hold the NULL overlapped pointer for `WriteFile` and `ReadFile`. One push plus 64 keeps RSP ≡ 8 (mod 16) at each `call` and covers the extra stack argument.
 
 ```asm
-EXTERN CreateFileA:PROC
-EXTERN CloseHandle:PROC
-EXTERN GetLastError:PROC
-EXTERN ExitProcess:PROC
+; Listing 15: CreatePipe, WriteFile, ReadFile round trip
+; Expected exit: 3
+; Expected stdout: (none)
 
-.data
-path BYTE "C:\no\such\file.txt", 0
+.DATA
+payload BYTE "ABC"
 
-.code
-main PROC
-    sub rsp, 56             ; shadow space (32) + 3 args (24)
-    
-    lea rcx, path           ; lpFileName
-    mov rdx, 80000000h      ; dwDesiredAccess = GENERIC_READ
-    xor r8, r8              ; dwShareMode = 0
-    xor r9, r9              ; lpSecurityAttributes = NULL
-    mov QWORD PTR [rsp+32], 3   ; dwCreationDisposition = OPEN_EXISTING
-    mov QWORD PTR [rsp+40], 80h ; dwFlagsAndAttributes = FILE_ATTRIBUTE_NORMAL
-    mov QWORD PTR [rsp+48], 0   ; hTemplateFile = NULL
-    call CreateFileA
-    
-    add rsp, 56             ; deallocate before branching
-    cmp rax, -1             ; INVALID_HANDLE_VALUE
-    je failed
-    
-    ; Success path: rax holds valid HANDLE
-    mov rbx, rax            ; save handle in nonvolatile rbx
-    sub rsp, 32
-    mov rcx, rbx
-    call CloseHandle        ; close the handle
-    add rsp, 32
-    
-    mov rcx, 0              ; exit 0
-    call ExitProcess
-    
-failed:
-    call GetLastError       ; rax = ERROR_FILE_NOT_FOUND (2)
-    mov rcx, rax            ; exit with error code
-    call ExitProcess
+.DATA?
+hRead QWORD ?
+hWrite QWORD ?
+readBuf BYTE 8 DUP(?)
+bytesWritten DWORD ?
+bytesRead DWORD ?
+
+.CODE
+EXTRN CreatePipe:PROC
+EXTRN WriteFile:PROC
+EXTRN ReadFile:PROC
+EXTRN CloseHandle:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea     rcx, hRead
+    lea     rdx, hWrite
+    xor     r8, r8
+    xor     r9d, r9d
+    call    CreatePipe
+    test    eax, eax
+    jz      fail
+
+    mov     rcx, hWrite
+    lea     rdx, payload
+    mov     r8d, 3
+    lea     r9, bytesWritten
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
+    test    eax, eax
+    jz      fail_close
+
+    mov     rcx, hRead
+    lea     rdx, readBuf
+    mov     r8d, 3
+    lea     r9, bytesRead
+    mov     QWORD PTR [rsp+32], 0
+    call    ReadFile
+    test    eax, eax
+    jz      fail_close
+
+    mov     ebx, DWORD PTR bytesRead
+    jmp     cleanup
+
+fail_close:
+    mov     rcx, hRead
+    call    CloseHandle
+    mov     rcx, hWrite
+    call    CloseHandle
+    mov     ecx, 1
+    jmp     exit_proc
+
+cleanup:
+    mov     rcx, hRead
+    call    CloseHandle
+    mov     rcx, hWrite
+    call    CloseHandle
+    mov     ecx, ebx
+
+exit_proc:
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
 main ENDP
 END
 ```
 
-**Expected output:** Exit status 2 (`ERROR_FILE_NOT_FOUND` = "The system cannot find the file specified").
+### HeapAlloc: sixteen 1-bytes, then the sum
 
-**Plausible wrong reading and why it fails:**
+Listing `16-heap-alloc-sum` calls `GetProcessHeap`, then `HeapAlloc` for 16 bytes with flags 0 (the `HEAP_ZERO_MEMORY EQU 8` at the top is unused). It fills the block with `rep stosb` of 1 (`cld` first), sums those 16 bytes into EAX (each `movzx` / `add` is 1), saves the sum in EBX, `HeapFree`s the block, and `mov ecx, ebx`. Expected exit: **16**. Failure of `GetProcessHeap` or `HeapAlloc` exits **1**. The prologue is `push rdi` / `push rsi` / `push rbx` with matching `.pushreg` directives, then `sub rsp, 32` / `.allocstack 32` — three pushes plus 32 keeps RSP ≡ 8 (mod 16) at each `call`.
 
-*"The `cmp rax, -1` checks for `INVALID_HANDLE_VALUE`, but maybe I should use `test rax, rax` and `jz` (jump if zero) like I do for `BOOL` returns."*
+```asm
+; Listing 16: GetProcessHeap, HeapAlloc, HeapFree (LESSON.md)
+; Expected exit: 16
+; Expected stdout: (none)
 
-**Why it's wrong:** `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1, or `0xFFFFFFFFFFFFFFFF`) on failure, not `NULL` (0). A `test rax, rax` followed by `jz` checks if `rax` is zero, which would be a valid (though unlikely) handle value. If you use `jz`, you'll miss the failure case. Always check the documentation for the specific return value: `CreateFileA` and `CreateFileW` return `INVALID_HANDLE_VALUE` on failure, while many other Win32 functions return `NULL` (0) or `FALSE` (0).
+HEAP_ZERO_MEMORY EQU 8
+
+.DATA?
+hHeap QWORD ?
+pBuf QWORD ?
+
+.CODE
+EXTRN GetProcessHeap:PROC
+EXTRN HeapAlloc:PROC
+EXTRN HeapFree:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push    rdi
+    .pushreg rdi
+    push    rsi
+    .pushreg rsi
+    push    rbx
+    .pushreg rbx
+    sub     rsp, 32
+    .allocstack 32
+    .endprolog
+
+    call    GetProcessHeap
+    test    rax, rax
+    jz      fail
+    mov     hHeap, rax
+
+    mov     rcx, hHeap
+    xor     edx, edx
+    mov     r8d, 16
+    call    HeapAlloc
+    test    rax, rax
+    jz      fail
+    mov     pBuf, rax
+
+    mov     rdi, rax
+    mov     ecx, 16
+    mov     al, 1
+    cld
+    rep     stosb
+
+    xor     eax, eax
+    mov     rcx, 16
+    mov     rsi, pBuf
+sum_loop:
+    movzx   edx, BYTE PTR [rsi]
+    add     eax, edx
+    inc     rsi
+    loop    sum_loop
+
+    mov     ebx, eax
+
+    mov     rcx, hHeap
+    xor     edx, edx
+    mov     r8, pBuf
+    call    HeapFree
+
+    mov     ecx, ebx
+    call    ExitProcess
+
+fail:
+    mov     ecx, 1
+    call    ExitProcess
+main ENDP
+END
+```
+
+## Worked example: opening a missing file and recovering the error
+
+**Task:** Open `C:\no\such\file.txt` for reading. On failure, exit with `GetLastError`. On success, close the HANDLE and exit 0.
+
+**Reasoning:**
+
+1. Allocate a frame that covers shadow space plus three stack arguments. Listing `13-open-missing-get-last-error` uses `push rbx` and `sub rsp, 56`.
+2. RCX = path, EDX = `GENERIC_READ` (`80000000h`), R8D = 0, R9D = 0, `[rsp+32]` = 3 (`OPEN_EXISTING`) as a QWORD, `[rsp+40]` = `80h`, `[rsp+48]` = 0.
+3. `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1) on failure. Compare with `cmp rax, -1` / `je failed`.
+4. Success copies the HANDLE to RBX, `CloseHandle`, `xor ecx, ecx`, `ExitProcess`.
+5. Failure calls `GetLastError` (no arguments, 32-byte shadow already live) and `mov ecx, eax` so the process status is the error code.
+
+```asm
+; Listing 13: Open missing file; exit with GetLastError code (LESSON.md)
+;
+; Purpose: CreateFileA failure returns INVALID_HANDLE_VALUE; error via GetLastError.
+; Expected exit: 3 (ERROR_PATH_NOT_FOUND for missing path components)
+; Expected stdout: (none)
+;
+; Build: ml64 /c /Fo13-open-missing-get-last-error.obj 13-open-missing-get-last-error.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:13-open-missing-get-last-error.exe 13-open-missing-get-last-error.obj kernel32.lib
+
+.DATA
+path DB "C:\no\such\file.txt", 0
+
+.CODE
+
+EXTRN CreateFileA:PROC
+EXTRN CloseHandle:PROC
+EXTRN GetLastError:PROC
+EXTRN ExitProcess:PROC
+
+main PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 64
+    .allocstack 64
+    .endprolog
+
+    lea rcx, path
+    mov edx, 80000000h
+    xor r8d, r8d
+    xor r9d, r9d
+    mov QWORD PTR [rsp+32], 3
+    mov QWORD PTR [rsp+40], 80h
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+
+    cmp rax, -1
+    je failed
+
+    mov rbx, rax
+    mov rcx, rbx
+    call CloseHandle
+    xor ecx, ecx
+    call ExitProcess
+
+failed:
+    call GetLastError
+    mov ecx, eax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+Expected exit: **3** (`ERROR_PATH_NOT_FOUND`). The path is `C:\no\such\file.txt`: a missing directory component, not a missing file in an existing directory (`ERROR_FILE_NOT_FOUND` = 2).
+
+### A plausible wrong reading (and why it fails)
+
+*"I already test BOOL returns with `test rax, rax` / `jz`. I can use that after `CreateFileA`."*
+
+`CreateFileA` returns −1 on failure, not 0. −1 is nonzero, so `jz` never fires and you treat `INVALID_HANDLE_VALUE` as a live HANDLE. The next `ReadFile` or `CloseHandle` then fails (or worse). `VirtualAlloc` and `CreateFileMappingA` *do* return 0 on failure — that is a different contract. Read the return table before you pick `je` versus `jz`.
 
 ## Distinctions worth keeping straight
 
 | Confusion | Reality |
 |-----------|---------|
-| Fifth argument goes in a fifth register | Fifth argument goes on the stack at `[rsp+32]`, above shadow space |
-| A Win32 failure returns an error code in `rax` | Failure returns `FALSE` (0) or `INVALID_HANDLE_VALUE` (−1); call `GetLastError` to retrieve the error code |
-| `CreateFileA` returns `NULL` on failure | `CreateFileA` returns `INVALID_HANDLE_VALUE` (−1) on failure, not `NULL` (0) |
-| `CloseHandle` returns the handle on success | `CloseHandle` returns `TRUE` (nonzero) on success, `FALSE` (0) on error |
-| `ReadFile` always reads the requested count | `ReadFile` may return fewer bytes (short read), 0 at EOF (in `lpNumberOfBytesRead`), or `FALSE` on error |
-| `VirtualAlloc` returns −1 on failure | `VirtualAlloc` returns `NULL` (0) on failure; nonzero is a valid address |
-| You can `WriteFile` to any `HANDLE` | `HANDLE` must be valid (returned by `CreateFileA` or `GetStdHandle`) and opened with write permission |
-| Shadow space is optional for small functions | Shadow space (32 bytes) is mandatory before every `call`, even for zero-argument functions |
-| `lpNumberOfBytesWritten` is a `QWORD` pointer | It's a `DWORD` pointer (4 bytes, not 8); passing a `QWORD` will corrupt adjacent memory |
+| Fifth argument in a fifth register | Fifth argument is `[rsp+32]`, above the 32-byte shadow |
+| Failure returns an errno in RAX | Failure is FALSE / NULL / `INVALID_HANDLE_VALUE`; the code is `GetLastError` |
+| `CreateFileA` returns NULL on failure | It returns −1. `test rax, rax` misses it (listing `13-open-missing-get-last-error`) |
+| `SetFilePointer` and `SetFilePointerEx` are the same call | `SetFilePointer` takes a 32-bit distance in EDX and an optional high pointer in R8 (listing `03-set-file-pointer`). `SetFilePointerEx` takes a 64-bit offset in RDX and an optional new-position pointer in R8 (listings `14-set-file-pointer-begin`, `08-set-file-pointer-end`) |
+| `CloseHandle` returns the HANDLE | It returns BOOL. Listing `09-close-handle` tests EAX and exits 3 on FALSE |
+| `ReadFile` always fills the request | Short reads are normal; 0 bytes + TRUE is EOF; FALSE is an error |
+| `VirtualAlloc` returns −1 on failure | It returns 0. Listing `04-virtual-alloc` and the alloc path of `10-virtual-alloc-free` use `test rax, rax`. `VirtualFree` returns BOOL in EAX; listing `10` tests that with `test eax, eax` |
+| `VirtualFree` size equals the allocation | `MEM_RELEASE` requires size 0 |
+| `lpNumberOfBytesWritten` is a QWORD | It is a DWORD. Listing `01-create-file-write` declares `bytesWritten DWORD ?` |
+| Shadow space is optional for one-argument calls | Listing `11-mandatory-shadow-space` still does `sub rsp, 32` before `ExitProcess` |
+| Linux `syscall` / RDI / RSI | User-mode Windows goes through `EXTRN` + `kernel32.lib`. Arguments are RCX, RDX, R8, R9. RDI and RSI are nonvolatile |
+| `WriteConsoleA` vs `WriteFile` | These listings write files with `WriteFile`. Lesson 00 already used `WriteFile` on the standard output HANDLE |
 
 ## Check yourself
 
-1. After `call CreateFileA`, you have `rax = 0xFFFFFFFFFFFFFFFF` (−1). Is this a valid `HANDLE`, or an error? What should you call next to retrieve the error code?
-   
-2. You call `CreateFileA` with `GENERIC_WRITE`, creation disposition `CREATE_ALWAYS`, and attributes `FILE_ATTRIBUTE_NORMAL`. Does this create the file if it's missing? Does it empty the file if it exists?
-
-3. You call `VirtualAlloc` with size 8192, allocation type `MEM_COMMIT | MEM_RESERVE` (0x3000), and protection `PAGE_READWRITE` (4). What value should go in `r8`? Can you write to the returned address?
-
-4. Your `ReadFile` call requested 512 bytes but `lpNumberOfBytesRead` contains 100, and the return value is `TRUE`. Is this an error, or can this happen in normal operation? What does `lpNumberOfBytesRead = 0` with return `TRUE` mean?
-
-5. You accidentally allocate only 24 bytes of stack space before calling `CreateFileA` (which has 7 arguments). What will likely happen when `CreateFileA` tries to spill its register arguments to shadow space?
+1. After `call CreateFileA`, RAX is `0FFFFFFFFFFFFFFFFh`. Is that a HANDLE you can pass to `WriteFile`? What do you call to get the error code?
+2. Listing `01-create-file-write` uses `GENERIC_WRITE` and disposition 2. Does that create a missing `test.txt`? Does it empty an existing one?
+3. You call `VirtualAlloc` with size 8192, allocation type `MEM_COMMIT | MEM_RESERVE`, protection `PAGE_READWRITE`. What value is in R8D in listing `04-virtual-alloc`? How do you detect failure?
+4. `ReadFile` requested 512 bytes, `bytesRead` is 100, and the return is TRUE. Error or not? What does `bytesRead` = 0 with TRUE mean?
+5. Why does listing `11-mandatory-shadow-space` execute `sub rsp, 32` before a one-argument `ExitProcess`? What goes wrong if you skip it?
 
 ## Key takeaways
 
-- Win32 API calls follow the Microsoft x64 calling convention: arguments in `rcx, rdx, r8, r9`, then stack at `[rsp+32]`, return in `rax`.
-- Caller must allocate 32 bytes of shadow space before every `call`, even for functions with fewer than four arguments.
-- Most Win32 functions return `BOOL` (nonzero = success, zero = failure) or `INVALID_HANDLE_VALUE`/`NULL` on error; call `GetLastError` to retrieve the error code.
-- `CreateFileA` returns a `HANDLE` (opaque pointer) on success or `INVALID_HANDLE_VALUE` (−1) on failure.
-- `ReadFile` and `WriteFile` may transfer fewer bytes than requested (short reads/writes are not errors); check `lpNumberOfBytesRead/Written`.
-- `VirtualAlloc` with `MEM_COMMIT | MEM_RESERVE` allocates zeroed memory; `VirtualFree` with `MEM_RELEASE` releases it (size must be 0 for `MEM_RELEASE`).
-- Windows has no raw `syscall` instruction for user code—all kernel services go through imported DLL functions (`kernel32.lib`, `user32.lib`, etc.).
+- Win32 calls use RCX, RDX, R8, R9, then `[rsp+32]` onward; the return is RAX; the caller allocates 32 bytes of shadow space before every `call`.
+- `CreateFileA` failure is −1; `VirtualAlloc` / mapping failure is 0; BOOL APIs fail with 0. The numeric error is `GetLastError` (listing `13-open-missing-get-last-error` exits **3** / `ERROR_PATH_NOT_FOUND` on `C:\no\such\file.txt`).
+- `ReadFile` / `WriteFile` take a HANDLE, buffer, count, DWORD pointer, and overlapped (NULL for synchronous I/O). Short transfers are not automatically errors.
+- `SetFilePointer` is the 32-bit-distance API; `SetFilePointerEx` is the 64-bit BOOL API. `FILE_BEGIN` = 0, `FILE_CURRENT` = 1, `FILE_END` = 2.
+- `VirtualAlloc` with `3000h` / `PAGE_READWRITE` returns zeroed pages; `VirtualFree` with size 0 and `8000h` releases them. Listings `04-virtual-alloc` and `10-virtual-alloc-free` exit 42 after storing that byte.
+- File-backed mapping is `CreateFileA` → `CreateFileMappingA` → `MapViewOfFile`, then `UnmapViewOfFile` and two `CloseHandle` calls (listing `05-file-mapping`).
+- `CreatePipe` plus `WriteFile` / `ReadFile` of `"ABC"` is listing `15-create-pipe`. EBX holds `bytesRead` across the `CloseHandle`s; then `mov ecx, ebx` exits **3**. Listing `16-heap-alloc-sum` saves RDI/RSI/RBX, fills 16 heap bytes with 1, and exits **16**.
+- There is no user-mode `syscall` for these services. You `EXTRN` the import and link `kernel32.lib`.
 
 ## Lookup
 
-- Microsoft x64 calling convention: [x64 calling convention (Microsoft Learn)](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
-- Win32 file functions: [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea), [ReadFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile), [WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile), [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle), [SetFilePointerEx](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex)
+- Microsoft x64 calling convention: [x64 calling convention](https://learn.microsoft.com/en-us/cpp/build/x64-calling-convention)
+- File API: [CreateFileA](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-createfilea), [ReadFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-readfile), [WriteFile](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-writefile), [CloseHandle](https://learn.microsoft.com/en-us/windows/win32/api/handleapi/nf-handleapi-closehandle), [SetFilePointer](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointer), [SetFilePointerEx](https://learn.microsoft.com/en-us/windows/win32/api/fileapi/nf-fileapi-setfilepointerex)
+- Mapping: [CreateFileMappingA](https://learn.microsoft.com/en-us/windows/win32/api/winbase/nf-winbase-createfilemappinga), [MapViewOfFile](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-mapviewoffile), [UnmapViewOfFile](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-unmapviewoffile)
 - Virtual memory: [VirtualAlloc](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualalloc), [VirtualFree](https://learn.microsoft.com/en-us/windows/win32/api/memoryapi/nf-memoryapi-virtualfree)
-- Error handling: [GetLastError](https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror), [System Error Codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
+- Errors: [GetLastError](https://learn.microsoft.com/en-us/windows/win32/api/errhandlingapi/nf-errhandlingapi-getlasterror), [system error codes](https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes)
+- Timing and identity: [QueryPerformanceCounter](https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancecounter), [QueryPerformanceFrequency](https://learn.microsoft.com/en-us/windows/win32/api/profileapi/nf-profileapi-queryperformancefrequency), [GetCurrentProcessId](https://learn.microsoft.com/en-us/windows/win32/api/processthreadsapi/nf-processthreadsapi-getcurrentprocessid)
 - Standard handles: [GetStdHandle](https://learn.microsoft.com/en-us/windows/win32/api/processenv/nf-processenv-getstdhandle)
-
-## Standalone listings
-
-These names exist on the listings branch. Prose here keeps LISTING-PENDING until this branch quotes them verbatim.
-
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/01-create-file-write.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/02-open-read-file.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/03-set-file-pointer.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/04-virtual-alloc.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/05-file-mapping.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/06-get-process-id.asm -->
-<!-- LISTING-PENDING: lessons/08-syscalls-files-mmap/listings/07-query-performance-counter.asm -->
 
 ## Exercises
 
-Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build with (from x64 Native Tools Command Prompt):
+Twenty-four drills under `exercises/`. Solutions mirror the names under `solutions/`. Build from an x64 Native Tools Command Prompt:
 
 ```bat
 ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib && FILE.exe
 ```
 
-The exercises and solutions are written by a separate author and use the Win32 API and MASM syntax covered in this lesson. They are organized by category:
+The exercises use the Win32 API and MASM syntax this lesson quotes.
 
-**File operations:** Two `WriteFile` calls to stdout, read one byte from stdin, open missing file and handle error with `GetLastError`, open and close `NUL` (Windows equivalent of `/dev/null`), read from `NUL`, check byte count after `WriteFile`, two separate `WriteFile` calls, write to stdout, debug handle leak pattern, write to invalid handle and handle error.
+**File operations:** `01-write-only` — two `WriteFile`s to stdout, exit **0**. `02-read-stdin-one` — read one byte from stdin, exit that byte (**65** for `"A"`; 0 at EOF). `03-open-fail` — missing path, exit **1**. `07-write-iov-lite` — two writes, exit **0**. `08-from-scratch-close` — open `NUL` read-only, `CloseHandle`, exit **0**. `09-write-len-check` — write and compare `bytesWritten`, exit **0**. `10-open-nul` — `CreateFileA("NUL")` write-only, close, exit **0**. `11-read-nul` — `VirtualAlloc` zero-filled memory, read 8 bytes, sum 0, exit **0**. `17-duplicate-handle` — `WriteFile` to stdout, no `DuplicateHandle`, exit **0**. `21-debug-fd-leak-pattern` — open `NUL` and close the right HANDLE, exit **0**. `24-from-scratch-write-err` — `WriteFile` on handle −1, exit **1**.
 
-**Error handling:** Open `C:\` with `GENERIC_WRITE` (should fail with `ERROR_ACCESS_DENIED`), exit 1 on error.
+**Error handling:** `05-get-last-error-open` — failed `CreateFileA`, then `GetLastError`; expected **2** (`ERROR_FILE_NOT_FOUND`). `18-error-eacces-sim` — open `C:\` with `GENERIC_WRITE`, exit **1**.
 
-**Seeking:** Arithmetic offset computation (no `SetFilePointerEx` call), open `NUL`, `SetFilePointerEx` to 0 (`FILE_BEGIN`), write, close, exit 0.
+**Seeking:** `06-set-file-pointer` is offset arithmetic (5 + 5, exit **10**), not a `SetFilePointer` call. `19-overlapped-write` opens `NUL`, seeks, `WriteFile`, close, exit **0**.
 
-**Memory mapping:** Allocate one page with `VirtualAlloc`, store 42, exit 42. Allocate, store 99 at offset 100, exit 99. Allocate then free with `VirtualFree`, exit 0. Query process heap with `GetProcessHeap`, exit 0 if nonzero. Allocate, fill 16 bytes with 1, exit 16. Allocate one page, copy four bytes from `.data`, sum them, exit 10.
+**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit **42**. `12-virtualalloc-read-write` — store 99 at offset 100, read it back, exit **99**. `13-virtualfree` — `VirtualAlloc` then `VirtualFree`, exit **0**. `14-heapalloc` uses `GetProcessHeap` and `HeapAlloc`, not `VirtualAlloc`; exit **0** if the heap HANDLE is valid. `20-allocation-granularity` — fill 16 bytes with 1, exit **16**. `22-stretch-file-copy-mem` — copy four bytes, sum them, exit **10**.
 
-**Other Win32 functions:** Call `GetCurrentProcessId`, exit `pid & 0x7F` (status varies). Call `QueryPerformanceCounter` (stub), exit 0. Call `CreatePipe` (stub), exit 0 (do not read/write).
+**Other imports:** `15-getpid` — `GetCurrentProcessId`; exit **0** if the PID is nonzero, else 1. That is not listing `06-get-process-id` (`test` / `seta`, exit **1**). `16-qpc` — `QueryPerformanceCounter`, exit **0**. `23-stretch-createpipe` — `CreatePipe`, write `"ABC"` through the pipe, read it back, exit **3**.
 
-Refer to `exercises/08-syscalls-files-mmap/README.md` for detailed descriptions and expected exit codes.
+Expected exits are in each file header under `exercises/` — all 494 exercise `.asm` files on this tree carry one. There is no `exercises/08-syscalls-files-mmap/README.md`.

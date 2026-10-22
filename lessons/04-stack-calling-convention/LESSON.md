@@ -21,9 +21,6 @@ Windows has **no red zone**. Do not store below RSP.
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
-; Note: MS x64 ABI differs from System V - this lesson's NASM examples 
-; assume System V, but these listings follow MS x64.
-;
 ; Build: ml64 /c /Fo01-push-pop.obj 01-push-pop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-push-pop.exe 01-push-pop.obj kernel32.lib
 
 .CODE
@@ -31,7 +28,7 @@ Windows has **no red zone**. Do not store below RSP.
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 42
     push rax                   ; Save RAX on stack (RSP -= 8)
@@ -48,7 +45,7 @@ main ENDP
 END
 ```
 
-The listing header still mentions NASM/System V; the code is MS x64. Flagged, not edited. `push` after `sub rsp, 32` moves RSP by 8; `pop` restores it before `call ExitProcess`.
+`push` after `sub rsp, 40` moves RSP by 8; `pop` restores it before `call ExitProcess`.
 
 ## Shadow space and argument registers
 
@@ -95,7 +92,7 @@ add_four PROC
 add_four ENDP
 
 main PROC
-    sub rsp, 32                ; Shadow space
+    sub rsp, 40                ; Shadow space
     
     ; Call add_four(1, 2, 3, 4)
     mov rcx, 1
@@ -139,7 +136,7 @@ square PROC
 square ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 5
     call square                ; RAX = 25
@@ -193,22 +190,29 @@ compute PROC FRAME
     ret
 compute ENDP
 
-main PROC
+main PROC FRAME
+    push rbx
+    .pushreg rbx
     sub rsp, 32
-    
-    mov rbx, 99                ; Main's RBX value
+    .allocstack 32
+    .endprolog
+    mov rbx, 99
     mov rcx, 32
-    call compute               ; RAX = 42, RBX still 99
-    
-    ; RBX should still be 99 (preserved by callee)
+    call compute
+    cmp rbx, 99
+    jne rbx_clobbered
     mov rcx, rax
+    jmp exit_main
+rbx_clobbered:
+    mov rcx, 1
+exit_main:
     call ExitProcess
 main ENDP
 
 END
 ```
 
-32+10=42 in RAX. Main's RBX stays 99 because `compute` pushed/popped it. `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog` is unwind info: no extra instructions, only metadata.
+32+10=42 in RAX. `main` is the aligned 1-push frame: `push rbx` / `.pushreg rbx` / `sub rsp, 32`. It sets RBX to 99 and after `call compute` compares it to 99. If `compute` restored RBX, ECX becomes RAX (42). If not, the `rbx_clobbered` path exits **1**. Both procedures use `PROC FRAME` plus `.pushreg` / `.allocstack` / `.endprolog`. `ExitProcess` is called with that frame still live — no `add rsp` / `pop` / fresh `sub rsp, 40`. Entry RSP ≡ 8; one push plus `sub rsp, 32` leaves RSP ≡ 0 at `call compute`. The aligned 0-push frame is still `sub rsp, 40` with no extra push (listing `05-stack-alignment`).
 
 ## Alignment
 
@@ -288,7 +292,7 @@ sum3 PROC
 sum3 ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 10
     mov rdx, 20
@@ -302,20 +306,20 @@ main ENDP
 END
 ```
 
-Immediately before `call sum3`: RCX=10, RDX=20, R8=30, 32 bytes free at RSP. `sum3` is a leaf; it does not touch the shadow space. RAX=60. Exit 60.
+Immediately before `call sum3`: RCX=10, RDX=20, R8=30. `main` allocated **40** bytes (32 of shadow plus 8 so RSP is 0 mod 16 at the `call`). `sum3` is a leaf; it does not touch the shadow space. RAX=60. Exit 60.
 
 ### A plausible wrong reading (and why it fails)
 
 *"Four register arguments exist, so I can `call` with RSP unaligned and with no shadow space, like a Linux leaf using the red zone."*
 
-**Why it fails:** Windows has no red zone. Win32 and CRT functions assume 32 bytes below the incoming RSP (after the return address) are scratch for homing, and they assume 16-byte alignment for XMM spills. `sub rsp, 32` in this listing's `main` leaves RSP ≡ 8 (mod 16) at `call` if `main` was entered with RSP ≡ 8. Listing `05-stack-alignment` uses 40 to restore 0 mod 16. Integer-only `sum3` may still run; SSE-using callees may not. See `docs/PROSE_TECH_FLAGS.md`.
+**Why it fails:** Windows has no red zone. On callee entry the return address is at `[rsp]`. The 32-byte shadow sits **above** that return address, at `[rsp+8, rsp+40)` — the caller allocated it before `call`. It is not the memory below the incoming RSP. Callees home RCX/RDX/R8/R9 there and assume 16-byte alignment for XMM spills. With entry RSP ≡ 8 (mod 16), `sub rsp, 32` would leave RSP ≡ 8 at `call`. Listing `06-sum3-example` and listing `05-stack-alignment` both use `sub rsp, 40` so RSP is 0 mod 16 at the `call`. Integer-only `sum3` may still run with a 32-byte frame; SSE-using callees may not.
 
 ## Frame pointer
 
 ```asm
-; Listing 07: Prologue/epilogue with RBP frame pointer
+; Listing 07: RBP frame forms (LESSON.md)
 ;
-; Purpose: Demonstrate frame pointer usage (lines 122-134 of LESSON.md).
+; Purpose: Two Win64 unwind patterns — .SETFRAME vs .PUSHREG-only RBP.
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
@@ -325,25 +329,43 @@ Immediately before `call sum3`: RCX=10, RDX=20, R8=30, 32 bytes free at RSP. `su
 
 EXTRN ExitProcess:PROC
 
-compute PROC FRAME
-    push rbp                   ; Save old frame pointer
+; Form 1: RBP is a real frame pointer for unwind (locals below [rbp-8]…).
+; .SETFRAME offset N is a multiple of 16 and at most 240; N matches lea rbp,[rsp+N].
+compute_setframe PROC FRAME
+    push rbp
     .pushreg rbp
-    mov rbp, rsp               ; Set up new frame pointer
-    sub rsp, 32                ; Allocate locals
-    .allocstack 32
+    sub rsp, 48
+    .allocstack 48
+    lea rbp, [rsp+48]
+    .setframe rbp, 48
     .endprolog
-    
-    ; Function body - access locals via [RBP-N]
+
     mov rax, 42
-    
-    mov rsp, rbp               ; Deallocate locals
-    pop rbp                    ; Restore frame pointer
+
+    add rsp, 48
+    pop rbp
     ret
-compute ENDP
+compute_setframe ENDP
+
+; Form 2: RBP is just another saved nonvolatile (no .SETFRAME).
+compute_rbp_saved PROC FRAME
+    push rbp
+    .pushreg rbp
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    mov rbp, 42                ; use RBP as a general preserved slot
+    mov rax, rbp
+
+    add rsp, 40
+    pop rbp
+    ret
+compute_rbp_saved ENDP
 
 main PROC
-    sub rsp, 32
-    call compute
+    sub rsp, 40
+    call compute_setframe
     mov rcx, rax
     call ExitProcess
 main ENDP
@@ -351,7 +373,47 @@ main ENDP
 END
 ```
 
-After `push rbp` / `mov rbp, rsp`, locals are `[rbp-8]`, `[rbp-16]`, … independent of further RSP motion. This listing never stores a local; it returns 42. Unwind codes record the push and the 32-byte alloc; they do not include `.setframe rbp`. Flagged.
+Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `.allocstack 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`. The `.SETFRAME` offset must be a **multiple of 16 and at most 240**. It does **not** have to equal the stack allocation. This listing happens to use 48 for both `lea`/`setframe` and `.allocstack`. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
+
+```asm
+; Listing 08: RBP saved as nonvolatile only (no .SETFRAME)
+;
+; Purpose: Contrast with listing 07 form 1 — unwind sees RBP as pushed, not a frame base.
+; Expected exit code: 42
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo08-rbp-pushreg-only.obj 08-rbp-pushreg-only.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-rbp-pushreg-only.exe 08-rbp-pushreg-only.obj kernel32.lib
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+compute_rbp_saved PROC FRAME
+    push rbp
+    .pushreg rbp
+    sub rsp, 32
+    .allocstack 32
+    .endprolog
+
+    mov rbp, 42
+    mov rax, rbp
+
+    add rsp, 32
+    pop rbp
+    ret
+compute_rbp_saved ENDP
+
+main PROC
+    sub rsp, 40
+    call compute_rbp_saved
+    mov rcx, rax
+    call ExitProcess
+main ENDP
+
+END
+```
+
+After a form-1 prologue, locals are `[rbp-8]`, `[rbp-16]`, … independent of further RSP motion. Form 1 never stores a local; it returns 42. Form 2 writes 42 into RBP as a preserved slot and copies it to RAX.
 
 ## Distinctions worth keeping straight
 
@@ -360,7 +422,8 @@ After `push rbp` / `mov rbp, rsp`, locals are `[rbp-8]`, `[rbp-16]`, … indepen
 | Linux 6 register args | Windows 4: RCX, RDX, R8, R9. |
 | Red zone | None on Windows. |
 | RSI/RDI | Nonvolatile here; volatile on Linux. |
-| Shadow vs arg 5 | Arg 5 is `[rsp+32]`, extra to the 32-byte home area. |
+| Shadow vs arg 5 | On the caller, arg 5 is `[rsp+32]` above the 32-byte home area. On callee entry the return address is at `[rsp]`; shadow is `[rsp+8, rsp+40)`. |
+| Shadow is below incoming RSP | No. Shadow is **above** the return address. Memory below incoming RSP is unused (no red zone). |
 | `PROC` vs `PROC FRAME` | FRAME emits unwind metadata. |
 | 32 vs 40 | 32 is shadow size; 40 is a common shadow+alignment total after the return address. |
 
@@ -388,4 +451,4 @@ After `push rbp` / `mov rbp, rsp`, locals are `[rbp-8]`, `[rbp-16]`, … indepen
 
 ## Exercises
 
-Quoted listings: `01-push-pop.asm` through `07-frame-pointer.asm`.
+Quoted listings: `01-push-pop.asm` through `08-rbp-pushreg-only.asm`.

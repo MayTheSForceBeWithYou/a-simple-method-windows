@@ -1,71 +1,136 @@
 # Prose Technical Flags
 
-This file tracks technical doubts encountered during the Windows port prose rewrite (Phase 2, Monk).
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`8c8c661`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge** PR #7.
 
-Each entry includes:
-- Lesson number and file
-- Section or line reference
-- Quoted text (if applicable)
-- The specific doubt or question
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `8c8c661`. This branch also contains Jack’s `8c8c661` tree via a normal merge (exercises/solutions/listings/harness), so PR #7’s Full Test Harness can run his fixed scaffolds.
 
-A technical reviewer will verify and resolve these before final merge.
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39713412351](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39713412351)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`). All **494** exercise `.asm` files carry an `Expected exit` header. The harness also runs `tools/windows/selftest/externdef-define.asm` (EXTERNDEF + in-file definition, exit **0**). Jack dropped the one-off `scripts/bruce_pass*` / scaffold-fix helpers at this tip.
 
----
+## Resolved in listings (Jack branch) — prose now matches
 
-## Format
+| Flag | Resolution |
+|------|------------|
+| L00 hello RBX vs `[rsp+32]` | `02-hello-world` uses `sub rsp, 48` / `.allocstack 48` after one `push rbx`; fifth `WriteFile` arg does not overwrite saved RBX. |
+| L00 `07-stderr-output` | Writes `"Error message"` with **no CRLF**. `bytes_written` is `DWORD`. Plain `main PROC`, `sub rsp, 56`, HANDLE stays in RAX then RCX. Header: `Expected output: (to stderr) Error message`. Exit **0**. |
+| L01 `08-size-specifiers` | `WORD PTR [rbx+1], 4342h` (MASM hex, not a leading `0x`). |
+| L02 `08-test-instruction` | Binary literal is `101b`. ml64 CI assembled it. |
+| L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. The `.SETFRAME` offset is 48 (multiple of 16, ≤ 240); it does not have to equal the allocation. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
+| L04 `01-push-pop` header | NASM/SysV comment is gone. Quote is verbatim. |
+| L04 `04-nonvolatile-regs` | `main` is `push rbx` / `.pushreg rbx` / `sub rsp, 32` — aligned 1-push frame. `ExitProcess` is called with the frame still live (no teardown / no extra `sub rsp, 40`). Exit **42** (or **1** if clobbered). |
+| L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
+| L05 `04-recursive-sum` frame | `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32` / `mov rbx, rcx` / `add rax, rbx`. Comment: `RSP ≡ 0 mod 16 at the call (entry 8 + push 8 + sub 32)`. Shared `done:` is `add rsp, 32` / `pop rbx` / `ret`. Exit **15**. |
+| L07 `01-bit-operations` | MASM hex `0FFh` / `0Fh`; OR path is `8` / `4`; `sub rsp, 40`; exit **12**. |
+| L07 `17-rgb-extract-no-mask` | Header `Expected exit: 65451` (`0FFABh`). Full 32-bit status; harness no longer keeps 171. |
+| L07 `10` / `11` / `15` / `16` comments | Hex in comments is now `h` suffix (`0F0h`, `055h`, `00F0h`, `0ABCDEFh`). |
+| L07 `ror` | `18-ror-rotate.asm`: `ror al, 1` on 1 → 128. Quoted; exit **128**. |
+| L08 `02-open-read-file` / `05-file-mapping` | CI exit **72** (`'H'` from `test.txt` after listing 01). |
+| L08 `06-get-process-id` | `test eax, eax` / `seta cl` — exit **1** (PID > 0), not `and eax, 7Fh`. |
+| L08 `13-open-missing-get-last-error` | Path `C:\no\such\file.txt` → **3** (`ERROR_PATH_NOT_FOUND`), not 2 (`ERROR_FILE_NOT_FOUND`). |
+| L08 pipe / heap | `15-create-pipe.asm`: `bytesRead` kept in EBX across `CloseHandle`, then `mov ecx, ebx` — exit **3**. `16-heap-alloc-sum.asm`: three `.pushreg` (RDI/RSI/RBX) + `sub rsp, 32`; sum **16**. |
+| L08 block 7 | `14-set-file-pointer-begin.asm` added. |
+| L09 `06-conditional-assembly` | `DEBUG` commented out → `xor ecx, ecx`; CI exit **0**. |
+| L09+ stack alignment (Bruce) | Entry RSP≡8 (mod 16): 0 pushes → `sub rsp,40`; 1 push → `sub rsp,32`; 2 pushes → `sub rsp,40`; `.allocstack` matches `sub`; extra stack args bump minimum. |
+| L09 missing `01-*` / `12-*` / `TEXTEQU` / `=` in `REPT` / NMake | `21-status-equ-zero` (0), `22-exit-code-include` + `22-exit-code.inc` (0), `23-textequ-exit` (42), `24-rept-counter-assign` (4), `25-nmake-driver` + `Makefile.mak` (0). |
+| L10 `01`–`04` names | Live count is `buf_len` (not `length`). |
+| L10 RIP-relative buffers | `lea r10, buffer` / `lea r10, buf` then `[r10+…]` (listings `01`–`08`, `11`–`14`, `20`). |
+| L10 `10-gap-empty-init` | Header `Expected exit: 4096`. Full 32-bit status; harness no longer reports `4096 & 0FFh = 0`. |
+| L10 `12-gap-move-left` exit | Byte load uses `r8` / `movzx edx` from `[r10+r8]`; exit **2**. |
+| L10 kill-line | `21-kill-line.asm`: `"ab", 10, "cd"` / len 5 → copy newline+`cd`, exit **3**. |
+| L11 listing exits | `01` → 1; `02` → 3; `03` → 16; `04` → 42 (CI). |
+| L11 `13-stack-push-pop` | Index is `stack_sp` (not `sp`). `lea r10, stk`. |
+| L11 `18-ring-tail-mask` | Header **3** (`7 AND 3`). |
+| L11 skip / lexeme / align / Pratt | `19-skip-whitespace` (7), `20-copy-lexeme` (3), `21-arena-align-bump` (8), `22-pratt-binding-power` (14). |
+| L12 listing exits | `03` → 9; `04` → 30 (CI). |
+| L12 `05-bytecode-stack` | `bytecode` / `stack_mem` / `stack_sp`; header **9**. |
+| L12 `06-bytecode-jmp` | Array is `bytecode` (not `code`). |
+| L12 keyword / if-while / PE size | `07-keyword-let-match` (1), `08-if-while-codegen` (3), `09-pe-header-size` (64). |
+| L13 listing exits | `01` → 5; `02` → 4; `03` → 6; `04` → 100 (CI). |
+| L13 Q16 divide / lerp / SIMD | `06-q16-divide` (3), `07-lerp-fixed` (5), `08-simd-lane-sum` (`pshufd`/`paddd`, 10). No length-squared / Q8.8 listing. |
+| L14 `01` / `02` / `03` | CI exits **0**. |
+| L14 pitch / pack / clip / Bresenham | `06-pitch-pixel-offset` (40), `07-rgb-pack-low-byte` (3), `08-clip-half-open` (1), `10-bresenham-pixel-count` (`delta_x` / `delta_y`, 4). |
+| L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment says the same. |
+| L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
+| L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
+| L00 `13-debug-bad-length` / `23-debug-stdout-fd` | Live `write_hi_buggy` (no `jmp __ex_call` dead code). **13** writes `"Hi"`+CRLF with `r8d = 2`; **23** calls `WriteFile` with `rcx = 1`. Both exit **0** after the student fix. `05-mov-chain` sums into `AL`, exit **15**. |
+| L09 `21-debug-macro-arity` | Live `EXIT_STATUS` macro (no `jmp __ex_call` dead code). Extra `skew` arg; drop it and use `EXIT_STATUS 4`, exit **4**. |
+| L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. |
+| L08 exercise names | Win32 names as at `8c8c661`. `11-read-nul` is `VirtualAlloc` then read 8 zeros (sum 0), exit **0** — no `CreateFileA("NUL")` task. `14-heapalloc` is `GetProcessHeap` / `HeapAlloc` (not `VirtualAlloc`), exit **0**. `15-getpid` exits **0** when the PID is nonzero. `23-stretch-createpipe` writes `"ABC"`, reads it back, exit **3**. |
+| L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
+| L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
+| L15 `01` / `02` | CI exits **0** and **42**. |
+| L15 rising-edge / chord / Sleep pad | `11-rising-edge` (1), `12-two-key-chord` (1). `13-sleep-frame-pad`: clamp keeps status in EBX, Sleep ms in ECX, then `mov ecx, ebx` — exit **1**. |
+| L16 listing exits | `01` → 1; `02` → 53; `07` → 160; `09` → 2. |
+| L16 `10-sprite-clip-margin` | Real clip (sx=6, sw=8, view=10 → `sw = view_w - sx` = **4**). Quoted; marker dropped. |
+| L17 `01` / `02` | CI exits **105** and **5**. |
+| L17 BFS / A* / 2-axis / hit-test | `08-bfs-visit-count` (`bfs_queue`, 5), `09-astar-f-score` (7), `10-manhattan-2axis` (10), `11-ui-hit-test` (1). |
+| L18 `01` / `02` | CI exits **1** and **0**. |
+| L18 `04`–`06` names | `grid_w` / `grid_h` / `tilemap` (not `width` / `map`). |
+| L18 PK01 magic | `cmp`/`mov` use **`31304B50h`** — LE DWORD for bytes `P`,`K`,`0`,`1`. Not `314B5050h` (would be `P`,`P`,`K`,`1`). ZIP `PK\x01\x02` is **`02014B50h`**. |
+| L18 track / 100-tick / P6 | `13-track-piece-connect` (1), `14-hundred-tick-loop` (100), `15-render-map-p6` (23 = 11-byte header + 12 RGB). |
+| L01 `09` / `10` | **09** is block 9 only (LEA `5+5*2`, exit **15**). **10** is array sum (exit **100**) with listing-10 build line. |
+| L06 `04-memcpy-loop` shadow | Now `sub rsp, 40` before the copy / `ExitProcess`. |
 
-```
-### Lesson NN — [Title]
-**Section:** [section name]
-**Doubt:** [description of uncertainty]
-**Quoted text:** [relevant excerpt if applicable]
-```
+## CI-confirmed exits that used to be traces
 
----
+These three were fixed at `ec4d05c` and remain CI-green at `8c8c661`:
 
-<!-- Entries added during rewrite will appear below -->
+- **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
+- **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).
+- **L14 `09-vsync-ready-flag`** — exit **3** (three `Sleep(1)` waits). Still not a display vsync.
 
-### Lesson 00 — listings/02-hello-world.asm and 07-stderr-output.asm
-**Section:** Worked example / stderr listing (quoted verbatim)
-**Doubt:** After `push rbx` then `sub rsp, 32`, the saved RBX lives at `[rsp+32]`. Both listings store 0 there as `WriteFile`'s 5th argument (`lpOverlapped`). That overwrites the saved nonvolatile. `ExitProcess` never returns, so the programs still exit 0. A returning epilogue that `pop rbx` would restore 0. Listing `06-write-two-messages.asm` allocates 40 bytes after two pushes and does not collide. Confirm whether the listings author intends this as a hidden bug for later, or whether the 5th-arg slot should be extra stack (`sub rsp, 40`/`48`).
-**Quoted text:** `mov qword ptr [rsp+32], 0  ; arg5 (on stack): overlapped = NULL`
+**L14 `08-clip-half-open`** — x = 5 vs 4. Only `cmp rax, 4` / `jl in_range` (`x < 4`). Outside path exits **1**. There is no `x >= 0` check. Full half-open form is `x >= lo && x < hi`.
 
-### Lesson 00 — listings/02-hello-world.asm bytes_written
-**Section:** `.DATA? bytes_written DQ ?`
-**Doubt:** `WriteFile`'s `lpNumberOfBytesWritten` is `LPDWORD` (4 bytes). The listing reserves a QWORD (8 bytes). Harmless if adjacent storage is unused; a DWORD would match the API. Not edited.
+## Open / intentionally unchanged (code not edited)
 
-### Lesson 00 — listings/05-mov-data-movement.asm
-**Section:** uses `rbx` without save/restore
-**Doubt:** RBX is nonvolatile. `main` calls `ExitProcess` and never returns, so the process does not restore a caller. Flagging in case a reviewer wants returning-procedure discipline even in `main`.
+### Lesson 00 — `bytes_written` QWORD vs DWORD
+**Doubt:** `WriteFile` wants `LPDWORD` (4 bytes). `07-stderr-output` now uses `DWORD`. Hello / two-writes still use `DQ`. Extra 4 bytes are harmless if nothing else shares the QWORD.
 
-### Lesson 05 — listings/04-recursive-sum.asm
-**Section:** recursive path `pop rcx` / `ret` without `add rsp, 32`
-**Doubt:** After `push rcx` / `sub rsp, 32`, the saved n is at `[rsp+32]`. The recursive path `pop rcx` pops shadow space, not saved RCX, and `ret` then pops the wrong RIP. The base path does `add rsp, 32` / `pop rcx` / `ret` correctly. Also `.pushreg rcx` labels RCX as if it were nonvolatile; RCX is volatile. Not edited. Contrast with listing `01-factorial.asm`, which shares one epilogue.
+### Lesson 00 — `05-mov-data-movement.asm` RBX without save
+**Why unchanged:** `ExitProcess` never returns; no caller to preserve RBX for.
 
-### Lesson 04 — listings/01-push-pop.asm header
-**Section:** comment "this lesson's NASM examples assume System V"
-**Doubt:** Stale Linux leftover in the listing header. Code itself is MS x64. Not edited.
+### Lesson 00 — ExitProcess with no frame teardown
+**Why unchanged:** After `PROC FRAME` + `push` + `sub rsp`, hello / two-writes call `ExitProcess` with the frame still live. `07-stderr-output` has no `FRAME` and also does not tear down. Correct because `ExitProcess` never returns.
 
-### Lesson 04 — listings/06-sum3-example.asm alignment vs 05-stack-alignment.asm
-**Section:** `main` uses `sub rsp, 32` (listing 06) vs `sub rsp, 40` (listing 05)
-**Doubt:** If `main` is entered with RSP ≡ 8 (mod 16), `sub rsp, 32` leaves RSP ≡ 8 at `call`. Listing 05's comments say RSP must be 16-byte aligned before CALL. Integer leaf `sum3` may still work. Confirm which allocation `main` should use.
+### Lesson 03 — `07-test-zero-check.asm` RDI scratch
+**Why unchanged:** Same never-returns `main` pattern.
 
-### Lesson 04 — listings/07-frame-pointer.asm
-**Section:** `PROC FRAME` with `mov rbp, rsp` but no `.setframe rbp`
-**Doubt:** Microsoft unwind docs typically pair a frame pointer with `.setframe rbp, 0` (or similar). Confirm whether ml64 requires it here.
+### Lesson 01 — `03-register-indirect.asm` RSI without save
+**Why unchanged:** Never-returns `main`.
 
-### Lesson 03 — listings/07-test-zero-check.asm
-**Section:** `mov rdi, 42` without saving RDI
-**Doubt:** RDI is nonvolatile on Windows. `main` never returns. Same never-returns rationale as earlier listings.
+### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
+**Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
-### Lesson 02 — listings/08-test-instruction.asm
-**Section:** `mov rax, 0b0101`
-**Doubt:** Confirm ml64 in VS 2022+ accepts `0b` binary literals. If not, the listing would fail to assemble. Not edited.
+### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
+**Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
 
-### Lesson 01 — listings/03-register-indirect.asm
-**Section:** `lea rsi, msg` without saving RSI
-**Doubt:** RSI is nonvolatile on Windows. Same `ExitProcess` never-returns rationale as L00 listing 05. Listings 02/04/05/07/08 also use RBX without saving.
+### Lesson 09 — `15-data-message.asm` / dual `add_two_numbers`
+**Why unchanged:** Documented link pairs (05+helper, 19+20). Listing 15 now also has a `main` that exits 0.
 
-### Lesson 11 — Parsing & Data Structures
-**Section:** Inline code blocks (lexeme buffer, linked lists, arena, stack, queue, etc.)
-**Doubt:** The lesson contains ~18 inline code blocks showing algorithmic patterns (linked list walking, arena allocation, etc.). These blocks currently use Linux-style section directives (`section .bss`, `section .text`, `global _start`, `syscall`). Should these be updated to MASM syntax (`.data?`, `.code`, `main PROC`, `call ExitProcess`) for consistency, or left as-is because they are illustrative pseudocode showing platform-independent algorithms? The standalone exercises and solutions (handled by another author) are already in MASM syntax.
+### Lesson 10 — `18-load-validate-magic.asm` in-memory only
+**Why unchanged:** Drill compares `WORD` to `4445h` (`"ED"` LE); not a full `ReadFile` load.
+
+### Lesson 10 — `17-save-length-prefix.asm` partial write
+**Why unchanged:** Writes magic+length only (12 bytes); side-effect demo, exit 0.
+
+### Lesson 11 — RSI/RDI scratch in older listings
+**Why unchanged:** Several `main` + `ExitProcess` listings still omit nonvolatile saves. `19-skip-whitespace` now `push rsi` / `sub rsp, 32`; `20-copy-lexeme` now `push rsi` / `push rdi` / `sub rsp, 40`. Same Bruce alignment rule on the `ec4d05c` saves in L08 16, L10 21, L12 07, L13 06, L14 06/10, L17 08–11, L18 13. L14 09 no longer pushes RBX (uses EBX as a wait counter; `ExitProcess` never returns).
+
+### Lesson 13 — no Q8.8 / length-squared listing
+Still no `listings/` file. Exercises/solutions: `14-vec2-length2` exits **25** (3²+4²); `08-from-scratch-q8` exits **3**; `24-from-scratch-q8-mul` exits **5**. The 11 new L13 solutions at `d7cf480` do not add a listings file for those topics.
+
+### Lesson 14 — `rep movsd` and DF
+**Resolved in comments:** Listing comments document ABI DF-at-entry/return and the **cld before rep movs\*/ret** rule; `03-blit-copy.asm` code still has no `cld`.
+
+### Lesson 14 — no flip / alpha / damage listing
+Clip, Sleep pace, and Bresenham now have files. Double-buffer flip, alpha, and damage rects do not.
+
+### Lesson 17 — no `parent[]` / panel y-cursor stack
+BFS counts visits and does not store parents. Hit-test is the four-compare panel; there is no y-cursor stack listing.
+
+## Pending on Jack (PR #5)
+
+None.
+
+## Remaining LISTING-PENDING (no matching Jack file)
+
+None. Every previous marker now has a quoted file (or the L09 stand-ins `21`/`22`/`25` for missing `01-*` / `12-*` / NMake). Topics still without a `listings/` file: L13 length-squared / Q8.8 (exercises exist); L14 flip / alpha / damage; L17 `parent[]` / panel y-stack; L12 local-slot allocation.
