@@ -175,6 +175,30 @@ END
     return header + code
 
 
+def reg32_for_eax(reg: str) -> str:
+    r = reg.lower()
+    return {
+        "rcx": "ecx",
+        "rbx": "ebx",
+        "rdx": "edx",
+        "rax": "eax",
+        "rsi": "esi",
+        "rdi": "edi",
+        "r8": "r8d",
+        "r9": "r9d",
+        "r10": "r10d",
+        "r11": "r11d",
+        "r12": "r12d",
+        "r13": "r13d",
+        "r14": "r14d",
+        "r15": "r15d",
+        "ecx": "ecx",
+        "ebx": "ebx",
+        "edx": "edx",
+        "eax": "eax",
+    }.get(r, "ecx")
+
+
 def parse_expected_exit(text: str) -> str:
     for pat in (
         r"Expected exit:\s*(\d+)",
@@ -272,6 +296,8 @@ def convert_solution_text(text: str, sym: str) -> str:
         elif reg in ("rcx", "ecx") and val_l not in ("rax", "eax"):
             if re.match(r"^-?\d+$", val.strip()) or val.strip().endswith("b"):
                 ret_setup = f"    mov     eax, {val}\n    ret"
+            elif re.match(r"^r?(ax|bx|cx|dx|si|di|ip|sp|[0-9]{1,2}b?)$", val_l):
+                ret_setup = f"    mov     eax, {reg32_for_eax(val)}\n    ret"
             else:
                 ret_setup = "    mov     eax, ecx\n    ret"
         elif reg in ("rax", "eax"):

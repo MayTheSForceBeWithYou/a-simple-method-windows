@@ -20,7 +20,7 @@ ex_16_ui_focus PROC
     mov r8, 3
     div r8
     mov QWORD PTR [focus], rdx
-        mov     eax, ecx
+        mov     eax, edx
     add     rsp, 40
     ret
 ex_16_ui_focus ENDP

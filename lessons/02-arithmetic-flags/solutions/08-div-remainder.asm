@@ -15,7 +15,7 @@ ex_08_div_remainder PROC
     xor rdx, rdx
     mov rbx, 6
     div rbx
-        mov     eax, ecx
+        mov     eax, edx
     add     rsp, 40
     ret
 ex_08_div_remainder ENDP
