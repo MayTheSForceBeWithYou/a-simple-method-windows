@@ -12,8 +12,8 @@ msg BYTE "Z", 0
 msg_end LABEL BYTE
 
 MSG_LEN EQU msg_end - msg
-FAIL_SPAN EQU 117
-FAIL_ADDR EQU 118
+FAIL_SPAN_CODE EQU 117
+FAIL_ADDR_CODE EQU 118
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -31,20 +31,20 @@ main PROC FRAME
     lea     rbx, msg_end
     sub     rbx, rax
     cmp     ebx, MSG_LEN
-    jne     fail_span
+    jne     fail_span_exit
 
     cmp     rcx, rdx
-    jne     fail_addr
+    jne     fail_addr_exit
 
     mov     ecx, MSG_LEN
     call    ExitProcess
 
-fail_span:
-    mov     ecx, FAIL_SPAN
+fail_span_exit:
+    mov     ecx, FAIL_SPAN_CODE
     call    ExitProcess
 
-fail_addr:
-    mov     ecx, FAIL_ADDR
+fail_addr_exit:
+    mov     ecx, FAIL_ADDR_CODE
     call    ExitProcess
 main ENDP
 
