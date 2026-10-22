@@ -15,7 +15,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_03_bss_store:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Store 7 to the byte variable, load it back, exit with it
     ; TODO: write ex_03_bss_store in this file.
     call    ex_03_bss_store

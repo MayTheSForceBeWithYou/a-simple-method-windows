@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_emit_mov_imm:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_01_emit_mov_imm in this file.
     call    ex_01_emit_mov_imm
     mov     ecx, eax

@@ -7,6 +7,9 @@
 ; Expected exit: 20
 
 
+.DATA
+arr QWORD 10, 20, 30
+
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -17,7 +20,7 @@ main PROC
     ; Broken starter (implement corrected logic in student routine):
     jmp     __ex_call
     mov rcx, 1    ; BUG: fix in ex_12_debug_off_by_scale
-    mov rcx, [arr+rcx*1]    ; BUG: fix in ex_12_debug_off_by_scale
+    mov rcx, QWORD PTR [arr+rcx*1]    ; BUG: fix in ex_12_debug_off_by_scale
     mov rax, 60    ; BUG: fix in ex_12_debug_off_by_scale
     ; syscall removed — use ExitProcess in student routine
 __ex_call:

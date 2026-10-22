@@ -7,6 +7,10 @@
 ; Expected exit: 0
 
 
+.DATA
+msg BYTE "X", 13, 10
+msg_len EQU $ - msg
+
 .CODE
 
 EXTRN ExitProcess:PROC

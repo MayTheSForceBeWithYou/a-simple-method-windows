@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_10_cmp_setne:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_10_cmp_setne in this file.
     call    ex_10_cmp_setne
     mov     ecx, eax

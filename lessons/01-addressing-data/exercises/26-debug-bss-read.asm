@@ -7,6 +7,9 @@
 ; Expected exit: 12
 
 
+.DATA?
+v QWORD ?
+
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -16,7 +19,7 @@ main PROC
     sub     rsp, 40
     ; Broken starter (implement corrected logic in student routine):
     jmp     __ex_call
-    mov rcx, [v]    ; BUG: fix in ex_26_debug_bss_read
+    mov rcx, QWORD PTR [v]    ; BUG: fix in ex_26_debug_bss_read
     mov rax, 60    ; BUG: fix in ex_26_debug_bss_read
     ; syscall removed — use ExitProcess in student routine
 __ex_call:

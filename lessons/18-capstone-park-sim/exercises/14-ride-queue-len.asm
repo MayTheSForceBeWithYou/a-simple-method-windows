@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_ride_queue_len:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_14_ride_queue_len in this file.
     call    ex_14_ride_queue_len
     mov     ecx, eax

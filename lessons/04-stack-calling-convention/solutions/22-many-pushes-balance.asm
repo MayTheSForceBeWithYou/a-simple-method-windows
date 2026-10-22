@@ -9,14 +9,12 @@ EXTERN ExitProcess:PROC
 
 .code
 ex_22_many_pushes_balance PROC
-    sub rsp, 40
     push 1
     push 2
     push 3
     call sum_top3
     add rsp, 24
     mov     eax, eax
-    add rsp, 40
     ret
 ex_22_many_pushes_balance ENDP
 main PROC

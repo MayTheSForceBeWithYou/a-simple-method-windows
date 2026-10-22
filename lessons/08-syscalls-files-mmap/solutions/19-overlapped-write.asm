@@ -1,20 +1,27 @@
-; Exercise 10: open dev null
+; Exercise 19: pwrite emul
 ;
-; open NUL (Windows null device) write-only; on success close and exit 0.
+; Emulate pwrite via SetFilePointerEx+WriteFile on NUL: open, seek end, write. Exit 0 on success.
 ;
-; Build: ml64 /c 10-open-dev-null.asm && link /OUT:10-open-dev-null.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-open-dev-null.obj kernel32.lib
+; Build: ml64 /c 19-overlapped-write.asm && link /OUT:19-overlapped-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-overlapped-write.obj kernel32.lib
 ;
 ; Expected exit: 0
 
 EXTERN CreateFileA:PROC
+EXTERN SetFilePointerEx:PROC
+EXTERN WriteFile:PROC
 EXTERN CloseHandle:PROC
 EXTERN ExitProcess:PROC
 
 .data
 path BYTE "NUL", 0
+msg BYTE "x"
+
+.data?
+written DWORD ?
+newPos QWORD ?
 
 .code
-ex_10_open_dev_null PROC
+ex_19_overlapped_write PROC
     sub rsp, 72
     
     ; CreateFileA for NUL device
@@ -31,8 +38,26 @@ ex_10_open_dev_null PROC
     cmp rax, -1
     je L_e
     
+    ; Save handle
+    mov rbx, rax
+    
+    ; SetFilePointerEx(handle, 0, &newPos, FILE_END)
+    mov rcx, rbx
+    mov rdx, 0                  ; liDistanceToMove = 0
+    lea r8, newPos              ; lpNewFilePointer
+    mov r9d, 2                  ; dwMoveMethod = FILE_END
+    call SetFilePointerEx
+    
+    ; Write 1 byte
+    mov rcx, rbx
+    lea rdx, msg
+    mov r8d, 1
+    lea r9, written
+    mov QWORD PTR [rsp+32], 0
+    call WriteFile
+    
     ; Close handle
-    mov rcx, rax
+    mov rcx, rbx
     call CloseHandle
     
     ; Exit 0
@@ -47,10 +72,10 @@ L_o:
     mov     eax, ecx
     add     rsp, 72
     ret
-ex_10_open_dev_null ENDP
+ex_19_overlapped_write ENDP
 main PROC
     sub     rsp, 40
-    call    ex_10_open_dev_null
+    call    ex_19_overlapped_write
     mov     rcx, rax
     call    ExitProcess
 main ENDP

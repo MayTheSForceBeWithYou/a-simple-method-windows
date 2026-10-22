@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_05_mov_chain:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_05_mov_chain in this file.
     call    ex_05_mov_chain
     mov     ecx, eax

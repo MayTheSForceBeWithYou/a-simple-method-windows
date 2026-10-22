@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_06_mul_unsigned:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_06_mul_unsigned in this file.
     call    ex_06_mul_unsigned
     mov     ecx, eax

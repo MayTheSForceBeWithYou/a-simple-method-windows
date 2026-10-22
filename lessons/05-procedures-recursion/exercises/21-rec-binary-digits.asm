@@ -10,7 +10,7 @@ EXTRN ex_21_rec_binary_digits:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_21_rec_binary_digits in this file.
     call    ex_21_rec_binary_digits

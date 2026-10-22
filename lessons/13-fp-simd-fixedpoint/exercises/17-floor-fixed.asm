@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_floor_fixed:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_17_floor_fixed in this file.
     call    ex_17_floor_fixed
     mov     ecx, eax

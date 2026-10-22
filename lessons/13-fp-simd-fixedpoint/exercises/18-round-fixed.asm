@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_round_fixed:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_18_round_fixed in this file.
     call    ex_18_round_fixed
     mov     ecx, eax

@@ -7,6 +7,9 @@
 ; Expected exit: 1
 
 
+.DATA?
+buf BYTE ?
+
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -17,7 +20,7 @@ main PROC
     ; Broken starter (implement corrected logic in student routine):
     jmp     __ex_call
     mov [buf], 1    ; BUG: fix in ex_11_debug_size
-    movzx rdi, byte [buf]    ; BUG: fix in ex_11_debug_size
+    movzx rcx, BYTE PTR [buf]    ; BUG: fix in ex_11_debug_size
     mov rax, 60    ; BUG: fix in ex_11_debug_size
     ; syscall removed — use ExitProcess in student routine
 __ex_call:

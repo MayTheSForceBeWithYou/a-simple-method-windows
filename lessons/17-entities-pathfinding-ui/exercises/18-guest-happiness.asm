@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_18_guest_happiness:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_18_guest_happiness in this file.
     call    ex_18_guest_happiness
     mov     ecx, eax

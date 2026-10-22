@@ -1,4 +1,4 @@
-; 06-lseek-concept.asm
+; 06-set-file-pointer.asm
 ;
 ; Arithmetic offset calculation (not actual SetFilePointer call).
 ;
@@ -10,12 +10,12 @@
 .CODE
 
 EXTRN ExitProcess:PROC
-EXTRN ex_06_lseek_concept:PROC
+EXTRN ex_06_set_file_pointer:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_06_lseek_concept in this file.
-    call    ex_06_lseek_concept
+    ; TODO: write ex_06_set_file_pointer in this file.
+    call    ex_06_set_file_pointer
     mov     ecx, eax
     call    ExitProcess
 main ENDP

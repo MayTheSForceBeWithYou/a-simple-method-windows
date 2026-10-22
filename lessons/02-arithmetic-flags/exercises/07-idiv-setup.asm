@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_07_idiv_setup:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_07_idiv_setup in this file.
     call    ex_07_idiv_setup
     mov     ecx, eax

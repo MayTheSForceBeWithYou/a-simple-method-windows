@@ -16,7 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_07_scaled_index:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: LEA base address into RBX
     ; TODO: MOV index 2 into RCX
     ; TODO: MOV RAX, [RBX+RCX*8]

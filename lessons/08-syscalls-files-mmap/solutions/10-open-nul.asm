@@ -1,27 +1,20 @@
-; Exercise 19: pwrite emul
+; Exercise 10: open dev null
 ;
-; Emulate pwrite via SetFilePointerEx+WriteFile on NUL: open, seek end, write. Exit 0 on success.
+; open NUL (Windows null device) write-only; on success close and exit 0.
 ;
-; Build: ml64 /c 19-pwrite-emul.asm && link /OUT:19-pwrite-emul.exe /ENTRY:main /SUBSYSTEM:CONSOLE 19-pwrite-emul.obj kernel32.lib
+; Build: ml64 /c 10-open-nul.asm && link /OUT:10-open-nul.exe /ENTRY:main /SUBSYSTEM:CONSOLE 10-open-nul.obj kernel32.lib
 ;
 ; Expected exit: 0
 
 EXTERN CreateFileA:PROC
-EXTERN SetFilePointerEx:PROC
-EXTERN WriteFile:PROC
 EXTERN CloseHandle:PROC
 EXTERN ExitProcess:PROC
 
 .data
 path BYTE "NUL", 0
-msg BYTE "x"
-
-.data?
-written DWORD ?
-newPos QWORD ?
 
 .code
-ex_19_pwrite_emul PROC
+ex_10_open_nul PROC
     sub rsp, 72
     
     ; CreateFileA for NUL device
@@ -38,26 +31,8 @@ ex_19_pwrite_emul PROC
     cmp rax, -1
     je L_e
     
-    ; Save handle
-    mov rbx, rax
-    
-    ; SetFilePointerEx(handle, 0, &newPos, FILE_END)
-    mov rcx, rbx
-    mov rdx, 0                  ; liDistanceToMove = 0
-    lea r8, newPos              ; lpNewFilePointer
-    mov r9d, 2                  ; dwMoveMethod = FILE_END
-    call SetFilePointerEx
-    
-    ; Write 1 byte
-    mov rcx, rbx
-    lea rdx, msg
-    mov r8d, 1
-    lea r9, written
-    mov QWORD PTR [rsp+32], 0
-    call WriteFile
-    
     ; Close handle
-    mov rcx, rbx
+    mov rcx, rax
     call CloseHandle
     
     ; Exit 0
@@ -72,10 +47,10 @@ L_o:
     mov     eax, ecx
     add     rsp, 72
     ret
-ex_19_pwrite_emul ENDP
+ex_10_open_nul ENDP
 main PROC
     sub     rsp, 40
-    call    ex_19_pwrite_emul
+    call    ex_10_open_nul
     mov     rcx, rax
     call    ExitProcess
 main ENDP

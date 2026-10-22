@@ -10,7 +10,7 @@ EXTRN ex_13_variadic_max:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_13_variadic_max in this file.
     call    ex_13_variadic_max

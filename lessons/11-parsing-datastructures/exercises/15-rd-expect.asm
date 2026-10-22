@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_rd_expect:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_15_rd_expect in this file.
     call    ex_15_rd_expect
     mov     ecx, eax

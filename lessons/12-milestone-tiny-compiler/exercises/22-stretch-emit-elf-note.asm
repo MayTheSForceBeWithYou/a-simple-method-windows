@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_22_stretch_emit_elf_note:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_22_stretch_emit_elf_note in this file.
     call    ex_22_stretch_emit_elf_note
     mov     ecx, eax

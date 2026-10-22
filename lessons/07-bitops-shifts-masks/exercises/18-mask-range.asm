@@ -16,6 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_18_mask_range:PROC
 
 main PROC
+    sub     rsp, 40
     ; TODO: Compute mask with bits 2-5 set
     
     ; TODO: write ex_18_mask_range in this file.

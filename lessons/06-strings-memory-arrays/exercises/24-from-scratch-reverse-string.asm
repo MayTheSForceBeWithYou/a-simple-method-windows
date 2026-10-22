@@ -9,7 +9,7 @@ EXTRN ex_24_from_scratch_reverse_string:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_24_from_scratch_reverse_string in this file.
     call    ex_24_from_scratch_reverse_string

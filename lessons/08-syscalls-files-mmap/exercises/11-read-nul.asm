@@ -1,4 +1,4 @@
-; 11-read-dev-zero.asm
+; 11-read-nul.asm
 ;
 ; Open NUL device, read 8 bytes (all zeros), exit 0.
 ;
@@ -18,12 +18,12 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_11_read_dev_zero:PROC
+EXTRN ex_11_read_nul:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_11_read_dev_zero in this file.
-    call    ex_11_read_dev_zero
+    ; TODO: write ex_11_read_nul in this file.
+    call    ex_11_read_nul
     mov     ecx, eax
     call    ExitProcess
 main ENDP

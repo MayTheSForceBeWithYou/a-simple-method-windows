@@ -17,7 +17,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_04_mov_vs_lea:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Use LEA to load address of x into RBX
     ; TODO: Use MOV to load value from [RBX] into RAX
     ; TODO: Move RAX to RCX and exit

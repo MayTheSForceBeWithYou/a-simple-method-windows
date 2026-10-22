@@ -1,4 +1,4 @@
-; 17-dup-concept.asm
+; 17-duplicate-handle.asm
 ;
 ; Write to stdout (no DuplicateHandle call needed), exit 0.
 ;
@@ -17,12 +17,12 @@ bytesWritten DWORD ?
 EXTRN ExitProcess:PROC
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
-EXTRN ex_17_dup_concept:PROC
+EXTRN ex_17_duplicate_handle:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_17_dup_concept in this file.
-    call    ex_17_dup_concept
+    ; TODO: write ex_17_duplicate_handle in this file.
+    call    ex_17_duplicate_handle
     mov     ecx, eax
     call    ExitProcess
 main ENDP

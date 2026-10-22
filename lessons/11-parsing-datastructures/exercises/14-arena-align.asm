@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_arena_align:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_14_arena_align in this file.
     call    ex_14_arena_align
     mov     ecx, eax

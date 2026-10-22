@@ -16,7 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_06_displacement:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: LEA RBX, arr
     ; TODO: MOV RAX, [RBX+8] to get second element
     ; TODO: Exit with RAX

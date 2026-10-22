@@ -12,11 +12,18 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_15_debug_inc_cf:PROC
 
+; BUG: INC does not set CF the way ADD does; student fixes in ex_15_debug_inc_cf.
+show_cf PROC
+    mov al, 0FFh
+    inc al
+    setc al
+    movzx rax, al
+    ret
+show_cf ENDP
+
 main PROC
     sub     rsp, 40
-    ; Broken starter (implement corrected logic in student routine):
-    ; BUG: see exercise description; fix in student routine.
-    ; TODO: write ex_15_debug_inc_cf in this file.
+    ; TODO: write ex_15_debug_inc_cf in this file (use ADD + SETC, not INC).
     call    ex_15_debug_inc_cf
     mov     ecx, eax
     call    ExitProcess

@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_13_sweep_hit_t:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_13_sweep_hit_t in this file.
     call    ex_13_sweep_hit_t
     mov     ecx, eax

@@ -10,7 +10,7 @@ EXTRN ex_11_map_array_proc:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_11_map_array_proc in this file.
     call    ex_11_map_array_proc

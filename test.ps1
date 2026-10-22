@@ -298,8 +298,7 @@ function Test-IsPrimaryListing {
     $skipNames = @(
         '05-multifile-helper',
         '14-helper-add',
-        '20-add-two-numbers',
-        '15-data-message'
+        '20-add-two-numbers'
     )
     if ($skipNames -contains $base) {
         return $false
@@ -389,32 +388,16 @@ function Test-ExerciseScaffold {
         if ($null -ne $expected.Stdin) {
             $stdinText = [string]$expected.Stdin
         }
+        # Scaffolds must fail at link/asm time, not build and run.
         $run = Invoke-BuiltExe -ExePath $exePath -OutDir $OutDir -Name $name -StdinText $stdinText
         $issues = @(Compare-Output -Expected $expected -ExitCode $run.ExitCode -Stdout $run.Stdout -Stderr $run.Stderr)
-
-        $matched = $true
-        if ($expected.HasAny) {
-            if ($issues.Count -ne 0) {
-                $matched = $false
-            }
-        } else {
-            # No headers: a finished-looking exit 0 program is too complete.
-            if ($run.ExitCode -eq 0) {
-                $matched = $true
-            } else {
-                $matched = $false
-            }
-        }
-
-        if ($matched) {
-            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details "Exercise scaffold passed as-is (should fail)" -Kind "exercise"
+        $why = if ($issues.Count -gt 0) { $issues -join "; " } else { "exit $($run.ExitCode)" }
+        if ($issues.Count -eq 0) {
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details "Exercise scaffold passed as-is (should fail at link)" -Kind "exercise"
             Write-Host "HARNESS FAIL: $relativePath - scaffold passed without modification" -ForegroundColor Magenta
         } else {
-            $why = if ($issues.Count -gt 0) { $issues -join "; " } else { "exit $($run.ExitCode)" }
-            Add-Result -File $relativePath -Status "SCAFFOLD OK" -Details "Failed as expected ($why)" -Kind "exercise"
-            if ($VerbosePreference -eq "Continue") {
-                Write-Host "SCAFFOLD OK: $relativePath (failed as expected)" -ForegroundColor Green
-            }
+            Add-Result -File $relativePath -Status "HARNESS FAIL" -Details "Exercise scaffold linked and ran ($why); expected link/asm failure only" -Kind "exercise"
+            Write-Host "HARNESS FAIL: $relativePath - scaffold built ($why)" -ForegroundColor Magenta
         }
     } catch {
         $msg = $_.Exception.Message
@@ -485,10 +468,12 @@ foreach ($lessonDir in $lessonDirs) {
 Write-Host "`nTesting listings..." -ForegroundColor Cyan
 $listingCount = 0
 $listingSkipped = 0
+$listingSkippedNames = @()
 foreach ($lessonDir in $lessonDirs) {
     foreach ($listing in (Get-AsmFiles -LessonDir $lessonDir -Subdir "listings")) {
         if (-not (Test-IsPrimaryListing -AsmPath $listing.FullName)) {
             $listingSkipped++
+            $listingSkippedNames += (Get-RelativeAsmPath $listing.FullName)
             continue
         }
         $listingCount++
@@ -496,7 +481,10 @@ foreach ($lessonDir in $lessonDirs) {
     }
 }
 if ($listingSkipped -gt 0) {
-    Write-Host "Skipped $listingSkipped listing(s) (companion / non-main PROC)." -ForegroundColor Yellow
+    Write-Host "Skipped $listingSkipped listing(s) (companion / non-main PROC):" -ForegroundColor Yellow
+    foreach ($skippedListing in $listingSkippedNames) {
+        Write-Host "  $skippedListing" -ForegroundColor Yellow
+    }
 }
 if ($listingCount -eq 0) {
     Write-Host "No listings found" -ForegroundColor Yellow

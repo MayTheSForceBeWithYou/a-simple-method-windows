@@ -18,13 +18,13 @@ main PROC
     jmp     __ex_call
     xor rdi, rdi    ; BUG: fix in ex_16_debug_off_by_one
     mov rcx, 0    ; BUG: fix in ex_16_debug_off_by_one
-    .loop:    ; BUG: fix in ex_16_debug_off_by_one
+dbg_loop:    ; BUG: fix in ex_16_debug_off_by_one
     cmp rcx, 5    ; BUG: fix in ex_16_debug_off_by_one
-    jg .done    ; BUG: fix in ex_16_debug_off_by_one
+    jg dbg_done    ; BUG: fix in ex_16_debug_off_by_one
     add rdi, rcx    ; BUG: fix in ex_16_debug_off_by_one
     inc rcx    ; BUG: fix in ex_16_debug_off_by_one
-    jmp .loop    ; BUG: fix in ex_16_debug_off_by_one
-    .done:    ; BUG: fix in ex_16_debug_off_by_one
+    jmp dbg_loop    ; BUG: fix in ex_16_debug_off_by_one
+dbg_done:    ; BUG: fix in ex_16_debug_off_by_one
     mov rax, 60    ; BUG: fix in ex_16_debug_off_by_one
     ; syscall removed — use ExitProcess in student routine
 __ex_call:

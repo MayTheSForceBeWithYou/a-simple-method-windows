@@ -10,7 +10,7 @@ EXTRN ex_14_mutual_parity_count:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_14_mutual_parity_count in this file.
     call    ex_14_mutual_parity_count

@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_chunk_coords:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_23_stretch_chunk_coords in this file.
     call    ex_23_stretch_chunk_coords
     mov     ecx, eax

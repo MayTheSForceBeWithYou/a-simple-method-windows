@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_01_keymap:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_01_keymap in this file.
     call    ex_01_keymap
     mov     ecx, eax

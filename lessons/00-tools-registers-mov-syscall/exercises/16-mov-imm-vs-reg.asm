@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_16_mov_imm_vs_reg:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_16_mov_imm_vs_reg in this file.
     call    ex_16_mov_imm_vs_reg
     mov     ecx, eax

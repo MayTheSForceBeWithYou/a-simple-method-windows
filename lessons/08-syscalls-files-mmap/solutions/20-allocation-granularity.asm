@@ -2,7 +2,7 @@
 ;
 ; Fill first 16 bytes of VirtualAlloc with 1; sum=16; exit 16.
 ;
-; Build: ml64 /c 20-mmap-pagesize-fill.asm && link /OUT:20-mmap-pagesize-fill.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-mmap-pagesize-fill.obj kernel32.lib
+; Build: ml64 /c 20-allocation-granularity.asm && link /OUT:20-allocation-granularity.exe /ENTRY:main /SUBSYSTEM:CONSOLE 20-allocation-granularity.obj kernel32.lib
 ;
 ; Expected exit: 16
 
@@ -10,7 +10,7 @@ EXTERN VirtualAlloc:PROC
 EXTERN ExitProcess:PROC
 
 .code
-ex_20_mmap_pagesize_fill PROC
+ex_20_allocation_granularity PROC
     sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
@@ -47,10 +47,10 @@ L_o:
     mov     eax, edi
     add     rsp, 40
     ret
-ex_20_mmap_pagesize_fill ENDP
+ex_20_allocation_granularity ENDP
 main PROC
     sub     rsp, 40
-    call    ex_20_mmap_pagesize_fill
+    call    ex_20_allocation_granularity
     mov     rcx, rax
     call    ExitProcess
 main ENDP

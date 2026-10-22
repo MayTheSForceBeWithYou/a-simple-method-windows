@@ -2,7 +2,7 @@
 ;
 ; VirtualAlloc 4096; write 99 at +100; read back; exit 99.
 ;
-; Build: ml64 /c 12-mmap-write-read.asm && link /OUT:12-mmap-write-read.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-mmap-write-read.obj kernel32.lib
+; Build: ml64 /c 12-virtualalloc-read-write.asm && link /OUT:12-virtualalloc-read-write.exe /ENTRY:main /SUBSYSTEM:CONSOLE 12-virtualalloc-read-write.obj kernel32.lib
 ;
 ; Expected exit: 99
 
@@ -10,7 +10,7 @@ EXTERN VirtualAlloc:PROC
 EXTERN ExitProcess:PROC
 
 .code
-ex_12_mmap_write_read PROC
+ex_12_virtualalloc_read_write PROC
     sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
@@ -38,10 +38,10 @@ L_f:
     mov rcx, 2
     mov     eax, 2
     ret
-ex_12_mmap_write_read ENDP
+ex_12_virtualalloc_read_write ENDP
 main PROC
     sub     rsp, 40
-    call    ex_12_mmap_write_read
+    call    ex_12_virtualalloc_read_write
     mov     rcx, rax
     call    ExitProcess
 main ENDP

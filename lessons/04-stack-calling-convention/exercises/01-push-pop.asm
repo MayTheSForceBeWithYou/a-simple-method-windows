@@ -10,7 +10,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_01_push_pop:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: PUSH 42, PUSH 99, POP to RBX, POP to RCX, exit with RCX
     ; TODO: write ex_01_push_pop in this file.
     call    ex_01_push_pop

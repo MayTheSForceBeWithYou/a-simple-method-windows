@@ -10,7 +10,7 @@ EXTRN ex_15_rec_strlen:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_15_rec_strlen in this file.
     call    ex_15_rec_strlen

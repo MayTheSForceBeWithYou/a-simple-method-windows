@@ -1,4 +1,4 @@
-; 05-errno-neg.asm
+; 05-get-last-error-open.asm
 ;
 ; Open a missing file, retrieve error code using GetLastError.
 ;
@@ -16,12 +16,12 @@ filename DB "C:\nope.txt", 0
 EXTRN CreateFileA:PROC
 EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_05_errno_neg:PROC
+EXTRN ex_05_get_last_error_open:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_05_errno_neg in this file.
-    call    ex_05_errno_neg
+    ; TODO: write ex_05_get_last_error_open in this file.
+    call    ex_05_get_last_error_open
     mov     ecx, eax
     call    ExitProcess
 main ENDP

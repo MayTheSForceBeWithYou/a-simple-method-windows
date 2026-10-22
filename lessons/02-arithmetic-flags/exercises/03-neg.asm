@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_03_neg:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_03_neg in this file.
     call    ex_03_neg
     mov     ecx, eax

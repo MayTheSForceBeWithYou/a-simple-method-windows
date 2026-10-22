@@ -9,6 +9,7 @@ EXTRN ex_02_macro_exit:PROC
 ; TODO: Define ExitWith macro
 
 main PROC
+    sub     rsp, 40
     ; TODO: Invoke ExitWith 7
     ; TODO: write ex_02_macro_exit in this file.
     call    ex_02_macro_exit

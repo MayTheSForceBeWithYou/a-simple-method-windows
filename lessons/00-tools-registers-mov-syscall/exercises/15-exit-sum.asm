@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_15_exit_sum:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_15_exit_sum in this file.
     call    ex_15_exit_sum
     mov     ecx, eax

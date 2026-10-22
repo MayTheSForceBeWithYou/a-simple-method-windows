@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_precedence:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_17_precedence in this file.
     call    ex_17_precedence
     mov     ecx, eax

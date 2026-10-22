@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_04_plot_stub:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_04_plot_stub in this file.
     call    ex_04_plot_stub
     mov     ecx, eax

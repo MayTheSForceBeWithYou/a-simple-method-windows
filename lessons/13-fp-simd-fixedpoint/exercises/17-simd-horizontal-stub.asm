@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_17_simd_horizontal_stub:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_17_simd_horizontal_stub in this file.
     call    ex_17_simd_horizontal_stub
     mov     ecx, eax

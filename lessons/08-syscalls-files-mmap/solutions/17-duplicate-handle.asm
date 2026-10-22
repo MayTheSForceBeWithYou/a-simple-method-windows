@@ -2,7 +2,7 @@
 ;
 ; Without DuplicateHandle: write to stdout; exit 0. Documents handle reuse.
 ;
-; Build: ml64 /c 17-dup-concept.asm && link /OUT:17-dup-concept.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-dup-concept.obj kernel32.lib
+; Build: ml64 /c 17-duplicate-handle.asm && link /OUT:17-duplicate-handle.exe /ENTRY:main /SUBSYSTEM:CONSOLE 17-duplicate-handle.obj kernel32.lib
 ;
 ; Expected exit: 0
 ; Expected stdout: "d\n"
@@ -18,7 +18,7 @@ msg BYTE "d", 10
 written DWORD ?
 
 .code
-ex_17_dup_concept PROC
+ex_17_duplicate_handle PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -38,10 +38,10 @@ ex_17_dup_concept PROC
     mov     eax, 0
     add     rsp, 56
     ret
-ex_17_dup_concept ENDP
+ex_17_duplicate_handle ENDP
 main PROC
     sub     rsp, 40
-    call    ex_17_dup_concept
+    call    ex_17_duplicate_handle
     mov     rcx, rax
     call    ExitProcess
 main ENDP

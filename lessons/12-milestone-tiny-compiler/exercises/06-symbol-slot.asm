@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_06_symbol_slot:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_06_symbol_slot in this file.
     call    ex_06_symbol_slot
     mov     ecx, eax

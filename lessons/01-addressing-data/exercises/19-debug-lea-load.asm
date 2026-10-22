@@ -7,6 +7,9 @@
 ; Expected exit: 55
 
 
+.DATA
+x QWORD 55
+
 .CODE
 
 EXTRN ExitProcess:PROC
@@ -16,7 +19,7 @@ main PROC
     sub     rsp, 40
     ; Broken starter (implement corrected logic in student routine):
     jmp     __ex_call
-    lea rdi, [x]    ; BUG: fix in ex_19_debug_lea_load
+    lea rcx, x    ; BUG: fix in ex_19_debug_lea_load (should load value, not address)
     mov rax, 60    ; BUG: fix in ex_19_debug_lea_load
     ; syscall removed — use ExitProcess in student routine
 __ex_call:

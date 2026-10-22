@@ -10,7 +10,7 @@ EXTRN ex_24_from_scratch_rec_sum_array:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_24_from_scratch_rec_sum_array in this file.
     call    ex_24_from_scratch_rec_sum_array

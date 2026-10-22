@@ -1,4 +1,4 @@
-; 10-open-dev-null.asm
+; 10-open-nul.asm
 ;
 ; Open NUL device for writing, close it, exit 0.
 ;
@@ -15,12 +15,12 @@ filename DB "NUL", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_10_open_dev_null:PROC
+EXTRN ex_10_open_nul:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_10_open_dev_null in this file.
-    call    ex_10_open_dev_null
+    ; TODO: write ex_10_open_nul in this file.
+    call    ex_10_open_nul
     mov     ecx, eax
     call    ExitProcess
 main ENDP

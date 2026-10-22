@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_19_bytecode_jump:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_19_bytecode_jump in this file.
     call    ex_19_bytecode_jump
     mov     ecx, eax

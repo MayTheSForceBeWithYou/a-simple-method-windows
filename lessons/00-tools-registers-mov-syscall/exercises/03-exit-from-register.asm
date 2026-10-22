@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_03_exit_from_register:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_03_exit_from_register in this file.
     call    ex_03_exit_from_register
     mov     ecx, eax

@@ -2,7 +2,7 @@
 ;
 ; Allocate zero-filled memory with VirtualAlloc; read 8 bytes; sum should be 0; exit 0.
 ;
-; Build: ml64 /c 11-read-dev-zero.asm && link /OUT:11-read-dev-zero.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-read-dev-zero.obj kernel32.lib
+; Build: ml64 /c 11-read-nul.asm && link /OUT:11-read-nul.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-read-nul.obj kernel32.lib
 ;
 ; Expected exit: 0
 
@@ -11,7 +11,7 @@ EXTERN VirtualFree:PROC
 EXTERN ExitProcess:PROC
 
 .code
-ex_11_read_dev_zero PROC
+ex_11_read_nul PROC
     sub rsp, 40
     
     ; VirtualAlloc(NULL, 8, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
@@ -51,10 +51,10 @@ L_o:
     mov     eax, ecx
     add     rsp, 40
     ret
-ex_11_read_dev_zero ENDP
+ex_11_read_nul ENDP
 main PROC
     sub     rsp, 40
-    call    ex_11_read_dev_zero
+    call    ex_11_read_nul
     mov     rcx, rax
     call    ExitProcess
 main ENDP

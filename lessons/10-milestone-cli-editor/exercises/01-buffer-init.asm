@@ -7,6 +7,7 @@ cur QWORD ?
 EXTRN ExitProcess:PROC
 EXTRN ex_01_buffer_init:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_01_buffer_init in this file.
     call    ex_01_buffer_init
     mov     ecx, eax

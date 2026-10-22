@@ -44,7 +44,7 @@ have_handle:
     xor r8, r8
     mov r9d, 2                  ; FILE_END
     call SetFilePointerEx
-    test rax, rax
+    test eax, eax
     jz seek_failed
 
     mov rcx, rbx

@@ -9,6 +9,7 @@ EXTRN ex_01_define_const:PROC
 ; TODO: Define STATUS_OK EQU 0
 
 main PROC
+    sub     rsp, 40
     ; TODO: mov ecx, STATUS_OK; call ExitProcess
     ; TODO: write ex_01_define_const in this file.
     call    ex_01_define_const

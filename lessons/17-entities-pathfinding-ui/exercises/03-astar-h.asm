@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_03_astar_h:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_03_astar_h in this file.
     call    ex_03_astar_h
     mov     ecx, eax

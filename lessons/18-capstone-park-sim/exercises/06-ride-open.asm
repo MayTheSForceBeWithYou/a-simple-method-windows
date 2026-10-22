@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_06_ride_open:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_06_ride_open in this file.
     call    ex_06_ride_open
     mov     ecx, eax

@@ -9,7 +9,7 @@ EXTRN ex_15_aos_scale:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_15_aos_scale in this file.
     call    ex_15_aos_scale

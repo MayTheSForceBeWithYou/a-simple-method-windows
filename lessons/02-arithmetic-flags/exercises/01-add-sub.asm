@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_01_add_sub:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_01_add_sub in this file.
     call    ex_01_add_sub
     mov     ecx, eax

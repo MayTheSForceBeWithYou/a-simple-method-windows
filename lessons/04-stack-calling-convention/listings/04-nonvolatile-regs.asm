@@ -46,9 +46,6 @@ main PROC FRAME
 rbx_clobbered:
     mov rcx, 1
 exit_main:
-    add rsp, 32
-    pop rbx
-    sub rsp, 40                ; Shadow + align (RSP was 16-aligned after pop)
     call ExitProcess
 main ENDP
 

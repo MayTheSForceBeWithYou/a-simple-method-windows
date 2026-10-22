@@ -2,7 +2,7 @@
 ;
 ; On failed CreateFileA, exit with GetLastError (ERROR_FILE_NOT_FOUND=2).
 ;
-; Build: ml64 /c 05-errno-neg.asm && link /OUT:05-errno-neg.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-errno-neg.obj kernel32.lib
+; Build: ml64 /c 05-get-last-error-open.asm && link /OUT:05-get-last-error-open.exe /ENTRY:main /SUBSYSTEM:CONSOLE 05-get-last-error-open.obj kernel32.lib
 ;
 ; Expected exit: 2
 
@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 path BYTE "C:\this_file_should_not_exist_asm_course_xyzzy.txt", 0
 
 .code
-ex_05_errno_neg PROC
+ex_05_get_last_error_open PROC
     sub rsp, 72
     
     ; CreateFileA - try to open nonexistent file
@@ -34,10 +34,10 @@ ex_05_errno_neg PROC
     mov     eax, eax
     add     rsp, 72
     ret
-ex_05_errno_neg ENDP
+ex_05_get_last_error_open ENDP
 main PROC
     sub     rsp, 40
-    call    ex_05_errno_neg
+    call    ex_05_get_last_error_open
     mov     rcx, rax
     call    ExitProcess
 main ENDP

@@ -10,7 +10,7 @@ EXTRN ex_18_trampoline_depth:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_18_trampoline_depth in this file.
     call    ex_18_trampoline_depth

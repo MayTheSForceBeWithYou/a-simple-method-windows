@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_16_econ_upkeep:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_16_econ_upkeep in this file.
     call    ex_16_econ_upkeep
     mov     ecx, eax

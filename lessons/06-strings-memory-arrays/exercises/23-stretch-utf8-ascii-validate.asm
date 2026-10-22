@@ -9,7 +9,7 @@ EXTRN ex_23_stretch_utf8_ascii_validate:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_23_stretch_utf8_ascii_validate in this file.
     call    ex_23_stretch_utf8_ascii_validate

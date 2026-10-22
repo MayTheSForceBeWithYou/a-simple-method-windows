@@ -9,7 +9,7 @@ EXTRN ex_16_soa_sum:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_16_soa_sum in this file.
     call    ex_16_soa_sum

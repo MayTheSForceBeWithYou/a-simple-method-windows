@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_23_stretch_ui_modal:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_23_stretch_ui_modal in this file.
     call    ex_23_stretch_ui_modal
     mov     ecx, eax

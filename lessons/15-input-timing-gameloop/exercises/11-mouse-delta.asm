@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_11_mouse_delta:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_11_mouse_delta in this file.
     call    ex_11_mouse_delta
     mov     ecx, eax

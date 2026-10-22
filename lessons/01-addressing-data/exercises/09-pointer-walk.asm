@@ -16,7 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_09_pointer_walk:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: LEA RSI, walkMsg
     ; TODO: MOVZX RAX, BYTE PTR [RSI]   ; first byte
     ; TODO: INC RSI or ADD RSI, 1

@@ -16,7 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_10_word_dword:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Store WORD PTR 256 to buffer
     ; TODO: Zero RAX, then load lower byte with MOVZX RCX, BYTE PTR [buffer]
     ; TODO: Exit with RCX

@@ -31,7 +31,7 @@ main PROC FRAME
     xor     r8, r8
     xor     r9d, r9d
     call    CreatePipe
-    test    rax, rax
+    test    eax, eax
     jz      fail
 
     mov     rcx, hWrite
@@ -40,7 +40,7 @@ main PROC FRAME
     lea     r9, bytesWritten
     mov     QWORD PTR [rsp+32], 0
     call    WriteFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
 
     mov     rcx, hRead
@@ -49,7 +49,7 @@ main PROC FRAME
     lea     r9, bytesRead
     mov     QWORD PTR [rsp+32], 0
     call    ReadFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
 
     mov     ebx, DWORD PTR bytesRead

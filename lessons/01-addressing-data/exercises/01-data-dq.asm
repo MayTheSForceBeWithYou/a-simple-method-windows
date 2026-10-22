@@ -15,7 +15,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_01_data_dq:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Load count into RAX, add 1, move to RCX, exit
     ; TODO: write ex_01_data_dq in this file.
     call    ex_01_data_dq

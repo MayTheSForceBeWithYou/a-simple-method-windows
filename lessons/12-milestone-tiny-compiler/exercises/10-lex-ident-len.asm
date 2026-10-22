@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_10_lex_ident_len:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_10_lex_ident_len in this file.
     call    ex_10_lex_ident_len
     mov     ecx, eax

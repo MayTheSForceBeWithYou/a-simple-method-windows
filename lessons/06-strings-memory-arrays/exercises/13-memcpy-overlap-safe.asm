@@ -9,7 +9,7 @@ EXTRN ex_13_memcpy_overlap_safe:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_13_memcpy_overlap_safe in this file.
     call    ex_13_memcpy_overlap_safe

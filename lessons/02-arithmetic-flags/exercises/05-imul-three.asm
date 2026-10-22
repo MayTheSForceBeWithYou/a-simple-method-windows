@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_05_imul_three:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_05_imul_three in this file.
     call    ex_05_imul_three
     mov     ecx, eax

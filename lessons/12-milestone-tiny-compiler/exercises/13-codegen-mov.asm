@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_13_codegen_mov:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_13_codegen_mov in this file.
     call    ex_13_codegen_mov
     mov     ecx, eax

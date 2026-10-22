@@ -9,7 +9,7 @@ EXTRN ex_12_strcat_lite:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_12_strcat_lite in this file.
     call    ex_12_strcat_lite

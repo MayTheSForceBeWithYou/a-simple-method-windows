@@ -9,7 +9,7 @@ EXTRN ex_05_array_reverse:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_05_array_reverse in this file.
     call    ex_05_array_reverse

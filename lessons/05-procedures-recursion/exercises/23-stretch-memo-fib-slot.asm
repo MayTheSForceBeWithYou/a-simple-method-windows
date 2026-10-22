@@ -10,7 +10,7 @@ EXTRN ex_23_stretch_memo_fib_slot:PROC
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_23_stretch_memo_fib_slot in this file.
     call    ex_23_stretch_memo_fib_slot

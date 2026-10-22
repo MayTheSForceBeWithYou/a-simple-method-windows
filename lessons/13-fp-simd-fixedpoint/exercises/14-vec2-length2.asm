@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_14_vec2_length2:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_14_vec2_length2 in this file.
     call    ex_14_vec2_length2
     mov     ecx, eax

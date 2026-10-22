@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_09_map_place_path:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_09_map_place_path in this file.
     call    ex_09_map_place_path
     mov     ecx, eax

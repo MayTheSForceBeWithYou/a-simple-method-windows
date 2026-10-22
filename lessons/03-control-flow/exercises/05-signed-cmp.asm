@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_05_signed_cmp:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_05_signed_cmp in this file.
     call    ex_05_signed_cmp
     mov     ecx, eax

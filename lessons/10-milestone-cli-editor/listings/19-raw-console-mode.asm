@@ -27,7 +27,7 @@ main PROC FRAME
     mov     rcx, stdin_handle
     lea     rdx, original_mode
     call    GetConsoleMode
-    test    rax, rax
+    test    eax, eax
     jz      no_console
 
     mov     eax, original_mode
@@ -37,7 +37,7 @@ main PROC FRAME
     mov     rcx, stdin_handle
     mov     edx, mode
     call    SetConsoleMode
-    test    rax, rax
+    test    eax, eax
     jz      error_exit
 
     mov     rcx, stdin_handle

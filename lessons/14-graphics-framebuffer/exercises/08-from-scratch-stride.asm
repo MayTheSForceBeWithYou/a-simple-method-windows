@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_08_from_scratch_stride:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_08_from_scratch_stride in this file.
     call    ex_08_from_scratch_stride
     mov     ecx, eax

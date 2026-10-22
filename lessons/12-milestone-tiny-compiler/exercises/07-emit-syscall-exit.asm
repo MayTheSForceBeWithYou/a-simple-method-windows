@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_07_emit_syscall_exit:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_07_emit_syscall_exit in this file.
     call    ex_07_emit_syscall_exit
     mov     ecx, eax

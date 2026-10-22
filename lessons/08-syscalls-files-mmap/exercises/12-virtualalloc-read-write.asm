@@ -1,4 +1,4 @@
-; 12-mmap-write-read.asm
+; 12-virtualalloc-read-write.asm
 ;
 ; Allocate memory, store 99 at offset 100, read it back, exit 99.
 ;
@@ -11,12 +11,12 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_12_mmap_write_read:PROC
+EXTRN ex_12_virtualalloc_read_write:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_12_mmap_write_read in this file.
-    call    ex_12_mmap_write_read
+    ; TODO: write ex_12_virtualalloc_read_write in this file.
+    call    ex_12_virtualalloc_read_write
     mov     ecx, eax
     call    ExitProcess
 main ENDP

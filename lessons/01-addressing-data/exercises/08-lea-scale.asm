@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_08_lea_scale:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_08_lea_scale in this file.
     call    ex_08_lea_scale
     mov     ecx, eax

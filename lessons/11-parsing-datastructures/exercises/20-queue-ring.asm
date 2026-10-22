@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_20_queue_ring:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_20_queue_ring in this file.
     call    ex_20_queue_ring
     mov     ecx, eax

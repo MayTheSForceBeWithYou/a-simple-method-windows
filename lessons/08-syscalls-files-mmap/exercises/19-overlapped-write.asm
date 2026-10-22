@@ -1,4 +1,4 @@
-; 19-pwrite-emul.asm
+; 19-overlapped-write.asm
 ;
 ; Open NUL, seek to position 0, write data, close, exit 0.
 ;
@@ -21,12 +21,12 @@ EXTRN SetFilePointer:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_19_pwrite_emul:PROC
+EXTRN ex_19_overlapped_write:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_19_pwrite_emul in this file.
-    call    ex_19_pwrite_emul
+    ; TODO: write ex_19_overlapped_write in this file.
+    call    ex_19_overlapped_write
     mov     ecx, eax
     call    ExitProcess
 main ENDP

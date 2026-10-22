@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_11_component_mask:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_11_component_mask in this file.
     call    ex_11_component_mask
     mov     ecx, eax

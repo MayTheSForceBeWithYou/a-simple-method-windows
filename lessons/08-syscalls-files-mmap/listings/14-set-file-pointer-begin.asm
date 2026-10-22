@@ -47,7 +47,7 @@ have_handle:
     lea r8, newPos
     xor r9d, r9d              ; FILE_BEGIN
     call SetFilePointerEx
-    test rax, rax
+    test eax, eax
     jz seek_failed
 
     cmp newPos, 0

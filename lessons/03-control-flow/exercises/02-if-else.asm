@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_02_if_else:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: write ex_02_if_else in this file.
     call    ex_02_if_else
     mov     ecx, eax

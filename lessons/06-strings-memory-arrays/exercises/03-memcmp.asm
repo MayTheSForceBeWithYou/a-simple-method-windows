@@ -9,7 +9,7 @@ EXTRN ex_03_memcmp:PROC
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Implement
     ; TODO: write ex_03_memcmp in this file.
     call    ex_03_memcmp

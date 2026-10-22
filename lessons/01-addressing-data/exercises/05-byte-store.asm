@@ -16,7 +16,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_05_byte_store:PROC
 
 main PROC
-    sub     rsp, 32
+    sub     rsp, 40
     ; TODO: Store BYTE 88 to buffer, load with MOVZX, exit
     ; Hint: Use BYTE PTR [buffer] and movzx rcx, BYTE PTR [buffer]
     ; TODO: write ex_05_byte_store in this file.

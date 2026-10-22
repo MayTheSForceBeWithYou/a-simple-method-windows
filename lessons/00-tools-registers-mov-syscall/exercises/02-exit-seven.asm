@@ -14,7 +14,7 @@ EXTRN ExitProcess:PROC
 EXTRN ex_02_exit_seven:PROC
 
 main PROC
-    sub     rsp, 32                ; Shadow space required by ABI
+    sub     rsp, 40                ; Shadow space required by ABI
     
     ; TODO: Set up exit code 7 in RCX and call ExitProcess
     ; TODO: write ex_02_exit_seven in this file.

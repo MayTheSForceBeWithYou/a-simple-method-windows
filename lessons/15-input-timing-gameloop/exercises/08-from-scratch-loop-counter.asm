@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_08_from_scratch_loop_counter:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_08_from_scratch_loop_counter in this file.
     call    ex_08_from_scratch_loop_counter
     mov     ecx, eax

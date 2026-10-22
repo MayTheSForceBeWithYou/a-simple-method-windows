@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_24_from_scratch_compile_add:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_24_from_scratch_compile_add in this file.
     call    ex_24_from_scratch_compile_add
     mov     ecx, eax

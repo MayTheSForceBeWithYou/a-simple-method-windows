@@ -1,4 +1,4 @@
-; 20-mmap-pagesize-fill.asm
+; 20-allocation-granularity.asm
 ;
 ; Allocate one page, fill first 16 bytes with 1, exit with 16.
 ;
@@ -11,12 +11,12 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
-EXTRN ex_20_mmap_pagesize_fill:PROC
+EXTRN ex_20_allocation_granularity:PROC
 
 main PROC
     sub     rsp, 40
-    ; TODO: write ex_20_mmap_pagesize_fill in this file.
-    call    ex_20_mmap_pagesize_fill
+    ; TODO: write ex_20_allocation_granularity in this file.
+    call    ex_20_allocation_granularity
     mov     ecx, eax
     call    ExitProcess
 main ENDP

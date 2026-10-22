@@ -3,6 +3,7 @@
 EXTRN ExitProcess:PROC
 EXTRN ex_04_edge_trigger:PROC
 main PROC
+    sub     rsp, 40
     ; TODO: write ex_04_edge_trigger in this file.
     call    ex_04_edge_trigger
     mov     ecx, eax
