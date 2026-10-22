@@ -17,8 +17,8 @@ ex_22_stretch_ring_drop PROC
     sub rsp, 40
     mov QWORD PTR [dropped], 1
         mov     eax, [dropped]
+    add     rsp, 40
     ret
-
 ex_22_stretch_ring_drop ENDP
 main PROC
     call    ex_22_stretch_ring_drop

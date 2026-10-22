@@ -26,6 +26,7 @@ ex_15_gap_insert PROC
     mov rcx, [gap_e]
     sub rcx, [gap_s]
     mov     eax, 3
+    add     rsp, 40
     ret
 ex_15_gap_insert ENDP
 main PROC

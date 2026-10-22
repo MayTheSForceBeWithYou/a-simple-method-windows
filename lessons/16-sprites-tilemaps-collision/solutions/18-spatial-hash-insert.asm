@@ -17,8 +17,8 @@ ex_18_spatial_hash_insert PROC
     sub rsp, 40
     inc QWORD PTR [count]
         mov     eax, [count]
+    add     rsp, 40
     ret
-
 ex_18_spatial_hash_insert ENDP
 main PROC
     call    ex_18_spatial_hash_insert

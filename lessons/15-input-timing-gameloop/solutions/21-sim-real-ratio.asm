@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_21_sim_real_ratio PROC
     sub rsp, 40
         mov     eax, 50
+    add     rsp, 40
     ret
-
 ex_21_sim_real_ratio ENDP
 main PROC
     call    ex_21_sim_real_ratio

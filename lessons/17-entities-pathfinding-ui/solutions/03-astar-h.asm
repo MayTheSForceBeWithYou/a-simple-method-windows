@@ -18,8 +18,8 @@ ex_03_astar_h PROC
     sub rbx, 2
     add rax, rbx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_03_astar_h ENDP
 main PROC
     call    ex_03_astar_h

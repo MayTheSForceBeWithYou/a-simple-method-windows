@@ -11,8 +11,8 @@ ex_21_fast_inv_stub PROC
     mov rax, 10
     shr rax, 1
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_21_fast_inv_stub ENDP
 main PROC
     call    ex_21_fast_inv_stub

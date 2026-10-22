@@ -37,8 +37,8 @@ ex_13_munmap PROC
     
     ; Success - exit 0
         mov     eax, 0
+    add     rsp, 40
     ret
-    
 L_f:
     ; Failure - exit 1
     mov rcx, 1

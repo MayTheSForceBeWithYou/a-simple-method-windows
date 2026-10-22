@@ -38,8 +38,8 @@ ex_22_stretch_units_header PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_22_stretch_units_header ENDP
 main PROC
     call    ex_22_stretch_units_header

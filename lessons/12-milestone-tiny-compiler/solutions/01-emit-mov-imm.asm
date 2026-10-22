@@ -13,8 +13,8 @@ ex_01_emit_mov_imm PROC
     sub rsp, 40
     mov QWORD PTR [outv], 42
         mov     eax, QWORD PTR [outv]
+    add     rsp, 40
     ret
-
 ex_01_emit_mov_imm ENDP
 main PROC
     call    ex_01_emit_mov_imm

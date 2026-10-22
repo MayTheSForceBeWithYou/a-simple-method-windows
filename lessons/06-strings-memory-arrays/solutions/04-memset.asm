@@ -24,6 +24,7 @@ ex_04_memset PROC
     movzx rax, BYTE PTR buf[3]
     add rcx, rax
     mov     eax, 28
+    add     rsp, 40
     ret
 ex_04_memset ENDP
 main PROC

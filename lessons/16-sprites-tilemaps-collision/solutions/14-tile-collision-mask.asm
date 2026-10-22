@@ -18,6 +18,7 @@ ex_14_tile_collision_mask PROC
     movzx rcx, BYTE PTR [flags]
     and rcx, 1
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_14_tile_collision_mask ENDP
 main PROC

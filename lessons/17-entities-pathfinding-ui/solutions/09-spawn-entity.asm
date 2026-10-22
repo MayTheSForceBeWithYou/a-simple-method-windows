@@ -15,8 +15,8 @@ ex_09_spawn_entity PROC
     sub rsp, 40
     inc QWORD PTR [next_id]
         mov     eax, QWORD PTR [next_id]
+    add     rsp, 40
     ret
-
 ex_09_spawn_entity ENDP
 main PROC
     call    ex_09_spawn_entity

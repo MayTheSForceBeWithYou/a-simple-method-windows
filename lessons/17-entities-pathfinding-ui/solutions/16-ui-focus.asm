@@ -21,8 +21,8 @@ ex_16_ui_focus PROC
     div r8
     mov QWORD PTR [focus], rdx
         mov     eax, rdx
+    add     rsp, 40
     ret
-
 ex_16_ui_focus ENDP
 main PROC
     call    ex_16_ui_focus

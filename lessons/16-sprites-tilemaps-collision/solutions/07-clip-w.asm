@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_07_clip_w PROC
     sub rsp, 40
         mov     eax, 2
+    add     rsp, 40
     ret
-
 ex_07_clip_w ENDP
 main PROC
     call    ex_07_clip_w

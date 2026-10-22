@@ -12,8 +12,8 @@ ex_08_from_scratch_const_fold PROC
     add rax, 2
     imul rax, 3
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_08_from_scratch_const_fold ENDP
 main PROC
     call    ex_08_from_scratch_const_fold

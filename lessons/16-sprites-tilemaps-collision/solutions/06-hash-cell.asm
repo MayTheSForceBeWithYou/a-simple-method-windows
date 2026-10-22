@@ -20,8 +20,8 @@ ex_06_hash_cell PROC
     add rax, rbx
     and rax, 255
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_06_hash_cell ENDP
 main PROC
     call    ex_06_hash_cell

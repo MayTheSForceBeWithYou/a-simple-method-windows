@@ -16,8 +16,8 @@ quit QWORD 1
 ex_06_quit_flag PROC
     sub rsp, 40
         mov     eax, [quit]
+    add     rsp, 40
     ret
-
 ex_06_quit_flag ENDP
 main PROC
     call    ex_06_quit_flag

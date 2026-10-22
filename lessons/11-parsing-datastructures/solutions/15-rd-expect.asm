@@ -19,6 +19,7 @@ not_found:
     xor rcx, rcx
 done:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_15_rd_expect ENDP
 main PROC

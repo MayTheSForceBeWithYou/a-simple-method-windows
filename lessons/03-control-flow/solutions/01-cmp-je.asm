@@ -17,6 +17,7 @@ equal:
     mov rcx, 1
 done:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_01_cmp_je ENDP
 main PROC

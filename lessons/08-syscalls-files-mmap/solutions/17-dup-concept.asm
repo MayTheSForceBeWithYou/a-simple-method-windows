@@ -35,8 +35,8 @@ ex_17_dup_concept PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_17_dup_concept ENDP
 main PROC
     call    ex_17_dup_concept

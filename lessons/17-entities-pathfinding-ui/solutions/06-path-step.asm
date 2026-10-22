@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_06_path_step PROC
     sub rsp, 40
         mov     eax, 1
+    add     rsp, 40
     ret
-
 ex_06_path_step ENDP
 main PROC
     call    ex_06_path_step

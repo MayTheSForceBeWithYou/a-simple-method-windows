@@ -18,8 +18,8 @@ ex_13_interp_alpha PROC
     mov rbx, 16
     div rbx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_13_interp_alpha ENDP
 main PROC
     call    ex_13_interp_alpha

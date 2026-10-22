@@ -18,6 +18,7 @@ loop_walk:
     jmp loop_walk
 done_walk:
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_19_debug_null_deref_guard ENDP
 main PROC

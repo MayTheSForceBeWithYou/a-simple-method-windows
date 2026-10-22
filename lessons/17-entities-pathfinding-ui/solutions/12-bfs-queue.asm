@@ -14,8 +14,8 @@ EXTERN ExitProcess:PROC
 ex_12_bfs_queue PROC
     sub rsp, 40
         mov     eax, 5
+    add     rsp, 40
     ret
-
 ex_12_bfs_queue ENDP
 main PROC
     call    ex_12_bfs_queue

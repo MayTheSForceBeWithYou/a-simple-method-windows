@@ -21,6 +21,7 @@ ex_09_tile_at PROC
     lea r11, [map]
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 5
+    add     rsp, 40
     ret
 ex_09_tile_at ENDP
 main PROC

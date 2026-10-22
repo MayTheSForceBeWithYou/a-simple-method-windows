@@ -17,6 +17,7 @@ ex_10_map_erase PROC
     mov BYTE PTR [map+5], 0
     movzx rcx, BYTE PTR [map+5]
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_10_map_erase ENDP
 main PROC

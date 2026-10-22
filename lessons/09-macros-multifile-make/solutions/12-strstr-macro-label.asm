@@ -21,6 +21,7 @@ ex_12_strstr_macro_label PROC
     xor rcx, rcx
     TWICE
     mov     eax, 2
+    add     rsp, 40
     ret
 ex_12_strstr_macro_label ENDP
 main PROC

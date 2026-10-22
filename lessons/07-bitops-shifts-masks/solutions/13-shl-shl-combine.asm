@@ -10,8 +10,8 @@ ex_13_shl_shl_combine PROC
     or rax, 0Bh
     mov rcx, rax
         mov     eax, 60
+    add     rsp, 40
     ret
-
 ex_13_shl_shl_combine ENDP
 main PROC
     call    ex_13_shl_shl_combine

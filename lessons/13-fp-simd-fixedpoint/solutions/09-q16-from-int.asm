@@ -12,8 +12,8 @@ ex_09_q16_from_int PROC
     shl eax, 16
     shr eax, 16
         mov     eax, eax
+    add     rsp, 40
     ret
-
 ex_09_q16_from_int ENDP
 main PROC
     call    ex_09_q16_from_int

@@ -29,8 +29,8 @@ ex_09_macro_pushregs PROC
     POP_CALLEE
     
         mov     eax, rbx
+    add     rsp, 40
     ret
-
 ex_09_macro_pushregs ENDP
 main PROC
     call    ex_09_macro_pushregs

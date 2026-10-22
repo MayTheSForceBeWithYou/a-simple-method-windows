@@ -17,6 +17,7 @@ else_branch:
     mov rcx, 9
 done:
     mov     eax, 7
+    add     rsp, 40
     ret
 ex_16_if_codegen ENDP
 main PROC

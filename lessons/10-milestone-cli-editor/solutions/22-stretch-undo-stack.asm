@@ -36,8 +36,8 @@ ex_22_stretch_undo_stack PROC
     mov rcx, [usp]
     dec rcx
         mov     eax, [rdx+rcx*8]
+    add     rsp, 40
     ret
-
 ex_22_stretch_undo_stack ENDP
 main PROC
     call    ex_22_stretch_undo_stack

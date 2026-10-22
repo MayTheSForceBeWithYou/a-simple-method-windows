@@ -19,6 +19,7 @@ ex_09_key_down_up PROC
     mov BYTE PTR [key_w], 0
     movzx rcx, BYTE PTR [key_w]
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_09_key_down_up ENDP
 main PROC

@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_08_from_scratch_guest_target PROC
     sub rsp, 40
         mov     eax, 7
+    add     rsp, 40
     ret
-
 ex_08_from_scratch_guest_target ENDP
 main PROC
     call    ex_08_from_scratch_guest_target

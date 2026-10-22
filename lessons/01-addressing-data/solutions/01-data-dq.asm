@@ -17,6 +17,7 @@ ex_01_data_dq PROC
     mov rcx, [count]
     add rcx, 1
     mov     eax, 42
+    add     rsp, 40
     ret
 ex_01_data_dq ENDP
 main PROC

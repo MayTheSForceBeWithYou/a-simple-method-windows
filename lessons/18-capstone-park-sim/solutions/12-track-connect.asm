@@ -14,8 +14,8 @@ EXTERN ExitProcess:PROC
 ex_12_track_connect PROC
     sub rsp, 40
         mov     eax, 1
+    add     rsp, 40
     ret
-
 ex_12_track_connect ENDP
 main PROC
     call    ex_12_track_connect

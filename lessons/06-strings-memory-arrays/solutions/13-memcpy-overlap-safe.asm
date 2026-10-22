@@ -34,8 +34,8 @@ sum_loop:
     jmp sum_loop
 sum_done:
         mov     eax, r9
+    add     rsp, 40
     ret
-
 ex_13_memcpy_overlap_safe ENDP
 main PROC
     call    ex_13_memcpy_overlap_safe

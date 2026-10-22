@@ -24,6 +24,7 @@ not_fire:
     xor rcx, rcx
 exit_proc:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_16_repeat_delay ENDP
 main PROC

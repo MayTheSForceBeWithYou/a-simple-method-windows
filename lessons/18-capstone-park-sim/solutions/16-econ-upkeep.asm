@@ -16,8 +16,8 @@ ex_16_econ_upkeep PROC
     mov QWORD PTR [cash], 10
     sub QWORD PTR [cash], 3
         mov     eax, QWORD PTR [cash]
+    add     rsp, 40
     ret
-
 ex_16_econ_upkeep ENDP
 main PROC
     call    ex_16_econ_upkeep

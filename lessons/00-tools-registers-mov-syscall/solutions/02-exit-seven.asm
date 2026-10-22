@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 ex_02_exit_seven PROC
     sub rsp, 40
         mov     eax, 7
+    add     rsp, 40
     ret
-
 ex_02_exit_seven ENDP
 main PROC
     call    ex_02_exit_seven

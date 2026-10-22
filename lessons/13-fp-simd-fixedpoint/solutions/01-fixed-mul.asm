@@ -17,8 +17,8 @@ ex_01_fixed_mul PROC
     imul rax, rbx
     shr rax, 32
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_01_fixed_mul ENDP
 main PROC
     call    ex_01_fixed_mul

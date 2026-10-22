@@ -32,6 +32,7 @@ ex_05_blit_copy PROC
     movzx rax, BYTE PTR [dst+3]
     add rcx, rax
     mov     eax, 10
+    add     rsp, 40
     ret
 ex_05_blit_copy ENDP
 main PROC

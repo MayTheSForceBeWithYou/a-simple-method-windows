@@ -15,6 +15,7 @@ ex_19_debug_offset_bpp PROC
     mov rcx, 2
     imul rcx, 4
     mov     eax, 8
+    add     rsp, 40
     ret
 ex_19_debug_offset_bpp ENDP
 main PROC

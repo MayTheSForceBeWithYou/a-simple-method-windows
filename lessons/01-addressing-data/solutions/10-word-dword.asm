@@ -17,6 +17,7 @@ ex_10_word_dword PROC
     sub rsp, 40
     movzx rcx, BYTE PTR [w]
     mov     eax, 34
+    add     rsp, 40
     ret
 ex_10_word_dword ENDP
 main PROC

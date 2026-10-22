@@ -14,8 +14,8 @@ EXTERN ExitProcess:PROC
 ex_14_path_reconstruct PROC
     sub rsp, 40
         mov     eax, 4
+    add     rsp, 40
     ret
-
 ex_14_path_reconstruct ENDP
 main PROC
     call    ex_14_path_reconstruct

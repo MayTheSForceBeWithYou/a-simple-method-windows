@@ -15,6 +15,7 @@ ex_08_from_scratch_stride PROC
     mov rcx, 16
     imul rcx, 4
     mov     eax, 64
+    add     rsp, 40
     ret
 ex_08_from_scratch_stride ENDP
 main PROC

@@ -15,8 +15,8 @@ ex_13_peep_pathfind_step PROC
     sub rsp, 40
     mov QWORD PTR [steps], 4
         mov     eax, QWORD PTR [steps]
+    add     rsp, 40
     ret
-
 ex_13_peep_pathfind_step ENDP
 main PROC
     call    ex_13_peep_pathfind_step

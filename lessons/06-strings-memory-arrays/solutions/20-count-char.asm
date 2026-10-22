@@ -27,6 +27,7 @@ count_next:
     jmp count_loop
 count_done:
     mov     eax, 4
+    add     rsp, 40
     ret
 ex_20_count_char ENDP
 main PROC

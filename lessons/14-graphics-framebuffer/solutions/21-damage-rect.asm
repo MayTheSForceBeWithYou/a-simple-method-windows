@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_21_damage_rect PROC
     sub rsp, 40
         mov     eax, 16
+    add     rsp, 40
     ret
-
 ex_21_damage_rect ENDP
 main PROC
     call    ex_21_damage_rect

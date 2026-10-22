@@ -28,8 +28,8 @@ query_next:
     jmp query_loop
 query_done:
         mov     eax, r8
+    add     rsp, 40
     ret
-
 ex_24_from_scratch_ecs_query ENDP
 main PROC
     call    ex_24_from_scratch_ecs_query

@@ -16,8 +16,8 @@ ex_10_strncmp PROC
     mov r8, 2
     call strncmp_fn
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_10_strncmp ENDP
 main PROC
     call    ex_10_strncmp

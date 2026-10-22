@@ -19,8 +19,8 @@ ex_01_pixel_offset PROC
     add rax, rbx
     and rax, 255
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_01_pixel_offset ENDP
 main PROC
     call    ex_01_pixel_offset

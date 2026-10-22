@@ -24,6 +24,7 @@ loop_parse:
     jmp loop_parse
 done_parse:
     mov     eax, 42
+    add     rsp, 40
     ret
 ex_09_lex_number ENDP
 main PROC

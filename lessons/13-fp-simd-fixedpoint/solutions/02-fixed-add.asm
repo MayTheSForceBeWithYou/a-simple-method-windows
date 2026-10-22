@@ -13,8 +13,8 @@ ex_02_fixed_add PROC
     add eax, ebx
     shr eax, 16
         mov     eax, eax
+    add     rsp, 40
     ret
-
 ex_02_fixed_add ENDP
 main PROC
     call    ex_02_fixed_add

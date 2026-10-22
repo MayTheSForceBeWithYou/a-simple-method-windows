@@ -23,6 +23,7 @@ nopad:
     xor rcx, rcx
 exit_proc:
     mov     eax, 2
+    add     rsp, 40
     ret
 ex_05_frame_limit ENDP
 main PROC

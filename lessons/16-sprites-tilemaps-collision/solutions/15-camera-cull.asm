@@ -22,6 +22,7 @@ visible:
     xor rcx, rcx
 exit_proc:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_15_camera_cull ENDP
 main PROC

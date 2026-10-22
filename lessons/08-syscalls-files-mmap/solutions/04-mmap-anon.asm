@@ -30,8 +30,8 @@ ex_04_mmap_anon PROC
     
     ; Exit with value from memory
         mov     eax, [rbx]
+    add     rsp, 40
     ret
-    
 L_fail:
     ; Exit 2 on allocation failure
     mov rcx, 2

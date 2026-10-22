@@ -14,8 +14,8 @@ ex_04_imul_two PROC
     mov rax, 6
     imul rax, 7
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_04_imul_two ENDP
 main PROC
     call    ex_04_imul_two

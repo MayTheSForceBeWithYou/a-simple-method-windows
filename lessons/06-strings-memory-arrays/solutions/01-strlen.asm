@@ -13,8 +13,8 @@ ex_01_strlen PROC
     lea rcx, s
     call strlen_fn
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_01_strlen ENDP
 main PROC
     call    ex_01_strlen

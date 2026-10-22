@@ -29,6 +29,7 @@ val_bad:
     xor ecx, ecx
 val_done:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_23_stretch_utf8_ascii_validate ENDP
 main PROC

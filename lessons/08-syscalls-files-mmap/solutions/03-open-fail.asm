@@ -40,6 +40,7 @@ L_bad:
     
 L_out:
     mov     eax, 1
+    add     rsp, 72
     ret
 ex_03_open_fail ENDP
 main PROC

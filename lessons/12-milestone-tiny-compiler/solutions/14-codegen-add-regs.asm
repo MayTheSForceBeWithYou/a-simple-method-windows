@@ -18,8 +18,8 @@ ex_14_codegen_add_regs PROC
     add rax, QWORD PTR [v2]
     mov QWORD PTR [v1], rax
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_14_codegen_add_regs ENDP
 main PROC
     call    ex_14_codegen_add_regs

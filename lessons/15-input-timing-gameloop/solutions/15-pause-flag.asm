@@ -22,8 +22,8 @@ ex_15_pause_flag PROC
     inc QWORD PTR [updates]
 skip_update:
         mov     eax, [updates]
+    add     rsp, 40
     ret
-
 ex_15_pause_flag ENDP
 main PROC
     call    ex_15_pause_flag

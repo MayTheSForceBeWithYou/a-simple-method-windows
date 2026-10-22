@@ -19,6 +19,7 @@ not_digit:
     xor rcx, rcx
 done:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_02_lexer_digit ENDP
 main PROC

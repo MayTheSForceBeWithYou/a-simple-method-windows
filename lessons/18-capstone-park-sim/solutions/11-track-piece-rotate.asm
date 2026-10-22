@@ -19,8 +19,8 @@ ex_11_track_piece_rotate PROC
     and rax, 3
     mov QWORD PTR [dir], rax
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_11_track_piece_rotate ENDP
 main PROC
     call    ex_11_track_piece_rotate

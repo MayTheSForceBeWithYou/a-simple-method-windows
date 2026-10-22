@@ -10,8 +10,8 @@ ex_16_debug_missing_pop PROC
     mov rcx, 3
     call fact
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_16_debug_missing_pop ENDP
 main PROC
     call    ex_16_debug_missing_pop

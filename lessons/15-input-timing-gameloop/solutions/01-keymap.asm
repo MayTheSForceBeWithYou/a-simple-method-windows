@@ -21,6 +21,7 @@ not_match:
     xor rcx, rcx
 exit_proc:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_01_keymap ENDP
 main PROC

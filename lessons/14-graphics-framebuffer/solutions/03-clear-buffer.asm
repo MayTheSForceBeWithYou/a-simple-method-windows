@@ -21,6 +21,7 @@ ex_03_clear_buffer PROC
     rep stosb
     movzx rcx, BYTE PTR [fb]
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_03_clear_buffer ENDP
 main PROC

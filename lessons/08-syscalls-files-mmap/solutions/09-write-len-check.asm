@@ -47,6 +47,7 @@ L_bad:
     
 L_o:
     mov     eax, 0
+    add     rsp, 56
     ret
 ex_09_write_len_check ENDP
 main PROC

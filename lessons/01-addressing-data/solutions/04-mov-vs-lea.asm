@@ -17,6 +17,7 @@ ex_04_mov_vs_lea PROC
     lea rbx, [x]        ; rbx = address of x
     mov rcx, [rbx]      ; rcx = contents at address in rbx (99)
     mov     eax, 99
+    add     rsp, 40
     ret
 ex_04_mov_vs_lea ENDP
 main PROC

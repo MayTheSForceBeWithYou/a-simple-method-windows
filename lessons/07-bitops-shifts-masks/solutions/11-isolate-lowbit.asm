@@ -11,8 +11,8 @@ ex_11_isolate_lowbit PROC
     and rax, rbx
     mov rcx, rax
         mov     eax, 60
+    add     rsp, 40
     ret
-
 ex_11_isolate_lowbit ENDP
 main PROC
     call    ex_11_isolate_lowbit

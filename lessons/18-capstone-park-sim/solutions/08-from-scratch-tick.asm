@@ -22,8 +22,8 @@ tick_loop:
     jmp tick_loop
 tick_done:
         mov     eax, [tick]
+    add     rsp, 40
     ret
-
 ex_08_from_scratch_tick ENDP
 main PROC
     call    ex_08_from_scratch_tick

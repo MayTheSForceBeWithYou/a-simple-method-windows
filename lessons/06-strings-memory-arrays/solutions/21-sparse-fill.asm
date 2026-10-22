@@ -37,6 +37,7 @@ sum_loop:
     jmp sum_loop
 sum_done:
     mov     eax, 4
+    add     rsp, 40
     ret
 ex_21_sparse_fill ENDP
 main PROC

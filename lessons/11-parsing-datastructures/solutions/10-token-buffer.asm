@@ -28,6 +28,7 @@ loop_copy:
 done_copy:
     mov QWORD PTR [n], rcx
     mov     eax, 3
+    add     rsp, 40
     ret
 ex_10_token_buffer ENDP
 main PROC

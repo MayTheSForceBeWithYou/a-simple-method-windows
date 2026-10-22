@@ -16,8 +16,8 @@ ex_02_inc_dec PROC
     inc rax
     dec rax
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_02_inc_dec ENDP
 main PROC
     call    ex_02_inc_dec

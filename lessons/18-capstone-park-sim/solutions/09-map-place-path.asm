@@ -23,6 +23,7 @@ ex_09_map_place_path PROC
     lea r11, [map]
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_09_map_place_path ENDP
 main PROC

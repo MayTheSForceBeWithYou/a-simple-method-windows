@@ -15,8 +15,8 @@ ex_09_strcmp PROC
     lea rdx, b
     call strcmp_fn
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_09_strcmp ENDP
 main PROC
     call    ex_09_strcmp

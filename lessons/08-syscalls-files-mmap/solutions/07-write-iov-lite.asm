@@ -46,8 +46,8 @@ ex_07_write_iov_lite PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_07_write_iov_lite ENDP
 main PROC
     call    ex_07_write_iov_lite

@@ -22,6 +22,7 @@ ex_10_chord PROC
     and al, BYTE PTR [shift]
     movzx rcx, al
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_10_chord ENDP
 main PROC

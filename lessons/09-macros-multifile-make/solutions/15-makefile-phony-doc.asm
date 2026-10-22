@@ -20,8 +20,8 @@ EXTERN ExitProcess:PROC
 ex_15_makefile_phony_doc PROC
     sub rsp, 40
         mov     eax, 0
+    add     rsp, 40
     ret
-
 ex_15_makefile_phony_doc ENDP
 main PROC
     call    ex_15_makefile_phony_doc

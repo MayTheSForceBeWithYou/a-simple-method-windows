@@ -13,8 +13,8 @@ ex_03_exit_from_register PROC
     sub rsp, 40
     mov rbx, 42
         mov     eax, rbx
+    add     rsp, 40
     ret
-
 ex_03_exit_from_register ENDP
 main PROC
     call    ex_03_exit_from_register

@@ -21,6 +21,7 @@ in_range:
     xor rcx, rcx
 exit_proc:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_06_clip_test ENDP
 main PROC

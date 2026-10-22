@@ -19,8 +19,8 @@ ex_22_stretch_itoa PROC
     lea rdx, buf
     call itoa
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_22_stretch_itoa ENDP
 main PROC
     call    ex_22_stretch_itoa

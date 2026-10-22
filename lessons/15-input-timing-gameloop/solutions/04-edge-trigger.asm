@@ -24,6 +24,7 @@ not_rising:
     xor rcx, rcx
 exit_proc:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_04_edge_trigger ENDP
 main PROC

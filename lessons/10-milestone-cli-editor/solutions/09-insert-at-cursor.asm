@@ -28,8 +28,8 @@ ex_09_insert_at_cursor PROC
     inc QWORD PTR [cur]
     
         mov     eax, [cur]
+    add     rsp, 40
     ret
-
 ex_09_insert_at_cursor ENDP
 main PROC
     call    ex_09_insert_at_cursor

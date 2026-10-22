@@ -15,6 +15,7 @@ ex_15_aos_scale PROC
     mov rcx, ent
     add rcx, ent[8]
     mov     eax, 14
+    add     rsp, 40
     ret
 ex_15_aos_scale ENDP
 main PROC

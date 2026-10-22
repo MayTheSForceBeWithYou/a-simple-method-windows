@@ -19,6 +19,7 @@ ex_05_mov_chain PROC
     add dil, cl
     movzx rcx, dil
     mov     eax, 15
+    add     rsp, 40
     ret
 ex_05_mov_chain ENDP
 main PROC

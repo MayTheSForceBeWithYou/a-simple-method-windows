@@ -14,8 +14,8 @@ EXTERN ExitProcess:PROC
 ex_15_ui_button_press PROC
     sub rsp, 40
         mov     eax, 1
+    add     rsp, 40
     ret
-
 ex_15_ui_button_press ENDP
 main PROC
     call    ex_15_ui_button_press

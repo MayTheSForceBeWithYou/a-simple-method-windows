@@ -17,6 +17,7 @@ ex_09_cmp_sete PROC
     sete al
     movzx rcx, al
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_09_cmp_sete ENDP
 main PROC

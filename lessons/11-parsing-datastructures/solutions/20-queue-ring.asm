@@ -28,6 +28,7 @@ ex_20_queue_ring PROC
     mov rcx, QWORD PTR [r11+rcx*8]
     inc QWORD PTR [head]
     mov     eax, 7
+    add     rsp, 40
     ret
 ex_20_queue_ring ENDP
 main PROC

@@ -15,8 +15,8 @@ ex_23_stretch_ui_modal PROC
     sub rsp, 40
     inc QWORD PTR [modal_depth]
         mov     eax, QWORD PTR [modal_depth]
+    add     rsp, 40
     ret
-
 ex_23_stretch_ui_modal ENDP
 main PROC
     call    ex_23_stretch_ui_modal

@@ -14,6 +14,7 @@ ex_22_stretch_swar_avg PROC
     add eax, ecx
     movzx rcx, ax
     mov     eax, 150
+    add     rsp, 40
     ret
 ex_22_stretch_swar_avg ENDP
 main PROC

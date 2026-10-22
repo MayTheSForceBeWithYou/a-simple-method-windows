@@ -14,8 +14,8 @@ ex_06_eax_zero_extends PROC
     mov rax, 0FFFFFFFFFFFFFFFFh
     mov eax, 1
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_06_eax_zero_extends ENDP
 main PROC
     call    ex_06_eax_zero_extends

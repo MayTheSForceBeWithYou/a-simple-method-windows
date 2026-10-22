@@ -17,8 +17,8 @@ ex_23_stretch_haptic_stub PROC
     sub rsp, 40
     mov QWORD PTR [rumble], 2
         mov     eax, [rumble]
+    add     rsp, 40
     ret
-
 ex_23_stretch_haptic_stub ENDP
 main PROC
     call    ex_23_stretch_haptic_stub

@@ -11,8 +11,8 @@ ex_03_xor_swap PROC
     xor rbx, rax
     xor rax, rbx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_03_xor_swap ENDP
 main PROC
     call    ex_03_xor_swap

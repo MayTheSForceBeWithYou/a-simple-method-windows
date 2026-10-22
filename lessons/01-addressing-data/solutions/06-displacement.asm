@@ -15,8 +15,8 @@ vals QWORD 1, 2, 3
 ex_06_displacement PROC
     sub rsp, 40
         mov     eax, QWORD PTR [vals+16]
+    add     rsp, 40
     ret
-
 ex_06_displacement ENDP
 main PROC
     call    ex_06_displacement

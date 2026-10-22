@@ -9,8 +9,8 @@ ex_19_debug_sign_shift PROC
     sar rax, 2
     movzx rcx, al
         mov     eax, 60
+    add     rsp, 40
     ret
-
 ex_19_debug_sign_shift ENDP
 main PROC
     call    ex_19_debug_sign_shift

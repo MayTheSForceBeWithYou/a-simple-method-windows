@@ -17,8 +17,8 @@ ex_20_weather_tick PROC
     inc QWORD PTR [rain]
     and QWORD PTR [rain], 3
         mov     eax, QWORD PTR [rain]
+    add     rsp, 40
     ret
-
 ex_20_weather_tick ENDP
 main PROC
     call    ex_20_weather_tick

@@ -13,6 +13,7 @@ ex_04_zero_with_xor PROC
     sub rsp, 40
     xor rcx, rcx
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_04_zero_with_xor ENDP
 main PROC

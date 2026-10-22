@@ -23,6 +23,7 @@ ex_10_put_pixel PROC
     lea r11, [fb]
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 9
+    add     rsp, 40
     ret
 ex_10_put_pixel ENDP
 main PROC

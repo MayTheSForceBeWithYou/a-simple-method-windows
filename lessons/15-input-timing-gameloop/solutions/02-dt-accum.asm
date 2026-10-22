@@ -25,6 +25,7 @@ loop_start:
     jmp loop_start
 loop_done:
     mov     eax, 2
+    add     rsp, 40
     ret
 ex_02_dt_accum ENDP
 main PROC

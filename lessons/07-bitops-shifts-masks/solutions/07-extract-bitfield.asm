@@ -9,8 +9,8 @@ ex_07_extract_bitfield PROC
     shr rax, 4
     and rax, 0Fh
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_07_extract_bitfield ENDP
 main PROC
     call    ex_07_extract_bitfield

@@ -13,6 +13,7 @@ ex_14_sar_vs_shr PROC
     sete cl
     movzx rcx, cl
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_14_sar_vs_shr ENDP
 main PROC

@@ -9,6 +9,7 @@ ex_05_sar_sign PROC
     sar rax, 1
     movzx rcx, al
     mov     eax, 252
+    add     rsp, 40
     ret
 ex_05_sar_sign ENDP
 main PROC

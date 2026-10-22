@@ -10,8 +10,8 @@ ex_16_bitfield_unpack PROC
     and rax, 7
     mov rcx, rax
         mov     eax, 60
+    add     rsp, 40
     ret
-
 ex_16_bitfield_unpack ENDP
 main PROC
     call    ex_16_bitfield_unpack

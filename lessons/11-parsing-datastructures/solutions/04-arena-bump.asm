@@ -17,6 +17,7 @@ ex_04_arena_bump PROC
     mov rcx, QWORD PTR [bump]
     and rcx, 255
     mov     eax, 32
+    add     rsp, 40
     ret
 ex_04_arena_bump ENDP
 main PROC

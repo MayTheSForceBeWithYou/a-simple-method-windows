@@ -14,8 +14,8 @@ ex_16_mov_imm_vs_reg PROC
     mov rax, 100
     mov rbx, rax
         mov     eax, rbx
+    add     rsp, 40
     ret
-
 ex_16_mov_imm_vs_reg ENDP
 main PROC
     call    ex_16_mov_imm_vs_reg

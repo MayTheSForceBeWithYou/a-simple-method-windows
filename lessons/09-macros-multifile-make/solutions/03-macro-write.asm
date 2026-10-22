@@ -44,8 +44,8 @@ ex_03_macro_write PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_03_macro_write ENDP
 main PROC
     call    ex_03_macro_write

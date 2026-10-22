@@ -21,6 +21,7 @@ ex_07_simd_lane_sum_stub PROC
     movzx rax, BYTE PTR [v+3]
     add rcx, rax
     mov     eax, 10
+    add     rsp, 40
     ret
 ex_07_simd_lane_sum_stub ENDP
 main PROC

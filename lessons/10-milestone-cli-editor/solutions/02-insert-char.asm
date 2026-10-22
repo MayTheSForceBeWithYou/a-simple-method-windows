@@ -23,8 +23,8 @@ ex_02_insert_char PROC
     inc QWORD PTR [len]
     
         mov     eax, [len]
+    add     rsp, 40
     ret
-
 ex_02_insert_char ENDP
 main PROC
     call    ex_02_insert_char

@@ -10,8 +10,8 @@ ex_18_call_codegen PROC
     sub rsp, 40
     call f
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_18_call_codegen ENDP
 main PROC
     call    ex_18_call_codegen

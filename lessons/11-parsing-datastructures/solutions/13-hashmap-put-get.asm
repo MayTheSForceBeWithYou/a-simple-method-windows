@@ -13,8 +13,8 @@ ex_13_hashmap_put_get PROC
     sub rsp, 40
     mov QWORD PTR [slots+16], 42
         mov     eax, QWORD PTR [slots+16]
+    add     rsp, 40
     ret
-
 ex_13_hashmap_put_get ENDP
 main PROC
     call    ex_13_hashmap_put_get

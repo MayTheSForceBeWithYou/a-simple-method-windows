@@ -14,8 +14,8 @@ ex_08_from_scratch_strchr PROC
     mov rdx, 'c'
     call strchr_idx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_08_from_scratch_strchr ENDP
 main PROC
     call    ex_08_from_scratch_strchr

@@ -18,6 +18,7 @@ ex_04_plot_stub PROC
     mov BYTE PTR [fb], 7
     movzx rcx, BYTE PTR [fb]
     mov     eax, 7
+    add     rsp, 40
     ret
 ex_04_plot_stub ENDP
 main PROC

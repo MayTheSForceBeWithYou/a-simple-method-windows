@@ -13,8 +13,8 @@ ex_13_variadic_max PROC
     mov QWORD PTR [rsp+48], 9
     call max_n
         mov     eax, rax
+    add     rsp, 72
     ret
-
 ex_13_variadic_max ENDP
 main PROC
     call    ex_13_variadic_max

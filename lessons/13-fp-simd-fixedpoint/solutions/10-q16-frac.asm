@@ -13,8 +13,8 @@ ex_10_q16_frac PROC
     add eax, eax
     shr eax, 16
         mov     eax, eax
+    add     rsp, 40
     ret
-
 ex_10_q16_frac ENDP
 main PROC
     call    ex_10_q16_frac

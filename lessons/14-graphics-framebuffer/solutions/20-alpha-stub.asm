@@ -13,8 +13,8 @@ EXTERN ExitProcess:PROC
 ex_20_alpha_stub PROC
     sub rsp, 40
         mov     eax, 7
+    add     rsp, 40
     ret
-
 ex_20_alpha_stub ENDP
 main PROC
     call    ex_20_alpha_stub

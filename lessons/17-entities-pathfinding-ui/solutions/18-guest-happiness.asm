@@ -17,8 +17,8 @@ ex_18_guest_happiness PROC
     mov rax, 100
 happy_ok:
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_18_guest_happiness ENDP
 main PROC
     call    ex_18_guest_happiness

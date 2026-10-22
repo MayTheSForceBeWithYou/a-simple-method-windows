@@ -23,8 +23,8 @@ ex_16_gap_move_left PROC
     dec QWORD PTR [gap_e]
     
         mov     eax, [gap_s]
+    add     rsp, 40
     ret
-
 ex_16_gap_move_left ENDP
 main PROC
     call    ex_16_gap_move_left

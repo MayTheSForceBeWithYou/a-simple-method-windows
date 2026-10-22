@@ -22,8 +22,8 @@ check_hi:
     mov rax, 9
 done_clip:
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_15_clip_rect ENDP
 main PROC
     call    ex_15_clip_rect

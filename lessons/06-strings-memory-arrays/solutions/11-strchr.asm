@@ -14,8 +14,8 @@ ex_11_strchr PROC
     mov rdx, 'l'
     call strchr_idx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_11_strchr ENDP
 main PROC
     call    ex_11_strchr

@@ -16,8 +16,8 @@ ex_03_memcmp PROC
     mov r8, 3
     call memcmp_fn
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_03_memcmp ENDP
 main PROC
     call    ex_03_memcmp

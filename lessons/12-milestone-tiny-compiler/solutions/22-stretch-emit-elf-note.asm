@@ -9,8 +9,8 @@ EXTERN ExitProcess:PROC
 ex_22_stretch_emit_elf_note PROC
     sub rsp, 40
         mov     eax, 64
+    add     rsp, 40
     ret
-
 ex_22_stretch_emit_elf_note ENDP
 main PROC
     call    ex_22_stretch_emit_elf_note

@@ -33,8 +33,8 @@ ex_16_expr_stack PROC
     mov QWORD PTR [r11+rcx*8], rax
     inc QWORD PTR [sp_]
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_16_expr_stack ENDP
 main PROC
     call    ex_16_expr_stack

@@ -11,6 +11,7 @@ ex_10_bit_set_clear PROC
     or rcx, (1 SHL 3)
     and rcx, NOT (1 SHL 3)
     mov     eax, 0
+    add     rsp, 40
     ret
 ex_10_bit_set_clear ENDP
 main PROC

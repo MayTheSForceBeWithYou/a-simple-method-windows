@@ -17,6 +17,7 @@ ex_05_save_magic PROC
     sub rsp, 40
     movzx rcx, BYTE PTR [magic]
     mov     eax, 80
+    add     rsp, 40
     ret
 ex_05_save_magic ENDP
 main PROC

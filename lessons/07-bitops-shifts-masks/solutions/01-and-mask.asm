@@ -8,8 +8,8 @@ ex_01_and_mask PROC
     mov rax, 0FFh
     and rax, 0Fh
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_01_and_mask ENDP
 main PROC
     call    ex_01_and_mask

@@ -47,8 +47,8 @@ ex_08_two_writes PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_08_two_writes ENDP
 main PROC
     call    ex_08_two_writes

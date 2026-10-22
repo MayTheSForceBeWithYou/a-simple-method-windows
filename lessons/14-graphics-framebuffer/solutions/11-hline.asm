@@ -26,6 +26,7 @@ ex_11_hline PROC
     movzx rax, BYTE PTR [fb+2]
     add rcx, rax
     mov     eax, 3
+    add     rsp, 40
     ret
 ex_11_hline ENDP
 main PROC

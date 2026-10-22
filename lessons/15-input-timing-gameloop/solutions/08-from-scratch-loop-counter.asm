@@ -20,6 +20,7 @@ loop_start:
     jmp loop_start
 loop_done:
     mov     eax, 10
+    add     rsp, 40
     ret
 ex_08_from_scratch_loop_counter ENDP
 main PROC

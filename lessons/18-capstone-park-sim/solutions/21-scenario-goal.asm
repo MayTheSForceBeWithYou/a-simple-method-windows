@@ -22,6 +22,7 @@ goal_no:
     xor ecx, ecx
 goal_done:
     mov     eax, 1
+    add     rsp, 40
     ret
 ex_21_scenario_goal ENDP
 main PROC

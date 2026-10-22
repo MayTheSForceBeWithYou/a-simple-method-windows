@@ -29,6 +29,7 @@ ex_07_rep_movsb PROC
     movzx rax, BYTE PTR dst[4]
     add rcx, rax
     mov     eax, 15
+    add     rsp, 40
     ret
 ex_07_rep_movsb ENDP
 main PROC

@@ -22,6 +22,7 @@ ex_24_from_scratch_reverse_string PROC
     call rev
     movzx rcx, BYTE PTR [s]
     mov     eax, 109
+    add     rsp, 40
     ret
 ex_24_from_scratch_reverse_string ENDP
 main PROC

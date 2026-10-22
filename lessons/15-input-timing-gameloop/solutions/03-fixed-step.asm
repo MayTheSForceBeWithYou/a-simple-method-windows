@@ -17,8 +17,8 @@ ex_03_fixed_step PROC
     mov rbx, 16
     div rbx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_03_fixed_step ENDP
 main PROC
     call    ex_03_fixed_step

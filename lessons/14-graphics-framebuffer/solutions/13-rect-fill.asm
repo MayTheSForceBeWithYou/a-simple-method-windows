@@ -29,6 +29,7 @@ ex_13_rect_fill PROC
     movzx rax, BYTE PTR [fb+5]
     add rcx, rax
     mov     eax, 12
+    add     rsp, 40
     ret
 ex_13_rect_fill ENDP
 main PROC

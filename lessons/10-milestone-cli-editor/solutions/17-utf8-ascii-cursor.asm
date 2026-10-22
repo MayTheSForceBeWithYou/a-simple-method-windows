@@ -23,8 +23,8 @@ L_l:
     loop L_l
     
         mov     eax, [cur]
+    add     rsp, 40
     ret
-
 ex_17_utf8_ascii_cursor ENDP
 main PROC
     call    ex_17_utf8_ascii_cursor

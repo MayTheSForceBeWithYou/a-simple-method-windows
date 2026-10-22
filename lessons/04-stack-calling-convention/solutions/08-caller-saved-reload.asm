@@ -17,8 +17,8 @@ ex_08_caller_saved_reload PROC
     pop r10
     add rax, r10
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_08_caller_saved_reload ENDP
 main PROC
     call    ex_08_caller_saved_reload

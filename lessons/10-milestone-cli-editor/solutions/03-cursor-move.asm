@@ -20,8 +20,8 @@ ex_03_cursor_move PROC
     dec QWORD PTR [cursor]
     
         mov     eax, [cursor]
+    add     rsp, 40
     ret
-
 ex_03_cursor_move ENDP
 main PROC
     call    ex_03_cursor_move

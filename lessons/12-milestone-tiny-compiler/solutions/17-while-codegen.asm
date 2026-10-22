@@ -16,6 +16,7 @@ loop_while:
     jmp loop_while
 done_while:
     mov     eax, 3
+    add     rsp, 40
     ret
 ex_17_while_codegen ENDP
 main PROC

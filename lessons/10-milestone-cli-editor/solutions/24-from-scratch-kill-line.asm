@@ -53,8 +53,8 @@ L_cpy:
 L_done:
     mov [len], rdi
         mov     eax, [len]
+    add     rsp, 40
     ret
-
 ex_24_from_scratch_kill_line ENDP
 main PROC
     call    ex_24_from_scratch_kill_line

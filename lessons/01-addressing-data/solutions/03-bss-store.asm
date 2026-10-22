@@ -17,6 +17,7 @@ ex_03_bss_store PROC
     mov BYTE PTR [slot], 7
     movzx rcx, BYTE PTR [slot]
     mov     eax, 7
+    add     rsp, 40
     ret
 ex_03_bss_store ENDP
 main PROC

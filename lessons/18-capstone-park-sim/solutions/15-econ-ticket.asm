@@ -15,8 +15,8 @@ ex_15_econ_ticket PROC
     sub rsp, 40
     add QWORD PTR [cash], 15
         mov     eax, QWORD PTR [cash]
+    add     rsp, 40
     ret
-
 ex_15_econ_ticket ENDP
 main PROC
     call    ex_15_econ_ticket

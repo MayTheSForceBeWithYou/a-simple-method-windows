@@ -17,6 +17,7 @@ ex_01_push_pop PROC
     pop rcx
     add rcx, rax
     mov     eax, 7
+    add     rsp, 40
     ret
 ex_01_push_pop ENDP
 main PROC

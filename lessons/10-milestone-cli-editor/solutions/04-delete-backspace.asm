@@ -22,8 +22,8 @@ ex_04_delete_backspace PROC
     
 L_o:
         mov     eax, [len]
+    add     rsp, 40
     ret
-
 ex_04_delete_backspace ENDP
 main PROC
     call    ex_04_delete_backspace

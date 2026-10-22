@@ -14,8 +14,8 @@ ex_08_from_scratch_point_in_rect PROC
     sub rsp, 40
     ; p(2,2) in [0,0,5,5]
         mov     eax, 1
+    add     rsp, 40
     ret
-
 ex_08_from_scratch_point_in_rect ENDP
 main PROC
     call    ex_08_from_scratch_point_in_rect

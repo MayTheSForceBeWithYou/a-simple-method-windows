@@ -24,6 +24,7 @@ loop_len:
     jmp loop_len
 done_len:
     mov     eax, 3
+    add     rsp, 40
     ret
 ex_10_lex_ident_len ENDP
 main PROC

@@ -18,8 +18,8 @@ ex_01_buffer_init PROC
     
     mov QWORD PTR [len], 0
         mov     eax, [len]
+    add     rsp, 40
     ret
-
 ex_01_buffer_init ENDP
 main PROC
     call    ex_01_buffer_init

@@ -11,6 +11,7 @@ ex_02_or_flags PROC
     or rcx, 1
     or rcx, 4
     mov     eax, 5
+    add     rsp, 40
     ret
 ex_02_or_flags ENDP
 main PROC

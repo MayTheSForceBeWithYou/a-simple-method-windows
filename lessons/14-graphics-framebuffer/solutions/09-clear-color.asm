@@ -21,6 +21,7 @@ ex_09_clear_color PROC
     rep stosb
     movzx rcx, BYTE PTR [fb]
     mov     eax, 5
+    add     rsp, 40
     ret
 ex_09_clear_color ENDP
 main PROC

@@ -35,8 +35,8 @@ ex_13_render_viewport PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_13_render_viewport ENDP
 main PROC
     call    ex_13_render_viewport

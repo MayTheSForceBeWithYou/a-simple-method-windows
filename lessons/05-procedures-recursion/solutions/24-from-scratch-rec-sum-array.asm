@@ -19,8 +19,8 @@ ex_24_from_scratch_rec_sum_array PROC
     mov rdx, 3
     call rec_sum
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC
     call    ex_24_from_scratch_rec_sum_array

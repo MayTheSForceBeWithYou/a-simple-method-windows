@@ -14,8 +14,8 @@ ex_14_vec2_length2 PROC
     imul rbx, rbx
     add rax, rbx
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_14_vec2_length2 ENDP
 main PROC
     call    ex_14_vec2_length2

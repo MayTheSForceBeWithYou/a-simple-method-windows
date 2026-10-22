@@ -37,8 +37,8 @@ ex_02_rodata_string PROC
     
     ; Exit 0
         mov     eax, 0
+    add     rsp, 56
     ret
-
 ex_02_rodata_string ENDP
 main PROC
     call    ex_02_rodata_string

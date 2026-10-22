@@ -13,8 +13,8 @@ ex_20_fold_list PROC
     lea rcx, lst
     call fold_add
         mov     eax, rax
+    add     rsp, 40
     ret
-
 ex_20_fold_list ENDP
 main PROC
     call    ex_20_fold_list
