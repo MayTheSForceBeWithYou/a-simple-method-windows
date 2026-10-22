@@ -80,6 +80,13 @@ function Add-Result {
                 Increment-Map $script:ScaffoldHarnessFailByLesson $lesson
             }
         }
+        "selftest" {
+            if ($Status -eq "PASS") {
+                $script:PassCount++
+            } else {
+                $script:FailCount++
+            }
+        }
     }
 }
 
@@ -476,13 +483,21 @@ $script:HarnessOutRoot = Join-Path $PSScriptRoot "out"
 $script:HarnessOutDirSolutions = Join-Path $script:HarnessOutRoot "solutions"
 $script:HarnessOutDirListings = Join-Path $script:HarnessOutRoot "listings"
 $script:HarnessOutDirExercises = Join-Path $script:HarnessOutRoot "exercises"
-foreach ($d in @($script:HarnessOutRoot, $script:HarnessOutDirSolutions, $script:HarnessOutDirListings, $script:HarnessOutDirExercises)) {
+$script:HarnessOutDirSelftest = Join-Path $script:HarnessOutRoot "selftest"
+foreach ($d in @($script:HarnessOutRoot, $script:HarnessOutDirSolutions, $script:HarnessOutDirListings, $script:HarnessOutDirExercises, $script:HarnessOutDirSelftest)) {
     if (-not (Test-Path -LiteralPath $d)) {
         New-Item -ItemType Directory -Path $d | Out-Null
     }
 }
 
 $lessonDirs = Get-LessonDirectories
+
+Write-Host "EXTERNDEF self-test (tools/windows/selftest)..." -ForegroundColor Cyan
+$selftestAsm = Join-Path $PSScriptRoot "tools\windows\selftest\externdef-define.asm"
+if (-not (Test-Path -LiteralPath $selftestAsm)) {
+    throw "Missing harness self-test: $selftestAsm"
+}
+Test-RunnableAsm -AsmPath $selftestAsm -OutDir $script:HarnessOutDirSelftest -Kind "selftest" -RequireExpected
 
 Write-Host "Testing solutions..." -ForegroundColor Cyan
 foreach ($lessonDir in $lessonDirs) {
