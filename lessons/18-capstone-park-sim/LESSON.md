@@ -140,7 +140,7 @@ main PROC FRAME
     lea     r9, bytesWritten
     mov     QWORD PTR [rsp+32], 0
     call    WriteFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
     mov     eax, bytesWritten
     add     totalWritten, eax
@@ -151,7 +151,7 @@ main PROC FRAME
     lea     r9, bytesWritten
     mov     QWORD PTR [rsp+32], 0
     call    WriteFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
     mov     eax, bytesWritten
     add     totalWritten, eax

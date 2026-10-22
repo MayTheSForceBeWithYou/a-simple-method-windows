@@ -182,7 +182,7 @@ For `n = 5`: RBX saves 5, recursive call with RCX=4, multiply 24×5=120. Both ba
 
 EXTRN ExitProcess:PROC
 
-; One push (8) + sub rsp,32 (32) => 40 bytes; RSP mod 16 == 8 before nested call.
+; One push (8) + sub rsp,32 (32) => 40 bytes; RSP is 16-byte aligned at callee entry after `call`.
 sum_to PROC FRAME
     push rbx
     .pushreg rbx

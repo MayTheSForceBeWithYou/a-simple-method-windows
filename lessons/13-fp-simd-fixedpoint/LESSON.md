@@ -243,7 +243,9 @@ main ENDP
 END
 ```
 
-**Length squared.** Compare `x*x + y*y` to `r*r`. Do not take a square root just to test "inside the circle." There is still no Jack listing for that, or for Q8.8 (multiply, then shift right 8).
+**Length squared.** Compare `x*x + y*y` to `r*r`. Do not take a square root just to test "inside the circle." There is still no `listings/` file. Exercise `14-vec2-length2` (and its solution) computes 3² + 4² and exits **25**.
+
+**Q8.8.** Eight integer bits and eight fraction bits. Multiply two Q8.8 values and `shr` 8 to stay in Q8.8, or `shr` 16 to take the integer. There is still no `listings/` file. Exercises `08-from-scratch-q8` (1.5 × 2, integer **3**) and `24-from-scratch-q8-mul` (2.5 × 2, integer **5**) both `imul` then `shr` 16.
 
 **SSE2 horizontal sum.** Listing `08-simd-lane-sum` loads four DWORDs `[1, 2, 3, 4]` into XMM0 (`movdqu`). `pshufd` with `4Eh` swaps the 64-bit halves to `[3, 4, 1, 2]`; `paddd` yields `[4, 6, 4, 6]`. `pshufd` with `0B1h` swaps adjacent dwords to `[6, 4, 6, 4]`; `paddd` yields `[10, 10, 10, 10]`. `movd ecx, xmm0` takes lane 0. Expected exit: **10**. This is an integer `paddd` reduction, not `addss`.
 

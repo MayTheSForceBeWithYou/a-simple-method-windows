@@ -1,10 +1,10 @@
 # Prose Technical Flags
 
-Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`72e4724`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
+Tracks reviewer doubts for the Windows port prose (PR #7) and Jack listings on `cursor/jack-listings-exercises-401f` through **`d7cf480`**. **Do not rebase** onto harness PR #6 until asked. **Do not merge.**
 
-Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
+Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `d7cf480`.
 
-**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39706742127](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39706742127)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`).
+**ml64 CI:** Exit values are confirmed by the Windows ml64 CI on that tip ([run 39708631683](https://github.com/MayTheSForceBeWithYou/a-simple-method-windows/actions/runs/39708631683)), not by hand traces. The harness compares the full 32-bit `ExitProcess` status (not `exit AND 0FFh`).
 
 ## Resolved in listings (Jack branch) — prose now matches
 
@@ -16,7 +16,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 | L02 `08-test-instruction` | Binary literal is `101b`. ml64 CI assembled it. |
 | L04 frame-pointer forms | `07-frame-pointer.asm` form 1: `lea rbp,[rsp+48]` + `.setframe rbp, 48` / `.allocstack 48`. The `.SETFRAME` offset is 48 (multiple of 16, ≤ 240); it does not have to equal the allocation. Form 2 in the same file: `sub rsp, 40`. `08-rbp-pushreg-only.asm` is `.pushreg rbp` only (`sub rsp, 32`). |
 | L04 `01-push-pop` header | NASM/SysV comment is gone. Quote is verbatim. |
-| L04 `04-nonvolatile-regs` | `main` is `push rbx` / `.pushreg rbx` / `sub rsp, 32` — aligned 1-push frame. After the RBX check it tears down and `sub rsp, 40` before `ExitProcess`. Exit **42** (or **1** if clobbered). |
+| L04 `04-nonvolatile-regs` | `main` is `push rbx` / `.pushreg rbx` / `sub rsp, 32` — aligned 1-push frame. `ExitProcess` is called with the frame still live (no teardown / no extra `sub rsp, 40`). Exit **42** (or **1** if clobbered). |
 | L04 `06-sum3-example` alignment | `main` uses aligned `sub rsp,40` before `call sum3` (0 pushes). |
 | L05 `04-recursive-sum` frame | `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32` / `mov rbx, rcx` / `add rax, rbx`. Aligned 1-push model. Shared `done:` is `add rsp, 32` / `pop rbx` / `ret`. Exit **15**. |
 | L07 `01-bit-operations` | MASM hex `0FFh` / `0Fh`; OR path is `8` / `4`; `sub rsp, 40`; exit **12**. |
@@ -51,7 +51,8 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 | L14 `09-vsync-ready-flag` | Three `Sleep(1)` waits, exit **3**. Each Sleep is a timer tick (~1–15.6 ms), not “one millisecond.” Sleep leaves the CPU free; a QPC spin burns a core. Not display vsync. Jack header comment says the same. |
 | L09 `15-data-message` | Now a standalone executable (`main` / `ExitProcess(0)`) that still exports `PUBLIC message`. Exit **0**. |
 | L09 `18-offset-equ` | `MSG_LEN EQU msg_end - msg` (2). Compares RIP-relative `lea` vs `OFFSET`, and a runtime span vs `MSG_LEN`. Success **2**. Failures **117** (span) and **118** (address). |
-| L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. L08 names: `04-virtualalloc`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `23-stretch-createpipe`. |
+| L08 / L09 / L10 exercise READMEs | No `exercises/<lesson>/README.md`. Expected exits are in each file header under `exercises/`. |
+| L08 exercise names | `04-virtualalloc`, `05-get-last-error-open`, `06-set-file-pointer`, `10-open-nul`, `11-read-nul`, `12-virtualalloc-read-write`, `13-virtualfree`, `14-heapalloc`, `16-qpc`, `17-duplicate-handle`, `19-overlapped-write`, `20-allocation-granularity`, `23-stretch-createpipe`. |
 | L08 `09-close-handle` / `10-virtual-alloc-free` | BOOL tests use `test eax, eax` (`CloseHandle`, `VirtualFree`). `VirtualAlloc` still `test rax, rax` (pointer). |
 | L17 `09-astar-f-score` / `10-manhattan-2axis` | First `\|d\|` kept in RBX across `abs_rax`. Exits **7** and **10**. |
 | L15 `01` / `02` | CI exits **0** and **42**. |
@@ -69,7 +70,7 @@ Quoted listings in `lessons/*/LESSON.md` are from PR #5 at `72e4724`.
 
 ## CI-confirmed exits that used to be traces
 
-These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
+These three were fixed at `ec4d05c` and remain CI-green at `d7cf480`:
 
 - **L08 `15-create-pipe`** — exit **3** (`bytesRead` in EBX across `CloseHandle`).
 - **L15 `13-sleep-frame-pad`** — exit **1** (status in EBX across `Sleep`).
@@ -97,11 +98,8 @@ These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
 ### Lesson 08 — `16-heap-alloc-sum.asm` unused `HEAP_ZERO_MEMORY`
 **Why unchanged:** `EQU 8` is never passed; `HeapAlloc` flags are 0; the fill is `rep stosb` of 1. Exit **16** does not depend on zero-init. RDI/RSI/RBX are saved (`push` / `.pushreg` ×3, `sub rsp, 32`).
 
-### Lesson 04 — `04-nonvolatile-regs.asm` comment after `pop rbx`
-**Waiting on Jack:** The listing comment still says `RSP was 16-aligned after pop`. After the pop, RSP is the entry value, 8 mod 16; `sub rsp, 40` then aligns it. Quote left as-is at `72e4724`.
-
 ### Lesson 05 — `04-recursive-sum.asm` comment wording
-**Waiting on Jack:** The listing still says `RSP mod 16 == 8 before nested call`. Prose states the arithmetic: entry 8 + push 8 + `sub rsp, 32` ⇒ 0 mod 16 at the `call`. Quote left as-is at `72e4724`.
+Jack reworded at `d7cf480` to “RSP is 16-byte aligned at callee entry after `call`.” That is still not “0 at the `call`.” Prose states the arithmetic: entry 8 + push 8 + `sub rsp, 32` ⇒ 0 mod 16 at the `call`. Quote is verbatim.
 
 ### Lesson 09 — `11-macro-local-list.asm` unused LOCAL names
 **Why unchanged:** Teaches LOCAL declaration syntax; exit 2 matches two `inc rcx` expansions (or the following `mov ecx, 2`).
@@ -119,7 +117,7 @@ These three were fixed at `ec4d05c` and remain CI-green at `72e4724`:
 **Why unchanged:** Several `main` + `ExitProcess` listings still omit nonvolatile saves. `19-skip-whitespace` now `push rsi` / `sub rsp, 32`; `20-copy-lexeme` now `push rsi` / `push rdi` / `sub rsp, 40`. Same Bruce alignment rule on the `ec4d05c` saves in L08 16, L10 21, L12 07, L13 06, L14 06/10, L17 08–11, L18 13. L14 09 no longer pushes RBX (uses EBX as a wait counter; `ExitProcess` never returns).
 
 ### Lesson 13 — no Q8.8 / length-squared listing
-Jack filled divide, lerp, and SSE2 sum. Length-squared and Q8.8 remain prose-only (no filename to quote).
+Still no `listings/` file. Exercises/solutions: `14-vec2-length2` exits **25** (3²+4²); `08-from-scratch-q8` exits **3**; `24-from-scratch-q8-mul` exits **5**. The 11 new L13 solutions at `d7cf480` do not add a listings file for those topics.
 
 ### Lesson 14 — `rep movsd` and DF
 **Resolved in comments:** Listing comments document ABI DF-at-entry/return and the **cld before rep movs\*/ret** rule; `03-blit-copy.asm` code still has no `cld`.
@@ -132,9 +130,8 @@ BFS counts visits and does not store parents. Hit-test is the four-compare panel
 
 ## Pending on Jack (PR #5)
 
-- **L04 `04-nonvolatile-regs`:** comment after `pop rbx` still says RSP was 16-aligned. After the pop it is 8 mod 16.
-- **L05 `04-recursive-sum`:** comment still says `RSP mod 16 == 8 before nested call`. At the `call` it is 0.
+- **L05 `04-recursive-sum`:** comment now says 16-byte aligned at callee entry after `call`. At the `call` instruction RSP is 0 mod 16; callee entry is 8.
 
 ## Remaining LISTING-PENDING (no matching Jack file)
 
-None. Every previous marker now has a quoted file (or the L09 stand-ins `21`/`22`/`25` for missing `01-*` / `12-*` / NMake). Topics still without a file, taught as prose only: L13 length-squared / Q8.8; L14 flip / alpha / damage; L17 `parent[]` / panel y-stack; L12 local-slot allocation.
+None. Every previous marker now has a quoted file (or the L09 stand-ins `21`/`22`/`25` for missing `01-*` / `12-*` / NMake). Topics still without a `listings/` file: L13 length-squared / Q8.8 (exercises exist); L14 flip / alpha / damage; L17 `parent[]` / panel y-stack; L12 local-slot allocation.

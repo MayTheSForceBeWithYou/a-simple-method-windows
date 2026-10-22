@@ -371,7 +371,7 @@ Listing `14-set-file-pointer-begin` uses `SetFilePointerEx` to seek to offset 0 
 - R8 = address of `newPos` in `.DATA?`
 - R9D = 0 (`FILE_BEGIN`)
 
-`test rax, rax` / `jz seek_failed` exits 2. `cmp newPos, 0` / `jne bad_pos` exits 4. Open failure exits 1. Success closes and exits 0. Expected exit: **0** when `test.txt` exists.
+`test eax, eax` / `jz seek_failed` exits 2. `cmp newPos, 0` / `jne bad_pos` exits 4. Open failure exits 1. Success closes and exits 0. Expected exit: **0** when `test.txt` exists. BOOL is in EAX.
 
 ```asm
 ; Listing 14: SetFilePointerEx seek to beginning (LESSON.md asm block 7)
@@ -423,7 +423,7 @@ have_handle:
     lea r8, newPos
     xor r9d, r9d              ; FILE_BEGIN
     call SetFilePointerEx
-    test rax, rax
+    test eax, eax
     jz seek_failed
 
     cmp newPos, 0
@@ -446,7 +446,7 @@ main ENDP
 END
 ```
 
-Listing `08-set-file-pointer-end` positions at EOF with `SetFilePointerEx`. It opens `test.txt` with `GENERIC_WRITE` and `OPEN_ALWAYS` (4), so a missing file is created. Offset 0, R8 = NULL (no new-position output), R9D = 2 (`FILE_END`). Seek failure exits 2; open failure exits 1; success closes and exits 0. Frame: `push rbx` + `sub rsp, 48`.
+Listing `08-set-file-pointer-end` positions at EOF with `SetFilePointerEx`. It opens `test.txt` with `GENERIC_WRITE` and `OPEN_ALWAYS` (4), so a missing file is created. Offset 0, R8 = NULL (no new-position output), R9D = 2 (`FILE_END`). Seek failure (`test eax, eax` / `jz`) exits 2; open failure exits 1; success closes and exits 0. Frame: `push rbx` + `sub rsp, 48`.
 
 ```asm
 ; Listing 08: SetFilePointerEx seek to end (LESSON.md asm block 8)
@@ -495,7 +495,7 @@ have_handle:
     xor r8, r8
     mov r9d, 2                  ; FILE_END
     call SetFilePointerEx
-    test rax, rax
+    test eax, eax
     jz seek_failed
 
     mov rcx, rbx
@@ -1048,7 +1048,7 @@ main PROC FRAME
     xor     r8, r8
     xor     r9d, r9d
     call    CreatePipe
-    test    rax, rax
+    test    eax, eax
     jz      fail
 
     mov     rcx, hWrite
@@ -1057,7 +1057,7 @@ main PROC FRAME
     lea     r9, bytesWritten
     mov     QWORD PTR [rsp+32], 0
     call    WriteFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
 
     mov     rcx, hRead
@@ -1066,7 +1066,7 @@ main PROC FRAME
     lea     r9, bytesRead
     mov     QWORD PTR [rsp+32], 0
     call    ReadFile
-    test    rax, rax
+    test    eax, eax
     jz      fail_close
 
     mov     ebx, DWORD PTR bytesRead
@@ -1255,7 +1255,7 @@ Expected exit: **3** (`ERROR_PATH_NOT_FOUND`). The path is `C:\no\such\file.txt`
 | Failure returns an errno in RAX | Failure is FALSE / NULL / `INVALID_HANDLE_VALUE`; the code is `GetLastError` |
 | `CreateFileA` returns NULL on failure | It returns −1. `test rax, rax` misses it (listing `13-open-missing-get-last-error`) |
 | `SetFilePointer` and `SetFilePointerEx` are the same call | `SetFilePointer` takes a 32-bit distance in EDX and an optional high pointer in R8 (listing `03-set-file-pointer`). `SetFilePointerEx` takes a 64-bit offset in RDX and an optional new-position pointer in R8 (listings `14-set-file-pointer-begin`, `08-set-file-pointer-end`) |
-| `CloseHandle` returns the HANDLE | It returns BOOL. Listing `09-close-handle` tests RAX and exits 3 on FALSE |
+| `CloseHandle` returns the HANDLE | It returns BOOL. Listing `09-close-handle` tests EAX and exits 3 on FALSE |
 | `ReadFile` always fills the request | Short reads are normal; 0 bytes + TRUE is EOF; FALSE is an error |
 | `VirtualAlloc` returns −1 on failure | It returns 0. Listing `04-virtual-alloc` and the alloc path of `10-virtual-alloc-free` use `test rax, rax`. `VirtualFree` returns BOOL in EAX; listing `10` tests that with `test eax, eax` |
 | `VirtualFree` size equals the allocation | `MEM_RELEASE` requires size 0 |
@@ -1303,13 +1303,13 @@ ml64 /c FILE.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE FILE.obj kernel32.lib &&
 
 The exercises use the Win32 API and MASM syntax this lesson quotes.
 
-**File operations:** two `WriteFile` calls to stdout, read one byte from stdin, open a missing file and handle `GetLastError`, open and close `NUL`, read from `NUL`, check the byte count after `WriteFile`, write to stdout, debug a handle-leak pattern, write to an invalid HANDLE.
+**File operations:** two `WriteFile` calls to stdout, read one byte from stdin, `03-open-fail` on a missing file, `10-open-nul` (`CreateFileA("NUL")` / `CloseHandle`, exit 0), `11-read-nul` (`ReadFile` 8 zeros from `NUL`, exit 0), check the byte count after `WriteFile`, `17-duplicate-handle` (`WriteFile` of `"Dup test"` plus CRLF to stdout — no `DuplicateHandle` call), debug a handle-leak pattern, write to an invalid HANDLE.
 
-**Error handling:** open `C:\` with `GENERIC_WRITE` (expect `ERROR_ACCESS_DENIED`), exit 1 on error.
+**Error handling:** `05-get-last-error-open` — `CreateFileA` on `C:\nope.txt`, then `GetLastError` (2 or 3). `18-error-eacces-sim` — open `C:\` with `GENERIC_WRITE` (expect `ERROR_ACCESS_DENIED`), exit 1 on error.
 
-**Seeking:** arithmetic offset without a seek call; open `NUL`, `SetFilePointerEx` to 0 (`FILE_BEGIN`), write, close, exit 0.
+**Seeking:** `06-set-file-pointer` is offset arithmetic (5 + 5, exit **10**), not a `SetFilePointer` call. `19-overlapped-write` opens `NUL`, `SetFilePointer` to 0 (`FILE_BEGIN`), `WriteFile` of `"Test"`, close, exit 0.
 
-**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit 42; store 99 at offset 100, exit 99; `13-virtualfree` — allocate then `VirtualFree`, exit 0; `14-heapalloc` — `GetProcessHeap` nonzero, exit 0; fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
+**Memory:** `04-virtualalloc` — one page via `VirtualAlloc`, store 42, exit 42; `12-virtualalloc-read-write` — store 99 at offset 100, read it back, exit 99; `13-virtualfree` — allocate then `VirtualFree`, exit 0; `14-heapalloc` — `GetProcessHeap` nonzero, exit 0; `20-allocation-granularity` — fill 16 bytes with 1, exit 16; copy four bytes from `.DATA`, sum them, exit 10.
 
 **Other imports:** `15-getpid` — `GetCurrentProcessId`, then `test eax, eax` / `seta cl` so the status is **1** when the PID is above 0 (listing `06-get-process-id` — not `pid AND 07Fh`). `16-qpc` — `QueryPerformanceCounter`, exit 0. `23-stretch-createpipe` — `CreatePipe`, write `"ABC"`, read three bytes, exit **3** (listing `15-create-pipe`).
 

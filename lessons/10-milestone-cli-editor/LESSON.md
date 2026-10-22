@@ -952,7 +952,7 @@ Raw mode clears bits 2 and 4. `2 OR 4` is 6. Listing `19-raw-console-mode` write
 The listing:
 
 1. `GetStdHandle` with RCX = −10 (`STD_INPUT_HANDLE`), stores the HANDLE in `stdin_handle`.
-2. `GetConsoleMode(stdin_handle, &original_mode)`. FALSE (`test rax, rax` / `jz`) exits 1.
+2. `GetConsoleMode(stdin_handle, &original_mode)`. FALSE (`test eax, eax` / `jz`) exits 1.
 3. `and eax, NOT 6`, store in `mode`, `SetConsoleMode(stdin_handle, mode)`. FALSE exits 1.
 4. Restores `original_mode` with a second `SetConsoleMode`.
 5. `xor ecx, ecx` / `call ExitProcess`.
@@ -989,7 +989,7 @@ main PROC FRAME
     mov     rcx, stdin_handle
     lea     rdx, original_mode
     call    GetConsoleMode
-    test    rax, rax
+    test    eax, eax
     jz      no_console
 
     mov     eax, original_mode
@@ -999,7 +999,7 @@ main PROC FRAME
     mov     rcx, stdin_handle
     mov     edx, mode
     call    SetConsoleMode
-    test    rax, rax
+    test    eax, eax
     jz      error_exit
 
     mov     rcx, stdin_handle
