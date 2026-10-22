@@ -21,9 +21,13 @@ bytesWritten DWORD ?
 bytesRead DWORD ?
 
 .code
-ex_23_stretch_createpipe PROC
-    sub rsp, 80
-    
+ex_23_stretch_createpipe PROC FRAME
+    push rbx
+    .pushreg rbx
+    sub rsp, 64
+    .allocstack 64
+    .endprolog
+
     lea rcx, hRead
     lea rdx, hWrite
     xor r8, r8
@@ -50,7 +54,7 @@ ex_23_stretch_createpipe PROC
     test eax, eax
     jz L_fail_close
 
-    mov eax, DWORD PTR bytesRead
+    mov ebx, DWORD PTR bytesRead
     jmp L_cleanup
 
 L_fail_close:
@@ -58,7 +62,7 @@ L_fail_close:
     call CloseHandle
     mov rcx, hWrite
     call CloseHandle
-    mov eax, 1
+    mov ebx, 1
     jmp L_done
 
 L_cleanup:
@@ -69,10 +73,12 @@ L_cleanup:
     jmp L_done
 
 L_fail:
-    mov eax, 1
+    mov ebx, 1
 
 L_done:
-    add rsp, 80
+    mov eax, ebx
+    add rsp, 64
+    pop rbx
     ret
 ex_23_stretch_createpipe ENDP
 main PROC
