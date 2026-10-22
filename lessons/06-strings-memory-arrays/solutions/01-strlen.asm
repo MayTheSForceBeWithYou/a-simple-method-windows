@@ -12,8 +12,9 @@ ex_01_strlen PROC
     sub rsp, 40
     lea rcx, s
     call strlen_fn
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_01_strlen ENDP
 main PROC
     sub     rsp, 40

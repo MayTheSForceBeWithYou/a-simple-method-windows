@@ -15,7 +15,8 @@ ex_15_local_slot_alloc PROC
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
-        mov     eax, ecx
+    mov rcx, QWORD PTR [next_slot]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_15_local_slot_alloc ENDP

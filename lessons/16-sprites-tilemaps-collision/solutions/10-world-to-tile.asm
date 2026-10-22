@@ -14,8 +14,9 @@ ex_10_world_to_tile PROC
     sub rsp, 40
     mov rax, 20
     shr rax, 3
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_10_world_to_tile ENDP
 main PROC
     sub     rsp, 40

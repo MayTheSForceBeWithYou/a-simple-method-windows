@@ -34,7 +34,8 @@ ex_13_render_viewport PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, 0
+    call ExitProcess
+    mov     eax, 0
     add     rsp, 56
     ret
 ex_13_render_viewport ENDP

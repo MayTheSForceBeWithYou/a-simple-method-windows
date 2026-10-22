@@ -17,7 +17,8 @@ ex_01_buffer_init PROC
     sub rsp, 40
     
     mov QWORD PTR [len], 0
-        mov     eax, ecx
+    mov rcx, [len]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_01_buffer_init ENDP

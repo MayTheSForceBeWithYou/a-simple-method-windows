@@ -18,8 +18,9 @@ ex_15_lerp_fixed PROC
     imul rax, rdx
     shr rax, 16
     shr rax, 16
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_15_lerp_fixed ENDP
 main PROC
     sub     rsp, 40

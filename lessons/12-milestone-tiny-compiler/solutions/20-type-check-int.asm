@@ -10,7 +10,8 @@ TY_INT EQU 1
 .code
 ex_20_type_check_int PROC
     sub rsp, 40
-        mov     eax, ecx
+    mov rcx, TY_INT
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_20_type_check_int ENDP

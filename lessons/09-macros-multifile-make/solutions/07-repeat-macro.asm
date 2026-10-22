@@ -17,6 +17,7 @@ ex_07_repeat_macro PROC
     REPT 3
         inc rcx
     ENDM
+    
     mov     eax, ecx
     add     rsp, 40
     ret

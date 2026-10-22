@@ -16,7 +16,8 @@ count QWORD ?
 ex_18_spatial_hash_insert PROC
     sub rsp, 40
     inc QWORD PTR [count]
-        mov     eax, ecx
+    mov rcx, [count]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_18_spatial_hash_insert ENDP

@@ -14,7 +14,8 @@ free_top QWORD 0
 ex_10_despawn_freelist PROC
     sub rsp, 40
     mov QWORD PTR [free_top], 3
-        mov     eax, ecx
+    mov rcx, QWORD PTR [free_top]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_10_despawn_freelist ENDP

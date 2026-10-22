@@ -22,7 +22,8 @@ L_l:
     inc QWORD PTR [cur]
     loop L_l
     
-        mov     eax, ecx
+    mov rcx, [cur]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_17_utf8_ascii_cursor ENDP

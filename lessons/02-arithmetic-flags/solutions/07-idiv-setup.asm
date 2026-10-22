@@ -15,8 +15,9 @@ ex_07_idiv_setup PROC
     cqo
     mov rbx, 2
     idiv rbx
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_07_idiv_setup ENDP
 main PROC
     sub     rsp, 40

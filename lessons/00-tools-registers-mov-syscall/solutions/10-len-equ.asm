@@ -36,7 +36,8 @@ ex_10_len_equ PROC
     call WriteFile
     
     ; Exit 0
-        mov     eax, 0
+    call ExitProcess
+    mov     eax, 0
     add     rsp, 56
     ret
 ex_10_len_equ ENDP

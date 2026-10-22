@@ -23,6 +23,7 @@ ex_24_from_scratch_macro_abs PROC
     
     mov rcx, -9
     ABS rcx
+    
     mov     eax, ecx
     add     rsp, 40
     ret

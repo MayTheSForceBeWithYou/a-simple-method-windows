@@ -20,6 +20,7 @@ ex_12_strstr_macro_label PROC
     
     xor rcx, rcx
     TWICE
+    
     mov     eax, ecx
     add     rsp, 40
     ret

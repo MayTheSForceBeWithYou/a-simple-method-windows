@@ -9,7 +9,8 @@ ex_18_mask_range PROC
     shl rax, 5
     dec rax
     mov rcx, rax
-        mov     eax, 60
+    call ExitProcess
+    mov     eax, 60
     add     rsp, 40
     ret
 ex_18_mask_range ENDP

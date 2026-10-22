@@ -11,8 +11,9 @@ ex_09_q16_from_int PROC
     mov eax, 5
     shl eax, 16
     shr eax, 16
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_09_q16_from_int ENDP
 main PROC
     sub     rsp, 40

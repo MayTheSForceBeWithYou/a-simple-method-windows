@@ -18,8 +18,9 @@ ex_02_strcpy PROC
     call strcpy_fn
     lea rcx, dst
     call strlen_fn
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_02_strcpy ENDP
 main PROC
     sub     rsp, 40

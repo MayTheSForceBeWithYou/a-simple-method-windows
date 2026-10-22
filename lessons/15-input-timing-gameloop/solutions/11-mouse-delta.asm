@@ -16,8 +16,9 @@ ex_11_mouse_delta PROC
     mov rbx, -2
     neg rbx
     add rax, rbx
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_11_mouse_delta ENDP
 main PROC
     sub     rsp, 40

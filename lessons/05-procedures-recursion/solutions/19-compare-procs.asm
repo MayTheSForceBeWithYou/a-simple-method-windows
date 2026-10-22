@@ -10,8 +10,9 @@ ex_19_compare_procs PROC
     mov rcx, 3
     mov rdx, 5
     call cmp_i64
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_19_compare_procs ENDP
 main PROC
     sub     rsp, 40

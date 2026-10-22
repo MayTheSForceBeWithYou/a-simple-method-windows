@@ -16,7 +16,8 @@ ex_15_bitfield_pack PROC
     shl rbx, 6
     or rax, rbx
     mov rcx, rax
-        mov     eax, 60
+    call ExitProcess
+    mov     eax, 60
     add     rsp, 40
     ret
 ex_15_bitfield_pack ENDP

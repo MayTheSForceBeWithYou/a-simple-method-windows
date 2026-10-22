@@ -15,8 +15,9 @@ ex_19_extern_declare PROC
     sub rsp, 40
     
     call foo
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_19_extern_declare ENDP
 main PROC
     sub     rsp, 40

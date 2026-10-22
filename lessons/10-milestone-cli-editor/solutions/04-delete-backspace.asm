@@ -21,7 +21,8 @@ ex_04_delete_backspace PROC
     dec QWORD PTR [len]
     
 L_o:
-        mov     eax, ecx
+    mov rcx, [len]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_04_delete_backspace ENDP

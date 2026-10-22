@@ -19,7 +19,8 @@ ex_16_anim_frame PROC
     xor rdx, rdx
     mov rbx, 3
     div rbx
-        mov     eax, edx
+    call ExitProcess
+    mov     eax, edx
     add     rsp, 40
     ret
 ex_16_anim_frame ENDP

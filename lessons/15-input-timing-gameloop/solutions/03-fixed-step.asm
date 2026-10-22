@@ -16,8 +16,9 @@ ex_03_fixed_step PROC
     xor rdx, rdx
     mov rbx, 16
     div rbx
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_03_fixed_step ENDP
 main PROC
     sub     rsp, 40

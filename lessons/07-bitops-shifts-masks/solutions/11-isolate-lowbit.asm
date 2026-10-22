@@ -10,7 +10,8 @@ ex_11_isolate_lowbit PROC
     neg rbx
     and rax, rbx
     mov rcx, rax
-        mov     eax, 60
+    call ExitProcess
+    mov     eax, 60
     add     rsp, 40
     ret
 ex_11_isolate_lowbit ENDP

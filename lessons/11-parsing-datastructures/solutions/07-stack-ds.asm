@@ -24,7 +24,8 @@ ex_07_stack_ds PROC
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
-        mov     eax, ecx
+    mov rcx, QWORD PTR [r11+rcx*8]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_07_stack_ds ENDP

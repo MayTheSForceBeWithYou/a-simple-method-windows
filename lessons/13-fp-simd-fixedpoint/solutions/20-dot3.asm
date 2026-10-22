@@ -8,7 +8,8 @@ EXTERN ExitProcess:PROC
 .code
 ex_20_dot3 PROC
     sub rsp, 40
-        mov     eax, ecx
+    mov rcx, 1*4+2*5+3*6
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_20_dot3 ENDP

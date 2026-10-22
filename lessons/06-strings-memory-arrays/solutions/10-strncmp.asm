@@ -15,8 +15,9 @@ ex_10_strncmp PROC
     lea rdx, b
     mov r8, 2
     call strncmp_fn
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_10_strncmp ENDP
 main PROC
     sub     rsp, 40

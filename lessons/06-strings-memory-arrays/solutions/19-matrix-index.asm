@@ -17,7 +17,8 @@ ex_19_matrix_index PROC
     imul rax, 3
     add rax, 2
     lea r11, [m]
-        mov     eax, ecx
+    mov rcx, QWORD PTR [r11+rax*8]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_19_matrix_index ENDP

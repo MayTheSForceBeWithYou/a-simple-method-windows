@@ -24,8 +24,9 @@ ex_17_bounded_strcpy PROC
     call strncpy_term
     lea rcx, dst
     call strlen_fn
-        add     rsp, 40
-        ret
+    call ExitProcess
+    add     rsp, 40
+    ret
 ex_17_bounded_strcpy ENDP
 main PROC
     sub     rsp, 40

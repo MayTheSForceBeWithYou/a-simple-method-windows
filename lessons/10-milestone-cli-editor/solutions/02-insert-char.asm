@@ -22,7 +22,8 @@ ex_02_insert_char PROC
     mov BYTE PTR [rdx+rcx], 'A'
     inc QWORD PTR [len]
     
-        mov     eax, ecx
+    mov rcx, [len]
+    mov     eax, ecx
     add     rsp, 40
     ret
 ex_02_insert_char ENDP
