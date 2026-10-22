@@ -27,6 +27,7 @@ ex_11_hline PROC
     add rcx, rax
     mov     eax, 3
     ret
+    add     rsp, 40
 ex_11_hline ENDP
 main PROC
     call    ex_11_hline

@@ -14,7 +14,7 @@ ex_06_path_step PROC
     sub rsp, 40
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_06_path_step ENDP
 main PROC
     call    ex_06_path_step

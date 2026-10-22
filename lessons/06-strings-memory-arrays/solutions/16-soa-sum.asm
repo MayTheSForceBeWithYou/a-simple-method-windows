@@ -22,6 +22,7 @@ ex_16_soa_sum PROC
     add rcx, QWORD PTR [ys+16]
     mov     eax, 21
     ret
+    add     rsp, 40
 ex_16_soa_sum ENDP
 main PROC
     call    ex_16_soa_sum

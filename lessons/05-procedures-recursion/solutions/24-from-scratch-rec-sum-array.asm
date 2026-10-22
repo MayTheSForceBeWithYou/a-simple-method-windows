@@ -20,7 +20,7 @@ ex_24_from_scratch_rec_sum_array PROC
     call rec_sum
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_24_from_scratch_rec_sum_array ENDP
 main PROC
     call    ex_24_from_scratch_rec_sum_array

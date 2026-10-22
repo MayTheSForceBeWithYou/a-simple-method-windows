@@ -11,7 +11,7 @@ ex_21_rec_binary_digits PROC
     call poprec
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_21_rec_binary_digits ENDP
 main PROC
     call    ex_21_rec_binary_digits

@@ -27,6 +27,7 @@ L_n:
 L_o:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_20_load_validate_magic ENDP
 main PROC
     call    ex_20_load_validate_magic

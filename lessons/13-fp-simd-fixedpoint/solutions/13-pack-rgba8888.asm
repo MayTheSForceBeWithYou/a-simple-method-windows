@@ -11,7 +11,7 @@ ex_13_pack_rgba8888 PROC
     mov eax, 255
         mov     eax, eax
     ret
-
+    add     rsp, 40
 ex_13_pack_rgba8888 ENDP
 main PROC
     call    ex_13_pack_rgba8888

@@ -25,6 +25,7 @@ not_fire:
 exit_proc:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_16_repeat_delay ENDP
 main PROC
     call    ex_16_repeat_delay

@@ -18,7 +18,7 @@ ex_03_econ_tick PROC
     add QWORD PTR [cash], 5
         mov     eax, [cash]
     ret
-
+    add     rsp, 40
 ex_03_econ_tick ENDP
 main PROC
     call    ex_03_econ_tick

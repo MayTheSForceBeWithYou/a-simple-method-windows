@@ -14,7 +14,7 @@ ex_01_strlen PROC
     call strlen_fn
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_01_strlen ENDP
 main PROC
     call    ex_01_strlen

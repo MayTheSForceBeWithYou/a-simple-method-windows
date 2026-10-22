@@ -28,6 +28,7 @@ count_next:
 count_done:
     mov     eax, 4
     ret
+    add     rsp, 40
 ex_20_count_char ENDP
 main PROC
     call    ex_20_count_char

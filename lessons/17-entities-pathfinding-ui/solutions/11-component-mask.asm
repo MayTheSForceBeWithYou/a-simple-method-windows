@@ -17,6 +17,7 @@ ex_11_component_mask PROC
     or rcx, VEL
     mov     eax, 3
     ret
+    add     rsp, 40
 ex_11_component_mask ENDP
 main PROC
     call    ex_11_component_mask

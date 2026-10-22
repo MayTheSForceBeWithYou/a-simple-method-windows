@@ -15,7 +15,7 @@ ex_22_stretch_coaster_excitement PROC
     sub rsp, 40
         mov     eax, 42
     ret
-
+    add     rsp, 40
 ex_22_stretch_coaster_excitement ENDP
 main PROC
     call    ex_22_stretch_coaster_excitement

@@ -15,7 +15,7 @@ ex_05_makefile_note PROC
     sub rsp, 40
         mov     eax, 0
     ret
-
+    add     rsp, 40
 ex_05_makefile_note ENDP
 main PROC
     call    ex_05_makefile_note

@@ -10,7 +10,7 @@ ex_12_sse_movss_stub PROC
     sub rsp, 40
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_12_sse_movss_stub ENDP
 main PROC
     call    ex_12_sse_movss_stub

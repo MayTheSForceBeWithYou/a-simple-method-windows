@@ -28,6 +28,7 @@ pad_clz:
 done_clz:
     mov     eax, 8
     ret
+    add     rsp, 40
 ex_20_count_leading_zeros_loop ENDP
 main PROC
     call    ex_20_count_leading_zeros_loop

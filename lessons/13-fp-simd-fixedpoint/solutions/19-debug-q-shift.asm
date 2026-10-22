@@ -19,7 +19,7 @@ ex_19_debug_q_shift PROC
     shr rax, 16
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_19_debug_q_shift ENDP
 main PROC
     call    ex_19_debug_q_shift

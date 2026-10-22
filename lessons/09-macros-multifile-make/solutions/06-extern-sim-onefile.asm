@@ -14,7 +14,7 @@ ex_06_extern_sim_onefile PROC
     call helper
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_06_extern_sim_onefile ENDP
 main PROC
     call    ex_06_extern_sim_onefile

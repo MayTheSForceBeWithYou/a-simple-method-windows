@@ -19,6 +19,7 @@ ex_15_exit_sum PROC
     add rcx, r10
     mov     eax, 42
     ret
+    add     rsp, 40
 ex_15_exit_sum ENDP
 main PROC
     call    ex_15_exit_sum

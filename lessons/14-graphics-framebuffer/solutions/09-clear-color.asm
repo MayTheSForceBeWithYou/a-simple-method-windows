@@ -22,6 +22,7 @@ ex_09_clear_color PROC
     movzx rcx, BYTE PTR [fb]
     mov     eax, 5
     ret
+    add     rsp, 40
 ex_09_clear_color ENDP
 main PROC
     call    ex_09_clear_color

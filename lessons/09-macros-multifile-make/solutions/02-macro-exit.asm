@@ -18,7 +18,7 @@ ENDM
 ex_02_macro_exit PROC
     sub rsp, 40
     exit_with 7
-
+    add     rsp, 40
 ex_02_macro_exit ENDP
 main PROC
     call    ex_02_macro_exit

@@ -14,7 +14,7 @@ ex_21_sim_real_ratio PROC
     sub rsp, 40
         mov     eax, 50
     ret
-
+    add     rsp, 40
 ex_21_sim_real_ratio ENDP
 main PROC
     call    ex_21_sim_real_ratio

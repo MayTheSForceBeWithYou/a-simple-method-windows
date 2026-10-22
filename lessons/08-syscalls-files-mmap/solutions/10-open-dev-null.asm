@@ -46,6 +46,7 @@ L_e:
 L_o:
     mov     eax, 0
     ret
+    add     rsp, 72
 ex_10_open_dev_null ENDP
 main PROC
     call    ex_10_open_dev_null

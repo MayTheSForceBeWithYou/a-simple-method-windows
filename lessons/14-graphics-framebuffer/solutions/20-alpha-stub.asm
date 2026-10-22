@@ -14,7 +14,7 @@ ex_20_alpha_stub PROC
     sub rsp, 40
         mov     eax, 7
     ret
-
+    add     rsp, 40
 ex_20_alpha_stub ENDP
 main PROC
     call    ex_20_alpha_stub

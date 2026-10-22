@@ -41,7 +41,7 @@ L_fin:
     dec QWORD PTR [len]
         mov     eax, [len]
     ret
-
+    add     rsp, 40
 ex_11_delete_forward ENDP
 main PROC
     call    ex_11_delete_forward

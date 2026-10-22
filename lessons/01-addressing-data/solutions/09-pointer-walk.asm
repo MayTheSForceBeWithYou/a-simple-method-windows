@@ -29,6 +29,7 @@ ex_09_pointer_walk PROC
     add rcx, rax
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_09_pointer_walk ENDP
 main PROC
     call    ex_09_pointer_walk

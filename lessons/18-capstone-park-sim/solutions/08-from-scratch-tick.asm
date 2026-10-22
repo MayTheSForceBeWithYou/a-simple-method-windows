@@ -23,7 +23,7 @@ tick_loop:
 tick_done:
         mov     eax, [tick]
     ret
-
+    add     rsp, 40
 ex_08_from_scratch_tick ENDP
 main PROC
     call    ex_08_from_scratch_tick

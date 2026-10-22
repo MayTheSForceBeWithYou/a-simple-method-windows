@@ -71,6 +71,7 @@ L_e:
 L_o:
     mov     eax, 0
     ret
+    add     rsp, 72
 ex_19_pwrite_emul ENDP
 main PROC
     call    ex_19_pwrite_emul

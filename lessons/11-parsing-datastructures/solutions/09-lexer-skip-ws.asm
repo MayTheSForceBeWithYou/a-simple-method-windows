@@ -22,6 +22,7 @@ done_skip:
     sub rcx, '0'
     mov     eax, 7
     ret
+    add     rsp, 40
 ex_09_lexer_skip_ws ENDP
 main PROC
     call    ex_09_lexer_skip_ws

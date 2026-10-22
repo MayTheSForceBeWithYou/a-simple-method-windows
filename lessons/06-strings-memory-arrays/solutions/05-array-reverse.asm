@@ -15,7 +15,7 @@ ex_05_array_reverse PROC
     call rev_array
         mov     eax, arr
     ret
-
+    add     rsp, 40
 ex_05_array_reverse ENDP
 main PROC
     call    ex_05_array_reverse

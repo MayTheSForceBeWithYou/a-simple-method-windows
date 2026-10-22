@@ -15,6 +15,7 @@ ex_03_aabb_reject PROC
     xor rcx, rcx
     mov     eax, 0
     ret
+    add     rsp, 40
 ex_03_aabb_reject ENDP
 main PROC
     call    ex_03_aabb_reject

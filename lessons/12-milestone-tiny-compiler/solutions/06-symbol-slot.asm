@@ -14,7 +14,7 @@ ex_06_symbol_slot PROC
     mov QWORD PTR [slots], 42
         mov     eax, QWORD PTR [slots]
     ret
-
+    add     rsp, 40
 ex_06_symbol_slot ENDP
 main PROC
     call    ex_06_symbol_slot

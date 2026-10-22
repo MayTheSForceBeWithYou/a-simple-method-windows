@@ -22,6 +22,7 @@ ex_09_tile_at PROC
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 5
     ret
+    add     rsp, 40
 ex_09_tile_at ENDP
 main PROC
     call    ex_09_tile_at

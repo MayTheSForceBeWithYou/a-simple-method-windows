@@ -10,7 +10,7 @@ ex_05_dot2_fixed PROC
     sub rsp, 40
         mov     eax, 1*3+2*4
     ret
-
+    add     rsp, 40
 ex_05_dot2_fixed ENDP
 main PROC
     call    ex_05_dot2_fixed

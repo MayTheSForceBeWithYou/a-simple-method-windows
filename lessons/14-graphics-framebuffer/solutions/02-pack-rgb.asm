@@ -21,6 +21,7 @@ ex_02_pack_rgb PROC
     movzx rcx, al
     mov     eax, 3
     ret
+    add     rsp, 40
 ex_02_pack_rgb ENDP
 main PROC
     call    ex_02_pack_rgb

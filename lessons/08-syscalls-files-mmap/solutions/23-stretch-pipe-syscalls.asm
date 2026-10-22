@@ -39,6 +39,7 @@ L_fail:
 L_o:
     mov     eax, 0
     ret
+    add     rsp, 40
 ex_23_stretch_pipe_syscalls ENDP
 main PROC
     call    ex_23_stretch_pipe_syscalls

@@ -14,7 +14,7 @@ ex_22_stretch_bresenham_count PROC
     sub rsp, 40
         mov     eax, 4
     ret
-
+    add     rsp, 40
 ex_22_stretch_bresenham_count ENDP
 main PROC
     call    ex_22_stretch_bresenham_count

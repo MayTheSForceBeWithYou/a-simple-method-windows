@@ -18,7 +18,7 @@ ex_14_frame_stats PROC
     mov QWORD PTR [frames], 60
         mov     eax, [frames]
     ret
-
+    add     rsp, 40
 ex_14_frame_stats ENDP
 main PROC
     call    ex_14_frame_stats

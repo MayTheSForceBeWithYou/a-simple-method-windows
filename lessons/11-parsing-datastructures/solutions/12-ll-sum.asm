@@ -28,6 +28,7 @@ loop_sum:
 done_sum:
     mov     eax, 12
     ret
+    add     rsp, 40
 ex_12_ll_sum ENDP
 main PROC
     call    ex_12_ll_sum

@@ -22,6 +22,7 @@ ex_07_simd_lane_sum_stub PROC
     add rcx, rax
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_07_simd_lane_sum_stub ENDP
 main PROC
     call    ex_07_simd_lane_sum_stub

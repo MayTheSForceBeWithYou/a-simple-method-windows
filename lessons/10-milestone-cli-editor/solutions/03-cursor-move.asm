@@ -21,7 +21,7 @@ ex_03_cursor_move PROC
     
         mov     eax, [cursor]
     ret
-
+    add     rsp, 40
 ex_03_cursor_move ENDP
 main PROC
     call    ex_03_cursor_move

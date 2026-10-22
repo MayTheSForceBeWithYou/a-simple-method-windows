@@ -23,6 +23,7 @@ goal_no:
 goal_done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_21_scenario_goal ENDP
 main PROC
     call    ex_21_scenario_goal

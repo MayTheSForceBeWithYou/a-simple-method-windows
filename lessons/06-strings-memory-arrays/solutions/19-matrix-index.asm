@@ -19,7 +19,7 @@ ex_19_matrix_index PROC
     lea r11, [m]
         mov     eax, QWORD PTR [r11+rax*8]
     ret
-
+    add     rsp, 40
 ex_19_matrix_index ENDP
 main PROC
     call    ex_19_matrix_index

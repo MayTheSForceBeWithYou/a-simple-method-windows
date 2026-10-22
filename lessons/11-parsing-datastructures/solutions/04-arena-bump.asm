@@ -18,6 +18,7 @@ ex_04_arena_bump PROC
     and rcx, 255
     mov     eax, 32
     ret
+    add     rsp, 40
 ex_04_arena_bump ENDP
 main PROC
     call    ex_04_arena_bump

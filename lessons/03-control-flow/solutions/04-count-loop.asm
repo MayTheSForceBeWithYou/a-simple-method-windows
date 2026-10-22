@@ -18,7 +18,7 @@ loop_start:
 loop_done:
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_04_count_loop ENDP
 main PROC
     call    ex_04_count_loop

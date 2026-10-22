@@ -11,7 +11,7 @@ ex_18_mask_range PROC
     mov rcx, rax
         mov     eax, 60
     ret
-
+    add     rsp, 40
 ex_18_mask_range ENDP
 main PROC
     call    ex_18_mask_range

@@ -14,7 +14,7 @@ ex_21_damage_rect PROC
     sub rsp, 40
         mov     eax, 16
     ret
-
+    add     rsp, 40
 ex_21_damage_rect ENDP
 main PROC
     call    ex_21_damage_rect

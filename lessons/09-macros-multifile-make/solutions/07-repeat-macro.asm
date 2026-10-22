@@ -19,6 +19,7 @@ ex_07_repeat_macro PROC
     ENDM
     mov     eax, 3
     ret
+    add     rsp, 40
 ex_07_repeat_macro ENDP
 main PROC
     call    ex_07_repeat_macro

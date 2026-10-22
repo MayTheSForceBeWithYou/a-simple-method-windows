@@ -37,7 +37,7 @@ ex_18_default_rel_macro PROC
     ; Exit 0
         mov     eax, 0
     ret
-
+    add     rsp, 56
 ex_18_default_rel_macro ENDP
 main PROC
     call    ex_18_default_rel_macro

@@ -18,6 +18,7 @@ equal:
 done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_01_cmp_je ENDP
 main PROC
     call    ex_01_cmp_je

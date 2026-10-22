@@ -17,6 +17,7 @@ else_branch:
 done:
     mov     eax, 20
     ret
+    add     rsp, 40
 ex_02_if_else ENDP
 main PROC
     call    ex_02_if_else

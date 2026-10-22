@@ -17,6 +17,7 @@ ex_06_aos_sum PROC
     add rcx, rec[24]
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_06_aos_sum ENDP
 main PROC
     call    ex_06_aos_sum

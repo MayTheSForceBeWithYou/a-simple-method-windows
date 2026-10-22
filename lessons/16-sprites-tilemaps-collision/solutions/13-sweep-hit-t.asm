@@ -14,7 +14,7 @@ ex_13_sweep_hit_t PROC
     sub rsp, 40
         mov     eax, 3
     ret
-
+    add     rsp, 40
 ex_13_sweep_hit_t ENDP
 main PROC
     call    ex_13_sweep_hit_t

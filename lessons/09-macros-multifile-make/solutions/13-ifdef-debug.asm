@@ -23,6 +23,7 @@ ex_13_ifdef_debug PROC
     ENDIF
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_13_ifdef_debug ENDP
 main PROC
     call    ex_13_ifdef_debug

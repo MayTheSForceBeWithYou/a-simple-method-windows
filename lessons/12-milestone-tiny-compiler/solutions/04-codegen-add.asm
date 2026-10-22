@@ -12,6 +12,7 @@ ex_04_codegen_add PROC
     add rcx, 3
     mov     eax, 5
     ret
+    add     rsp, 40
 ex_04_codegen_add ENDP
 main PROC
     call    ex_04_codegen_add

@@ -26,7 +26,7 @@ rev_loop:
     jnz rev_loop
         mov     eax, r8d
     ret
-
+    add     rsp, 40
 ex_23_stretch_bit_reverse8 ENDP
 main PROC
     call    ex_23_stretch_bit_reverse8

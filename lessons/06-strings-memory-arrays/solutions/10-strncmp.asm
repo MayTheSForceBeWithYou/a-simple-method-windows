@@ -17,7 +17,7 @@ ex_10_strncmp PROC
     call strncmp_fn
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_10_strncmp ENDP
 main PROC
     call    ex_10_strncmp

@@ -19,7 +19,7 @@ clamp_hi:
 clamp_ok:
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_16_clamp_q ENDP
 main PROC
     call    ex_16_clamp_q

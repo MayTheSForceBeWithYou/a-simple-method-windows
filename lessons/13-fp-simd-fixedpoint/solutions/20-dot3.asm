@@ -10,7 +10,7 @@ ex_20_dot3 PROC
     sub rsp, 40
         mov     eax, 1*4+2*5+3*6
     ret
-
+    add     rsp, 40
 ex_20_dot3 ENDP
 main PROC
     call    ex_20_dot3

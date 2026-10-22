@@ -26,7 +26,7 @@ ex_07_stack_ds PROC
     lea r11, [stk]
         mov     eax, QWORD PTR [r11+rcx*8]
     ret
-
+    add     rsp, 40
 ex_07_stack_ds ENDP
 main PROC
     call    ex_07_stack_ds

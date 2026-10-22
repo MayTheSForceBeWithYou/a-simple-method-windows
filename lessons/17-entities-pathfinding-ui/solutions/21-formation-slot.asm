@@ -15,7 +15,7 @@ ex_21_formation_slot PROC
     sub rsp, 40
         mov     eax, 2
     ret
-
+    add     rsp, 40
 ex_21_formation_slot ENDP
 main PROC
     call    ex_21_formation_slot

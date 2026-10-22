@@ -46,7 +46,7 @@ vm_halt:
     lea r11, [stk]
         mov     eax, QWORD PTR [r11+rcx*8]
     ret
-
+    add     rsp, 40
 ex_19_bytecode_jump ENDP
 main PROC
     call    ex_19_bytecode_jump

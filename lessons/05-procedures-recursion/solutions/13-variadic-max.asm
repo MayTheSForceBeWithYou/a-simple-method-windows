@@ -14,7 +14,7 @@ ex_13_variadic_max PROC
     call max_n
         mov     eax, rax
     ret
-
+    add     rsp, 72
 ex_13_variadic_max ENDP
 main PROC
     call    ex_13_variadic_max

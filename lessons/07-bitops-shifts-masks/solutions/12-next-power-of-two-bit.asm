@@ -21,6 +21,7 @@ not_pow2:
 done_pow2:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_12_next_power_of_two_bit ENDP
 main PROC
     call    ex_12_next_power_of_two_bit

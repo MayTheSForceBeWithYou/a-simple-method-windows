@@ -23,7 +23,7 @@ ex_15_pause_flag PROC
 skip_update:
         mov     eax, [updates]
     ret
-
+    add     rsp, 40
 ex_15_pause_flag ENDP
 main PROC
     call    ex_15_pause_flag

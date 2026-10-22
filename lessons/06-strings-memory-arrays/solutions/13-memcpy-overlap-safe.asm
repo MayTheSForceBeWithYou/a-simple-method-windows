@@ -35,7 +35,7 @@ sum_loop:
 sum_done:
         mov     eax, r9
     ret
-
+    add     rsp, 40
 ex_13_memcpy_overlap_safe ENDP
 main PROC
     call    ex_13_memcpy_overlap_safe

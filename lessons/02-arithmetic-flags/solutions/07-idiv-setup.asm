@@ -17,7 +17,7 @@ ex_07_idiv_setup PROC
     idiv rbx
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_07_idiv_setup ENDP
 main PROC
     call    ex_07_idiv_setup

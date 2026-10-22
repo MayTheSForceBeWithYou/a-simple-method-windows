@@ -27,6 +27,7 @@ ex_12_vline PROC
     add rcx, rax
     mov     eax, 6
     ret
+    add     rsp, 40
 ex_12_vline ENDP
 main PROC
     call    ex_12_vline

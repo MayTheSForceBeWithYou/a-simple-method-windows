@@ -16,6 +16,7 @@ ex_08_lea_scale PROC
     lea rcx, [rbx+r8*4]
     mov     eax, 112
     ret
+    add     rsp, 40
 ex_08_lea_scale ENDP
 main PROC
     call    ex_08_lea_scale

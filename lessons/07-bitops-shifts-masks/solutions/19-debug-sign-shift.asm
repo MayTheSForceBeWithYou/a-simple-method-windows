@@ -10,7 +10,7 @@ ex_19_debug_sign_shift PROC
     movzx rcx, al
         mov     eax, 60
     ret
-
+    add     rsp, 40
 ex_19_debug_sign_shift ENDP
 main PROC
     call    ex_19_debug_sign_shift

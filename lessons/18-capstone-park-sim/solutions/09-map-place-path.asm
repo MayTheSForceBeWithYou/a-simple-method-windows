@@ -24,6 +24,7 @@ ex_09_map_place_path PROC
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_09_map_place_path ENDP
 main PROC
     call    ex_09_map_place_path

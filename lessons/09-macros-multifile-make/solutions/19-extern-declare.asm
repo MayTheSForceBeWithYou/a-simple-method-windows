@@ -17,7 +17,7 @@ ex_19_extern_declare PROC
     call foo
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_19_extern_declare ENDP
 main PROC
     call    ex_19_extern_declare

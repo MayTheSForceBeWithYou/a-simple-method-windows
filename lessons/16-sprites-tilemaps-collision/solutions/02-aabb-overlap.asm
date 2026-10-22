@@ -15,7 +15,7 @@ ex_02_aabb_overlap PROC
     ; a[0,0,2,2] b[1,1,3,3]
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_02_aabb_overlap ENDP
 main PROC
     call    ex_02_aabb_overlap

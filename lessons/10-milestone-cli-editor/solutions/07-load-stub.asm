@@ -18,7 +18,7 @@ ex_07_load_stub PROC
     mov QWORD PTR [len], 3
         mov     eax, [len]
     ret
-
+    add     rsp, 40
 ex_07_load_stub ENDP
 main PROC
     call    ex_07_load_stub

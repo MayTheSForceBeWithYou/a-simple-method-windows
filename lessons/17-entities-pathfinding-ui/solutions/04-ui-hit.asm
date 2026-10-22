@@ -14,7 +14,7 @@ ex_04_ui_hit PROC
     sub rsp, 40
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_04_ui_hit ENDP
 main PROC
     call    ex_04_ui_hit

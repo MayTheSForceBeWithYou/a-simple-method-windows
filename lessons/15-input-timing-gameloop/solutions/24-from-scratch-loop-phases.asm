@@ -20,6 +20,7 @@ frame_loop:
     jnz frame_loop
     mov     eax, 6
     ret
+    add     rsp, 40
 ex_24_from_scratch_loop_phases ENDP
 main PROC
     call    ex_24_from_scratch_loop_phases

@@ -20,7 +20,7 @@ ex_15_lerp_fixed PROC
     shr rax, 16
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_15_lerp_fixed ENDP
 main PROC
     call    ex_15_lerp_fixed

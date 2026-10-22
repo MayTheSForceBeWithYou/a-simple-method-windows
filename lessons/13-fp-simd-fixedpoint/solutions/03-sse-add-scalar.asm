@@ -10,7 +10,7 @@ ex_03_sse_add_scalar PROC
     sub rsp, 40
         mov     eax, 5
     ret
-
+    add     rsp, 40
 ex_03_sse_add_scalar ENDP
 main PROC
     call    ex_03_sse_add_scalar

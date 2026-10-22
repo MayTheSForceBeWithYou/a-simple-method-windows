@@ -29,7 +29,7 @@ query_next:
 query_done:
         mov     eax, r8
     ret
-
+    add     rsp, 40
 ex_24_from_scratch_ecs_query ENDP
 main PROC
     call    ex_24_from_scratch_ecs_query

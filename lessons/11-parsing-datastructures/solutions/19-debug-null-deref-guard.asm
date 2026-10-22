@@ -19,6 +19,7 @@ loop_walk:
 done_walk:
     mov     eax, 0
     ret
+    add     rsp, 40
 ex_19_debug_null_deref_guard ENDP
 main PROC
     call    ex_19_debug_null_deref_guard

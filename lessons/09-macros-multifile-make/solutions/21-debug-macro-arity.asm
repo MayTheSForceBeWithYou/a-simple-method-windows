@@ -18,7 +18,7 @@ ENDM
 ex_21_debug_macro_arity PROC
     sub rsp, 40
     EXIT_STATUS 4
-
+    add     rsp, 40
 ex_21_debug_macro_arity ENDP
 main PROC
     call    ex_21_debug_macro_arity

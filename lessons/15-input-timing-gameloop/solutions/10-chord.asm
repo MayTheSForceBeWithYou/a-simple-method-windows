@@ -23,6 +23,7 @@ ex_10_chord PROC
     movzx rcx, al
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_10_chord ENDP
 main PROC
     call    ex_10_chord

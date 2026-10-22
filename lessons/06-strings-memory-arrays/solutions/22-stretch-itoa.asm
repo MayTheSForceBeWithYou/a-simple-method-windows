@@ -20,7 +20,7 @@ ex_22_stretch_itoa PROC
     call itoa
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_22_stretch_itoa ENDP
 main PROC
     call    ex_22_stretch_itoa

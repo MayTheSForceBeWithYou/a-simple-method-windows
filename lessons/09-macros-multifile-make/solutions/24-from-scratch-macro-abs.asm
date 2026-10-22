@@ -25,6 +25,7 @@ ex_24_from_scratch_macro_abs PROC
     ABS rcx
     mov     eax, 9
     ret
+    add     rsp, 40
 ex_24_from_scratch_macro_abs ENDP
 main PROC
     call    ex_24_from_scratch_macro_abs

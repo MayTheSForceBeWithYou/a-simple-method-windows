@@ -19,6 +19,7 @@ ex_06_ride_open PROC
     movzx rcx, BYTE PTR [open]
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_06_ride_open ENDP
 main PROC
     call    ex_06_ride_open

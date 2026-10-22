@@ -251,7 +251,7 @@ def convert_solution_text(text: str, sym: str) -> str:
     stack = main_stack_reserve(inner)
     exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
 
-    student = inner
+    student = balance_stack_before_ret(inner)
     exit_m = re.search(
         r"mov\s+(rcx|rax|ecx|eax)\s*,\s*([^\n;]+)\s*\n\s*call\s+ExitProcess",
         student,

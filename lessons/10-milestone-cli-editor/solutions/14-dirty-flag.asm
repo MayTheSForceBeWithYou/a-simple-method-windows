@@ -24,6 +24,7 @@ ex_14_dirty_flag PROC
     movzx rcx, BYTE PTR [dirty]
     mov     eax, 0
     ret
+    add     rsp, 40
 ex_14_dirty_flag ENDP
 main PROC
     call    ex_14_dirty_flag

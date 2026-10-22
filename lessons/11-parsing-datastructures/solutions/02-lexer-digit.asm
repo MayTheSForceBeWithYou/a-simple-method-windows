@@ -20,6 +20,7 @@ not_digit:
 done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_02_lexer_digit ENDP
 main PROC
     call    ex_02_lexer_digit

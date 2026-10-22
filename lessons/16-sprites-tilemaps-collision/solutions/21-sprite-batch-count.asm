@@ -14,7 +14,7 @@ ex_21_sprite_batch_count PROC
     sub rsp, 40
         mov     eax, 8
     ret
-
+    add     rsp, 40
 ex_21_sprite_batch_count ENDP
 main PROC
     call    ex_21_sprite_batch_count

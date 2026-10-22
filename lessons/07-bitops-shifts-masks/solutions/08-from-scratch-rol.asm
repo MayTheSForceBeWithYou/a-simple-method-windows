@@ -10,6 +10,7 @@ ex_08_from_scratch_rol PROC
     movzx rcx, al
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_08_from_scratch_rol ENDP
 main PROC
     call    ex_08_from_scratch_rol

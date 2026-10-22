@@ -20,6 +20,7 @@ not_found:
 done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_15_rd_expect ENDP
 main PROC
     call    ex_15_rd_expect

@@ -24,6 +24,7 @@ ex_10_put_pixel PROC
     movzx rcx, BYTE PTR [r11+rax]
     mov     eax, 9
     ret
+    add     rsp, 40
 ex_10_put_pixel ENDP
 main PROC
     call    ex_10_put_pixel

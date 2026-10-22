@@ -23,6 +23,7 @@ ex_08_from_scratch_gap_start PROC
     sub rcx, [gap_s]
     mov     eax, 8
     ret
+    add     rsp, 40
 ex_08_from_scratch_gap_start ENDP
 main PROC
     call    ex_08_from_scratch_gap_start

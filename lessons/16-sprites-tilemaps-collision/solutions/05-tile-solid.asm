@@ -18,6 +18,7 @@ ex_05_tile_solid PROC
     movzx rcx, BYTE PTR [solid+2]
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_05_tile_solid ENDP
 main PROC
     call    ex_05_tile_solid

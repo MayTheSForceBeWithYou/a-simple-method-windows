@@ -10,7 +10,7 @@ ex_14_debug_missing_ret PROC
     call three
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_14_debug_missing_ret ENDP
 main PROC
     call    ex_14_debug_missing_ret

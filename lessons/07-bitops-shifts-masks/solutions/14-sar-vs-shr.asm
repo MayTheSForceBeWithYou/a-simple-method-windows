@@ -14,6 +14,7 @@ ex_14_sar_vs_shr PROC
     movzx rcx, cl
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_14_sar_vs_shr ENDP
 main PROC
     call    ex_14_sar_vs_shr

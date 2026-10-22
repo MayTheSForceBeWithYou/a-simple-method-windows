@@ -15,6 +15,7 @@ ex_06_rd_parse_num PROC
     sub rcx, '0'
     mov     eax, 3
     ret
+    add     rsp, 40
 ex_06_rd_parse_num ENDP
 main PROC
     call    ex_06_rd_parse_num

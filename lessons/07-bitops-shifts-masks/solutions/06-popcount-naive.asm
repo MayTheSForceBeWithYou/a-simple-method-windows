@@ -20,6 +20,7 @@ loop_pop:
 done_pop:
     mov     eax, 4
     ret
+    add     rsp, 40
 ex_06_popcount_naive ENDP
 main PROC
     call    ex_06_popcount_naive

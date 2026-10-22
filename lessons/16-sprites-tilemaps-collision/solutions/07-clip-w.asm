@@ -14,7 +14,7 @@ ex_07_clip_w PROC
     sub rsp, 40
         mov     eax, 2
     ret
-
+    add     rsp, 40
 ex_07_clip_w ENDP
 main PROC
     call    ex_07_clip_w

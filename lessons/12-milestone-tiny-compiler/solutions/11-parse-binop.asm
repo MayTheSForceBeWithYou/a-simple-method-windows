@@ -12,6 +12,7 @@ ex_11_parse_binop PROC
     add rcx, 3
     mov     eax, 5
     ret
+    add     rsp, 40
 ex_11_parse_binop ENDP
 main PROC
     call    ex_11_parse_binop

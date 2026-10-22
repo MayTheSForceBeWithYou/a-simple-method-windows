@@ -18,7 +18,7 @@ ex_18_status_line_len PROC
     mov QWORD PTR [len], 12
         mov     eax, [len]
     ret
-
+    add     rsp, 40
 ex_18_status_line_len ENDP
 main PROC
     call    ex_18_status_line_len

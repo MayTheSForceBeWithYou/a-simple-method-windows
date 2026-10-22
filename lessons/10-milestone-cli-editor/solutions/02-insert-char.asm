@@ -24,7 +24,7 @@ ex_02_insert_char PROC
     
         mov     eax, [len]
     ret
-
+    add     rsp, 40
 ex_02_insert_char ENDP
 main PROC
     call    ex_02_insert_char

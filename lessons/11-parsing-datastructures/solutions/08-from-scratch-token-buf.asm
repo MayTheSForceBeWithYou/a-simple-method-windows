@@ -16,7 +16,7 @@ ex_08_from_scratch_token_buf PROC
     mov QWORD PTR [n], 1
         mov     eax, QWORD PTR [n]
     ret
-
+    add     rsp, 40
 ex_08_from_scratch_token_buf ENDP
 main PROC
     call    ex_08_from_scratch_token_buf

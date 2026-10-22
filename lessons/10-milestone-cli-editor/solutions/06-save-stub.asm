@@ -13,7 +13,7 @@ ex_06_save_stub PROC
     sub rsp, 40
         mov     eax, 0
     ret
-
+    add     rsp, 40
 ex_06_save_stub ENDP
 main PROC
     call    ex_06_save_stub

@@ -15,7 +15,7 @@ ex_14_path_reconstruct PROC
     sub rsp, 40
         mov     eax, 4
     ret
-
+    add     rsp, 40
 ex_14_path_reconstruct ENDP
 main PROC
     call    ex_14_path_reconstruct

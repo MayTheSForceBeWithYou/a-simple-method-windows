@@ -20,6 +20,7 @@ ex_01_soa_pos PROC
     add rcx, [ys+8]
     mov     eax, 11
     ret
+    add     rsp, 40
 ex_01_soa_pos ENDP
 main PROC
     call    ex_01_soa_pos

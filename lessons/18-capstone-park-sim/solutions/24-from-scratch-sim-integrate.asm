@@ -22,7 +22,7 @@ ex_24_from_scratch_sim_integrate PROC
     inc QWORD PTR [cash]
         mov     eax, QWORD PTR [cash]
     ret
-
+    add     rsp, 40
 ex_24_from_scratch_sim_integrate ENDP
 main PROC
     call    ex_24_from_scratch_sim_integrate

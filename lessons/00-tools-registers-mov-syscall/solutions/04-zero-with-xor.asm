@@ -14,6 +14,7 @@ ex_04_zero_with_xor PROC
     xor rcx, rcx
     mov     eax, 0
     ret
+    add     rsp, 40
 ex_04_zero_with_xor ENDP
 main PROC
     call    ex_04_zero_with_xor

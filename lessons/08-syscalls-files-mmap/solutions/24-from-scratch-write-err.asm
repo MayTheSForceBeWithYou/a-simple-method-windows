@@ -42,6 +42,7 @@ L_ok:
 L_o:
     mov     eax, 1
     ret
+    add     rsp, 56
 ex_24_from_scratch_write_err ENDP
 main PROC
     call    ex_24_from_scratch_write_err

@@ -44,6 +44,7 @@ L_put:
     movzx rcx, BYTE PTR [rdx+1]
     mov     eax, 66
     ret
+    add     rsp, 40
 ex_10_insert_middle ENDP
 main PROC
     call    ex_10_insert_middle

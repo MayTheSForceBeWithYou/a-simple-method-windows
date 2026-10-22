@@ -14,7 +14,7 @@ ex_20_fixed_hz PROC
     sub rsp, 40
         mov     eax, 60
     ret
-
+    add     rsp, 40
 ex_20_fixed_hz ENDP
 main PROC
     call    ex_20_fixed_hz

@@ -14,7 +14,7 @@ ex_08_from_scratch_q8 PROC
     shr eax, 16
         mov     eax, eax
     ret
-
+    add     rsp, 40
 ex_08_from_scratch_q8 ENDP
 main PROC
     call    ex_08_from_scratch_q8

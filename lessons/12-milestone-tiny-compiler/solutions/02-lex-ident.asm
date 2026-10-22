@@ -20,6 +20,7 @@ not_alpha:
 done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_02_lex_ident ENDP
 main PROC
     call    ex_02_lex_ident

@@ -15,6 +15,7 @@ ex_05_imul_three PROC
     imul rcx, 7
     mov     eax, 42
     ret
+    add     rsp, 40
 ex_05_imul_three ENDP
 main PROC
     call    ex_05_imul_three

@@ -14,7 +14,7 @@ ex_02_bfs_dist PROC
     sub rsp, 40
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_02_bfs_dist ENDP
 main PROC
     call    ex_02_bfs_dist

@@ -47,6 +47,7 @@ loop_end:
     add rcx, rax
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_14_blit_key ENDP
 main PROC
     call    ex_14_blit_key

@@ -33,6 +33,7 @@ ex_05_blit_copy PROC
     add rcx, rax
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_05_blit_copy ENDP
 main PROC
     call    ex_05_blit_copy

@@ -13,7 +13,7 @@ ex_17_precedence PROC
     add rax, 2
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_17_precedence ENDP
 main PROC
     call    ex_17_precedence

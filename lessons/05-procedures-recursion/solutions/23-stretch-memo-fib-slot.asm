@@ -20,7 +20,7 @@ clear_loop:
     call fibm
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_23_stretch_memo_fib_slot ENDP
 main PROC
     call    ex_23_stretch_memo_fib_slot

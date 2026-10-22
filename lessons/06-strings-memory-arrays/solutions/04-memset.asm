@@ -25,6 +25,7 @@ ex_04_memset PROC
     add rcx, rax
     mov     eax, 28
     ret
+    add     rsp, 40
 ex_04_memset ENDP
 main PROC
     call    ex_04_memset

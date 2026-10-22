@@ -34,7 +34,7 @@ ex_16_expr_stack PROC
     inc QWORD PTR [sp_]
         mov     eax, rax
     ret
-
+    add     rsp, 40
 ex_16_expr_stack ENDP
 main PROC
     call    ex_16_expr_stack

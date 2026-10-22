@@ -38,7 +38,7 @@ ex_09_write_stderr PROC
     ; Exit 1
         mov     eax, 1
     ret
-
+    add     rsp, 56
 ex_09_write_stderr ENDP
 main PROC
     call    ex_09_write_stderr

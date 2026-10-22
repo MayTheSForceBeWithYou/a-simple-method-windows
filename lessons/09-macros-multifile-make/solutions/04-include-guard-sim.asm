@@ -18,7 +18,7 @@ ex_04_include_guard_sim PROC
     sub rsp, 40
         mov     eax, ANSWER
     ret
-
+    add     rsp, 40
 ex_04_include_guard_sim ENDP
 main PROC
     call    ex_04_include_guard_sim

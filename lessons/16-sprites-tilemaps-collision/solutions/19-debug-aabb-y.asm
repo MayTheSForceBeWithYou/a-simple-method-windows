@@ -15,7 +15,7 @@ ex_19_debug_aabb_y PROC
     ; a.y=0 a.h=2; b.y=1 b.h=2 overlap
         mov     eax, 1
     ret
-
+    add     rsp, 40
 ex_19_debug_aabb_y ENDP
 main PROC
     call    ex_19_debug_aabb_y

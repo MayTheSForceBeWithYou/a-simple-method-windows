@@ -21,6 +21,7 @@ loop_start:
 loop_done:
     mov     eax, 10
     ret
+    add     rsp, 40
 ex_08_from_scratch_loop_counter ENDP
 main PROC
     call    ex_08_from_scratch_loop_counter

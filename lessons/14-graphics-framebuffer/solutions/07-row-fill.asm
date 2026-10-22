@@ -21,6 +21,7 @@ ex_07_row_fill PROC
     movzx rcx, BYTE PTR [row+1]
     mov     eax, 9
     ret
+    add     rsp, 40
 ex_07_row_fill ENDP
 main PROC
     call    ex_07_row_fill

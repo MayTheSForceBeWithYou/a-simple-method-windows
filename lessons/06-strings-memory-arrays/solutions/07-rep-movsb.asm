@@ -30,6 +30,7 @@ ex_07_rep_movsb PROC
     add rcx, rax
     mov     eax, 15
     ret
+    add     rsp, 40
 ex_07_rep_movsb ENDP
 main PROC
     call    ex_07_rep_movsb

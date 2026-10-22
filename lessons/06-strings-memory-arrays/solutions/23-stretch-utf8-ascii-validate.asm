@@ -30,6 +30,7 @@ val_bad:
 val_done:
     mov     eax, 1
     ret
+    add     rsp, 40
 ex_23_stretch_utf8_ascii_validate ENDP
 main PROC
     call    ex_23_stretch_utf8_ascii_validate

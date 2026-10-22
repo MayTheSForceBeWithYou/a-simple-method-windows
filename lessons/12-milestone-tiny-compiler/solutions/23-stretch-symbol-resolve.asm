@@ -14,7 +14,7 @@ ex_23_stretch_symbol_resolve PROC
     mov QWORD PTR [sym], 32
         mov     eax, QWORD PTR [sym]
     ret
-
+    add     rsp, 40
 ex_23_stretch_symbol_resolve ENDP
 main PROC
     call    ex_23_stretch_symbol_resolve

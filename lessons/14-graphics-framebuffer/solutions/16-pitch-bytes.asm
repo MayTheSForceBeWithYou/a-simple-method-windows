@@ -16,6 +16,7 @@ ex_16_pitch_bytes PROC
     imul rcx, 4
     mov     eax, 20
     ret
+    add     rsp, 40
 ex_16_pitch_bytes ENDP
 main PROC
     call    ex_16_pitch_bytes

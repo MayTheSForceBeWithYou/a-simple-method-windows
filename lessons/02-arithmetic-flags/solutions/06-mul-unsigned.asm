@@ -18,6 +18,7 @@ ex_06_mul_unsigned PROC
     and rcx, 255
     mov     eax, 224
     ret
+    add     rsp, 40
 ex_06_mul_unsigned ENDP
 main PROC
     call    ex_06_mul_unsigned

@@ -30,7 +30,7 @@ ex_09_macro_pushregs PROC
     
         mov     eax, rbx
     ret
-
+    add     rsp, 40
 ex_09_macro_pushregs ENDP
 main PROC
     call    ex_09_macro_pushregs
