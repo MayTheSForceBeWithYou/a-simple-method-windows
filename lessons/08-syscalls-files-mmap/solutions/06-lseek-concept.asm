@@ -17,7 +17,6 @@ ex_06_lseek_concept PROC
     add rcx, 10
     mov     eax, 10
     ret
-    add     rsp, 40
 ex_06_lseek_concept ENDP
 main PROC
     call    ex_06_lseek_concept

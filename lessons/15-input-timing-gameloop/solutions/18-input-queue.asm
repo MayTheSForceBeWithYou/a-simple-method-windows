@@ -27,7 +27,6 @@ ex_18_input_queue PROC
     inc QWORD PTR [h]
     mov     eax, 9
     ret
-    add     rsp, 40
 ex_18_input_queue ENDP
 main PROC
     call    ex_18_input_queue

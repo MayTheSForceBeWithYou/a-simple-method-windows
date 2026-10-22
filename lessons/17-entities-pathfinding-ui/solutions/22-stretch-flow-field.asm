@@ -15,7 +15,7 @@ ex_22_stretch_flow_field PROC
     sub rsp, 40
         mov     eax, 4
     ret
-    add     rsp, 40
+
 ex_22_stretch_flow_field ENDP
 main PROC
     call    ex_22_stretch_flow_field

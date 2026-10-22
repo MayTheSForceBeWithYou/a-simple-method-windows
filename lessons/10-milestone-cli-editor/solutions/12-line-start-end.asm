@@ -29,7 +29,6 @@ L_l:
 L_d:
     mov     eax, 3
     ret
-    add     rsp, 40
 ex_12_line_start_end ENDP
 main PROC
     call    ex_12_line_start_end

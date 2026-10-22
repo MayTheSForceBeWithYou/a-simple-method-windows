@@ -216,7 +216,12 @@ def balance_stack_before_ret(body: str) -> str:
     n = m.group(1)
     if re.search(rf"add\s+rsp,\s*{n}\b", body, re.I):
         return body
-    return body.rstrip() + f"\n    add     rsp, {n}"
+    return re.sub(
+        r"(?im)^(\s*)ret\s*$",
+        rf"\1add     rsp, {n}\n\1ret",
+        body,
+        count=1,
+    )
 
 
 def exit_value_from_main_inner(inner: str, fallback: str) -> str:
@@ -251,7 +256,7 @@ def convert_solution_text(text: str, sym: str) -> str:
     stack = main_stack_reserve(inner)
     exit_val = exit_value_from_main_inner(inner, parse_expected_exit(text))
 
-    student = balance_stack_before_ret(inner)
+    student = inner
     exit_m = re.search(
         r"mov\s+(rcx|rax|ecx|eax)\s*,\s*([^\n;]+)\s*\n\s*call\s+ExitProcess",
         student,

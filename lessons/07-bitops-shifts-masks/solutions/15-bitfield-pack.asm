@@ -18,7 +18,7 @@ ex_15_bitfield_pack PROC
     mov rcx, rax
         mov     eax, 60
     ret
-    add     rsp, 40
+
 ex_15_bitfield_pack ENDP
 main PROC
     call    ex_15_bitfield_pack

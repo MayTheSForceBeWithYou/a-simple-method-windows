@@ -19,7 +19,6 @@ ex_20_tile_autotile_mask PROC
     or rcx, E
     mov     eax, 5
     ret
-    add     rsp, 40
 ex_20_tile_autotile_mask ENDP
 main PROC
     call    ex_20_tile_autotile_mask

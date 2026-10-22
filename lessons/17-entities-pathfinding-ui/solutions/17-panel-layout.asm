@@ -15,7 +15,6 @@ ex_17_panel_layout PROC
     add rcx, 12
     mov     eax, 24
     ret
-    add     rsp, 40
 ex_17_panel_layout ENDP
 main PROC
     call    ex_17_panel_layout

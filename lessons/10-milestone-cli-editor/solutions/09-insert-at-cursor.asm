@@ -29,7 +29,7 @@ ex_09_insert_at_cursor PROC
     
         mov     eax, [cur]
     ret
-    add     rsp, 40
+
 ex_09_insert_at_cursor ENDP
 main PROC
     call    ex_09_insert_at_cursor

@@ -19,7 +19,6 @@ ex_15_getpid PROC
     movzx rcx, cl
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_15_getpid ENDP
 main PROC
     call    ex_15_getpid

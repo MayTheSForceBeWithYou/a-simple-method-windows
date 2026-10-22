@@ -21,7 +21,6 @@ ex_23_stretch_raw_mode_flag PROC
     movzx rcx, BYTE PTR [raw]
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_23_stretch_raw_mode_flag ENDP
 main PROC
     call    ex_23_stretch_raw_mode_flag

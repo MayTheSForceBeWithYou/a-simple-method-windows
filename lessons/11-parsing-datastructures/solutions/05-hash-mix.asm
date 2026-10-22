@@ -15,7 +15,6 @@ ex_05_hash_mix PROC
     movzx rcx, al
     mov     eax, 45
     ret
-    add     rsp, 40
 ex_05_hash_mix ENDP
 main PROC
     call    ex_05_hash_mix

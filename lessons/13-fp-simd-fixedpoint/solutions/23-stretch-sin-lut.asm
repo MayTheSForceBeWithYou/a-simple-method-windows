@@ -13,7 +13,7 @@ ex_23_stretch_sin_lut PROC
     sub rsp, 40
         mov     eax, QWORD PTR [lut+8]
     ret
-    add     rsp, 40
+
 ex_23_stretch_sin_lut ENDP
 main PROC
     call    ex_23_stretch_sin_lut

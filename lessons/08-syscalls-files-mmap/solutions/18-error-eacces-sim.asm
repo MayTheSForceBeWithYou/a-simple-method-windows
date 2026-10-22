@@ -45,7 +45,6 @@ L_bad:
 L_o:
     mov     eax, 1
     ret
-    add     rsp, 72
 ex_18_error_eacces_sim ENDP
 main PROC
     call    ex_18_error_eacces_sim

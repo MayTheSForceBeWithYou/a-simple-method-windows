@@ -15,7 +15,7 @@ ex_17_closure_sim PROC
     call add_ctx
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_17_closure_sim ENDP
 main PROC
     call    ex_17_closure_sim

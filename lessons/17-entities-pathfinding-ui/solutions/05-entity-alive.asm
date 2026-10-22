@@ -19,7 +19,6 @@ ex_05_entity_alive PROC
     and rcx, 1
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_05_entity_alive ENDP
 main PROC
     call    ex_05_entity_alive

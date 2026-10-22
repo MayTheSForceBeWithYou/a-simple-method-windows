@@ -13,7 +13,7 @@ ex_02_exit_seven PROC
     sub rsp, 40
         mov     eax, 7
     ret
-    add     rsp, 40
+
 ex_02_exit_seven ENDP
 main PROC
     call    ex_02_exit_seven

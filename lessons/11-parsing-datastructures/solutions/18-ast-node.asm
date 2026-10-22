@@ -19,7 +19,6 @@ ex_18_ast_node PROC
     add rcx, QWORD PTR [node+16]
     mov     eax, 6
     ret
-    add     rsp, 40
 ex_18_ast_node ENDP
 main PROC
     call    ex_18_ast_node

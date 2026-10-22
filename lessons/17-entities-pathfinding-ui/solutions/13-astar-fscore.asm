@@ -14,7 +14,6 @@ ex_13_astar_fscore PROC
     add rcx, 4
     mov     eax, 7
     ret
-    add     rsp, 40
 ex_13_astar_fscore ENDP
 main PROC
     call    ex_13_astar_fscore

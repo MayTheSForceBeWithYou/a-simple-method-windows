@@ -46,7 +46,6 @@ L_e:
 L_o:
     mov     eax, 0
     ret
-    add     rsp, 72
 ex_21_debug_fd_leak_pattern ENDP
 main PROC
     call    ex_21_debug_fd_leak_pattern

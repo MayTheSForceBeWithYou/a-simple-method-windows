@@ -25,7 +25,6 @@ loop_parse:
 done_parse:
     mov     eax, 42
     ret
-    add     rsp, 40
 ex_09_lex_number ENDP
 main PROC
     call    ex_09_lex_number

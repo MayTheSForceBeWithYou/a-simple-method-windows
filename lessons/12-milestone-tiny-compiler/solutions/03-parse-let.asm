@@ -20,7 +20,6 @@ not_l:
 done:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_03_parse_let ENDP
 main PROC
     call    ex_03_parse_let

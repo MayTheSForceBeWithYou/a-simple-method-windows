@@ -15,7 +15,6 @@ ex_07_poll_stub PROC
     xor rcx, rcx
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_07_poll_stub ENDP
 main PROC
     call    ex_07_poll_stub

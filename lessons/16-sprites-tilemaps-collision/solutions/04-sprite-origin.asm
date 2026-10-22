@@ -16,7 +16,6 @@ ex_04_sprite_origin PROC
     sub rcx, 20
     mov     eax, 30
     ret
-    add     rsp, 40
 ex_04_sprite_origin ENDP
 main PROC
     call    ex_04_sprite_origin

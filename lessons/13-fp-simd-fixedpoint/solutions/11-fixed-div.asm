@@ -20,7 +20,7 @@ ex_11_fixed_div PROC
     shr rax, 16
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_11_fixed_div ENDP
 main PROC
     call    ex_11_fixed_div

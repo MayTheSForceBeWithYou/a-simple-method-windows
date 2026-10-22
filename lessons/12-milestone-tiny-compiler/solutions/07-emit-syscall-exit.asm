@@ -11,7 +11,6 @@ ex_07_emit_syscall_exit PROC
     xor rcx, rcx
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_07_emit_syscall_exit ENDP
 main PROC
     call    ex_07_emit_syscall_exit

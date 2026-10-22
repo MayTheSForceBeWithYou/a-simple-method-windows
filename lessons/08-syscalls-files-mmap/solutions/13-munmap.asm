@@ -43,7 +43,7 @@ L_f:
     ; Failure - exit 1
     mov rcx, 1
     call ExitProcess
-    add     rsp, 40
+
 ex_13_munmap ENDP
 main PROC
     call    ex_13_munmap

@@ -10,7 +10,7 @@ ex_17_rotate_parity PROC
     movzx rcx, al
         mov     eax, 60
     ret
-    add     rsp, 40
+
 ex_17_rotate_parity ENDP
 main PROC
     call    ex_17_rotate_parity

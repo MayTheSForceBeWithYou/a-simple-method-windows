@@ -15,7 +15,7 @@ ex_19_debug_parent_index PROC
     sub rsp, 40
         mov     eax, 2
     ret
-    add     rsp, 40
+
 ex_19_debug_parent_index ENDP
 main PROC
     call    ex_19_debug_parent_index

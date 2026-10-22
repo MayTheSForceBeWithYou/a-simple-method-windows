@@ -10,7 +10,7 @@ ex_22_stretch_matrix2_mul PROC
     sub rsp, 40
         mov     eax, 3
     ret
-    add     rsp, 40
+
 ex_22_stretch_matrix2_mul ENDP
 main PROC
     call    ex_22_stretch_matrix2_mul

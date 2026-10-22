@@ -19,7 +19,6 @@ ex_01_map_cell PROC
     movzx rcx, BYTE PTR [map+10]
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_01_map_cell ENDP
 main PROC
     call    ex_01_map_cell

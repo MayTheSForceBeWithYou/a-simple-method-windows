@@ -14,7 +14,7 @@ ex_20_fold_list PROC
     call fold_add
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_20_fold_list ENDP
 main PROC
     call    ex_20_fold_list

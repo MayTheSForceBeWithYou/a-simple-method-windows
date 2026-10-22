@@ -15,7 +15,7 @@ ex_12_bfs_queue PROC
     sub rsp, 40
         mov     eax, 5
     ret
-    add     rsp, 40
+
 ex_12_bfs_queue ENDP
 main PROC
     call    ex_12_bfs_queue

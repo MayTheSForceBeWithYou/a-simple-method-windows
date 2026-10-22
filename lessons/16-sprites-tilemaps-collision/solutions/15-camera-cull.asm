@@ -23,7 +23,6 @@ visible:
 exit_proc:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_15_camera_cull ENDP
 main PROC
     call    ex_15_camera_cull

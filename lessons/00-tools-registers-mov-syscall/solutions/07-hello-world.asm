@@ -39,7 +39,7 @@ ex_07_hello_world PROC
     ; Exit 0
         mov     eax, 0
     ret
-    add     rsp, 56
+
 ex_07_hello_world ENDP
 main PROC
     call    ex_07_hello_world

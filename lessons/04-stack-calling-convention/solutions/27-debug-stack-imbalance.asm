@@ -15,7 +15,7 @@ ex_27_debug_stack_imbalance PROC
     call two
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_27_debug_stack_imbalance ENDP
 main PROC
     call    ex_27_debug_stack_imbalance

@@ -15,7 +15,7 @@ ex_17_save_header PROC
     sub rsp, 40
         mov     eax, 8
     ret
-    add     rsp, 40
+
 ex_17_save_header ENDP
 main PROC
     call    ex_17_save_header

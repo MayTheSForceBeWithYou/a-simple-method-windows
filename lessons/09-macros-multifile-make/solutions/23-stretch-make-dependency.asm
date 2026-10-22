@@ -13,7 +13,7 @@ ex_23_stretch_make_dependency PROC
     sub rsp, 40
         mov     eax, 3
     ret
-    add     rsp, 40
+
 ex_23_stretch_make_dependency ENDP
 main PROC
     call    ex_23_stretch_make_dependency

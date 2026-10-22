@@ -18,7 +18,6 @@ loop_ntz:
 done_ntz:
     mov     eax, 3
     ret
-    add     rsp, 40
 ex_24_from_scratch_ntz ENDP
 main PROC
     call    ex_24_from_scratch_ntz

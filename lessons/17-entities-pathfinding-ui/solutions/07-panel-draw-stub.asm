@@ -14,7 +14,7 @@ ex_07_panel_draw_stub PROC
     sub rsp, 40
         mov     eax, 3
     ret
-    add     rsp, 40
+
 ex_07_panel_draw_stub ENDP
 main PROC
     call    ex_07_panel_draw_stub

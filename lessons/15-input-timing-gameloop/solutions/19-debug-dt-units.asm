@@ -21,7 +21,7 @@ ex_19_debug_dt_units PROC
     div rbx
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_19_debug_dt_units ENDP
 main PROC
     call    ex_19_debug_dt_units

@@ -22,7 +22,6 @@ ver_bad:
 ver_done:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_18_load_version_check ENDP
 main PROC
     call    ex_18_load_version_check

@@ -10,7 +10,7 @@ ex_22_stretch_pratt_stub PROC
     sub rsp, 40
         mov     eax, 20
     ret
-    add     rsp, 40
+
 ex_22_stretch_pratt_stub ENDP
 main PROC
     call    ex_22_stretch_pratt_stub

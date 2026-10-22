@@ -25,7 +25,6 @@ loop_len:
 done_len:
     mov     eax, 3
     ret
-    add     rsp, 40
 ex_10_lex_ident_len ENDP
 main PROC
     call    ex_10_lex_ident_len

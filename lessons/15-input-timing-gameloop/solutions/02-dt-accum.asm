@@ -26,7 +26,6 @@ loop_start:
 loop_done:
     mov     eax, 2
     ret
-    add     rsp, 40
 ex_02_dt_accum ENDP
 main PROC
     call    ex_02_dt_accum

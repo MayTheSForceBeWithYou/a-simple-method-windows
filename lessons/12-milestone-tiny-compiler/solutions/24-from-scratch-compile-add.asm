@@ -12,7 +12,6 @@ ex_24_from_scratch_compile_add PROC
     add rcx, 2
     mov     eax, 42
     ret
-    add     rsp, 40
 ex_24_from_scratch_compile_add ENDP
 main PROC
     call    ex_24_from_scratch_compile_add

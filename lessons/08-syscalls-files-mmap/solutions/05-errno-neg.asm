@@ -31,7 +31,7 @@ ex_05_errno_neg PROC
     call GetLastError
         mov     eax, rax
     ret
-    add     rsp, 72
+
 ex_05_errno_neg ENDP
 main PROC
     call    ex_05_errno_neg

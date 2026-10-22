@@ -22,7 +22,7 @@ ex_16_ui_focus PROC
     mov QWORD PTR [focus], rdx
         mov     eax, rdx
     ret
-    add     rsp, 40
+
 ex_16_ui_focus ENDP
 main PROC
     call    ex_16_ui_focus

@@ -22,7 +22,6 @@ in_range:
 exit_proc:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_06_clip_test ENDP
 main PROC
     call    ex_06_clip_test

@@ -12,7 +12,6 @@ ex_06_shift_div PROC
     sar rcx, 2
     mov     eax, 5
     ret
-    add     rsp, 40
 ex_06_shift_div ENDP
 main PROC
     call    ex_06_shift_div

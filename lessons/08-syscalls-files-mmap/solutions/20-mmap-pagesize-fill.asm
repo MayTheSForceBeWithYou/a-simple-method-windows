@@ -45,7 +45,7 @@ L_o:
     ; Exit with sum (16)
         mov     eax, rdi
     ret
-    add     rsp, 40
+
 ex_20_mmap_pagesize_fill ENDP
 main PROC
     call    ex_20_mmap_pagesize_fill

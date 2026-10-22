@@ -17,7 +17,6 @@ loop_while:
 done_while:
     mov     eax, 3
     ret
-    add     rsp, 40
 ex_17_while_codegen ENDP
 main PROC
     call    ex_17_while_codegen

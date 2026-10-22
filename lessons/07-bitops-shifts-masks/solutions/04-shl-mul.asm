@@ -9,7 +9,7 @@ ex_04_shl_mul PROC
     shl rax, 3
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_04_shl_mul ENDP
 main PROC
     call    ex_04_shl_mul

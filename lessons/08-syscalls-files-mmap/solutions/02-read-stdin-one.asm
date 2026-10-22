@@ -45,7 +45,7 @@ L_fail:
     ; Exit 0 on failure
         mov     eax, 0
     ret
-    add     rsp, 56
+
 ex_02_read_stdin_one ENDP
 main PROC
     call    ex_02_read_stdin_one

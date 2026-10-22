@@ -16,7 +16,7 @@ ex_16_include_path_sim PROC
     sub rsp, 40
         mov     eax, VERSION
     ret
-    add     rsp, 40
+
 ex_16_include_path_sim ENDP
 main PROC
     call    ex_16_include_path_sim

@@ -12,7 +12,7 @@ ex_20_type_check_int PROC
     sub rsp, 40
         mov     eax, TY_INT
     ret
-    add     rsp, 40
+
 ex_20_type_check_int ENDP
 main PROC
     call    ex_20_type_check_int

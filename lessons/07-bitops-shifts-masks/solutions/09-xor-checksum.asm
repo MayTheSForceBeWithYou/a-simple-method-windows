@@ -18,7 +18,6 @@ ex_09_xor_checksum PROC
     movzx rcx, al
     mov     eax, 15
     ret
-    add     rsp, 40
 ex_09_xor_checksum ENDP
 main PROC
     call    ex_09_xor_checksum

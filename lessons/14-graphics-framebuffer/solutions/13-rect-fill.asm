@@ -30,7 +30,6 @@ ex_13_rect_fill PROC
     add rcx, rax
     mov     eax, 12
     ret
-    add     rsp, 40
 ex_13_rect_fill ENDP
 main PROC
     call    ex_13_rect_fill

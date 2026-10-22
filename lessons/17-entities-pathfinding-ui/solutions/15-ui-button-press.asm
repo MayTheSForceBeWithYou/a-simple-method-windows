@@ -15,7 +15,7 @@ ex_15_ui_button_press PROC
     sub rsp, 40
         mov     eax, 1
     ret
-    add     rsp, 40
+
 ex_15_ui_button_press ENDP
 main PROC
     call    ex_15_ui_button_press

@@ -46,7 +46,6 @@ L_e:
 L_o:
     mov     eax, 0
     ret
-    add     rsp, 72
 ex_08_from_scratch_close ENDP
 main PROC
     call    ex_08_from_scratch_close

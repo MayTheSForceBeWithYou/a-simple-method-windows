@@ -22,7 +22,7 @@ ex_12_timestep_spiral PROC
 clamp_ok:
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_12_timestep_spiral ENDP
 main PROC
     call    ex_12_timestep_spiral

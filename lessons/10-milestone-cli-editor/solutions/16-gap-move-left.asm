@@ -24,7 +24,7 @@ ex_16_gap_move_left PROC
     
         mov     eax, [gap_s]
     ret
-    add     rsp, 40
+
 ex_16_gap_move_left ENDP
 main PROC
     call    ex_16_gap_move_left

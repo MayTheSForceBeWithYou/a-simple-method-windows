@@ -24,7 +24,6 @@ nopad:
 exit_proc:
     mov     eax, 2
     ret
-    add     rsp, 40
 ex_05_frame_limit ENDP
 main PROC
     call    ex_05_frame_limit

@@ -19,7 +19,7 @@ ex_07_peep_happy PROC
 clamp_ok:
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_07_peep_happy ENDP
 main PROC
     call    ex_07_peep_happy

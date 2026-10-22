@@ -16,7 +16,6 @@ ex_03_neg PROC
     add rcx, 10
     mov     eax, 5
     ret
-    add     rsp, 40
 ex_03_neg ENDP
 main PROC
     call    ex_03_neg

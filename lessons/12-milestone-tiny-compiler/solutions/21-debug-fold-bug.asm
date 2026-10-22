@@ -13,7 +13,7 @@ ex_21_debug_fold_bug PROC
     add rax, 4
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_21_debug_fold_bug ENDP
 main PROC
     call    ex_21_debug_fold_bug

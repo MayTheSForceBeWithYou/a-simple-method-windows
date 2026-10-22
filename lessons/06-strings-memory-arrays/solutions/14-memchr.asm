@@ -21,7 +21,7 @@ ex_14_memchr PROC
     call memchr_idx
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_14_memchr ENDP
 main PROC
     call    ex_14_memchr

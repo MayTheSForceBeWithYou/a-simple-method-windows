@@ -16,7 +16,7 @@ ex_23_stretch_multiplayer_stub PROC
     mov QWORD PTR [tick_id], 2
         mov     eax, QWORD PTR [tick_id]
     ret
-    add     rsp, 40
+
 ex_23_stretch_multiplayer_stub ENDP
 main PROC
     call    ex_23_stretch_multiplayer_stub

@@ -16,7 +16,6 @@ ex_19_save_length_prefix PROC
     add rcx, 4
     mov     eax, 12
     ret
-    add     rsp, 40
 ex_19_save_length_prefix ENDP
 main PROC
     call    ex_19_save_length_prefix

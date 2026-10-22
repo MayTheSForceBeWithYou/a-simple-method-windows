@@ -23,7 +23,7 @@ ex_20_macro_with_params PROC
     
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_20_macro_with_params ENDP
 main PROC
     call    ex_20_macro_with_params

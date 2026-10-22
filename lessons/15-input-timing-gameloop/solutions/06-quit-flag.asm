@@ -17,7 +17,7 @@ ex_06_quit_flag PROC
     sub rsp, 40
         mov     eax, [quit]
     ret
-    add     rsp, 40
+
 ex_06_quit_flag ENDP
 main PROC
     call    ex_06_quit_flag

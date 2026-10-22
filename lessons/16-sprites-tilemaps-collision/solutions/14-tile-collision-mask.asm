@@ -19,7 +19,6 @@ ex_14_tile_collision_mask PROC
     and rcx, 1
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_14_tile_collision_mask ENDP
 main PROC
     call    ex_14_tile_collision_mask

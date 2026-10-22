@@ -16,7 +16,6 @@ ex_12_aabb_minkowski PROC
     add rcx, 2
     mov     eax, 6
     ret
-    add     rsp, 40
 ex_12_aabb_minkowski ENDP
 main PROC
     call    ex_12_aabb_minkowski

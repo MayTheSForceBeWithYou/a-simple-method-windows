@@ -36,7 +36,7 @@ L_f:
     ; Exit 2 on allocation failure
         mov     eax, 2
     ret
-    add     rsp, 40
+
 ex_12_mmap_write_read ENDP
 main PROC
     call    ex_12_mmap_write_read

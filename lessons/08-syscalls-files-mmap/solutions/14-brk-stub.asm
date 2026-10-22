@@ -31,7 +31,6 @@ L_z:
 L_o:
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_14_brk_stub ENDP
 main PROC
     call    ex_14_brk_stub

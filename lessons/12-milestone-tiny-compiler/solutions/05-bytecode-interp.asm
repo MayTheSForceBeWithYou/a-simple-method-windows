@@ -54,7 +54,7 @@ vm_halt:
     lea r11, [stack]
         mov     eax, QWORD PTR [r11+rcx*8]
     ret
-    add     rsp, 40
+
 ex_05_bytecode_interp ENDP
 main PROC
     call    ex_05_bytecode_interp

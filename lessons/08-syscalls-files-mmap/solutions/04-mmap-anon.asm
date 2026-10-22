@@ -36,7 +36,7 @@ L_fail:
     ; Exit 2 on allocation failure
     mov rcx, 2
     call ExitProcess
-    add     rsp, 40
+
 ex_04_mmap_anon ENDP
 main PROC
     call    ex_04_mmap_anon

@@ -18,7 +18,6 @@ less_than:
 done:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_05_signed_cmp ENDP
 main PROC
     call    ex_05_signed_cmp

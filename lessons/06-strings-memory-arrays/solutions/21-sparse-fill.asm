@@ -38,7 +38,6 @@ sum_loop:
 sum_done:
     mov     eax, 4
     ret
-    add     rsp, 40
 ex_21_sparse_fill ENDP
 main PROC
     call    ex_21_sparse_fill

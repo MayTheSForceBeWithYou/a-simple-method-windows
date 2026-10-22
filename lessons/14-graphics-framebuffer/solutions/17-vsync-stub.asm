@@ -19,7 +19,6 @@ ex_17_vsync_stub PROC
     movzx rcx, BYTE PTR [ready]
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_17_vsync_stub ENDP
 main PROC
     call    ex_17_vsync_stub

@@ -16,7 +16,6 @@ ex_24_from_scratch_overlap_area PROC
     imul rcx, 3
     mov     eax, 6
     ret
-    add     rsp, 40
 ex_24_from_scratch_overlap_area ENDP
 main PROC
     call    ex_24_from_scratch_overlap_area

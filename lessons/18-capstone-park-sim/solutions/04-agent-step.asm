@@ -18,7 +18,7 @@ ex_04_agent_step PROC
     inc QWORD PTR [ax_]
         mov     eax, [ax_]
     ret
-    add     rsp, 40
+
 ex_04_agent_step ENDP
 main PROC
     call    ex_04_agent_step

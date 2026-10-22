@@ -14,7 +14,7 @@ ex_13_codegen_mov PROC
     mov QWORD PTR [slot], 42
         mov     eax, QWORD PTR [slot]
     ret
-    add     rsp, 40
+
 ex_13_codegen_mov ENDP
 main PROC
     call    ex_13_codegen_mov

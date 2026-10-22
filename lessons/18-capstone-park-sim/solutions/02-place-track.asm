@@ -14,7 +14,7 @@ ex_02_place_track PROC
     sub rsp, 40
         mov     eax, 3
     ret
-    add     rsp, 40
+
 ex_02_place_track ENDP
 main PROC
     call    ex_02_place_track

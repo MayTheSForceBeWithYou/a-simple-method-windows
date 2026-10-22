@@ -14,7 +14,7 @@ ex_23_stretch_error_span PROC
     mov QWORD PTR [err_off], 4
         mov     eax, QWORD PTR [err_off]
     ret
-    add     rsp, 40
+
 ex_23_stretch_error_span ENDP
 main PROC
     call    ex_23_stretch_error_span

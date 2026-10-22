@@ -35,7 +35,6 @@ L_fail:
 L_o:
     mov     eax, 0
     ret
-    add     rsp, 40
 ex_16_clock_gettime_stub ENDP
 main PROC
     call    ex_16_clock_gettime_stub

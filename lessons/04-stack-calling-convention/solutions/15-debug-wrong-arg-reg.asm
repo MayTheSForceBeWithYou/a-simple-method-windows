@@ -12,7 +12,7 @@ ex_15_debug_wrong_arg_reg PROC
     call add2
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_15_debug_wrong_arg_reg ENDP
 main PROC
     call    ex_15_debug_wrong_arg_reg

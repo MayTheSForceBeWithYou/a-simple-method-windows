@@ -25,7 +25,6 @@ not_rising:
 exit_proc:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_04_edge_trigger ENDP
 main PROC
     call    ex_04_edge_trigger

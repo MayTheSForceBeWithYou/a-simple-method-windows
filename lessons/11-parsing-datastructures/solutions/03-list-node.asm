@@ -15,7 +15,7 @@ ex_03_list_node PROC
     mov QWORD PTR [node+8], 0
         mov     eax, QWORD PTR [node]
     ret
-    add     rsp, 40
+
 ex_03_list_node ENDP
 main PROC
     call    ex_03_list_node

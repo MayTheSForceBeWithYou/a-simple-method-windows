@@ -18,7 +18,7 @@ ex_24_from_scratch_fb_size PROC
     shr rax, 16
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_24_from_scratch_fb_size ENDP
 main PROC
     call    ex_24_from_scratch_fb_size

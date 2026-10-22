@@ -14,7 +14,6 @@ ex_20_steering_seek PROC
     sub rcx, 3
     mov     eax, 7
     ret
-    add     rsp, 40
 ex_20_steering_seek ENDP
 main PROC
     call    ex_20_steering_seek

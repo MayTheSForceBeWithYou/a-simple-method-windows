@@ -29,7 +29,6 @@ ex_20_queue_ring PROC
     inc QWORD PTR [head]
     mov     eax, 7
     ret
-    add     rsp, 40
 ex_20_queue_ring ENDP
 main PROC
     call    ex_20_queue_ring

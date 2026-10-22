@@ -25,7 +25,7 @@ ex_11_ll_push_front PROC
     mov rax, QWORD PTR [head]
         mov     eax, QWORD PTR [rax]
     ret
-    add     rsp, 40
+
 ex_11_ll_push_front ENDP
 main PROC
     call    ex_11_ll_push_front

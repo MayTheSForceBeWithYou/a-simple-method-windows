@@ -18,7 +18,7 @@ ex_12_strcat_lite PROC
     call strlen_fn
         mov     eax, rax
     ret
-    add     rsp, 40
+
 ex_12_strcat_lite ENDP
 main PROC
     call    ex_12_strcat_lite

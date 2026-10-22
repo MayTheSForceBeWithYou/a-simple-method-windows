@@ -21,7 +21,7 @@ ex_16_anim_frame PROC
     div rbx
         mov     eax, rdx
     ret
-    add     rsp, 40
+
 ex_16_anim_frame ENDP
 main PROC
     call    ex_16_anim_frame

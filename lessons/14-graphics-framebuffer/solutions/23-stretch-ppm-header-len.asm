@@ -17,7 +17,7 @@ ex_23_stretch_ppm_header_len PROC
     sub rsp, 40
         mov     eax, 3
     ret
-    add     rsp, 40
+
 ex_23_stretch_ppm_header_len ENDP
 main PROC
     call    ex_23_stretch_ppm_header_len

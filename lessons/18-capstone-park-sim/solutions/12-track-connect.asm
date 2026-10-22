@@ -15,7 +15,7 @@ ex_12_track_connect PROC
     sub rsp, 40
         mov     eax, 1
     ret
-    add     rsp, 40
+
 ex_12_track_connect ENDP
 main PROC
     call    ex_12_track_connect

@@ -26,7 +26,6 @@ not_equal:
 done:
     mov     eax, 1
     ret
-    add     rsp, 40
 ex_21_intern_string ENDP
 main PROC
     call    ex_21_intern_string

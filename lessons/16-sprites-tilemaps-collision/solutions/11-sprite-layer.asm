@@ -14,7 +14,7 @@ ex_11_sprite_layer PROC
     sub rsp, 40
         mov     eax, 2
     ret
-    add     rsp, 40
+
 ex_11_sprite_layer ENDP
 main PROC
     call    ex_11_sprite_layer

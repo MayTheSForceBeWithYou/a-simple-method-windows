@@ -18,7 +18,7 @@ ex_07_scaled_index PROC
     lea r11, [arr]
         mov     eax, QWORD PTR [r11+r8*8]
     ret
-    add     rsp, 40
+
 ex_07_scaled_index ENDP
 main PROC
     call    ex_07_scaled_index

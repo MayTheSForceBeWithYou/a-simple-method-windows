@@ -21,7 +21,6 @@ ex_08_from_scratch_macro_add PROC
     ADD_IMM rcx, 2
     mov     eax, 42
     ret
-    add     rsp, 40
 ex_08_from_scratch_macro_add ENDP
 main PROC
     call    ex_08_from_scratch_macro_add

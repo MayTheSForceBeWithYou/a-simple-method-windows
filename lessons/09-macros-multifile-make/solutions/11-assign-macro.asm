@@ -21,7 +21,6 @@ ex_11_assign_macro PROC
     ENDM
     mov     eax, 4
     ret
-    add     rsp, 40
 ex_11_assign_macro ENDP
 main PROC
     call    ex_11_assign_macro

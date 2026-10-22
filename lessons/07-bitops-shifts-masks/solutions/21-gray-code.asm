@@ -12,7 +12,7 @@ ex_21_gray_code PROC
     mov rcx, rax
         mov     eax, 60
     ret
-    add     rsp, 40
+
 ex_21_gray_code ENDP
 main PROC
     call    ex_21_gray_code

@@ -54,7 +54,7 @@ L_done:
     mov [len], rdi
         mov     eax, [len]
     ret
-    add     rsp, 40
+
 ex_24_from_scratch_kill_line ENDP
 main PROC
     call    ex_24_from_scratch_kill_line
