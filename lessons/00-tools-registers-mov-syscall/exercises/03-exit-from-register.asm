@@ -10,14 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_03_exit_from_register:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 42
-    
-    ; TODO: Move RAX to the correct argument register and call ExitProcess
-    ; Hint: ExitProcess takes its argument in RCX (MS x64 ABI first parameter)
+    sub     rsp, 32
+    ; TODO: implement ex_03_exit_from_register (student routine; defined in solutions/).
+    call    ex_03_exit_from_register
+    mov     ecx, eax
+    call    ExitProcess
     
 main ENDP
 

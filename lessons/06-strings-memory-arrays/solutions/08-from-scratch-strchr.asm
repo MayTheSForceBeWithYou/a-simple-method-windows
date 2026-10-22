@@ -8,13 +8,20 @@ EXTERN ExitProcess:PROC
 s BYTE "abcd", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_08_from_scratch_strchr PROC
+sub rsp, 40
     lea rcx, s
     mov rdx, 'c'
     call strchr_idx
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_08_from_scratch_strchr ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_strchr
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strchr_idx PROC

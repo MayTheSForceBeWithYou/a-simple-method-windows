@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 v BYTE 80h
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_23_stretch_bit_reverse8 PROC
+sub rsp, 40
     movzx eax, BYTE PTR [v]
     xor r8d, r8d
     mov r9d, 8
@@ -24,7 +25,13 @@ rev_loop:
     shr eax, 1
     dec r9d
     jnz rev_loop
-    mov ecx, r8d
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_23_stretch_bit_reverse8 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_bit_reverse8
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

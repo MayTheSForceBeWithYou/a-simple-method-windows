@@ -8,8 +8,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_21_abi_quiz_exit PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     mov rcx, 1
@@ -17,8 +18,14 @@ main PROC FRAME
     mov r8, 3
     mov r9, 4
     call identity4
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 4
+    ret
+ex_21_abi_quiz_exit ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_abi_quiz_exit
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 identity4 PROC

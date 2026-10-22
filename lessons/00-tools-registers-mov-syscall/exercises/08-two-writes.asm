@@ -22,20 +22,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_08_two_writes:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout, write both messages, exit 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_08_two_writes (student routine; defined in solutions/).
+    call    ex_08_two_writes
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

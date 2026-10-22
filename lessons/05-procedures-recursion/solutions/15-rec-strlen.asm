@@ -8,12 +8,19 @@ EXTERN ExitProcess:PROC
 s BYTE "abcd", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_rec_strlen PROC
+sub rsp, 40
     lea rcx, s
     call rstrlen
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 4
+    ret
+ex_15_rec_strlen ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_rec_strlen
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 rstrlen PROC

@@ -5,12 +5,12 @@ gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_15_gap_insert:PROC
 main PROC
-    mov gap_start, 0
-    mov gap_end, 256
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_15_gap_insert (student routine; defined in solutions/).
+    call    ex_15_gap_insert
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

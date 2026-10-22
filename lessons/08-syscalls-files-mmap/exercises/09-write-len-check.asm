@@ -17,25 +17,14 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_09_write_len_check:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdout, WriteFile message
-    
-    ; TODO: Check if bytesWritten == message_len
-    
-    xor     ecx, ecx
-    jmp     done
-    
-error:
-    mov     ecx, 1
-    
-done:
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_09_write_len_check (student routine; defined in solutions/).
+    call    ex_09_write_len_check
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

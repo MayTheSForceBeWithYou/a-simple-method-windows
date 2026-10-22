@@ -11,9 +11,16 @@ EXTERN ExitProcess:PROC
 ; When expanding: ml64 /c a.asm b.asm && link a.obj b.obj /OUT:prog.exe /ENTRY:main /SUBSYSTEM:CONSOLE kernel32.lib
 
 .code
+
+ex_05_makefile_note PROC
+sub rsp, 40
+    mov     eax, 0
+    ret
+ex_05_makefile_note ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 0
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_05_makefile_note
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

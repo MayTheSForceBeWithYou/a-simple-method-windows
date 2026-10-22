@@ -13,19 +13,18 @@ arr DQ 11, 22, 33, 44
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_07_scaled_index:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: LEA base address into RBX
     ; TODO: MOV index 2 into RCX
     ; TODO: MOV RAX, [RBX+RCX*8]
     ; TODO: Exit with RAX
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_07_scaled_index (student routine; defined in solutions/).
+    call    ex_07_scaled_index
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

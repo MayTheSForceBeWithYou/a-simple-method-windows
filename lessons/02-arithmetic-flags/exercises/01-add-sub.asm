@@ -10,18 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_01_add_sub:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 100
-    
-    ; TODO: Add 20, then sub 78, exit with result
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_01_add_sub (student routine; defined in solutions/).
+    call    ex_01_add_sub
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

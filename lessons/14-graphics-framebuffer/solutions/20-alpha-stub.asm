@@ -10,9 +10,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_20_alpha_stub PROC
+sub rsp, 40
+    mov     eax, 7
+    ret
+ex_20_alpha_stub ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 7
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_20_alpha_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

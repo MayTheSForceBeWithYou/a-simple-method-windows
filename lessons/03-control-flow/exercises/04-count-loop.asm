@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_04_count_loop:PROC
 
 main PROC
-    sub rsp, 40
-    
-    xor rcx, rcx               ; Index
-    xor rax, rax               ; Count
-    
-    ; TODO: While index < 5, inc count, inc index
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_04_count_loop (student routine; defined in solutions/).
+    call    ex_04_count_loop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -5,13 +5,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_14_sar_vs_shr PROC
+sub rsp, 40
     mov rax, -4
     sar rax, 1
     cmp rax, -2
     sete cl
     movzx rcx, cl
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_14_sar_vs_shr ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_sar_vs_shr
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -10,10 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_08_from_scratch_point_in_rect PROC
+sub rsp, 40
     ; p(2,2) in [0,0,5,5]
-    mov rcx, 1
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_08_from_scratch_point_in_rect ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_point_in_rect
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

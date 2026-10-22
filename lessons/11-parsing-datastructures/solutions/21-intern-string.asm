@@ -12,8 +12,9 @@ a BYTE "hi", 0
 table QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_21_intern_string PROC
+sub rsp, 40
     lea rax, a
     mov QWORD PTR [table], rax
     mov rbx, QWORD PTR [table]
@@ -24,6 +25,13 @@ main PROC
 not_equal:
     xor rcx, rcx
 done:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_21_intern_string ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_intern_string
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

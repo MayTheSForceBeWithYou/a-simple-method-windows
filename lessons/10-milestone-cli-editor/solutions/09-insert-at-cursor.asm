@@ -14,8 +14,9 @@ len QWORD ?
 cur QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_09_insert_at_cursor PROC
+sub rsp, 40
     
     mov QWORD PTR [len], 0
     mov QWORD PTR [cur], 0
@@ -26,8 +27,13 @@ main PROC
     
     inc QWORD PTR [len]
     inc QWORD PTR [cur]
-    
-    mov rcx, [cur]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_09_insert_at_cursor ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_insert_at_cursor
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

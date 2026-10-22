@@ -13,8 +13,9 @@ EXTERN ExitProcess:PROC
 fb BYTE 16 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_12_vline PROC
+sub rsp, 40
     mov BYTE PTR [fb], 2
     mov BYTE PTR [fb+4], 2
     mov BYTE PTR [fb+8], 2
@@ -25,6 +26,13 @@ main PROC
     add rcx, rax
     movzx rax, BYTE PTR [fb+8]
     add rcx, rax
-    call ExitProcess
+    mov     eax, 6
+    ret
+ex_12_vline ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_vline
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

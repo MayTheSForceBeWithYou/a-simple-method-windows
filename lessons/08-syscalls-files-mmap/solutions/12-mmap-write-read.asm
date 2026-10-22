@@ -10,8 +10,9 @@ EXTERN VirtualAlloc:PROC
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_12_mmap_write_read PROC
+sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -30,11 +31,15 @@ main PROC
     
     ; Read back and exit with value
     movzx rcx, BYTE PTR [rbx+100]
-    call ExitProcess
-    
 L_f:
     ; Exit 2 on allocation failure
-    mov rcx, 2
-    call ExitProcess
+    mov     eax, 99
+    ret
+ex_12_mmap_write_read ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_mmap_write_read
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

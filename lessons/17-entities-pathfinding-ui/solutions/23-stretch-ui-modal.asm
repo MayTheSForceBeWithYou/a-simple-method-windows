@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 modal_depth QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_23_stretch_ui_modal PROC
+sub rsp, 40
     inc QWORD PTR [modal_depth]
-    mov rcx, QWORD PTR [modal_depth]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_23_stretch_ui_modal ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_ui_modal
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

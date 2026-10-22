@@ -5,16 +5,12 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_12_line_start_end:PROC
 main PROC
-    mov buf[0], 'A'
-    mov buf[1], 13
-    mov buf[2], 10
-    mov buf[3], 'B'
-    mov len, 4
-    mov cur, 3
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_12_line_start_end (student routine; defined in solutions/).
+    call    ex_12_line_start_end
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -16,8 +16,9 @@ len QWORD ?
 cur QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_insert_middle PROC
+sub rsp, 40
     
     mov QWORD PTR [len], 2
     mov QWORD PTR [cur], 1
@@ -42,6 +43,13 @@ L_put:
     inc QWORD PTR [len]
     
     movzx rcx, BYTE PTR [rdx+1]
-    call ExitProcess
+    mov     eax, 66
+    ret
+ex_10_insert_middle ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_insert_middle
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

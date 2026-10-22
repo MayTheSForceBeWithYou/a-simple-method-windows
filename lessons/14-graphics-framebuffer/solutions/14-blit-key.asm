@@ -16,8 +16,9 @@ src BYTE 0,5,0,5
 dst BYTE 4 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_14_blit_key PROC
+sub rsp, 40
     xor rcx, rcx
 loop_start:
     cmp rcx, 4
@@ -45,6 +46,13 @@ loop_end:
     lea r11, [dst]
     movzx rax, BYTE PTR [r11+3]
     add rcx, rax
-    call ExitProcess
+    mov     eax, 10
+    ret
+ex_14_blit_key ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_blit_key
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

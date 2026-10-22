@@ -18,21 +18,14 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_07_write_iov_lite:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout, save in rbx
-    
-    ; TODO: WriteFile buf1
-    
-    ; TODO: WriteFile buf2
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_07_write_iov_lite (student routine; defined in solutions/).
+    call    ex_07_write_iov_lite
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

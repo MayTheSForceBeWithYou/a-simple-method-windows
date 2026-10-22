@@ -11,17 +11,15 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_03_macro_write:PROC
 
 ; TODO: Define WriteMsgMacro
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: Invoke macro, exit 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_03_macro_write (student routine; defined in solutions/).
+    call    ex_03_macro_write
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -4,20 +4,16 @@
 ; Expected: exit code 11
 
 .CODE
-EXTRN ExitProcess:PROC
 
-helper PROC
-    ; BUG: Uses RBX without saving (nonvolatile!)
-    mov rbx, 99
-    mov rax, 1
-    ret
-helper ENDP
+EXTRN ExitProcess:PROC
+EXTRN ex_16_debug_callee_clobber:PROC
 
 main PROC
-    sub rsp, 32
-    mov rbx, 11
-    call helper
-    mov rcx, rbx               ; Should still be 11
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_16_debug_callee_clobber (student routine; defined in solutions/).
+    call    ex_16_debug_callee_clobber
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

@@ -13,8 +13,9 @@ ustk QWORD 8 DUP(?)
 usp QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_22_stretch_undo_stack PROC
+sub rsp, 40
     
     mov QWORD PTR [usp], 0
     
@@ -35,7 +36,13 @@ main PROC
     ; Get top (which is now 1)
     mov rcx, [usp]
     dec rcx
-    mov rcx, [rdx+rcx*8]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_22_stretch_undo_stack ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_undo_stack
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

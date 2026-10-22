@@ -11,27 +11,14 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_14_brk_stub:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: VirtualAlloc
-    
-    ; TODO: Check nonzero, free, exit 0
-    
-    xor     ecx, ecx
-    jmp     done
-    
-error:
-    mov     ecx, 1
-    
-done:
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_14_brk_stub (student routine; defined in solutions/).
+    call    ex_14_brk_stub
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

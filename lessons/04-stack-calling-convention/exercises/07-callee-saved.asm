@@ -12,7 +12,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement helper that uses RBX but preserves it (PUSH/POP)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rbx, 9
     call helper
     mov rcx, rbx               ; Should still be 9

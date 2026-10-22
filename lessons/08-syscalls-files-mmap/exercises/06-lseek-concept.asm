@@ -10,18 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_06_lseek_concept:PROC
 
 main PROC
-    mov     rax, 5          ; Starting offset
-    
-    ; TODO: Add 5 to offset
-    
+    sub     rsp, 40
+    ; TODO: implement ex_06_lseek_concept (student routine; defined in solutions/).
+    call    ex_06_lseek_concept
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 10
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

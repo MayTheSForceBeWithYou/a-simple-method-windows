@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_08_div_remainder:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 100
-    mov rbx, 7
-    
-    ; TODO: XOR RDX, RDX; DIV RBX; exit with RDX (remainder)
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_08_div_remainder (student routine; defined in solutions/).
+    call    ex_08_div_remainder
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

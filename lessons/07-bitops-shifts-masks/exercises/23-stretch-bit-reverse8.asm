@@ -13,25 +13,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_23_stretch_bit_reverse8:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    mov     al, 180         ; 0b10110100
-    xor     bl, bl          ; Result accumulator
-    
-    ; TODO: Reverse bits of AL into BL
-    
-    movzx   ecx, bl
-    call    ExitProcess     ; Should exit with 45
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_23_stretch_bit_reverse8 (student routine; defined in solutions/).
+    call    ex_23_stretch_bit_reverse8
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

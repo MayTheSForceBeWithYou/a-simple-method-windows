@@ -13,20 +13,19 @@ str DB "ABC", 0
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_09_pointer_walk:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: LEA RSI, str
     ; TODO: MOVZX RAX, BYTE PTR [RSI]   ; first byte
     ; TODO: INC RSI or ADD RSI, 1
     ; TODO: MOVZX RBX, BYTE PTR [RSI]   ; second byte
     ; TODO: ADD RAX, RBX and exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_09_pointer_walk (student routine; defined in solutions/).
+    call    ex_09_pointer_walk
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

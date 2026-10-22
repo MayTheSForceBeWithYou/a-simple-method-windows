@@ -13,18 +13,17 @@ arr DQ 5, 15, 25
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_06_displacement:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: LEA RBX, arr
     ; TODO: MOV RAX, [RBX+8] to get second element
     ; TODO: Exit with RAX
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_06_displacement (student routine; defined in solutions/).
+    call    ex_06_displacement
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

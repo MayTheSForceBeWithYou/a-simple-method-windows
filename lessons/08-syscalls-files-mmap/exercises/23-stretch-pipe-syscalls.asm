@@ -13,20 +13,16 @@ hWritePipe QWORD ?
 
 .CODE
 
-EXTRN CreatePipe:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_23_stretch_pipe_syscalls:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: CreatePipe(&hReadPipe, &hWritePipe, NULL, 0)
-    
-    ; TODO: CloseHandle both handles
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_23_stretch_pipe_syscalls (student routine; defined in solutions/).
+    call    ex_23_stretch_pipe_syscalls
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

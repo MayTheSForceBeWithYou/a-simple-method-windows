@@ -10,14 +10,12 @@ EXTRN CreateFileA:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 56
-    .allocstack 56
-    .endprolog
-    mov len, 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+EXTRN ex_06_save_stub:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_06_save_stub (student routine; defined in solutions/).
+    call    ex_06_save_stub
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

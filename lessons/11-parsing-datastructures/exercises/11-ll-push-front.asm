@@ -1,10 +1,11 @@
 ; 11-ll-push-front
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_11_ll_push_front:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_11_ll_push_front (student routine; defined in solutions/).
+    call    ex_11_ll_push_front
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

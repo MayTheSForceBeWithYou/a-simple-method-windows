@@ -15,12 +15,19 @@ TWICE MACRO
 ENDM
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_12_strstr_macro_label PROC
+sub rsp, 40
     
     xor rcx, rcx
     TWICE
-    
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_12_strstr_macro_label ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_strstr_macro_label
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

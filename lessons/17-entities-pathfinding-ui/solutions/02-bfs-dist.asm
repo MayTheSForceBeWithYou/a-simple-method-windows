@@ -10,9 +10,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_02_bfs_dist PROC
+sub rsp, 40
+    mov     eax, 1
+    ret
+ex_02_bfs_dist ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 1
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_02_bfs_dist
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

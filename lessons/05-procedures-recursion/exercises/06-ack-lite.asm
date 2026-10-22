@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement Ackermann function ack(RCX=m, RDX=n)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 1
     mov rdx, 1
     call ack

@@ -3,11 +3,12 @@
 dirty QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_14_dirty_flag:PROC
 main PROC
-    mov dirty, 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_14_dirty_flag (student routine; defined in solutions/).
+    call    ex_14_dirty_flag
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

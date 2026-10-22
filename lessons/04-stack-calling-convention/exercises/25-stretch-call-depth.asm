@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive bump(RCX) with depth counter
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 5
     call bump
     mov rcx, rax

@@ -9,8 +9,9 @@ EXTERN ExitProcess:PROC
 s BYTE "(1)", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_rd_expect PROC
+sub rsp, 40
     cmp BYTE PTR [s], '('
     jne not_found
     mov rcx, 1
@@ -18,6 +19,13 @@ main PROC
 not_found:
     xor rcx, rcx
 done:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_15_rd_expect ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_rd_expect
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

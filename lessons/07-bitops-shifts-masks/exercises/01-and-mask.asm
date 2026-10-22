@@ -12,18 +12,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_01_and_mask:PROC
 
 main PROC
-    mov     al, 0ABh        ; Given value
-    
-    ; TODO: Use AND to extract low nibble (bits 0-3)
-    
-    movzx   ecx, al
-    call    ExitProcess     ; Should exit with 11
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_01_and_mask (student routine; defined in solutions/).
+    call    ex_01_and_mask
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

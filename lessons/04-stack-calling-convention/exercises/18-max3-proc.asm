@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement max3(RCX, RDX, R8) -> RAX
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 3
     mov rdx, 9
     mov r8, 7

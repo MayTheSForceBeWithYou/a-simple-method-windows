@@ -8,8 +8,9 @@ EXTERN ExitProcess:PROC
 memo QWORD 16 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_23_stretch_memo_fib_slot PROC
+sub rsp, 40
     mov rcx, 16
     lea r8, [memo]
 clear_loop:
@@ -18,8 +19,14 @@ clear_loop:
     loop clear_loop
     mov rcx, 8
     call fibm
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 21
+    ret
+ex_23_stretch_memo_fib_slot ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_memo_fib_slot
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 fibm PROC

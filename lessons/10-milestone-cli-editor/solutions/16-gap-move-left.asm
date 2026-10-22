@@ -13,16 +13,22 @@ gap_s QWORD ?
 gap_e QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_16_gap_move_left PROC
+sub rsp, 40
     
     mov QWORD PTR [gap_s], 3
     mov QWORD PTR [gap_e], 5
     
     dec QWORD PTR [gap_s]
     dec QWORD PTR [gap_e]
-    
-    mov rcx, [gap_s]
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_16_gap_move_left ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_gap_move_left
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

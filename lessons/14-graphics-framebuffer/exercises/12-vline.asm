@@ -1,10 +1,11 @@
 ; 12-vline: vline
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_12_vline:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_12_vline (student routine; defined in solutions/).
+    call    ex_12_vline
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

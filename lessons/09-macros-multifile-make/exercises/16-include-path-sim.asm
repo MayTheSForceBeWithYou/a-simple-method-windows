@@ -5,9 +5,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_16_include_path_sim:PROC
 
 main PROC
     ; TODO: mov ecx, VERSION; mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_16_include_path_sim (student routine; defined in solutions/).
+    call    ex_16_include_path_sim
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

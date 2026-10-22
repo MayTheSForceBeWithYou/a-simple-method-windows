@@ -11,13 +11,16 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_02_exit_seven:PROC
 
 main PROC
-    sub rsp, 32                ; Shadow space required by ABI
+    sub     rsp, 32                ; Shadow space required by ABI
     
     ; TODO: Set up exit code 7 in RCX and call ExitProcess
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_02_exit_seven (student routine; defined in solutions/).
+    call    ex_02_exit_seven
+    mov     ecx, eax
+    call    ExitProcess
 
 main ENDP
 

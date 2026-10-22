@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement iterative sum_to using loop
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 6
     call sum_to
     mov rcx, rax

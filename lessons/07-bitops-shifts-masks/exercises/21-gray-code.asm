@@ -11,21 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_21_gray_code:PROC
 
 main PROC
-    mov     rax, 12         ; Binary value = 12
-    mov     rbx, rax
-    
-    ; TODO: Shift rbx right by 1
-    
-    ; TODO: XOR rax with rbx to get Gray code
-    
+    sub     rsp, 40
+    ; TODO: implement ex_21_gray_code (student routine; defined in solutions/).
+    call    ex_21_gray_code
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 10
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

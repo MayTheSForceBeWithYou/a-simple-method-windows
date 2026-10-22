@@ -10,11 +10,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_world_to_tile PROC
+sub rsp, 40
     mov rax, 20
     shr rax, 3
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_10_world_to_tile ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_world_to_tile
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

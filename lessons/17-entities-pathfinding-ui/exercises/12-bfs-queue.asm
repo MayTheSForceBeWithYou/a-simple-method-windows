@@ -1,10 +1,11 @@
 ; 12-bfs-queue: bfs queue
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_12_bfs_queue:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_12_bfs_queue (student routine; defined in solutions/).
+    call    ex_12_bfs_queue
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

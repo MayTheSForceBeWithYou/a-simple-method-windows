@@ -4,13 +4,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_11_assign_macro:PROC
 
 main PROC
-    xor eax, eax
-    ; TODO: counter = 0; REPT 4; inc eax; counter = counter + 1; ENDM
-    ; counter is not a runtime value
-    mov ecx, eax        ; EAX = 4
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_11_assign_macro (student routine; defined in solutions/).
+    call    ex_11_assign_macro
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

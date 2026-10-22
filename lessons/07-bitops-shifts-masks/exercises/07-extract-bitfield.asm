@@ -13,20 +13,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_07_extract_bitfield:PROC
 
 main PROC
-    mov     rax, 1F8h       ; Value = 0b111111000
-    
-    ; TODO: Shift right by 3 to move bits 3-7 to bits 0-4
-    
-    ; TODO: Mask to 5 bits (2^5 - 1 = 31 = 0x1F)
-    
+    sub     rsp, 40
+    ; TODO: implement ex_07_extract_bitfield (student routine; defined in solutions/).
+    call    ex_07_extract_bitfield
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 31
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

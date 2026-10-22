@@ -5,15 +5,16 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_11_map_array_proc:PROC
 
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     ; TODO: Implement
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_11_map_array_proc (student routine; defined in solutions/).
+    call    ex_11_map_array_proc
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

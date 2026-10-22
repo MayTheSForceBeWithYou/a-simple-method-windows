@@ -1,10 +1,11 @@
 ; 20-type-check-int.asm: Check expression type is INT, exit 1 if true
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_20_type_check_int:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_20_type_check_int (student routine; defined in solutions/).
+    call    ex_20_type_check_int
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

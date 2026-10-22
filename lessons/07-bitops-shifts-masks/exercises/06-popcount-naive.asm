@@ -14,18 +14,13 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_06_popcount_naive:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     rbx, 183        ; Value = 0b10110111 (6 set bits)
-    xor     rax, rax        ; counter = 0
-    
-    ; TODO: Implement popcount loop
-    
-    mov     ecx, 1
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_06_popcount_naive (student routine; defined in solutions/).
+    call    ex_06_popcount_naive
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

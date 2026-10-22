@@ -3,11 +3,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_and_mask PROC
+sub rsp, 40
     mov rax, 0FFh
     and rax, 0Fh
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 15
+    ret
+ex_01_and_mask ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_and_mask
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

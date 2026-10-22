@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_07_idiv_setup:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 126
-    mov rbx, 3
-    
-    ; TODO: CQO to sign-extend, IDIV RBX, exit with quotient
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_07_idiv_setup (student routine; defined in solutions/).
+    call    ex_07_idiv_setup
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

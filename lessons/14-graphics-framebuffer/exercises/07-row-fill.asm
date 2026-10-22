@@ -1,10 +1,11 @@
 ; 07-row-fill: row fill
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_07_row_fill:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_07_row_fill (student routine; defined in solutions/).
+    call    ex_07_row_fill
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

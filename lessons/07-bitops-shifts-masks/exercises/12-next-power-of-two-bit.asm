@@ -14,18 +14,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_12_next_power_of_two_bit:PROC
 
 main PROC
-    mov     rax, 44         ; 0b00101100
-    
-    ; TODO: Find next power of 2 above highest set bit
-    
+    sub     rsp, 40
+    ; TODO: implement ex_12_next_power_of_two_bit (student routine; defined in solutions/).
+    call    ex_12_next_power_of_two_bit
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 64
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

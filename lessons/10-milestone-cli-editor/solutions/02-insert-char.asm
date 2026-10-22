@@ -13,16 +13,22 @@ buf BYTE 64 DUP(?)
 len QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_02_insert_char PROC
+sub rsp, 40
     
     mov QWORD PTR [len], 0
     mov rcx, [len]
     lea rdx, buf
     mov BYTE PTR [rdx+rcx], 'A'
     inc QWORD PTR [len]
-    
-    mov rcx, [len]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_02_insert_char ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_insert_char
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -6,12 +6,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_17_precedence PROC
+sub rsp, 40
     mov rax, 3
     imul rax, 4
     add rax, 2
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 14
+    ret
+ex_17_precedence ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_precedence
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -6,11 +6,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_21_fast_inv_stub PROC
+sub rsp, 40
     mov rax, 10
     shr rax, 1
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 5
+    ret
+ex_21_fast_inv_stub ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_fast_inv_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

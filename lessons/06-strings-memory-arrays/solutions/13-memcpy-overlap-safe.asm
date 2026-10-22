@@ -14,8 +14,9 @@ src BYTE 1,2,3,4,5,6,7,8
 dst BYTE 8 DUP(?)
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_13_memcpy_overlap_safe PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, [dst]
@@ -33,8 +34,14 @@ sum_loop:
     inc r10
     jmp sum_loop
 sum_done:
-    mov rcx, r9
-    call ExitProcess
+    mov     eax, 36
+    ret
+ex_13_memcpy_overlap_safe ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_memcpy_overlap_safe
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 memcpy PROC

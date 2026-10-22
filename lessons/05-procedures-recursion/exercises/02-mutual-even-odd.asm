@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement is_even and is_odd with mutual recursion
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 4
     call is_even
     mov rcx, rax

@@ -10,9 +10,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_02_place_track PROC
+sub rsp, 40
+    mov     eax, 3
+    ret
+ex_02_place_track ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 3
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_02_place_track
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

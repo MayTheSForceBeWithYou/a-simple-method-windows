@@ -4,15 +4,16 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_20_count_char:PROC
 
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     ; TODO: Implement
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_20_count_char (student routine; defined in solutions/).
+    call    ex_20_count_char
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

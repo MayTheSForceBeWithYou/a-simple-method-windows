@@ -20,19 +20,14 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_01_write_only:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdout handle
-    
-    ; TODO: WriteFile msg1
-    
-    ; TODO: WriteFile msg2
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_01_write_only (student routine; defined in solutions/).
+    call    ex_01_write_only
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

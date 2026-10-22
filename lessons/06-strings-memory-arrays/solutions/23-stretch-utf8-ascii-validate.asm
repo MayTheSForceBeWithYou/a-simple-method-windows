@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 s BYTE "OK", 10, 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_23_stretch_utf8_ascii_validate PROC
+sub rsp, 40
     lea rdx, s
 val_loop:
     movzx rax, BYTE PTR [rdx]
@@ -28,6 +29,13 @@ val_ok:
 val_bad:
     xor ecx, ecx
 val_done:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_23_stretch_utf8_ascii_validate ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_utf8_ascii_validate
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

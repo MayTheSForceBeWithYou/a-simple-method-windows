@@ -1,10 +1,11 @@
 ; 16-clamp-q
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_16_clamp_q:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_16_clamp_q (student routine; defined in solutions/).
+    call    ex_16_clamp_q
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -13,17 +13,16 @@ buffer DB ?
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_05_byte_store:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: Store BYTE 88 to buffer, load with MOVZX, exit
     ; Hint: Use BYTE PTR [buffer] and movzx rcx, BYTE PTR [buffer]
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_05_byte_store (student routine; defined in solutions/).
+    call    ex_05_byte_store
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

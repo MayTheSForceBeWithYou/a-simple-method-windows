@@ -4,15 +4,16 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_17_bounded_strcpy:PROC
 
 ; TODO: Port from NASM to MASM (MS x64 ABI)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     ; TODO: Implement
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_17_bounded_strcpy (student routine; defined in solutions/).
+    call    ex_17_bounded_strcpy
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

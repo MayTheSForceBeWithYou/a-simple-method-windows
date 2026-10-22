@@ -16,19 +16,14 @@ bytesWritten DWORD ?
 
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_24_from_scratch_write_err:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: WriteFile(INVALID_HANDLE_VALUE, message, message_len, &bytesWritten, NULL)
-    
-    ; TODO: Check for error (return 0), exit 1
-    
-    mov     ecx, 1
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_24_from_scratch_write_err (student routine; defined in solutions/).
+    call    ex_24_from_scratch_write_err
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_push_pop PROC
+sub rsp, 40
     push 3
     push 4
     pop rax
     pop rcx
     add rcx, rax
-    call ExitProcess
+    mov     eax, 7
+    ret
+ex_01_push_pop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_push_pop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

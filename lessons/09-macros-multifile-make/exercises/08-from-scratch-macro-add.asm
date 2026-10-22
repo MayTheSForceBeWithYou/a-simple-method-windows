@@ -3,14 +3,15 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_08_from_scratch_macro_add:PROC
 
 ; TODO: Define ADD_IMM MACRO reg, imm; add reg, imm; ENDM
 
 main PROC
-    mov rax, 40
-    ; TODO: ADD_IMM rax, 2
-    mov ecx, eax
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_08_from_scratch_macro_add (student routine; defined in solutions/).
+    call    ex_08_from_scratch_macro_add
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

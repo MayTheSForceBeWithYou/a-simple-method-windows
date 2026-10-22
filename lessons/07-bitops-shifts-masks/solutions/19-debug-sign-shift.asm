@@ -3,12 +3,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_19_debug_sign_shift PROC
+sub rsp, 40
     mov rax, -16
     sar rax, 2
     movzx rcx, al
-    mov rax,60
-    call ExitProcess
+    mov     eax, 252
+    ret
+ex_19_debug_sign_shift ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_sign_shift
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

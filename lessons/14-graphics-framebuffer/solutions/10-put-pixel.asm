@@ -13,8 +13,9 @@ EXTERN ExitProcess:PROC
 fb BYTE 32 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_put_pixel PROC
+sub rsp, 40
     mov rax, 1
     imul rax, 8
     add rax, 2
@@ -22,6 +23,13 @@ main PROC
     mov BYTE PTR [r11+rax], 9
     lea r11, [fb]
     movzx rcx, BYTE PTR [r11+rax]
-    call ExitProcess
+    mov     eax, 9
+    ret
+ex_10_put_pixel ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_put_pixel
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

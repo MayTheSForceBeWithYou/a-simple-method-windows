@@ -21,28 +21,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_10_len_equ:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
-    .endprolog
-    
-    ; Code provided; you must fix data declarations above
-    mov ecx, -11
-    call GetStdHandle
-    mov rbx, rax
-    
-    mov rcx, rbx
-    lea rdx, msg
-    mov r8d, msg_len
-    lea r9, bytes_written
-    mov qword ptr [rsp+32], 0
-    call WriteFile
-    
-    xor ecx, ecx
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_10_len_equ (student routine; defined in solutions/).
+    call    ex_10_len_equ
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

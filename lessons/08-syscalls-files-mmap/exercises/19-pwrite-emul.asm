@@ -21,23 +21,14 @@ EXTRN SetFilePointer:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_19_pwrite_emul:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 48
-    .allocstack 48
-    .endprolog
-    
-    ; TODO: CreateFileA("NUL", GENERIC_WRITE, ...)
-    
-    ; TODO: SetFilePointer(handle, 0, NULL, FILE_BEGIN)
-    
-    ; TODO: WriteFile(handle, message, message_len, &bytesWritten, NULL)
-    
-    ; TODO: CloseHandle, exit 0
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_19_pwrite_emul (student routine; defined in solutions/).
+    call    ex_19_pwrite_emul
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

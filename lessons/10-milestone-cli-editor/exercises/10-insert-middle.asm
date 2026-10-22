@@ -5,14 +5,12 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_10_insert_middle:PROC
 main PROC
-    mov buf[0], 'A'
-    mov buf[1], 'C'
-    mov len, 2
-    mov cur, 1
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_10_insert_middle (student routine; defined in solutions/).
+    call    ex_10_insert_middle
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

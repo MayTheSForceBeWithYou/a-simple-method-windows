@@ -3,6 +3,7 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_21_debug_macro_arity:PROC
 
 ; Macro expecting one argument
 ExitStatus MACRO status
@@ -12,7 +13,9 @@ ENDM
 
 main PROC
     ; TODO: Fix invocation: ExitStatus 4
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_21_debug_macro_arity (student routine; defined in solutions/).
+    call    ex_21_debug_macro_arity
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

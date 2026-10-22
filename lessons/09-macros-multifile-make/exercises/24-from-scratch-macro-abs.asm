@@ -3,14 +3,15 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_24_from_scratch_macro_abs:PROC
 
 ; TODO: AbsVal MACRO reg; LOCAL skip; cmp reg, 0; jge skip; neg reg; skip:; ENDM
 
 main PROC
-    mov rax, -9
-    ; TODO: AbsVal rax
-    mov ecx, eax
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_24_from_scratch_macro_abs (student routine; defined in solutions/).
+    call    ex_24_from_scratch_macro_abs
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

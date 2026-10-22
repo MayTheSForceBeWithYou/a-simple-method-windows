@@ -5,13 +5,12 @@ gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_16_gap_move_left:PROC
 main PROC
-    mov buf[0], 'X'
-    mov gap_start, 1
-    mov gap_end, 256
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_16_gap_move_left (student routine; defined in solutions/).
+    call    ex_16_gap_move_left
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

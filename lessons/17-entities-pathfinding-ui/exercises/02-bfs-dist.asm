@@ -1,10 +1,11 @@
 ; 02-bfs-dist: bfs dist
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_02_bfs_dist:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_02_bfs_dist (student routine; defined in solutions/).
+    call    ex_02_bfs_dist
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

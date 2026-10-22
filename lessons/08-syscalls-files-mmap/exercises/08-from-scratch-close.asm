@@ -15,29 +15,14 @@ filename DB "NUL", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_08_from_scratch_close:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 48
-    .allocstack 48
-    .endprolog
-    
-    ; TODO: CreateFileA("NUL", GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    
-    ; TODO: Check for error
-    
-    ; TODO: CloseHandle(handle)
-    
-    xor     ecx, ecx
-    jmp     done
-    
-error:
-    mov     ecx, 1
-    
-done:
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_08_from_scratch_close (student routine; defined in solutions/).
+    call    ex_08_from_scratch_close
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

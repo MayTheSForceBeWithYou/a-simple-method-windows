@@ -10,13 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_05_mov_chain:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 13
-    
-    ; TODO: Move RAX to RBX, then RBX to RCX, then call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_05_mov_chain (student routine; defined in solutions/).
+    call    ex_05_mov_chain
+    mov     ecx, eax
+    call    ExitProcess
     
 main ENDP
 

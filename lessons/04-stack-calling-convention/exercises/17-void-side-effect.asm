@@ -18,7 +18,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement void write_buf() that calls WriteFile
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     call write_buf
     xor ecx, ecx
     call ExitProcess

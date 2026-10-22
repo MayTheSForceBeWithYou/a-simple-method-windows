@@ -15,27 +15,14 @@ source DB 2, 3, 4, 1    ; Sum = 10
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_22_stretch_file_copy_mem:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    rsi
-    .pushreg rsi
-    push    rdi
-    .pushreg rdi
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: VirtualAlloc
-    
-    ; TODO: Copy four bytes from source to allocated memory
-    
-    ; TODO: Sum the four bytes
-    
-    ; TODO: VirtualFree, exit with sum (should be 10)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_22_stretch_file_copy_mem (student routine; defined in solutions/).
+    call    ex_22_stretch_file_copy_mem
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

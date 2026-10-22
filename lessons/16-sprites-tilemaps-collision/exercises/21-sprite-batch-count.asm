@@ -1,10 +1,11 @@
 ; 21-sprite-batch-count: sprite batch count
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_21_sprite_batch_count:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_21_sprite_batch_count (student routine; defined in solutions/).
+    call    ex_21_sprite_batch_count
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

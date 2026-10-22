@@ -9,13 +9,20 @@ a BYTE "abc", 0
 b BYTE "abd", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_09_strcmp PROC
+sub rsp, 40
     lea rcx, a
     lea rdx, b
     call strcmp_fn
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_09_strcmp ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_strcmp
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strcmp_fn PROC

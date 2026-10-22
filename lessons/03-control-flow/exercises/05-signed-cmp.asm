@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_05_signed_cmp:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, -5
-    mov rbx, 3
-    
-    ; TODO: CMP RAX, RBX; JL (less, signed); set RCX=1; else 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_05_signed_cmp (student routine; defined in solutions/).
+    call    ex_05_signed_cmp
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

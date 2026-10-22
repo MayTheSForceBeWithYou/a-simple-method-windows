@@ -11,12 +11,19 @@ EXTERN ExitProcess:PROC
 rain QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_20_weather_tick PROC
+sub rsp, 40
     mov QWORD PTR [rain], 3
     inc QWORD PTR [rain]
     and QWORD PTR [rain], 3
-    mov rcx, QWORD PTR [rain]
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_20_weather_tick ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_weather_tick
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

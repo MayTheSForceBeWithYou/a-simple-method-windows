@@ -12,18 +12,13 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_20_count_leading_zeros_loop:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     ax, 30h         ; Value = 0x0030 (10 leading zeros)
-    xor     rbx, rbx        ; Counter
-    
-    ; TODO: Implement leading zero count loop
-    
-    mov     ecx, 1
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_20_count_leading_zeros_loop (student routine; defined in solutions/).
+    call    ex_20_count_leading_zeros_loop
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

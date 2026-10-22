@@ -20,22 +20,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_07_hello_world:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout handle with GetStdHandle(-11)
-    ; TODO: Call WriteFile with proper arguments
-    ; TODO: Exit with status 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_07_hello_world (student routine; defined in solutions/).
+    call    ex_07_hello_world
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

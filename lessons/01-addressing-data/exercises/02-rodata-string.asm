@@ -18,20 +18,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_02_rodata_string:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout, write message, exit 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_02_rodata_string (student routine; defined in solutions/).
+    call    ex_02_rodata_string
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

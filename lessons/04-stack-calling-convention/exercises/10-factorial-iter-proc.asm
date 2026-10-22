@@ -11,7 +11,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement iterative factorial(RCX) -> RAX
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 5
     call factorial
     mov rcx, rax

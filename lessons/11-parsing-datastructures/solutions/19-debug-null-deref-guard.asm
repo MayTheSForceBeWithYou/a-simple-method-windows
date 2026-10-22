@@ -6,8 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_19_debug_null_deref_guard PROC
+sub rsp, 40
     xor rsi, rsi
     xor rcx, rcx
 loop_walk:
@@ -17,6 +18,13 @@ loop_walk:
     mov rsi, QWORD PTR [rsi+8]
     jmp loop_walk
 done_walk:
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_19_debug_null_deref_guard ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_null_deref_guard
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

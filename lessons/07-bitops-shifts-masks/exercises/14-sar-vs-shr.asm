@@ -14,18 +14,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_14_sar_vs_shr:PROC
 
 main PROC
-    mov     al, 0E0h        ; -32 as signed byte (0xE0 = 224 unsigned)
-    
-    ; TODO: Use SHR to shift right by 2 (demonstrates wrong result for signed)
-    
-    movzx   ecx, al
-    call    ExitProcess     ; Will exit with 56 (wrong for signed division)
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_14_sar_vs_shr (student routine; defined in solutions/).
+    call    ex_14_sar_vs_shr
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

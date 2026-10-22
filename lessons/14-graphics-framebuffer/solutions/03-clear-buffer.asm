@@ -13,13 +13,21 @@ EXTERN ExitProcess:PROC
 fb BYTE 8 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_03_clear_buffer PROC
+sub rsp, 40
     lea rdi, fb
     mov rcx, 8
     xor rax, rax
     rep stosb
     movzx rcx, BYTE PTR [fb]
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_03_clear_buffer ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_clear_buffer
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

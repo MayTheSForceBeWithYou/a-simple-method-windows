@@ -5,20 +5,18 @@
 ; Build: ml64 /c /Fo09-nested-calls.obj 09-nested-calls.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-nested-calls.exe 09-nested-calls.obj kernel32.lib
 ; Expected exit: 42
 ; Expected stdout: (none)
-.CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement double(RCX) -> RAX = RCX*2
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_09_nested_calls:PROC
 
 main PROC
-    sub rsp, 32
-    
-    ; TODO: Call double(10), save result, call double(11), call add
-    ; Remember: must preserve values across calls
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_09_nested_calls (student routine; defined in solutions/).
+    call    ex_09_nested_calls
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

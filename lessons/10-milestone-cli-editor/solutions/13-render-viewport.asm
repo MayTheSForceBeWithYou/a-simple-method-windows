@@ -18,8 +18,9 @@ buf BYTE "L1", 10, "L2", 10
 written DWORD ?
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_13_render_viewport PROC
+sub rsp, 56
     
     ; Get stdout handle
     mov rcx, -11
@@ -34,7 +35,13 @@ main PROC
     call WriteFile
     
     ; Exit 0
-    mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_13_render_viewport ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_render_viewport
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_03_sum_loop:PROC
 
 main PROC
-    sub rsp, 32
-    
-    xor rax, rax               ; Sum
-    mov rcx, 10                ; Counter
-    
-    ; TODO: While loop: add rcx to rax, dec rcx, repeat until rcx is 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_03_sum_loop (student routine; defined in solutions/).
+    call    ex_03_sum_loop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

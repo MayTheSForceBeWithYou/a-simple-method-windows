@@ -10,18 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_02_if_else:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 5
-    
-    ; TODO: CMP RAX, 10; use JGE for else branch; set RCX appropriately
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_02_if_else (student routine; defined in solutions/).
+    call    ex_02_if_else
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -16,8 +16,9 @@ len QWORD ?
 cur QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_11_delete_forward PROC
+sub rsp, 40
     
     mov QWORD PTR [len], 4
     mov QWORD PTR [cur], 1
@@ -39,7 +40,13 @@ L_l:
     
 L_fin:
     dec QWORD PTR [len]
-    mov rcx, [len]
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_11_delete_forward ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_delete_forward
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -11,11 +11,16 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 40
-    mov rcx, 42
-    call ExitProcess
 
+ex_22_stretch_coaster_excitement PROC
+sub rsp, 40
+    mov     eax, 42
+    ret
+ex_22_stretch_coaster_excitement ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_coaster_excitement
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

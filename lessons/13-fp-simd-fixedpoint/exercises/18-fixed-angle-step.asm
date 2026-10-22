@@ -1,10 +1,11 @@
 ; 18-fixed-angle-step
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_18_fixed_angle_step:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_18_fixed_angle_step (student routine; defined in solutions/).
+    call    ex_18_fixed_angle_step
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

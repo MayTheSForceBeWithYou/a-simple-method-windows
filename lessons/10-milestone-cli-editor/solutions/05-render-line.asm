@@ -18,8 +18,9 @@ buf BYTE "ed", 10
 written DWORD ?
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_05_render_line PROC
+sub rsp, 56
     
     ; Get stdout handle
     mov rcx, -11
@@ -34,7 +35,13 @@ main PROC
     call WriteFile
     
     ; Exit 0
-    mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_05_render_line ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_render_line
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

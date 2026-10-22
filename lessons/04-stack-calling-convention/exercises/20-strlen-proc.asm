@@ -12,7 +12,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement strlen(RCX) -> RAX
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     lea rcx, str
     call strlen
     mov rcx, rax

@@ -18,17 +18,14 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_11_read_dev_zero:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 48
-    .allocstack 48
-    .endprolog
-    
-    ; TODO: CreateFileA, ReadFile 8 bytes, CloseHandle
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_11_read_dev_zero (student routine; defined in solutions/).
+    call    ex_11_read_dev_zero
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -13,8 +13,9 @@ stk QWORD 4 DUP(?)
 sp_ QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_19_bytecode_jump PROC
+sub rsp, 40
     mov QWORD PTR [sp_], 0
     lea rsi, [vmcode]
 loop_vm:
@@ -44,7 +45,13 @@ vm_halt:
     dec QWORD PTR [sp_]
     mov rcx, QWORD PTR [sp_]
     lea r11, [stk]
-    mov rcx, QWORD PTR [r11+rcx*8]
-    call ExitProcess
+    mov     eax, 5
+    ret
+ex_19_bytecode_jump ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_bytecode_jump
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

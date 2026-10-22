@@ -19,8 +19,9 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_02_rodata_string PROC
+sub rsp, 56
     
     ; Get stdout handle
     mov rcx, -11
@@ -36,7 +37,13 @@ main PROC
     call WriteFile
     
     ; Exit 0
-    mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_02_rodata_string ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_rodata_string
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

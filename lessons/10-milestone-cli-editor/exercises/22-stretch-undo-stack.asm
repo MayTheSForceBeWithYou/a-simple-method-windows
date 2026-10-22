@@ -4,11 +4,12 @@ undo_stack DQ 16 DUP(?)
 stack_top QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_22_stretch_undo_stack:PROC
 main PROC
-    mov stack_top, 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_22_stretch_undo_stack (student routine; defined in solutions/).
+    call    ex_22_stretch_undo_stack
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

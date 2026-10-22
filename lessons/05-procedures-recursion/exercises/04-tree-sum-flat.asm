@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive tree sum over heap array
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     call tree_sum
     mov rcx, rax
     call ExitProcess

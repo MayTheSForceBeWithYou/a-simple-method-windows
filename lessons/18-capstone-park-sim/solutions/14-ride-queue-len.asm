@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 qlen QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_14_ride_queue_len PROC
+sub rsp, 40
     mov QWORD PTR [qlen], 7
-    mov rcx, QWORD PTR [qlen]
-    call ExitProcess
+    mov     eax, 7
+    ret
+ex_14_ride_queue_len ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_ride_queue_len
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

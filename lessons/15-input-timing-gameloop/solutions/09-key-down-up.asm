@@ -13,11 +13,19 @@ EXTERN ExitProcess:PROC
 key_w BYTE ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_09_key_down_up PROC
+sub rsp, 40
     mov BYTE PTR [key_w], 1
     mov BYTE PTR [key_w], 0
     movzx rcx, BYTE PTR [key_w]
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_09_key_down_up ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_key_down_up
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

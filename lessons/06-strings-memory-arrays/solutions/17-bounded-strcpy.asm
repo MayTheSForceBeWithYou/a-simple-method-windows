@@ -14,8 +14,9 @@ src BYTE "abcdef", 0
 dst BYTE 4 DUP(?)
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_17_bounded_strcpy PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, dst
@@ -24,8 +25,14 @@ main PROC FRAME
     call strncpy_term
     lea rcx, dst
     call strlen_fn
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_17_bounded_strcpy ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_bounded_strcpy
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strncpy_term PROC

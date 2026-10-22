@@ -13,10 +13,17 @@ EXTERN ExitProcess:PROC
 ax_ QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_04_agent_step PROC
+sub rsp, 40
     inc QWORD PTR [ax_]
-    mov rcx, [ax_]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_04_agent_step ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_agent_step
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

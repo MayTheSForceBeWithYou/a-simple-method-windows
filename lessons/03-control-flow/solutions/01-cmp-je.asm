@@ -5,8 +5,8 @@
 
 EXTRN ExitProcess:PROC
 
-main PROC
-    sub rsp, 40
+ex_01_cmp_je PROC
+sub rsp, 40
     
     mov rax, 10
     mov rbx, 10
@@ -17,7 +17,14 @@ main PROC
 equal:
     mov rcx, 1
 done:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_01_cmp_je ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_cmp_je
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 END

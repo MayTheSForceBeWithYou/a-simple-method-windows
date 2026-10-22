@@ -12,9 +12,16 @@ EXTERN ExitProcess:PROC
 VERSION EQU 3
 
 .code
+
+ex_16_include_path_sim PROC
+sub rsp, 40
+    mov     eax, 3
+    ret
+ex_16_include_path_sim ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, VERSION
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_16_include_path_sim
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -3,24 +3,18 @@
 ; Build: ml64 /c /Fo21-abi-quiz-exit.obj 21-abi-quiz-exit.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:21-abi-quiz-exit.exe 21-abi-quiz-exit.obj kernel32.lib
 ; Expected exit: 4
 ; Expected stdout: (none)
-.CODE
-EXTRN ExitProcess:PROC
 
-identity4 PROC
-    mov rax, r9                ; 4th arg in R9 (MS x64)
-    ret
-identity4 ENDP
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_21_abi_quiz_exit:PROC
 
 main PROC
-    sub rsp, 32
-    mov rcx, 1
-    mov rdx, 2
-    mov r8, 3
-    mov r9, 4                  ; 4th arg
-    ; TODO: Call identity4 and exit with result
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_21_abi_quiz_exit (student routine; defined in solutions/).
+    call    ex_21_abi_quiz_exit
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

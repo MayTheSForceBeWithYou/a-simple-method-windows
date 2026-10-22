@@ -3,13 +3,15 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_20_macro_with_params:PROC
 
 ; TODO: ADD3 MACRO reg, v1, v2, v3; mov reg, v1; add reg, v2; add reg, v3; ENDM
 
 main PROC
     ; TODO: ADD3 rax, 10, 20, 12
-    mov ecx, eax
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_20_macro_with_params (student routine; defined in solutions/).
+    call    ex_20_macro_with_params
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

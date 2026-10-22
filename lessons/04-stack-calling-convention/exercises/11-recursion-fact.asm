@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive factorial with proper PROC FRAME
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 4
     call factorial
     mov rcx, rax

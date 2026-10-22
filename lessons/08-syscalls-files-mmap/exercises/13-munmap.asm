@@ -11,19 +11,14 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_13_munmap:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: VirtualAlloc
-    
-    ; TODO: Save address, VirtualFree
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_13_munmap (student routine; defined in solutions/).
+    call    ex_13_munmap
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

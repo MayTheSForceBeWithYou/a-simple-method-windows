@@ -10,8 +10,9 @@ EXTERN GetProcessHeap:PROC
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_14_brk_stub PROC
+sub rsp, 40
     
     ; GetProcessHeap returns handle to process heap
     call GetProcessHeap
@@ -29,6 +30,13 @@ L_z:
     mov rcx, 1
     
 L_o:
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_14_brk_stub ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_brk_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

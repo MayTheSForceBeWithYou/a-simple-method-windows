@@ -9,13 +9,21 @@ EXTERN ExitProcess:PROC
 bump QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_04_arena_bump PROC
+sub rsp, 40
     mov QWORD PTR [bump], 0
     add QWORD PTR [bump], 16
     add QWORD PTR [bump], 16
     mov rcx, QWORD PTR [bump]
     and rcx, 255
-    call ExitProcess
+    mov     eax, 32
+    ret
+ex_04_arena_bump ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_arena_bump
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

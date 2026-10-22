@@ -13,7 +13,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement swap(RCX=ptr1, RDX=ptr2)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     lea rcx, a
     lea rdx, b
     call swap

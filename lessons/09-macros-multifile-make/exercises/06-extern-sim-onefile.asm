@@ -3,12 +3,16 @@
 ; Task: Define helper function, call it from main, exit with result.
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Define helper PROC that returns 5 in RAX
+EXTRN ExitProcess:PROC
+EXTRN ex_06_extern_sim_onefile:PROC
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_06_extern_sim_onefile (student routine; defined in solutions/).
+    call    ex_06_extern_sim_onefile
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

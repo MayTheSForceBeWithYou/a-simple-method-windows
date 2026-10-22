@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive pow(RCX=base, RDX=exp)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 2
     mov rdx, 5
     call pow

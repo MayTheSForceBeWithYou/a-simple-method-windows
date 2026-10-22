@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 free_top QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_despawn_freelist PROC
+sub rsp, 40
     mov QWORD PTR [free_top], 3
-    mov rcx, QWORD PTR [free_top]
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_10_despawn_freelist ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_despawn_freelist
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

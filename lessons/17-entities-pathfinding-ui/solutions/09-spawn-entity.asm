@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 next_id QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_09_spawn_entity PROC
+sub rsp, 40
     inc QWORD PTR [next_id]
-    mov rcx, QWORD PTR [next_id]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_09_spawn_entity ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_spawn_entity
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -11,20 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_13_shl_shl_combine:PROC
 
 main PROC
-    mov     ax, 12h         ; High byte value
-    
-    ; TODO: Shift left by 8 to position in high byte
-    
-    ; TODO: OR with low byte value
-    
-    movzx   ecx, ax
-    call    ExitProcess     ; Should exit with 4660 (0x1234)
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_13_shl_shl_combine (student routine; defined in solutions/).
+    call    ex_13_shl_shl_combine
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

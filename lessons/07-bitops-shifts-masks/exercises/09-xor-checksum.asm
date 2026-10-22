@@ -15,27 +15,14 @@ bytes_len EQU $ - bytes
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_09_xor_checksum:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    xor     rax, rax        ; checksum = 0
-    lea     rbx, bytes
-    mov     r12, bytes_len
-    
-    ; TODO: Loop through bytes, XOR each into RAX
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_09_xor_checksum (student routine; defined in solutions/).
+    call    ex_09_xor_checksum
     mov     ecx, eax
-    and     ecx, 0FFh       ; Low byte only
     call    ExitProcess
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
 main ENDP
 
 END

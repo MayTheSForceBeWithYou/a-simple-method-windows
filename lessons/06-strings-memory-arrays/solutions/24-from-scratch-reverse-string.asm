@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 s BYTE "asm", 0
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_24_from_scratch_reverse_string PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, s
@@ -21,7 +22,14 @@ main PROC FRAME
     mov rdx, rax
     call rev
     movzx rcx, BYTE PTR [s]
-    call ExitProcess
+    mov     eax, 109
+    ret
+ex_24_from_scratch_reverse_string ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_reverse_string
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strlen_fn PROC

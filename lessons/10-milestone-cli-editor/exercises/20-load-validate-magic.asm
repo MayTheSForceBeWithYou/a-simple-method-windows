@@ -12,13 +12,12 @@ EXTRN CreateFileA:PROC
 EXTRN ReadFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 56
-    .allocstack 56
-    .endprolog
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+EXTRN ex_20_load_validate_magic:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_20_load_validate_magic (student routine; defined in solutions/).
+    call    ex_20_load_validate_magic
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive fibonacci with PROC FRAME
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 7
     call fibonacci
     mov rcx, rax

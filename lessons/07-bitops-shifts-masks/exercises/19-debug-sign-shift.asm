@@ -14,21 +14,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_19_debug_sign_shift:PROC
 
 main PROC
-    mov     al, 0FFh        ; -1 as signed byte
-    
-    ; TODO: Sign-extend to 64 bits with MOVSX
-    
-    ; TODO: Shift right arithmetic by 1
-    
+    sub     rsp, 40
+    ; TODO: implement ex_19_debug_sign_shift (student routine; defined in solutions/).
+    call    ex_19_debug_sign_shift
     mov     ecx, eax
-    and     ecx, 0FFh       ; Low byte
-    call    ExitProcess     ; Should exit with 255 (0xFF = -1)
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

@@ -4,12 +4,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_07_repeat_macro:PROC
 
 main PROC
-    xor eax, eax
-    ; TODO: REPT 3; inc eax; ENDM
-    mov ecx, eax
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_07_repeat_macro (student routine; defined in solutions/).
+    call    ex_07_repeat_macro
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

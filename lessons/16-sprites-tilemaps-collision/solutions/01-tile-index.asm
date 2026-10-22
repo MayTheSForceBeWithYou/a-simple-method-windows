@@ -10,12 +10,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_tile_index PROC
+sub rsp, 40
     mov rax, 2
     imul rax, 10
     add rax, 3
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 23
+    ret
+ex_01_tile_index ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_tile_index
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

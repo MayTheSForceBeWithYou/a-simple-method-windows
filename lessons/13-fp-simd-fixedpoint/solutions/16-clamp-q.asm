@@ -6,8 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_16_clamp_q PROC
+sub rsp, 40
     mov rax, -3
     cmp rax, 0
     jge clamp_hi
@@ -17,7 +18,13 @@ clamp_hi:
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_16_clamp_q ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_clamp_q
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

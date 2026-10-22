@@ -13,8 +13,9 @@ gap_s QWORD ?
 gap_e QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_gap_insert PROC
+sub rsp, 40
     
     mov QWORD PTR [gap_s], 2
     mov QWORD PTR [gap_e], 6
@@ -25,6 +26,13 @@ main PROC
     ; Calculate free space
     mov rcx, [gap_e]
     sub rcx, [gap_s]
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_15_gap_insert ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_gap_insert
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

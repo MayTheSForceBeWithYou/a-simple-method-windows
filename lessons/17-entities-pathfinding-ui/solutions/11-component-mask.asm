@@ -11,10 +11,18 @@ POS EQU 1
 VEL EQU 2
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_11_component_mask PROC
+sub rsp, 40
     mov rcx, POS
     or rcx, VEL
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_11_component_mask ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_component_mask
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

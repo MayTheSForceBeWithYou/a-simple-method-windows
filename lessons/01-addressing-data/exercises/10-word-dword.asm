@@ -13,19 +13,18 @@ buffer DQ ?
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_10_word_dword:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: Store WORD PTR 256 to buffer
     ; TODO: Zero RAX, then load lower byte with MOVZX RCX, BYTE PTR [buffer]
     ; TODO: Exit with RCX
     ; Note: 256 = 0x0100, low byte is 0
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_10_word_dword (student routine; defined in solutions/).
+    call    ex_10_word_dword
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

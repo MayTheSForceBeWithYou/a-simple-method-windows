@@ -11,7 +11,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement function with local variable on stack
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 41
     call compute_plus_one
     mov rcx, rax

@@ -14,8 +14,9 @@ EXTERN ExitProcess:PROC
 path BYTE "NUL", 0
 
 .code
-main PROC
-    sub rsp, 72
+
+ex_08_from_scratch_close PROC
+sub rsp, 72
     
     ; CreateFileA for NUL device
     lea rcx, path               ; lpFileName
@@ -44,6 +45,13 @@ L_e:
     mov rcx, 1
     
 L_o:
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_08_from_scratch_close ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_close
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

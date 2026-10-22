@@ -12,25 +12,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_22_stretch_swar_avg:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    mov     al, 200
-    mov     bl, 180
-    
-    ; TODO: Compute (a & b) + ((a ^ b) >> 1)
-    
-    movzx   ecx, al
-    call    ExitProcess     ; Should exit with 190
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_22_stretch_swar_avg (student routine; defined in solutions/).
+    call    ex_22_stretch_swar_avg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

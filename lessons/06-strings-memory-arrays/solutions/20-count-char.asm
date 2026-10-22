@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 s BYTE "mississippi", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_20_count_char PROC
+sub rsp, 40
     lea rdx, s
     xor rcx, rcx
 count_loop:
@@ -26,6 +27,13 @@ count_next:
     inc rdx
     jmp count_loop
 count_done:
-    call ExitProcess
+    mov     eax, 4
+    ret
+ex_20_count_char ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_count_char
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

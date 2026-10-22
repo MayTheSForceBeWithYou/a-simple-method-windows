@@ -16,8 +16,9 @@ len QWORD ?
 cur QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_24_from_scratch_kill_line PROC
+sub rsp, 40
     
     mov QWORD PTR [len], 5
     mov QWORD PTR [cur], 0
@@ -52,7 +53,13 @@ L_cpy:
     
 L_done:
     mov [len], rdi
-    mov rcx, [len]
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_24_from_scratch_kill_line ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_kill_line
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

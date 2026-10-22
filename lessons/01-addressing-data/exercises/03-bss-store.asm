@@ -12,16 +12,15 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_03_bss_store:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: Store 7 to the byte variable, load it back, exit with it
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_03_bss_store (student routine; defined in solutions/).
+    call    ex_03_bss_store
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

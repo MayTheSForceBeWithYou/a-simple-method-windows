@@ -1,0 +1,1907 @@
+[
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/02-exit-seven.asm",
+    "extern": "ex_02_exit_seven",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/02-exit-seven.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/03-exit-from-register.asm",
+    "extern": "ex_03_exit_from_register",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/03-exit-from-register.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/04-zero-with-xor.asm",
+    "extern": "ex_04_zero_with_xor",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/04-zero-with-xor.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/05-mov-chain.asm",
+    "extern": "ex_05_mov_chain",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/05-mov-chain.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/06-eax-zero-extends.asm",
+    "extern": "ex_06_eax_zero_extends",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/06-eax-zero-extends.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/07-hello-world.asm",
+    "extern": "ex_07_hello_world",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/07-hello-world.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/08-two-writes.asm",
+    "extern": "ex_08_two_writes",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/08-two-writes.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/09-write-stderr.asm",
+    "extern": "ex_09_write_stderr",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/09-write-stderr.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/10-len-equ.asm",
+    "extern": "ex_10_len_equ",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/10-len-equ.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/15-exit-sum.asm",
+    "extern": "ex_15_exit_sum",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/15-exit-sum.asm"
+  },
+  {
+    "exercise": "lessons/00-tools-registers-mov-syscall/exercises/16-mov-imm-vs-reg.asm",
+    "extern": "ex_16_mov_imm_vs_reg",
+    "solution": "lessons/00-tools-registers-mov-syscall/solutions/16-mov-imm-vs-reg.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/01-data-dq.asm",
+    "extern": "ex_01_data_dq",
+    "solution": "lessons/01-addressing-data/solutions/01-data-dq.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/02-rodata-string.asm",
+    "extern": "ex_02_rodata_string",
+    "solution": "lessons/01-addressing-data/solutions/02-rodata-string.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/03-bss-store.asm",
+    "extern": "ex_03_bss_store",
+    "solution": "lessons/01-addressing-data/solutions/03-bss-store.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/04-mov-vs-lea.asm",
+    "extern": "ex_04_mov_vs_lea",
+    "solution": "lessons/01-addressing-data/solutions/04-mov-vs-lea.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/05-byte-store.asm",
+    "extern": "ex_05_byte_store",
+    "solution": "lessons/01-addressing-data/solutions/05-byte-store.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/06-displacement.asm",
+    "extern": "ex_06_displacement",
+    "solution": "lessons/01-addressing-data/solutions/06-displacement.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/07-scaled-index.asm",
+    "extern": "ex_07_scaled_index",
+    "solution": "lessons/01-addressing-data/solutions/07-scaled-index.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/08-lea-scale.asm",
+    "extern": "ex_08_lea_scale",
+    "solution": "lessons/01-addressing-data/solutions/08-lea-scale.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/09-pointer-walk.asm",
+    "extern": "ex_09_pointer_walk",
+    "solution": "lessons/01-addressing-data/solutions/09-pointer-walk.asm"
+  },
+  {
+    "exercise": "lessons/01-addressing-data/exercises/10-word-dword.asm",
+    "extern": "ex_10_word_dword",
+    "solution": "lessons/01-addressing-data/solutions/10-word-dword.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/01-add-sub.asm",
+    "extern": "ex_01_add_sub",
+    "solution": "lessons/02-arithmetic-flags/solutions/01-add-sub.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/02-inc-dec.asm",
+    "extern": "ex_02_inc_dec",
+    "solution": "lessons/02-arithmetic-flags/solutions/02-inc-dec.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/03-neg.asm",
+    "extern": "ex_03_neg",
+    "solution": "lessons/02-arithmetic-flags/solutions/03-neg.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/04-imul-two.asm",
+    "extern": "ex_04_imul_two",
+    "solution": "lessons/02-arithmetic-flags/solutions/04-imul-two.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/05-imul-three.asm",
+    "extern": "ex_05_imul_three",
+    "solution": "lessons/02-arithmetic-flags/solutions/05-imul-three.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/06-mul-unsigned.asm",
+    "extern": "ex_06_mul_unsigned",
+    "solution": "lessons/02-arithmetic-flags/solutions/06-mul-unsigned.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/07-idiv-setup.asm",
+    "extern": "ex_07_idiv_setup",
+    "solution": "lessons/02-arithmetic-flags/solutions/07-idiv-setup.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/08-div-remainder.asm",
+    "extern": "ex_08_div_remainder",
+    "solution": "lessons/02-arithmetic-flags/solutions/08-div-remainder.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/09-cmp-sete.asm",
+    "extern": "ex_09_cmp_sete",
+    "solution": "lessons/02-arithmetic-flags/solutions/09-cmp-sete.asm"
+  },
+  {
+    "exercise": "lessons/02-arithmetic-flags/exercises/10-cmp-setne.asm",
+    "extern": "ex_10_cmp_setne",
+    "solution": "lessons/02-arithmetic-flags/solutions/10-cmp-setne.asm"
+  },
+  {
+    "exercise": "lessons/03-control-flow/exercises/01-cmp-je.asm",
+    "extern": "ex_01_cmp_je",
+    "solution": "lessons/03-control-flow/solutions/01-cmp-je.asm"
+  },
+  {
+    "exercise": "lessons/03-control-flow/exercises/02-if-else.asm",
+    "extern": "ex_02_if_else",
+    "solution": "lessons/03-control-flow/solutions/02-if-else.asm"
+  },
+  {
+    "exercise": "lessons/03-control-flow/exercises/03-sum-loop.asm",
+    "extern": "ex_03_sum_loop",
+    "solution": "lessons/03-control-flow/solutions/03-sum-loop.asm"
+  },
+  {
+    "exercise": "lessons/03-control-flow/exercises/04-count-loop.asm",
+    "extern": "ex_04_count_loop",
+    "solution": "lessons/03-control-flow/solutions/04-count-loop.asm"
+  },
+  {
+    "exercise": "lessons/03-control-flow/exercises/05-signed-cmp.asm",
+    "extern": "ex_05_signed_cmp",
+    "solution": "lessons/03-control-flow/solutions/05-signed-cmp.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/01-push-pop.asm",
+    "extern": "ex_01_push_pop",
+    "solution": "lessons/04-stack-calling-convention/solutions/01-push-pop.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/08-caller-saved-reload.asm",
+    "extern": "ex_08_caller_saved_reload",
+    "solution": "lessons/04-stack-calling-convention/solutions/08-caller-saved-reload.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/09-nested-calls.asm",
+    "extern": "ex_09_nested_calls",
+    "solution": "lessons/04-stack-calling-convention/solutions/09-nested-calls.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/14-debug-missing-ret.asm",
+    "extern": "ex_14_debug_missing_ret",
+    "solution": "lessons/04-stack-calling-convention/solutions/14-debug-missing-ret.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/15-debug-wrong-arg-reg.asm",
+    "extern": "ex_15_debug_wrong_arg_reg",
+    "solution": "lessons/04-stack-calling-convention/solutions/15-debug-wrong-arg-reg.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/16-debug-callee-clobber.asm",
+    "extern": "ex_16_debug_callee_clobber",
+    "solution": "lessons/04-stack-calling-convention/solutions/16-debug-callee-clobber.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/21-abi-quiz-exit.asm",
+    "extern": "ex_21_abi_quiz_exit",
+    "solution": "lessons/04-stack-calling-convention/solutions/21-abi-quiz-exit.asm"
+  },
+  {
+    "exercise": "lessons/04-stack-calling-convention/exercises/27-debug-stack-imbalance.asm",
+    "extern": "ex_27_debug_stack_imbalance",
+    "solution": "lessons/04-stack-calling-convention/solutions/27-debug-stack-imbalance.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/11-map-array-proc.asm",
+    "extern": "ex_11_map_array_proc",
+    "solution": "lessons/05-procedures-recursion/solutions/11-map-array-proc.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/12-nested-frame.asm",
+    "extern": "ex_12_nested_frame",
+    "solution": "lessons/05-procedures-recursion/solutions/12-nested-frame.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/13-variadic-max.asm",
+    "extern": "ex_13_variadic_max",
+    "solution": "lessons/05-procedures-recursion/solutions/13-variadic-max.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/14-mutual-parity-count.asm",
+    "extern": "ex_14_mutual_parity_count",
+    "solution": "lessons/05-procedures-recursion/solutions/14-mutual-parity-count.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/15-rec-strlen.asm",
+    "extern": "ex_15_rec_strlen",
+    "solution": "lessons/05-procedures-recursion/solutions/15-rec-strlen.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/16-debug-missing-pop.asm",
+    "extern": "ex_16_debug_missing_pop",
+    "solution": "lessons/05-procedures-recursion/solutions/16-debug-missing-pop.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/17-closure-sim.asm",
+    "extern": "ex_17_closure_sim",
+    "solution": "lessons/05-procedures-recursion/solutions/17-closure-sim.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/18-trampoline-depth.asm",
+    "extern": "ex_18_trampoline_depth",
+    "solution": "lessons/05-procedures-recursion/solutions/18-trampoline-depth.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/19-compare-procs.asm",
+    "extern": "ex_19_compare_procs",
+    "solution": "lessons/05-procedures-recursion/solutions/19-compare-procs.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/20-fold-list.asm",
+    "extern": "ex_20_fold_list",
+    "solution": "lessons/05-procedures-recursion/solutions/20-fold-list.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/21-rec-binary-digits.asm",
+    "extern": "ex_21_rec_binary_digits",
+    "solution": "lessons/05-procedures-recursion/solutions/21-rec-binary-digits.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/22-stretch-quicksort-partition.asm",
+    "extern": "ex_22_stretch_quicksort_partition",
+    "solution": "lessons/05-procedures-recursion/solutions/22-stretch-quicksort-partition.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/23-stretch-memo-fib-slot.asm",
+    "extern": "ex_23_stretch_memo_fib_slot",
+    "solution": "lessons/05-procedures-recursion/solutions/23-stretch-memo-fib-slot.asm"
+  },
+  {
+    "exercise": "lessons/05-procedures-recursion/exercises/24-from-scratch-rec-sum-array.asm",
+    "extern": "ex_24_from_scratch_rec_sum_array",
+    "solution": "lessons/05-procedures-recursion/solutions/24-from-scratch-rec-sum-array.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/01-strlen.asm",
+    "extern": "ex_01_strlen",
+    "solution": "lessons/06-strings-memory-arrays/solutions/01-strlen.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/02-strcpy.asm",
+    "extern": "ex_02_strcpy",
+    "solution": "lessons/06-strings-memory-arrays/solutions/02-strcpy.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/03-memcmp.asm",
+    "extern": "ex_03_memcmp",
+    "solution": "lessons/06-strings-memory-arrays/solutions/03-memcmp.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/04-memset.asm",
+    "extern": "ex_04_memset",
+    "solution": "lessons/06-strings-memory-arrays/solutions/04-memset.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/05-array-reverse.asm",
+    "extern": "ex_05_array_reverse",
+    "solution": "lessons/06-strings-memory-arrays/solutions/05-array-reverse.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/06-aos-sum.asm",
+    "extern": "ex_06_aos_sum",
+    "solution": "lessons/06-strings-memory-arrays/solutions/06-aos-sum.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/07-rep-movsb.asm",
+    "extern": "ex_07_rep_movsb",
+    "solution": "lessons/06-strings-memory-arrays/solutions/07-rep-movsb.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/08-from-scratch-strchr.asm",
+    "extern": "ex_08_from_scratch_strchr",
+    "solution": "lessons/06-strings-memory-arrays/solutions/08-from-scratch-strchr.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/09-strcmp.asm",
+    "extern": "ex_09_strcmp",
+    "solution": "lessons/06-strings-memory-arrays/solutions/09-strcmp.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/10-strncmp.asm",
+    "extern": "ex_10_strncmp",
+    "solution": "lessons/06-strings-memory-arrays/solutions/10-strncmp.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/11-strchr.asm",
+    "extern": "ex_11_strchr",
+    "solution": "lessons/06-strings-memory-arrays/solutions/11-strchr.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/12-strcat-lite.asm",
+    "extern": "ex_12_strcat_lite",
+    "solution": "lessons/06-strings-memory-arrays/solutions/12-strcat-lite.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/13-memcpy-overlap-safe.asm",
+    "extern": "ex_13_memcpy_overlap_safe",
+    "solution": "lessons/06-strings-memory-arrays/solutions/13-memcpy-overlap-safe.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/14-memchr.asm",
+    "extern": "ex_14_memchr",
+    "solution": "lessons/06-strings-memory-arrays/solutions/14-memchr.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/15-aos-scale.asm",
+    "extern": "ex_15_aos_scale",
+    "solution": "lessons/06-strings-memory-arrays/solutions/15-aos-scale.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/16-soa-sum.asm",
+    "extern": "ex_16_soa_sum",
+    "solution": "lessons/06-strings-memory-arrays/solutions/16-soa-sum.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/17-bounded-strcpy.asm",
+    "extern": "ex_17_bounded_strcpy",
+    "solution": "lessons/06-strings-memory-arrays/solutions/17-bounded-strcpy.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/18-debug-off-by-one-copy.asm",
+    "extern": "ex_18_debug_off_by_one_copy",
+    "solution": "lessons/06-strings-memory-arrays/solutions/18-debug-off-by-one-copy.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/19-matrix-index.asm",
+    "extern": "ex_19_matrix_index",
+    "solution": "lessons/06-strings-memory-arrays/solutions/19-matrix-index.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/20-count-char.asm",
+    "extern": "ex_20_count_char",
+    "solution": "lessons/06-strings-memory-arrays/solutions/20-count-char.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/21-sparse-fill.asm",
+    "extern": "ex_21_sparse_fill",
+    "solution": "lessons/06-strings-memory-arrays/solutions/21-sparse-fill.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/22-stretch-itoa.asm",
+    "extern": "ex_22_stretch_itoa",
+    "solution": "lessons/06-strings-memory-arrays/solutions/22-stretch-itoa.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/23-stretch-utf8-ascii-validate.asm",
+    "extern": "ex_23_stretch_utf8_ascii_validate",
+    "solution": "lessons/06-strings-memory-arrays/solutions/23-stretch-utf8-ascii-validate.asm"
+  },
+  {
+    "exercise": "lessons/06-strings-memory-arrays/exercises/24-from-scratch-reverse-string.asm",
+    "extern": "ex_24_from_scratch_reverse_string",
+    "solution": "lessons/06-strings-memory-arrays/solutions/24-from-scratch-reverse-string.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/01-and-mask.asm",
+    "extern": "ex_01_and_mask",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/01-and-mask.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/02-or-flags.asm",
+    "extern": "ex_02_or_flags",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/02-or-flags.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/03-xor-swap.asm",
+    "extern": "ex_03_xor_swap",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/03-xor-swap.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/04-shl-mul.asm",
+    "extern": "ex_04_shl_mul",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/04-shl-mul.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/05-sar-sign.asm",
+    "extern": "ex_05_sar_sign",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/05-sar-sign.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/06-popcount-naive.asm",
+    "extern": "ex_06_popcount_naive",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/06-popcount-naive.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/07-extract-bitfield.asm",
+    "extern": "ex_07_extract_bitfield",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/07-extract-bitfield.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/08-from-scratch-rol.asm",
+    "extern": "ex_08_from_scratch_rol",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/08-from-scratch-rol.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/09-xor-checksum.asm",
+    "extern": "ex_09_xor_checksum",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/09-xor-checksum.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/10-bit-set-clear.asm",
+    "extern": "ex_10_bit_set_clear",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/10-bit-set-clear.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/11-isolate-lowbit.asm",
+    "extern": "ex_11_isolate_lowbit",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/11-isolate-lowbit.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/12-next-power-of-two-bit.asm",
+    "extern": "ex_12_next_power_of_two_bit",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/12-next-power-of-two-bit.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/13-shl-shl-combine.asm",
+    "extern": "ex_13_shl_shl_combine",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/13-shl-shl-combine.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/14-sar-vs-shr.asm",
+    "extern": "ex_14_sar_vs_shr",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/14-sar-vs-shr.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/15-bitfield-pack.asm",
+    "extern": "ex_15_bitfield_pack",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/15-bitfield-pack.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/16-bitfield-unpack.asm",
+    "extern": "ex_16_bitfield_unpack",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/16-bitfield-unpack.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/17-rotate-parity.asm",
+    "extern": "ex_17_rotate_parity",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/17-rotate-parity.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/18-mask-range.asm",
+    "extern": "ex_18_mask_range",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/18-mask-range.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/19-debug-sign-shift.asm",
+    "extern": "ex_19_debug_sign_shift",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/19-debug-sign-shift.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/20-count-leading-zeros-loop.asm",
+    "extern": "ex_20_count_leading_zeros_loop",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/20-count-leading-zeros-loop.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/21-gray-code.asm",
+    "extern": "ex_21_gray_code",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/21-gray-code.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/22-stretch-swar-avg.asm",
+    "extern": "ex_22_stretch_swar_avg",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/22-stretch-swar-avg.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/23-stretch-bit-reverse8.asm",
+    "extern": "ex_23_stretch_bit_reverse8",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/23-stretch-bit-reverse8.asm"
+  },
+  {
+    "exercise": "lessons/07-bitops-shifts-masks/exercises/24-from-scratch-ntz.asm",
+    "extern": "ex_24_from_scratch_ntz",
+    "solution": "lessons/07-bitops-shifts-masks/solutions/24-from-scratch-ntz.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/01-write-only.asm",
+    "extern": "ex_01_write_only",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/01-write-only.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/02-read-stdin-one.asm",
+    "extern": "ex_02_read_stdin_one",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/02-read-stdin-one.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/03-open-fail.asm",
+    "extern": "ex_03_open_fail",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/03-open-fail.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/04-mmap-anon.asm",
+    "extern": "ex_04_mmap_anon",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/04-mmap-anon.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/05-errno-neg.asm",
+    "extern": "ex_05_errno_neg",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/05-errno-neg.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/06-lseek-concept.asm",
+    "extern": "ex_06_lseek_concept",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/06-lseek-concept.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/07-write-iov-lite.asm",
+    "extern": "ex_07_write_iov_lite",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/07-write-iov-lite.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/08-from-scratch-close.asm",
+    "extern": "ex_08_from_scratch_close",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/08-from-scratch-close.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/09-write-len-check.asm",
+    "extern": "ex_09_write_len_check",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/09-write-len-check.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/10-open-dev-null.asm",
+    "extern": "ex_10_open_dev_null",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/10-open-dev-null.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/11-read-dev-zero.asm",
+    "extern": "ex_11_read_dev_zero",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/11-read-dev-zero.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/12-mmap-write-read.asm",
+    "extern": "ex_12_mmap_write_read",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/12-mmap-write-read.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/13-munmap.asm",
+    "extern": "ex_13_munmap",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/13-munmap.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/14-brk-stub.asm",
+    "extern": "ex_14_brk_stub",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/14-brk-stub.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/15-getpid.asm",
+    "extern": "ex_15_getpid",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/15-getpid.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/16-clock-gettime-stub.asm",
+    "extern": "ex_16_clock_gettime_stub",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/16-clock-gettime-stub.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/17-dup-concept.asm",
+    "extern": "ex_17_dup_concept",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/17-dup-concept.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/18-error-eacces-sim.asm",
+    "extern": "ex_18_error_eacces_sim",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/18-error-eacces-sim.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/19-pwrite-emul.asm",
+    "extern": "ex_19_pwrite_emul",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/19-pwrite-emul.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/20-mmap-pagesize-fill.asm",
+    "extern": "ex_20_mmap_pagesize_fill",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/20-mmap-pagesize-fill.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/21-debug-fd-leak-pattern.asm",
+    "extern": "ex_21_debug_fd_leak_pattern",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/21-debug-fd-leak-pattern.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/22-stretch-file-copy-mem.asm",
+    "extern": "ex_22_stretch_file_copy_mem",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/22-stretch-file-copy-mem.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/23-stretch-pipe-syscalls.asm",
+    "extern": "ex_23_stretch_pipe_syscalls",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/23-stretch-pipe-syscalls.asm"
+  },
+  {
+    "exercise": "lessons/08-syscalls-files-mmap/exercises/24-from-scratch-write-err.asm",
+    "extern": "ex_24_from_scratch_write_err",
+    "solution": "lessons/08-syscalls-files-mmap/solutions/24-from-scratch-write-err.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/01-define-const.asm",
+    "extern": "ex_01_define_const",
+    "solution": "lessons/09-macros-multifile-make/solutions/01-define-const.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/02-macro-exit.asm",
+    "extern": "ex_02_macro_exit",
+    "solution": "lessons/09-macros-multifile-make/solutions/02-macro-exit.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/03-macro-write.asm",
+    "extern": "ex_03_macro_write",
+    "solution": "lessons/09-macros-multifile-make/solutions/03-macro-write.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/04-include-guard-sim.asm",
+    "extern": "ex_04_include_guard_sim",
+    "solution": "lessons/09-macros-multifile-make/solutions/04-include-guard-sim.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/05-makefile-note.asm",
+    "extern": "ex_05_makefile_note",
+    "solution": "lessons/09-macros-multifile-make/solutions/05-makefile-note.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/06-extern-sim-onefile.asm",
+    "extern": "ex_06_extern_sim_onefile",
+    "solution": "lessons/09-macros-multifile-make/solutions/06-extern-sim-onefile.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/07-repeat-macro.asm",
+    "extern": "ex_07_repeat_macro",
+    "solution": "lessons/09-macros-multifile-make/solutions/07-repeat-macro.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/08-from-scratch-macro-add.asm",
+    "extern": "ex_08_from_scratch_macro_add",
+    "solution": "lessons/09-macros-multifile-make/solutions/08-from-scratch-macro-add.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/09-macro-pushregs.asm",
+    "extern": "ex_09_macro_pushregs",
+    "solution": "lessons/09-macros-multifile-make/solutions/09-macro-pushregs.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/10-macro-syscall.asm",
+    "extern": "ex_10_macro_syscall",
+    "solution": "lessons/09-macros-multifile-make/solutions/10-macro-syscall.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/11-assign-macro.asm",
+    "extern": "ex_11_assign_macro",
+    "solution": "lessons/09-macros-multifile-make/solutions/11-assign-macro.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/12-strstr-macro-label.asm",
+    "extern": "ex_12_strstr_macro_label",
+    "solution": "lessons/09-macros-multifile-make/solutions/12-strstr-macro-label.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/13-ifdef-debug.asm",
+    "extern": "ex_13_ifdef_debug",
+    "solution": "lessons/09-macros-multifile-make/solutions/13-ifdef-debug.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/14-multifile-sim-globals.asm",
+    "extern": "ex_14_multifile_sim_globals",
+    "solution": "lessons/09-macros-multifile-make/solutions/14-multifile-sim-globals.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/15-makefile-phony-doc.asm",
+    "extern": "ex_15_makefile_phony_doc",
+    "solution": "lessons/09-macros-multifile-make/solutions/15-makefile-phony-doc.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/16-include-path-sim.asm",
+    "extern": "ex_16_include_path_sim",
+    "solution": "lessons/09-macros-multifile-make/solutions/16-include-path-sim.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/17-macro-stringize.asm",
+    "extern": "ex_17_macro_stringize",
+    "solution": "lessons/09-macros-multifile-make/solutions/17-macro-stringize.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/18-default-rel-macro.asm",
+    "extern": "ex_18_default_rel_macro",
+    "solution": "lessons/09-macros-multifile-make/solutions/18-default-rel-macro.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/19-extern-declare.asm",
+    "extern": "ex_19_extern_declare",
+    "solution": "lessons/09-macros-multifile-make/solutions/19-extern-declare.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/20-macro-with-params.asm",
+    "extern": "ex_20_macro_with_params",
+    "solution": "lessons/09-macros-multifile-make/solutions/20-macro-with-params.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/21-debug-macro-arity.asm",
+    "extern": "ex_21_debug_macro_arity",
+    "solution": "lessons/09-macros-multifile-make/solutions/21-debug-macro-arity.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/22-stretch-units-header.asm",
+    "extern": "ex_22_stretch_units_header",
+    "solution": "lessons/09-macros-multifile-make/solutions/22-stretch-units-header.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/23-stretch-make-dependency.asm",
+    "extern": "ex_23_stretch_make_dependency",
+    "solution": "lessons/09-macros-multifile-make/solutions/23-stretch-make-dependency.asm"
+  },
+  {
+    "exercise": "lessons/09-macros-multifile-make/exercises/24-from-scratch-macro-abs.asm",
+    "extern": "ex_24_from_scratch_macro_abs",
+    "solution": "lessons/09-macros-multifile-make/solutions/24-from-scratch-macro-abs.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/01-buffer-init.asm",
+    "extern": "ex_01_buffer_init",
+    "solution": "lessons/10-milestone-cli-editor/solutions/01-buffer-init.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/02-insert-char.asm",
+    "extern": "ex_02_insert_char",
+    "solution": "lessons/10-milestone-cli-editor/solutions/02-insert-char.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/03-cursor-move.asm",
+    "extern": "ex_03_cursor_move",
+    "solution": "lessons/10-milestone-cli-editor/solutions/03-cursor-move.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/04-delete-backspace.asm",
+    "extern": "ex_04_delete_backspace",
+    "solution": "lessons/10-milestone-cli-editor/solutions/04-delete-backspace.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/05-render-line.asm",
+    "extern": "ex_05_render_line",
+    "solution": "lessons/10-milestone-cli-editor/solutions/05-render-line.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/06-save-stub.asm",
+    "extern": "ex_06_save_stub",
+    "solution": "lessons/10-milestone-cli-editor/solutions/06-save-stub.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/07-load-stub.asm",
+    "extern": "ex_07_load_stub",
+    "solution": "lessons/10-milestone-cli-editor/solutions/07-load-stub.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/08-from-scratch-gap-start.asm",
+    "extern": "ex_08_from_scratch_gap_start",
+    "solution": "lessons/10-milestone-cli-editor/solutions/08-from-scratch-gap-start.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/09-insert-at-cursor.asm",
+    "extern": "ex_09_insert_at_cursor",
+    "solution": "lessons/10-milestone-cli-editor/solutions/09-insert-at-cursor.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/10-insert-middle.asm",
+    "extern": "ex_10_insert_middle",
+    "solution": "lessons/10-milestone-cli-editor/solutions/10-insert-middle.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/11-delete-forward.asm",
+    "extern": "ex_11_delete_forward",
+    "solution": "lessons/10-milestone-cli-editor/solutions/11-delete-forward.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/12-line-start-end.asm",
+    "extern": "ex_12_line_start_end",
+    "solution": "lessons/10-milestone-cli-editor/solutions/12-line-start-end.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/13-render-viewport.asm",
+    "extern": "ex_13_render_viewport",
+    "solution": "lessons/10-milestone-cli-editor/solutions/13-render-viewport.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/14-dirty-flag.asm",
+    "extern": "ex_14_dirty_flag",
+    "solution": "lessons/10-milestone-cli-editor/solutions/14-dirty-flag.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/15-gap-insert.asm",
+    "extern": "ex_15_gap_insert",
+    "solution": "lessons/10-milestone-cli-editor/solutions/15-gap-insert.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/16-gap-move-left.asm",
+    "extern": "ex_16_gap_move_left",
+    "solution": "lessons/10-milestone-cli-editor/solutions/16-gap-move-left.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/17-utf8-ascii-cursor.asm",
+    "extern": "ex_17_utf8_ascii_cursor",
+    "solution": "lessons/10-milestone-cli-editor/solutions/17-utf8-ascii-cursor.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/18-status-line-len.asm",
+    "extern": "ex_18_status_line_len",
+    "solution": "lessons/10-milestone-cli-editor/solutions/18-status-line-len.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/19-save-length-prefix.asm",
+    "extern": "ex_19_save_length_prefix",
+    "solution": "lessons/10-milestone-cli-editor/solutions/19-save-length-prefix.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/20-load-validate-magic.asm",
+    "extern": "ex_20_load_validate_magic",
+    "solution": "lessons/10-milestone-cli-editor/solutions/20-load-validate-magic.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/21-debug-cursor-oob.asm",
+    "extern": "ex_21_debug_cursor_oob",
+    "solution": "lessons/10-milestone-cli-editor/solutions/21-debug-cursor-oob.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/22-stretch-undo-stack.asm",
+    "extern": "ex_22_stretch_undo_stack",
+    "solution": "lessons/10-milestone-cli-editor/solutions/22-stretch-undo-stack.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/23-stretch-raw-mode-flag.asm",
+    "extern": "ex_23_stretch_raw_mode_flag",
+    "solution": "lessons/10-milestone-cli-editor/solutions/23-stretch-raw-mode-flag.asm"
+  },
+  {
+    "exercise": "lessons/10-milestone-cli-editor/exercises/24-from-scratch-kill-line.asm",
+    "extern": "ex_24_from_scratch_kill_line",
+    "solution": "lessons/10-milestone-cli-editor/solutions/24-from-scratch-kill-line.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/01-token-kind.asm",
+    "extern": "ex_01_token_kind",
+    "solution": "lessons/11-parsing-datastructures/solutions/01-token-kind.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/02-lexer-digit.asm",
+    "extern": "ex_02_lexer_digit",
+    "solution": "lessons/11-parsing-datastructures/solutions/02-lexer-digit.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/03-list-node.asm",
+    "extern": "ex_03_list_node",
+    "solution": "lessons/11-parsing-datastructures/solutions/03-list-node.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/04-arena-bump.asm",
+    "extern": "ex_04_arena_bump",
+    "solution": "lessons/11-parsing-datastructures/solutions/04-arena-bump.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/05-hash-mix.asm",
+    "extern": "ex_05_hash_mix",
+    "solution": "lessons/11-parsing-datastructures/solutions/05-hash-mix.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/06-rd-parse-num.asm",
+    "extern": "ex_06_rd_parse_num",
+    "solution": "lessons/11-parsing-datastructures/solutions/06-rd-parse-num.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/07-stack-ds.asm",
+    "extern": "ex_07_stack_ds",
+    "solution": "lessons/11-parsing-datastructures/solutions/07-stack-ds.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/08-from-scratch-token-buf.asm",
+    "extern": "ex_08_from_scratch_token_buf",
+    "solution": "lessons/11-parsing-datastructures/solutions/08-from-scratch-token-buf.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/09-lexer-skip-ws.asm",
+    "extern": "ex_09_lexer_skip_ws",
+    "solution": "lessons/11-parsing-datastructures/solutions/09-lexer-skip-ws.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/10-token-buffer.asm",
+    "extern": "ex_10_token_buffer",
+    "solution": "lessons/11-parsing-datastructures/solutions/10-token-buffer.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/11-ll-push-front.asm",
+    "extern": "ex_11_ll_push_front",
+    "solution": "lessons/11-parsing-datastructures/solutions/11-ll-push-front.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/12-ll-sum.asm",
+    "extern": "ex_12_ll_sum",
+    "solution": "lessons/11-parsing-datastructures/solutions/12-ll-sum.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/13-hashmap-put-get.asm",
+    "extern": "ex_13_hashmap_put_get",
+    "solution": "lessons/11-parsing-datastructures/solutions/13-hashmap-put-get.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/14-arena-align.asm",
+    "extern": "ex_14_arena_align",
+    "solution": "lessons/11-parsing-datastructures/solutions/14-arena-align.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/15-rd-expect.asm",
+    "extern": "ex_15_rd_expect",
+    "solution": "lessons/11-parsing-datastructures/solutions/15-rd-expect.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/16-expr-stack.asm",
+    "extern": "ex_16_expr_stack",
+    "solution": "lessons/11-parsing-datastructures/solutions/16-expr-stack.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/17-precedence.asm",
+    "extern": "ex_17_precedence",
+    "solution": "lessons/11-parsing-datastructures/solutions/17-precedence.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/18-ast-node.asm",
+    "extern": "ex_18_ast_node",
+    "solution": "lessons/11-parsing-datastructures/solutions/18-ast-node.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/19-debug-null-deref-guard.asm",
+    "extern": "ex_19_debug_null_deref_guard",
+    "solution": "lessons/11-parsing-datastructures/solutions/19-debug-null-deref-guard.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/20-queue-ring.asm",
+    "extern": "ex_20_queue_ring",
+    "solution": "lessons/11-parsing-datastructures/solutions/20-queue-ring.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/21-intern-string.asm",
+    "extern": "ex_21_intern_string",
+    "solution": "lessons/11-parsing-datastructures/solutions/21-intern-string.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/22-stretch-pratt-stub.asm",
+    "extern": "ex_22_stretch_pratt_stub",
+    "solution": "lessons/11-parsing-datastructures/solutions/22-stretch-pratt-stub.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/23-stretch-error-span.asm",
+    "extern": "ex_23_stretch_error_span",
+    "solution": "lessons/11-parsing-datastructures/solutions/23-stretch-error-span.asm"
+  },
+  {
+    "exercise": "lessons/11-parsing-datastructures/exercises/24-from-scratch-vector-push.asm",
+    "extern": "ex_24_from_scratch_vector_push",
+    "solution": "lessons/11-parsing-datastructures/solutions/24-from-scratch-vector-push.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/01-emit-mov-imm.asm",
+    "extern": "ex_01_emit_mov_imm",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/01-emit-mov-imm.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/02-lex-ident.asm",
+    "extern": "ex_02_lex_ident",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/02-lex-ident.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/03-parse-let.asm",
+    "extern": "ex_03_parse_let",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/03-parse-let.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/04-codegen-add.asm",
+    "extern": "ex_04_codegen_add",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/04-codegen-add.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/05-bytecode-interp.asm",
+    "extern": "ex_05_bytecode_interp",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/05-bytecode-interp.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/06-symbol-slot.asm",
+    "extern": "ex_06_symbol_slot",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/06-symbol-slot.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/07-emit-syscall-exit.asm",
+    "extern": "ex_07_emit_syscall_exit",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/07-emit-syscall-exit.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/08-from-scratch-const-fold.asm",
+    "extern": "ex_08_from_scratch_const_fold",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/08-from-scratch-const-fold.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/09-lex-number.asm",
+    "extern": "ex_09_lex_number",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/09-lex-number.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/10-lex-ident-len.asm",
+    "extern": "ex_10_lex_ident_len",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/10-lex-ident-len.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/11-parse-binop.asm",
+    "extern": "ex_11_parse_binop",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/11-parse-binop.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/12-parse-paren.asm",
+    "extern": "ex_12_parse_paren",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/12-parse-paren.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/13-codegen-mov.asm",
+    "extern": "ex_13_codegen_mov",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/13-codegen-mov.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/14-codegen-add-regs.asm",
+    "extern": "ex_14_codegen_add_regs",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/14-codegen-add-regs.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/15-local-slot-alloc.asm",
+    "extern": "ex_15_local_slot_alloc",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/15-local-slot-alloc.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/16-if-codegen.asm",
+    "extern": "ex_16_if_codegen",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/16-if-codegen.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/17-while-codegen.asm",
+    "extern": "ex_17_while_codegen",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/17-while-codegen.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/18-call-codegen.asm",
+    "extern": "ex_18_call_codegen",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/18-call-codegen.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/19-bytecode-jump.asm",
+    "extern": "ex_19_bytecode_jump",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/19-bytecode-jump.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/20-type-check-int.asm",
+    "extern": "ex_20_type_check_int",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/20-type-check-int.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/21-debug-fold-bug.asm",
+    "extern": "ex_21_debug_fold_bug",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/21-debug-fold-bug.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/22-stretch-emit-elf-note.asm",
+    "extern": "ex_22_stretch_emit_elf_note",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/22-stretch-emit-elf-note.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/23-stretch-symbol-resolve.asm",
+    "extern": "ex_23_stretch_symbol_resolve",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/23-stretch-symbol-resolve.asm"
+  },
+  {
+    "exercise": "lessons/12-milestone-tiny-compiler/exercises/24-from-scratch-compile-add.asm",
+    "extern": "ex_24_from_scratch_compile_add",
+    "solution": "lessons/12-milestone-tiny-compiler/solutions/24-from-scratch-compile-add.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/01-fixed-mul.asm",
+    "extern": "ex_01_fixed_mul",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/01-fixed-mul.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/02-fixed-add.asm",
+    "extern": "ex_02_fixed_add",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/02-fixed-add.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/03-sse-add-scalar.asm",
+    "extern": "ex_03_sse_add_scalar",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/03-sse-add-scalar.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/04-clamp-fixed.asm",
+    "extern": "ex_04_clamp_fixed",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/04-clamp-fixed.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/05-dot2-fixed.asm",
+    "extern": "ex_05_dot2_fixed",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/05-dot2-fixed.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/06-shift-div.asm",
+    "extern": "ex_06_shift_div",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/06-shift-div.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/07-simd-lane-sum-stub.asm",
+    "extern": "ex_07_simd_lane_sum_stub",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/07-simd-lane-sum-stub.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/08-from-scratch-q8.asm",
+    "extern": "ex_08_from_scratch_q8",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/08-from-scratch-q8.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/09-q16-from-int.asm",
+    "extern": "ex_09_q16_from_int",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/09-q16-from-int.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/10-q16-frac.asm",
+    "extern": "ex_10_q16_frac",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/10-q16-frac.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/11-fixed-div.asm",
+    "extern": "ex_11_fixed_div",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/11-fixed-div.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/12-sse-movss-stub.asm",
+    "extern": "ex_12_sse_movss_stub",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/12-sse-movss-stub.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/13-neg-fixed.asm",
+    "extern": "ex_13_neg_fixed",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/13-pack-rgba8888.asm",
+    "extern": "ex_13_pack_rgba8888",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/13-pack-rgba8888.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/14-abs-fixed.asm",
+    "extern": "ex_14_abs_fixed",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/14-vec2-length2.asm",
+    "extern": "ex_14_vec2_length2",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/14-vec2-length2.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/15-lerp-fixed.asm",
+    "extern": "ex_15_lerp_fixed",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/15-lerp-fixed.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/16-clamp-q.asm",
+    "extern": "ex_16_clamp_q",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/16-clamp-q.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/16-wrap-angle.asm",
+    "extern": "ex_16_wrap_angle",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/17-floor-fixed.asm",
+    "extern": "ex_17_floor_fixed",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/17-simd-horizontal-stub.asm",
+    "extern": "ex_17_simd_horizontal_stub",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/17-simd-horizontal-stub.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/18-fixed-angle-step.asm",
+    "extern": "ex_18_fixed_angle_step",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/18-fixed-angle-step.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/18-round-fixed.asm",
+    "extern": "ex_18_round_fixed",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/19-debug-mul-overflow.asm",
+    "extern": "ex_19_debug_mul_overflow",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/19-debug-q-shift.asm",
+    "extern": "ex_19_debug_q_shift",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/19-debug-q-shift.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/20-dot3.asm",
+    "extern": "ex_20_dot3",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/20-dot3.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/20-sqrt-newton-stub.asm",
+    "extern": "ex_20_sqrt_newton_stub",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/21-atan2-stub.asm",
+    "extern": "ex_21_atan2_stub",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/21-fast-inv-stub.asm",
+    "extern": "ex_21_fast_inv_stub",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/21-fast-inv-stub.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/22-stretch-color-interp.asm",
+    "extern": "ex_22_stretch_color_interp",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/22-stretch-matrix2-mul.asm",
+    "extern": "ex_22_stretch_matrix2_mul",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/22-stretch-matrix2-mul.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/23-stretch-bezier-eval.asm",
+    "extern": "ex_23_stretch_bezier_eval",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/23-stretch-sin-lut.asm",
+    "extern": "ex_23_stretch_sin_lut",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/23-stretch-sin-lut.asm"
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/24-from-scratch-normalize2.asm",
+    "extern": "ex_24_from_scratch_normalize2",
+    "solution": ""
+  },
+  {
+    "exercise": "lessons/13-fp-simd-fixedpoint/exercises/24-from-scratch-q8-mul.asm",
+    "extern": "ex_24_from_scratch_q8_mul",
+    "solution": "lessons/13-fp-simd-fixedpoint/solutions/24-from-scratch-q8-mul.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/01-pixel-offset.asm",
+    "extern": "ex_01_pixel_offset",
+    "solution": "lessons/14-graphics-framebuffer/solutions/01-pixel-offset.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/02-pack-rgb.asm",
+    "extern": "ex_02_pack_rgb",
+    "solution": "lessons/14-graphics-framebuffer/solutions/02-pack-rgb.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/03-clear-buffer.asm",
+    "extern": "ex_03_clear_buffer",
+    "solution": "lessons/14-graphics-framebuffer/solutions/03-clear-buffer.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/04-plot-stub.asm",
+    "extern": "ex_04_plot_stub",
+    "solution": "lessons/14-graphics-framebuffer/solutions/04-plot-stub.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/05-blit-copy.asm",
+    "extern": "ex_05_blit_copy",
+    "solution": "lessons/14-graphics-framebuffer/solutions/05-blit-copy.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/06-clip-test.asm",
+    "extern": "ex_06_clip_test",
+    "solution": "lessons/14-graphics-framebuffer/solutions/06-clip-test.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/07-row-fill.asm",
+    "extern": "ex_07_row_fill",
+    "solution": "lessons/14-graphics-framebuffer/solutions/07-row-fill.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/08-from-scratch-stride.asm",
+    "extern": "ex_08_from_scratch_stride",
+    "solution": "lessons/14-graphics-framebuffer/solutions/08-from-scratch-stride.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/09-clear-color.asm",
+    "extern": "ex_09_clear_color",
+    "solution": "lessons/14-graphics-framebuffer/solutions/09-clear-color.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/10-put-pixel.asm",
+    "extern": "ex_10_put_pixel",
+    "solution": "lessons/14-graphics-framebuffer/solutions/10-put-pixel.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/11-hline.asm",
+    "extern": "ex_11_hline",
+    "solution": "lessons/14-graphics-framebuffer/solutions/11-hline.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/12-vline.asm",
+    "extern": "ex_12_vline",
+    "solution": "lessons/14-graphics-framebuffer/solutions/12-vline.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/13-rect-fill.asm",
+    "extern": "ex_13_rect_fill",
+    "solution": "lessons/14-graphics-framebuffer/solutions/13-rect-fill.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/14-blit-key.asm",
+    "extern": "ex_14_blit_key",
+    "solution": "lessons/14-graphics-framebuffer/solutions/14-blit-key.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/15-clip-rect.asm",
+    "extern": "ex_15_clip_rect",
+    "solution": "lessons/14-graphics-framebuffer/solutions/15-clip-rect.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/16-pitch-bytes.asm",
+    "extern": "ex_16_pitch_bytes",
+    "solution": "lessons/14-graphics-framebuffer/solutions/16-pitch-bytes.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/17-vsync-stub.asm",
+    "extern": "ex_17_vsync_stub",
+    "solution": "lessons/14-graphics-framebuffer/solutions/17-vsync-stub.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/18-double-buffer-index.asm",
+    "extern": "ex_18_double_buffer_index",
+    "solution": "lessons/14-graphics-framebuffer/solutions/18-double-buffer-index.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/19-debug-offset-bpp.asm",
+    "extern": "ex_19_debug_offset_bpp",
+    "solution": "lessons/14-graphics-framebuffer/solutions/19-debug-offset-bpp.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/20-alpha-stub.asm",
+    "extern": "ex_20_alpha_stub",
+    "solution": "lessons/14-graphics-framebuffer/solutions/20-alpha-stub.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/21-damage-rect.asm",
+    "extern": "ex_21_damage_rect",
+    "solution": "lessons/14-graphics-framebuffer/solutions/21-damage-rect.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/22-stretch-bresenham-count.asm",
+    "extern": "ex_22_stretch_bresenham_count",
+    "solution": "lessons/14-graphics-framebuffer/solutions/22-stretch-bresenham-count.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/23-stretch-ppm-header-len.asm",
+    "extern": "ex_23_stretch_ppm_header_len",
+    "solution": "lessons/14-graphics-framebuffer/solutions/23-stretch-ppm-header-len.asm"
+  },
+  {
+    "exercise": "lessons/14-graphics-framebuffer/exercises/24-from-scratch-fb-size.asm",
+    "extern": "ex_24_from_scratch_fb_size",
+    "solution": "lessons/14-graphics-framebuffer/solutions/24-from-scratch-fb-size.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/01-keymap.asm",
+    "extern": "ex_01_keymap",
+    "solution": "lessons/15-input-timing-gameloop/solutions/01-keymap.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/02-dt-accum.asm",
+    "extern": "ex_02_dt_accum",
+    "solution": "lessons/15-input-timing-gameloop/solutions/02-dt-accum.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/03-fixed-step.asm",
+    "extern": "ex_03_fixed_step",
+    "solution": "lessons/15-input-timing-gameloop/solutions/03-fixed-step.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/04-edge-trigger.asm",
+    "extern": "ex_04_edge_trigger",
+    "solution": "lessons/15-input-timing-gameloop/solutions/04-edge-trigger.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/05-frame-limit.asm",
+    "extern": "ex_05_frame_limit",
+    "solution": "lessons/15-input-timing-gameloop/solutions/05-frame-limit.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/06-quit-flag.asm",
+    "extern": "ex_06_quit_flag",
+    "solution": "lessons/15-input-timing-gameloop/solutions/06-quit-flag.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/07-poll-stub.asm",
+    "extern": "ex_07_poll_stub",
+    "solution": "lessons/15-input-timing-gameloop/solutions/07-poll-stub.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/08-from-scratch-loop-counter.asm",
+    "extern": "ex_08_from_scratch_loop_counter",
+    "solution": "lessons/15-input-timing-gameloop/solutions/08-from-scratch-loop-counter.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/09-key-down-up.asm",
+    "extern": "ex_09_key_down_up",
+    "solution": "lessons/15-input-timing-gameloop/solutions/09-key-down-up.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/10-chord.asm",
+    "extern": "ex_10_chord",
+    "solution": "lessons/15-input-timing-gameloop/solutions/10-chord.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/11-mouse-delta.asm",
+    "extern": "ex_11_mouse_delta",
+    "solution": "lessons/15-input-timing-gameloop/solutions/11-mouse-delta.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/12-timestep-spiral.asm",
+    "extern": "ex_12_timestep_spiral",
+    "solution": "lessons/15-input-timing-gameloop/solutions/12-timestep-spiral.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/13-interp-alpha.asm",
+    "extern": "ex_13_interp_alpha",
+    "solution": "lessons/15-input-timing-gameloop/solutions/13-interp-alpha.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/14-frame-stats.asm",
+    "extern": "ex_14_frame_stats",
+    "solution": "lessons/15-input-timing-gameloop/solutions/14-frame-stats.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/15-pause-flag.asm",
+    "extern": "ex_15_pause_flag",
+    "solution": "lessons/15-input-timing-gameloop/solutions/15-pause-flag.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/16-repeat-delay.asm",
+    "extern": "ex_16_repeat_delay",
+    "solution": "lessons/15-input-timing-gameloop/solutions/16-repeat-delay.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/17-clock-diff.asm",
+    "extern": "ex_17_clock_diff",
+    "solution": "lessons/15-input-timing-gameloop/solutions/17-clock-diff.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/18-input-queue.asm",
+    "extern": "ex_18_input_queue",
+    "solution": "lessons/15-input-timing-gameloop/solutions/18-input-queue.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/19-debug-dt-units.asm",
+    "extern": "ex_19_debug_dt_units",
+    "solution": "lessons/15-input-timing-gameloop/solutions/19-debug-dt-units.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/20-fixed-hz.asm",
+    "extern": "ex_20_fixed_hz",
+    "solution": "lessons/15-input-timing-gameloop/solutions/20-fixed-hz.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/21-sim-real-ratio.asm",
+    "extern": "ex_21_sim_real_ratio",
+    "solution": "lessons/15-input-timing-gameloop/solutions/21-sim-real-ratio.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/22-stretch-ring-drop.asm",
+    "extern": "ex_22_stretch_ring_drop",
+    "solution": "lessons/15-input-timing-gameloop/solutions/22-stretch-ring-drop.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/23-stretch-haptic-stub.asm",
+    "extern": "ex_23_stretch_haptic_stub",
+    "solution": "lessons/15-input-timing-gameloop/solutions/23-stretch-haptic-stub.asm"
+  },
+  {
+    "exercise": "lessons/15-input-timing-gameloop/exercises/24-from-scratch-loop-phases.asm",
+    "extern": "ex_24_from_scratch_loop_phases",
+    "solution": "lessons/15-input-timing-gameloop/solutions/24-from-scratch-loop-phases.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/01-tile-index.asm",
+    "extern": "ex_01_tile_index",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/01-tile-index.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/02-aabb-overlap.asm",
+    "extern": "ex_02_aabb_overlap",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/02-aabb-overlap.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/03-aabb-reject.asm",
+    "extern": "ex_03_aabb_reject",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/03-aabb-reject.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/04-sprite-origin.asm",
+    "extern": "ex_04_sprite_origin",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/04-sprite-origin.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/05-tile-solid.asm",
+    "extern": "ex_05_tile_solid",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/05-tile-solid.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/06-hash-cell.asm",
+    "extern": "ex_06_hash_cell",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/06-hash-cell.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/07-clip-w.asm",
+    "extern": "ex_07_clip_w",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/07-clip-w.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/08-from-scratch-point-in-rect.asm",
+    "extern": "ex_08_from_scratch_point_in_rect",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/08-from-scratch-point-in-rect.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/09-tile-at.asm",
+    "extern": "ex_09_tile_at",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/09-tile-at.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/10-world-to-tile.asm",
+    "extern": "ex_10_world_to_tile",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/10-world-to-tile.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/11-sprite-layer.asm",
+    "extern": "ex_11_sprite_layer",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/11-sprite-layer.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/12-aabb-minkowski.asm",
+    "extern": "ex_12_aabb_minkowski",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/12-aabb-minkowski.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/13-sweep-hit-t.asm",
+    "extern": "ex_13_sweep_hit_t",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/13-sweep-hit-t.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/14-tile-collision-mask.asm",
+    "extern": "ex_14_tile_collision_mask",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/14-tile-collision-mask.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/15-camera-cull.asm",
+    "extern": "ex_15_camera_cull",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/15-camera-cull.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/16-anim-frame.asm",
+    "extern": "ex_16_anim_frame",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/16-anim-frame.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/17-flip-flags.asm",
+    "extern": "ex_17_flip_flags",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/17-flip-flags.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/18-spatial-hash-insert.asm",
+    "extern": "ex_18_spatial_hash_insert",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/18-spatial-hash-insert.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/19-debug-aabb-y.asm",
+    "extern": "ex_19_debug_aabb_y",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/19-debug-aabb-y.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/20-tile-autotile-mask.asm",
+    "extern": "ex_20_tile_autotile_mask",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/20-tile-autotile-mask.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/21-sprite-batch-count.asm",
+    "extern": "ex_21_sprite_batch_count",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/21-sprite-batch-count.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/22-stretch-sat-axes.asm",
+    "extern": "ex_22_stretch_sat_axes",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/22-stretch-sat-axes.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/23-stretch-chunk-coords.asm",
+    "extern": "ex_23_stretch_chunk_coords",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/23-stretch-chunk-coords.asm"
+  },
+  {
+    "exercise": "lessons/16-sprites-tilemaps-collision/exercises/24-from-scratch-overlap-area.asm",
+    "extern": "ex_24_from_scratch_overlap_area",
+    "solution": "lessons/16-sprites-tilemaps-collision/solutions/24-from-scratch-overlap-area.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/01-soa-pos.asm",
+    "extern": "ex_01_soa_pos",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/01-soa-pos.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/02-bfs-dist.asm",
+    "extern": "ex_02_bfs_dist",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/02-bfs-dist.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/03-astar-h.asm",
+    "extern": "ex_03_astar_h",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/03-astar-h.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/04-ui-hit.asm",
+    "extern": "ex_04_ui_hit",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/04-ui-hit.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/05-entity-alive.asm",
+    "extern": "ex_05_entity_alive",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/05-entity-alive.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/06-path-step.asm",
+    "extern": "ex_06_path_step",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/06-path-step.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/07-panel-draw-stub.asm",
+    "extern": "ex_07_panel_draw_stub",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/07-panel-draw-stub.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/08-from-scratch-guest-target.asm",
+    "extern": "ex_08_from_scratch_guest_target",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/08-from-scratch-guest-target.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/09-spawn-entity.asm",
+    "extern": "ex_09_spawn_entity",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/09-spawn-entity.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/10-despawn-freelist.asm",
+    "extern": "ex_10_despawn_freelist",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/10-despawn-freelist.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/11-component-mask.asm",
+    "extern": "ex_11_component_mask",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/11-component-mask.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/12-bfs-queue.asm",
+    "extern": "ex_12_bfs_queue",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/12-bfs-queue.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/13-astar-fscore.asm",
+    "extern": "ex_13_astar_fscore",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/13-astar-fscore.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/14-path-reconstruct.asm",
+    "extern": "ex_14_path_reconstruct",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/14-path-reconstruct.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/15-ui-button-press.asm",
+    "extern": "ex_15_ui_button_press",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/15-ui-button-press.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/16-ui-focus.asm",
+    "extern": "ex_16_ui_focus",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/16-ui-focus.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/17-panel-layout.asm",
+    "extern": "ex_17_panel_layout",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/17-panel-layout.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/18-guest-happiness.asm",
+    "extern": "ex_18_guest_happiness",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/18-guest-happiness.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/19-debug-parent-index.asm",
+    "extern": "ex_19_debug_parent_index",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/19-debug-parent-index.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/20-steering-seek.asm",
+    "extern": "ex_20_steering_seek",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/20-steering-seek.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/21-formation-slot.asm",
+    "extern": "ex_21_formation_slot",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/21-formation-slot.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/22-stretch-flow-field.asm",
+    "extern": "ex_22_stretch_flow_field",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/22-stretch-flow-field.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/23-stretch-ui-modal.asm",
+    "extern": "ex_23_stretch_ui_modal",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/23-stretch-ui-modal.asm"
+  },
+  {
+    "exercise": "lessons/17-entities-pathfinding-ui/exercises/24-from-scratch-ecs-query.asm",
+    "extern": "ex_24_from_scratch_ecs_query",
+    "solution": "lessons/17-entities-pathfinding-ui/solutions/24-from-scratch-ecs-query.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/01-map-cell.asm",
+    "extern": "ex_01_map_cell",
+    "solution": "lessons/18-capstone-park-sim/solutions/01-map-cell.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/02-place-track.asm",
+    "extern": "ex_02_place_track",
+    "solution": "lessons/18-capstone-park-sim/solutions/02-place-track.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/03-econ-tick.asm",
+    "extern": "ex_03_econ_tick",
+    "solution": "lessons/18-capstone-park-sim/solutions/03-econ-tick.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/04-agent-step.asm",
+    "extern": "ex_04_agent_step",
+    "solution": "lessons/18-capstone-park-sim/solutions/04-agent-step.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/05-save-magic.asm",
+    "extern": "ex_05_save_magic",
+    "solution": "lessons/18-capstone-park-sim/solutions/05-save-magic.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/06-ride-open.asm",
+    "extern": "ex_06_ride_open",
+    "solution": "lessons/18-capstone-park-sim/solutions/06-ride-open.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/07-peep-happy.asm",
+    "extern": "ex_07_peep_happy",
+    "solution": "lessons/18-capstone-park-sim/solutions/07-peep-happy.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/08-from-scratch-tick.asm",
+    "extern": "ex_08_from_scratch_tick",
+    "solution": "lessons/18-capstone-park-sim/solutions/08-from-scratch-tick.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/09-map-place-path.asm",
+    "extern": "ex_09_map_place_path",
+    "solution": "lessons/18-capstone-park-sim/solutions/09-map-place-path.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/10-map-erase.asm",
+    "extern": "ex_10_map_erase",
+    "solution": "lessons/18-capstone-park-sim/solutions/10-map-erase.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/11-track-piece-rotate.asm",
+    "extern": "ex_11_track_piece_rotate",
+    "solution": "lessons/18-capstone-park-sim/solutions/11-track-piece-rotate.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/12-track-connect.asm",
+    "extern": "ex_12_track_connect",
+    "solution": "lessons/18-capstone-park-sim/solutions/12-track-connect.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/13-peep-pathfind-step.asm",
+    "extern": "ex_13_peep_pathfind_step",
+    "solution": "lessons/18-capstone-park-sim/solutions/13-peep-pathfind-step.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/14-ride-queue-len.asm",
+    "extern": "ex_14_ride_queue_len",
+    "solution": "lessons/18-capstone-park-sim/solutions/14-ride-queue-len.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/15-econ-ticket.asm",
+    "extern": "ex_15_econ_ticket",
+    "solution": "lessons/18-capstone-park-sim/solutions/15-econ-ticket.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/16-econ-upkeep.asm",
+    "extern": "ex_16_econ_upkeep",
+    "solution": "lessons/18-capstone-park-sim/solutions/16-econ-upkeep.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/17-save-header.asm",
+    "extern": "ex_17_save_header",
+    "solution": "lessons/18-capstone-park-sim/solutions/17-save-header.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/18-load-version-check.asm",
+    "extern": "ex_18_load_version_check",
+    "solution": "lessons/18-capstone-park-sim/solutions/18-load-version-check.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/19-debug-map-bounds.asm",
+    "extern": "ex_19_debug_map_bounds",
+    "solution": "lessons/18-capstone-park-sim/solutions/19-debug-map-bounds.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/20-weather-tick.asm",
+    "extern": "ex_20_weather_tick",
+    "solution": "lessons/18-capstone-park-sim/solutions/20-weather-tick.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/21-scenario-goal.asm",
+    "extern": "ex_21_scenario_goal",
+    "solution": "lessons/18-capstone-park-sim/solutions/21-scenario-goal.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/22-stretch-coaster-excitement.asm",
+    "extern": "ex_22_stretch_coaster_excitement",
+    "solution": "lessons/18-capstone-park-sim/solutions/22-stretch-coaster-excitement.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/23-stretch-multiplayer-stub.asm",
+    "extern": "ex_23_stretch_multiplayer_stub",
+    "solution": "lessons/18-capstone-park-sim/solutions/23-stretch-multiplayer-stub.asm"
+  },
+  {
+    "exercise": "lessons/18-capstone-park-sim/exercises/24-from-scratch-sim-integrate.asm",
+    "extern": "ex_24_from_scratch_sim_integrate",
+    "solution": "lessons/18-capstone-park-sim/solutions/24-from-scratch-sim-integrate.asm"
+  }
+]

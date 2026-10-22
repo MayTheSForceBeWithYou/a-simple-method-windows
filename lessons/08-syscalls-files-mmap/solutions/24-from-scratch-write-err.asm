@@ -16,8 +16,9 @@ msg BYTE "x"
 written DWORD ?
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_24_from_scratch_write_err PROC
+sub rsp, 56
     
     ; WriteFile with invalid handle (-1)
     mov rcx, -1             ; invalid handle
@@ -40,6 +41,13 @@ L_ok:
     mov rcx, 1
     
 L_o:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_24_from_scratch_write_err ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_write_err
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

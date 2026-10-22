@@ -14,18 +14,17 @@ bytesWritten DWORD ?
 
 .CODE
 
+EXTRN ExitProcess:PROC
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
-EXTRN ExitProcess:PROC
+EXTRN ex_17_dup_concept:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdout, WriteFile message, exit 0
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_17_dup_concept (student routine; defined in solutions/).
+    call    ex_17_dup_concept
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

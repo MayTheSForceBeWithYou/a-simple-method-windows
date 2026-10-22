@@ -14,18 +14,17 @@ x DQ 99
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_04_mov_vs_lea:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: Use LEA to load address of x into RBX
     ; TODO: Use MOV to load value from [RBX] into RAX
     ; TODO: Move RAX to RCX and exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_04_mov_vs_lea (student routine; defined in solutions/).
+    call    ex_04_mov_vs_lea
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

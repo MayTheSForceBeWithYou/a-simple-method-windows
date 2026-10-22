@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_09_cmp_sete:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 42
-    mov rbx, 42
-    
-    ; TODO: CMP RAX, RBX; SETE CL; MOVZX RCX, CL; exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_09_cmp_sete (student routine; defined in solutions/).
+    call    ex_09_cmp_sete
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

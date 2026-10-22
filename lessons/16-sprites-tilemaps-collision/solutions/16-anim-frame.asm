@@ -10,8 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_16_anim_frame PROC
+sub rsp, 40
     mov rax, 10
     xor rdx, rdx
     mov rbx, 4
@@ -19,7 +20,13 @@ main PROC
     xor rdx, rdx
     mov rbx, 3
     div rbx
-    mov rcx, rdx
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_16_anim_frame ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_anim_frame
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

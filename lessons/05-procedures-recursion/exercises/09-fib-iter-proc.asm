@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement iterative fibonacci
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 10
     call fib
     mov rcx, rax

@@ -4,17 +4,16 @@
 ; Expected: exit code 3
 
 .CODE
-EXTRN ExitProcess:PROC
 
-get_three PROC
-    mov rax, 3
-    ; BUG: Missing RET - falls through!
-get_three ENDP
+EXTRN ExitProcess:PROC
+EXTRN ex_14_debug_missing_ret:PROC
 
 main PROC
-    sub rsp, 32
-    call get_three
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_14_debug_missing_ret (student routine; defined in solutions/).
+    call    ex_14_debug_missing_ret
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

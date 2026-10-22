@@ -10,8 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_keymap PROC
+sub rsp, 40
     mov al, 'W'
     cmp al, 'W'
     jne not_match
@@ -20,6 +21,13 @@ main PROC
 not_match:
     xor rcx, rcx
 exit_proc:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_01_keymap ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_keymap
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

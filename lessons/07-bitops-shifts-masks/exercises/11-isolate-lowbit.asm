@@ -12,20 +12,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_11_isolate_lowbit:PROC
 
 main PROC
-    mov     rax, 212        ; 0b11010100
-    mov     rbx, rax
-    neg     rbx             ; -x
-    
-    ; TODO: AND rax with rbx to isolate lowest set bit
-    
+    sub     rsp, 40
+    ; TODO: implement ex_11_isolate_lowbit (student routine; defined in solutions/).
+    call    ex_11_isolate_lowbit
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 4
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

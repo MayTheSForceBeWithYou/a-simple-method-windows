@@ -5,13 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_12_nested_frame PROC
+sub rsp, 40
     mov rcx, 10
     mov rdx, 20
     call outer
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 31
+    ret
+ex_12_nested_frame ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_nested_frame
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 outer PROC

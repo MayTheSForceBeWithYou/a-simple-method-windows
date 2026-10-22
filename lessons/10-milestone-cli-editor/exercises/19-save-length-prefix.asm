@@ -11,14 +11,12 @@ EXTRN CreateFileA:PROC
 EXTRN WriteFile:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 56
-    .allocstack 56
-    .endprolog
-    mov len, 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+EXTRN ex_19_save_length_prefix:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_19_save_length_prefix (student routine; defined in solutions/).
+    call    ex_19_save_length_prefix
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

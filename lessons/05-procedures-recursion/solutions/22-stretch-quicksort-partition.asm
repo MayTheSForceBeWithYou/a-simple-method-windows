@@ -8,14 +8,21 @@ EXTERN ExitProcess:PROC
 arr QWORD 1,5,2,4
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_22_stretch_quicksort_partition PROC
+sub rsp, 40
     lea rcx, arr
     xor rdx, rdx
     mov r8, 3
     call partition
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_22_stretch_quicksort_partition ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_quicksort_partition
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 partition PROC

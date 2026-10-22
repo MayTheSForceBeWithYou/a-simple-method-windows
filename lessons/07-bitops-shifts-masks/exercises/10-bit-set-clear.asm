@@ -13,19 +13,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_10_bit_set_clear:PROC
 
 main PROC
-    mov     rax, 0FFh       ; All bits set
-    
-    ; TODO: Clear bit 2 using AND with inverted mask
-    
+    sub     rsp, 40
+    ; TODO: implement ex_10_bit_set_clear (student routine; defined in solutions/).
+    call    ex_10_bit_set_clear
     mov     ecx, eax
-    and     ecx, 0FFh
-    call    ExitProcess     ; Should exit with 251
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

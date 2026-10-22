@@ -11,23 +11,14 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_12_mmap_write_read:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: VirtualAlloc 4096 bytes
-    
-    ; TODO: Store 99 at offset 100
-    
-    ; TODO: Read back and exit with value
-    
-    ; TODO: VirtualFree
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_12_mmap_write_read (student routine; defined in solutions/).
+    call    ex_12_mmap_write_read
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

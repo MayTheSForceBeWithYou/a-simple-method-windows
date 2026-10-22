@@ -12,8 +12,9 @@ EXTERN ExitProcess:PROC
 DEBUG EQU 1
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_13_ifdef_debug PROC
+sub rsp, 40
     
     ; MASM conditional assembly
     IFDEF DEBUG
@@ -21,7 +22,13 @@ main PROC
     ELSE
         mov rcx, 0
     ENDIF
-    
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_13_ifdef_debug ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_ifdef_debug
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

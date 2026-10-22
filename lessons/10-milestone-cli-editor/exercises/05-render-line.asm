@@ -7,16 +7,12 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    mov buf[0], 'H'
-    mov buf[1], 'i'
-    mov len, 2
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+EXTRN ex_05_render_line:PROC
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_05_render_line (student routine; defined in solutions/).
+    call    ex_05_render_line
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

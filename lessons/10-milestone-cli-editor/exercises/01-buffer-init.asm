@@ -5,10 +5,11 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_01_buffer_init:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_01_buffer_init (student routine; defined in solutions/).
+    call    ex_01_buffer_init
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -5,10 +5,11 @@ gap_start QWORD ?
 gap_end QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_08_from_scratch_gap_start:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_08_from_scratch_gap_start (student routine; defined in solutions/).
+    call    ex_08_from_scratch_gap_start
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -11,8 +11,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement answer() function that returns 42 in RAX
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     call answer
     mov rcx, rax
     call ExitProcess

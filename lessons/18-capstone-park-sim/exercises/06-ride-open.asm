@@ -1,10 +1,11 @@
 ; 06-ride-open: ride open
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_06_ride_open:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_06_ride_open (student routine; defined in solutions/).
+    call    ex_06_ride_open
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

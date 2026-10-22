@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_cmp_setne PROC
+sub rsp, 40
     mov rax, 5
     mov rbx, 6
     cmp rax, rbx
     setne al
     movzx rcx, al
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_10_cmp_setne ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_cmp_setne
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

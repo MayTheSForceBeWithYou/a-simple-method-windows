@@ -5,15 +5,12 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_11_delete_forward:PROC
 main PROC
-    mov buf[0], 'A'
-    mov buf[1], 'B'
-    mov buf[2], 'C'
-    mov len, 3
-    mov cur, 1
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_11_delete_forward (student routine; defined in solutions/).
+    call    ex_11_delete_forward
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

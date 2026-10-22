@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 masks BYTE 1,1,1,0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_24_from_scratch_ecs_query PROC
+sub rsp, 40
     xor r8, r8
     xor r9, r9
 query_loop:
@@ -27,7 +28,13 @@ query_next:
     inc r9
     jmp query_loop
 query_done:
-    mov rcx, r8
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_24_from_scratch_ecs_query ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_ecs_query
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

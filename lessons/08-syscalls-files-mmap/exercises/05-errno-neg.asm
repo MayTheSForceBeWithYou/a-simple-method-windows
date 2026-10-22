@@ -16,20 +16,14 @@ filename DB "C:\nope.txt", 0
 EXTRN CreateFileA:PROC
 EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_05_errno_neg:PROC
 
-main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
-    .endprolog
-    
-    ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    
-    ; TODO: Check for INVALID_HANDLE_VALUE (-1)
-    
-    ; Failed, get error code
-    ; TODO: Call GetLastError
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_05_errno_neg (student routine; defined in solutions/).
+    call    ex_05_errno_neg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

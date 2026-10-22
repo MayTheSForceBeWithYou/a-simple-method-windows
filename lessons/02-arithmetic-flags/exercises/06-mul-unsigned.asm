@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_06_mul_unsigned:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 21
-    mov rbx, 2
-    
-    ; TODO: MUL RBX; exit with RAX
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_06_mul_unsigned (student routine; defined in solutions/).
+    call    ex_06_mul_unsigned
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

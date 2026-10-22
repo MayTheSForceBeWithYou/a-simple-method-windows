@@ -10,8 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_05_frame_limit PROC
+sub rsp, 40
     mov rax, 6
     mov rbx, 8
     cmp rax, rbx
@@ -22,6 +23,13 @@ main PROC
 nopad:
     xor rcx, rcx
 exit_proc:
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_05_frame_limit ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_05_frame_limit
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

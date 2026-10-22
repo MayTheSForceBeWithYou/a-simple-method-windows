@@ -9,9 +9,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_23_stretch_make_dependency PROC
+sub rsp, 40
+    mov     eax, 3
+    ret
+ex_23_stretch_make_dependency ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 3
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_23_stretch_make_dependency
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

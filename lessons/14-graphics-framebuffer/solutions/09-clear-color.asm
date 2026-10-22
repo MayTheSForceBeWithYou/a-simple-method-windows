@@ -13,13 +13,21 @@ EXTERN ExitProcess:PROC
 fb BYTE 4 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_09_clear_color PROC
+sub rsp, 40
     mov al, 5
     lea rdi, fb
     mov rcx, 4
     rep stosb
     movzx rcx, BYTE PTR [fb]
-    call ExitProcess
+    mov     eax, 5
+    ret
+ex_09_clear_color ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_clear_color
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

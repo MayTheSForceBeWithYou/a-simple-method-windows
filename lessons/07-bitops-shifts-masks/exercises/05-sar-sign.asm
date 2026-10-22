@@ -11,19 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_05_sar_sign:PROC
 
 main PROC
-    mov     rax, -16        ; Signed negative value
-    
-    ; TODO: Shift arithmetic right by 2 to divide by 4
-    
+    sub     rsp, 40
+    ; TODO: implement ex_05_sar_sign (student routine; defined in solutions/).
+    call    ex_05_sar_sign
     mov     ecx, eax
-    and     ecx, 0FFh       ; Exit with low byte
-    call    ExitProcess     ; Should exit with 252
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

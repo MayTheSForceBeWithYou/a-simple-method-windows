@@ -10,13 +10,15 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_04_zero_with_xor:PROC
 
 main PROC
-    sub rsp, 40
-    
+    sub     rsp, 40
     ; TODO: Use XOR to zero RCX (not mov rcx, 0), then call ExitProcess
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_04_zero_with_xor (student routine; defined in solutions/).
+    call    ex_04_zero_with_xor
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

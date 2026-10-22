@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 buf BYTE 8 DUP(0)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_21_sparse_fill PROC
+sub rsp, 40
     xor r8, r8
 fill_loop:
     cmp r8, 8
@@ -36,6 +37,13 @@ sum_loop:
     inc r8
     jmp sum_loop
 sum_done:
-    call ExitProcess
+    mov     eax, 4
+    ret
+ex_21_sparse_fill ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_sparse_fill
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

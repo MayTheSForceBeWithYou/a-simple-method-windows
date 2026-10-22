@@ -11,16 +11,23 @@ EXTERN ExitProcess:PROC
 buf BYTE 3,5,7,9
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_14_memchr PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     lea rcx, buf
     mov rdx, 7
     mov r8, 4
     call memchr_idx
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_14_memchr ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_14_memchr
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 memchr_idx PROC

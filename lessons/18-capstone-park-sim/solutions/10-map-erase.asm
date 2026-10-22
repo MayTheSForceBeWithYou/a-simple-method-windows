@@ -11,11 +11,19 @@ EXTERN ExitProcess:PROC
 map BYTE 256 DUP(0)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_10_map_erase PROC
+sub rsp, 40
     mov BYTE PTR [map+5], 1
     mov BYTE PTR [map+5], 0
     movzx rcx, BYTE PTR [map+5]
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_10_map_erase ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_map_erase
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

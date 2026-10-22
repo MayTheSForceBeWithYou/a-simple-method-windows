@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_16_mov_imm_vs_reg:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 10                ; Immediate 10 to RAX
-    mov rbx, rax               ; Copy RAX to RBX (register operand)
-    
-    ; TODO: Add RBX to RAX, move result to RCX, and exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_16_mov_imm_vs_reg (student routine; defined in solutions/).
+    call    ex_16_mov_imm_vs_reg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

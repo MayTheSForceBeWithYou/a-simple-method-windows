@@ -2,12 +2,16 @@
 ; Single-file simulation of PUBLIC, return 42.
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Define helper that returns 42
+EXTRN ExitProcess:PROC
+EXTRN ex_14_multifile_sim_globals:PROC
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_14_multifile_sim_globals (student routine; defined in solutions/).
+    call    ex_14_multifile_sim_globals
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

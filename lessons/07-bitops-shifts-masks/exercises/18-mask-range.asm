@@ -13,16 +13,15 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_18_mask_range:PROC
 
 main PROC
     ; TODO: Compute mask with bits 2-5 set
     
+    ; TODO: implement ex_18_mask_range (student routine; defined in solutions/).
+    call    ex_18_mask_range
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 60
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

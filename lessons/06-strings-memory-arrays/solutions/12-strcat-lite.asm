@@ -9,15 +9,22 @@ dst BYTE "Hi", 0, 0, 0, 0
 src BYTE "!", 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_12_strcat_lite PROC
+sub rsp, 40
     lea rcx, dst
     lea rdx, src
     call strcat_fn
     lea rcx, dst
     call strlen_fn
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_12_strcat_lite ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_strcat_lite
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strcat_fn PROC

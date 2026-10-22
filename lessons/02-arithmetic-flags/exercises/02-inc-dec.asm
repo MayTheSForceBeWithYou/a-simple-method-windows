@@ -10,18 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_02_inc_dec:PROC
 
 main PROC
-    sub rsp, 32
-    
-    xor rax, rax
-    
-    ; TODO: INC 5 times, DEC 2 times, exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_02_inc_dec (student routine; defined in solutions/).
+    call    ex_02_inc_dec
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

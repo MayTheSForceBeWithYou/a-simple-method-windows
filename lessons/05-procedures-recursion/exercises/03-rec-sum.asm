@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive sum_to
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 5
     call sum_to
     mov rcx, rax

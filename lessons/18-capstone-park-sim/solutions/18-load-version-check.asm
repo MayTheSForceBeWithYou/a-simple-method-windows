@@ -11,8 +11,9 @@ EXTERN ExitProcess:PROC
 ver QWORD 1
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_18_load_version_check PROC
+sub rsp, 40
     cmp QWORD PTR [ver], 1
     jne ver_bad
     mov rcx, 1
@@ -20,6 +21,13 @@ main PROC
 ver_bad:
     xor ecx, ecx
 ver_done:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_18_load_version_check ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_load_version_check
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

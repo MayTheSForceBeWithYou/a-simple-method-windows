@@ -1,10 +1,11 @@
 ; 04-sprite-origin: sprite origin
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_04_sprite_origin:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_04_sprite_origin (student routine; defined in solutions/).
+    call    ex_04_sprite_origin
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -3,9 +3,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_23_stretch_make_dependency:PROC
 
 main PROC
     ; TODO: mov ecx, 3; mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_23_stretch_make_dependency (student routine; defined in solutions/).
+    call    ex_23_stretch_make_dependency
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

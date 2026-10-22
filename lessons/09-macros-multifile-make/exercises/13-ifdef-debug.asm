@@ -6,9 +6,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_13_ifdef_debug:PROC
 
 main PROC
     ; TODO: IFDEF DEBUG; mov ecx, 1; ELSE; xor ecx, ecx; ENDIF
-    call ExitProcess
+    ; TODO: implement ex_13_ifdef_debug (student routine; defined in solutions/).
+    call    ex_13_ifdef_debug
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

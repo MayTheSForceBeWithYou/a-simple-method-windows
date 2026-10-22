@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement recursive Euclidean GCD
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 48
     mov rdx, 18
     call gcd

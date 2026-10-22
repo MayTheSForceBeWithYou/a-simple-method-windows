@@ -10,14 +10,22 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_24_from_scratch_loop_phases PROC
+sub rsp, 40
     xor rcx, rcx
     mov rbx, 2
 frame_loop:
     add rcx, 3
     dec rbx
     jnz frame_loop
-    call ExitProcess
+    mov     eax, 6
+    ret
+ex_24_from_scratch_loop_phases ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_loop_phases
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,10 +1,11 @@
 ; 02-fixed-add.asm: Add Q16.16: 1.5 + 2.5, exit 4
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_02_fixed_add:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_02_fixed_add (student routine; defined in solutions/).
+    call    ex_02_fixed_add
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

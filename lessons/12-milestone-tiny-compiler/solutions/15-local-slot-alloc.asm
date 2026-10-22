@@ -9,13 +9,20 @@ EXTERN ExitProcess:PROC
 next_slot QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_local_slot_alloc PROC
+sub rsp, 40
     mov QWORD PTR [next_slot], 0
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
     inc QWORD PTR [next_slot]
-    mov rcx, QWORD PTR [next_slot]
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_15_local_slot_alloc ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_local_slot_alloc
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

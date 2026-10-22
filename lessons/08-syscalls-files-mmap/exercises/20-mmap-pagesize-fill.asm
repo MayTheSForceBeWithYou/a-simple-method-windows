@@ -11,23 +11,14 @@
 EXTRN VirtualAlloc:PROC
 EXTRN VirtualFree:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_20_mmap_pagesize_fill:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: VirtualAlloc
-    
-    ; TODO: Fill first 16 bytes with 1
-    
-    ; TODO: VirtualFree, exit 16
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_20_mmap_pagesize_fill (student routine; defined in solutions/).
+    call    ex_20_mmap_pagesize_fill
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

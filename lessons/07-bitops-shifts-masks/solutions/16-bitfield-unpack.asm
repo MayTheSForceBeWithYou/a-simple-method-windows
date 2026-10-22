@@ -3,13 +3,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_16_bitfield_unpack PROC
+sub rsp, 40
     mov rax, 01010101b
     shr rax, 3
     and rax, 7
     mov rcx, rax
-    mov rax,60
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_16_bitfield_unpack ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_bitfield_unpack
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

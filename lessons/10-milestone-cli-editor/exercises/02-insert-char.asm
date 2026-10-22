@@ -4,11 +4,12 @@ buf DB 256 DUP(?)
 len QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_02_insert_char:PROC
 main PROC
-    mov len, 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_02_insert_char (student routine; defined in solutions/).
+    call    ex_02_insert_char
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

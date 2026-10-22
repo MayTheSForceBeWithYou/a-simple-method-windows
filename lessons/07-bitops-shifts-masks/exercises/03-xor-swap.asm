@@ -14,19 +14,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_03_xor_swap:PROC
 
 main PROC
-    mov     rax, 10
-    mov     rbx, 20
-    
-    ; TODO: XOR swap algorithm (three XORs)
-    
+    sub     rsp, 40
+    ; TODO: implement ex_03_xor_swap (student routine; defined in solutions/).
+    call    ex_03_xor_swap
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 20
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

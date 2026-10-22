@@ -6,8 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_11_fixed_div PROC
+sub rsp, 40
     mov eax, 6
     shl eax, 16
     mov ebx, 2
@@ -18,7 +19,13 @@ main PROC
     cqo
     idiv rbx
     shr rax, 16
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_11_fixed_div ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_fixed_div
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

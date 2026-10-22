@@ -10,15 +10,13 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_17_macro_stringize:PROC
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: GetStdHandle, WriteFile msg, exit 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_17_macro_stringize (student routine; defined in solutions/).
+    call    ex_17_macro_stringize
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

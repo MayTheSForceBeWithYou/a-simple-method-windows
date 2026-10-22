@@ -10,9 +10,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_08_from_scratch_guest_target PROC
+sub rsp, 40
+    mov     eax, 7
+    ret
+ex_08_from_scratch_guest_target ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 7
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_08_from_scratch_guest_target
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -10,18 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_03_neg:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, -42
-    
-    ; TODO: NEG RAX, exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_03_neg (student routine; defined in solutions/).
+    call    ex_03_neg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

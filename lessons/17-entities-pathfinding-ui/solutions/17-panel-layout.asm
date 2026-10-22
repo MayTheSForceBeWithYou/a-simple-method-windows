@@ -8,11 +8,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_17_panel_layout PROC
+sub rsp, 40
     xor ecx, ecx
     add rcx, 12
     add rcx, 12
-    call ExitProcess
+    mov     eax, 24
+    ret
+ex_17_panel_layout ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_panel_layout
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

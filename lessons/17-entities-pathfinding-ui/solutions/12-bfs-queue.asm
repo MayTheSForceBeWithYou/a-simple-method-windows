@@ -11,11 +11,16 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 40
-    mov rcx, 5
-    call ExitProcess
 
+ex_12_bfs_queue PROC
+sub rsp, 40
+    mov     eax, 5
+    ret
+ex_12_bfs_queue ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_12_bfs_queue
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -24,8 +24,9 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_10_macro_syscall PROC
+sub rsp, 56
     
     ; Get stdout handle
     mov rcx, -11
@@ -43,5 +44,13 @@ main PROC
     ; Exit 0
     mov rcx, 0
     CALL_FUNC ExitProcess
+    mov     eax, 0
+    ret
+ex_10_macro_syscall ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_macro_syscall
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

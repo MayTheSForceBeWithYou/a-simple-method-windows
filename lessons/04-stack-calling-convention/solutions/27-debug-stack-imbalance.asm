@@ -8,13 +8,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC FRAME
-    sub rsp, 40
+
+ex_27_debug_stack_imbalance PROC
+sub rsp, 40
     .ALLOCSTACK 40
     .ENDPROLOG
     call two
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_27_debug_stack_imbalance ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_27_debug_stack_imbalance
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 two PROC

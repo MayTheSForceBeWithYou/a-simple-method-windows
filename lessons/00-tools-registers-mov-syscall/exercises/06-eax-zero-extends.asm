@@ -11,14 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_06_eax_zero_extends:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, -1                ; Fill RAX with all 1s
-    
-    ; TODO: Write 5 to EAX (which zero-extends to RAX)
-    ; Then move RAX to RCX and call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_06_eax_zero_extends (student routine; defined in solutions/).
+    call    ex_06_eax_zero_extends
+    mov     ecx, eax
+    call    ExitProcess
     
 main ENDP
 

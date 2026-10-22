@@ -11,8 +11,9 @@ EXTERN VirtualFree:PROC
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_11_read_dev_zero PROC
+sub rsp, 40
     
     ; VirtualAlloc(NULL, 8, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -48,6 +49,13 @@ L_e:
     mov rcx, 1
     
 L_o:
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_11_read_dev_zero ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_read_dev_zero
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

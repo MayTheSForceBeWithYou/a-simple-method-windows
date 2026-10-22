@@ -11,14 +11,21 @@ EXTERN ExitProcess:PROC
 dir QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_11_track_piece_rotate PROC
+sub rsp, 40
     mov QWORD PTR [dir], 3
     inc QWORD PTR [dir]
     mov rax, QWORD PTR [dir]
     and rax, 3
     mov QWORD PTR [dir], rax
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_11_track_piece_rotate ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_track_piece_rotate
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

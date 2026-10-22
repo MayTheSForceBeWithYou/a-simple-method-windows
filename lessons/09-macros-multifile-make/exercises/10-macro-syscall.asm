@@ -10,17 +10,15 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_10_macro_syscall:PROC
 
 ; TODO: Define WriteK MACRO (no args) that writes msg
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: Invoke WriteK
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_10_macro_syscall (student routine; defined in solutions/).
+    call    ex_10_macro_syscall
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

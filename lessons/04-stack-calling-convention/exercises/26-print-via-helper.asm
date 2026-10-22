@@ -18,7 +18,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement write_str(RCX=buf, RDX=len)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     lea rcx, str
     mov rdx, str_len
     call write_str

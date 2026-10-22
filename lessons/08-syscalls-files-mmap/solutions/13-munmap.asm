@@ -11,8 +11,9 @@ EXTERN VirtualFree:PROC
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_13_munmap PROC
+sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -36,12 +37,15 @@ main PROC
     jz L_f
     
     ; Success - exit 0
-    mov rcx, 0
-    call ExitProcess
-    
 L_f:
     ; Failure - exit 1
-    mov rcx, 1
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_13_munmap ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_munmap
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

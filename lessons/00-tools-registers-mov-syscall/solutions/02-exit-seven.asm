@@ -9,9 +9,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_02_exit_seven PROC
+sub rsp, 40
+    mov     eax, 7
+    ret
+ex_02_exit_seven ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 7
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_02_exit_seven
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -12,20 +12,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_02_or_flags:PROC
 
 main PROC
-    xor     rax, rax        ; Start with 0
-    
-    ; TODO: Set bit 0 using OR
-    
-    ; TODO: Set bit 3 using OR
-    
+    sub     rsp, 40
+    ; TODO: implement ex_02_or_flags (student routine; defined in solutions/).
+    call    ex_02_or_flags
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 9
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

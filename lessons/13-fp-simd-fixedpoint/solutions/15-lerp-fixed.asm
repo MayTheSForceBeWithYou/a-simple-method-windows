@@ -6,8 +6,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_lerp_fixed PROC
+sub rsp, 40
     mov eax, 0
     mov ebx, 10
     shl ebx, 16
@@ -18,7 +19,13 @@ main PROC
     imul rax, rdx
     shr rax, 16
     shr rax, 16
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 5
+    ret
+ex_15_lerp_fixed ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_lerp_fixed
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

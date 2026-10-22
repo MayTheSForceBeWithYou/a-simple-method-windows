@@ -12,15 +12,13 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_22_stretch_units_header:PROC
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: GetStdHandle(STD_OUTPUT_HANDLE), WriteFile, exit 0
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_22_stretch_units_header (student routine; defined in solutions/).
+    call    ex_22_stretch_units_header
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

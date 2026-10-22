@@ -4,12 +4,12 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_21_debug_cursor_oob:PROC
 main PROC
-    mov len, 3
-    mov cur, 9
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_21_debug_cursor_oob (student routine; defined in solutions/).
+    call    ex_21_debug_cursor_oob
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

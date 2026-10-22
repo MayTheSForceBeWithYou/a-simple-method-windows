@@ -4,12 +4,15 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_01_define_const:PROC
 
 ; TODO: Define STATUS_OK EQU 0
 
 main PROC
     ; TODO: mov ecx, STATUS_OK; call ExitProcess
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_01_define_const (student routine; defined in solutions/).
+    call    ex_01_define_const
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -9,10 +9,17 @@ EXTERN ExitProcess:PROC
 outv QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_emit_mov_imm PROC
+sub rsp, 40
     mov QWORD PTR [outv], 42
-    mov rcx, QWORD PTR [outv]
-    call ExitProcess
+    mov     eax, 42
+    ret
+ex_01_emit_mov_imm ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_emit_mov_imm
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

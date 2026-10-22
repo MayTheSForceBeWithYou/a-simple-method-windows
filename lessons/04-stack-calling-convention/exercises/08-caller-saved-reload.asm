@@ -6,22 +6,18 @@
 ; Build: ml64 /c /Fo08-caller-saved-reload.obj 08-caller-saved-reload.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-caller-saved-reload.exe 08-caller-saved-reload.obj kernel32.lib
 ; Expected exit: 6
 ; Expected stdout: (none)
-.CODE
-EXTRN ExitProcess:PROC
 
-get_one PROC
-    mov rax, 1
-    ret
-get_one ENDP
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTRN ex_08_caller_saved_reload:PROC
 
 main PROC
-    sub rsp, 32
-    
-    ; TODO: Save RDX before call, reload after, add to RAX
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_08_caller_saved_reload (student routine; defined in solutions/).
+    call    ex_08_caller_saved_reload
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

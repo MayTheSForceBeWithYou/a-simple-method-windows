@@ -10,9 +10,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_21_sim_real_ratio PROC
+sub rsp, 40
+    mov     eax, 50
+    ret
+ex_21_sim_real_ratio ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 50
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_21_sim_real_ratio
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

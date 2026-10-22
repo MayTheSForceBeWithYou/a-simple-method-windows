@@ -8,10 +8,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_20_steering_seek PROC
+sub rsp, 40
     mov rcx, 10
     sub rcx, 3
-    call ExitProcess
+    mov     eax, 7
+    ret
+ex_20_steering_seek ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_steering_seek
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

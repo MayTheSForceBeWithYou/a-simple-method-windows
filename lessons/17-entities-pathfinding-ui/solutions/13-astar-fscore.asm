@@ -8,10 +8,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_13_astar_fscore PROC
+sub rsp, 40
     mov rcx, 3
     add rcx, 4
-    call ExitProcess
+    mov     eax, 7
+    ret
+ex_13_astar_fscore ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_astar_fscore
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

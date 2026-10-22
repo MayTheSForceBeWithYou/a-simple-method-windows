@@ -13,14 +13,22 @@ gap_s QWORD ?
 gap_e QWORD ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_08_from_scratch_gap_start PROC
+sub rsp, 40
     
     mov QWORD PTR [gap_s], 0
     mov QWORD PTR [gap_e], 8
     
     mov rcx, [gap_e]
     sub rcx, [gap_s]
-    call ExitProcess
+    mov     eax, 8
+    ret
+ex_08_from_scratch_gap_start ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_gap_start
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

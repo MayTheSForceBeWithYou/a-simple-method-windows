@@ -10,19 +10,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_04_imul_two:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 6
-    mov rbx, 7
-    
-    ; TODO: IMUL RAX, RBX; exit
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    sub     rsp, 32
+    ; TODO: implement ex_04_imul_two (student routine; defined in solutions/).
+    call    ex_04_imul_two
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 steps QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_13_peep_pathfind_step PROC
+sub rsp, 40
     mov QWORD PTR [steps], 4
-    mov rcx, QWORD PTR [steps]
-    call ExitProcess
+    mov     eax, 4
+    ret
+ex_13_peep_pathfind_step ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_peep_pathfind_step
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

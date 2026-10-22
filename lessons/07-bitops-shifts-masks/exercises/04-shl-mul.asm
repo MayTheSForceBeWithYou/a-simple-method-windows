@@ -11,18 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_04_shl_mul:PROC
 
 main PROC
-    mov     rax, 7          ; Starting value
-    
-    ; TODO: Shift left by 3 to multiply by 8
-    
+    sub     rsp, 40
+    ; TODO: implement ex_04_shl_mul (student routine; defined in solutions/).
+    call    ex_04_shl_mul
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 56
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

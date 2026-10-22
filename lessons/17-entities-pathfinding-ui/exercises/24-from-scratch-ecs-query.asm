@@ -1,10 +1,11 @@
 ; 24-from-scratch-ecs-query: from scratch ecs query
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_24_from_scratch_ecs_query:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_24_from_scratch_ecs_query (student routine; defined in solutions/).
+    call    ex_24_from_scratch_ecs_query
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

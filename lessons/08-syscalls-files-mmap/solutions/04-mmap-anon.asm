@@ -10,8 +10,9 @@ EXTERN VirtualAlloc:PROC
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_04_mmap_anon PROC
+sub rsp, 40
     
     ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
     mov rcx, 0          ; lpAddress = NULL
@@ -29,12 +30,15 @@ main PROC
     mov QWORD PTR [rbx], 42
     
     ; Exit with value from memory
-    mov rcx, [rbx]
-    call ExitProcess
-    
 L_fail:
     ; Exit 2 on allocation failure
-    mov rcx, 2
-    call ExitProcess
+    mov     eax, 42
+    ret
+ex_04_mmap_anon ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_mmap_anon
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

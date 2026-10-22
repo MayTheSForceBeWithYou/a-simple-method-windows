@@ -5,12 +5,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_16_debug_callee_clobber PROC
+sub rsp, 40
     mov rbx, 11
     call evil
-    mov rcx, rbx
-    call ExitProcess
+    mov     eax, 11
+    ret
+ex_16_debug_callee_clobber ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_debug_callee_clobber
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 evil PROC

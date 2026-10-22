@@ -12,18 +12,13 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_17_rotate_parity:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     al, 182         ; 0b10110110
-    xor     bl, bl          ; Parity accumulator
-    
-    ; TODO: Loop 8 times, rotating and XORing bit 0 into accumulator
-    
-    mov     ecx, 1
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_17_rotate_parity (student routine; defined in solutions/).
+    call    ex_17_rotate_parity
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

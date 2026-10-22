@@ -3,6 +3,10 @@
 ; Expected stdout: (none)
 ;
 ; Completes three frame waits; exit code equals the wait count.
+;
+; We use Sleep(1) here instead of a QueryPerformanceCounter spin-wait: QPC can pace
+; frames precisely but burns CPU. Sleep is coarse (often ~1-16 ms per call depending
+; on timer resolution). Lesson 15 teaches QPC frame timing (01-qpc-timing, 02-delta-time).
 
 .CODE
 EXTRN Sleep:PROC

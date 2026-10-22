@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement function that uses R12 but preserves it
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov r12, 42
     call use_r12
     mov rcx, r12               ; Should still be 42

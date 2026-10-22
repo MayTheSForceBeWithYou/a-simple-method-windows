@@ -11,27 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_15_bitfield_pack:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    push    r12
-    .pushreg r12
-    .endprolog
-    
-    mov     rax, 9          ; a = 9
-    and     rax, 0Fh        ; Mask to 4 bits
-    
-    ; TODO: Load b=5, mask, shift by 4, OR into rax
-    
-    ; TODO: Load c=3, mask, shift by 8, OR into rax
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_15_bitfield_pack (student routine; defined in solutions/).
+    call    ex_15_bitfield_pack
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 857
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    call    ExitProcess
 main ENDP
 
 END

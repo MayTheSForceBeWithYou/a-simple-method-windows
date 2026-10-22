@@ -6,10 +6,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_24_from_scratch_compile_add PROC
+sub rsp, 40
     mov rcx, 40
     add rcx, 2
-    call ExitProcess
+    mov     eax, 42
+    ret
+ex_24_from_scratch_compile_add ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_compile_add
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

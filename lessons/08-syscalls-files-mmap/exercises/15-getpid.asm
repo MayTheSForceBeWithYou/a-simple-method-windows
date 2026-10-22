@@ -10,17 +10,14 @@
 
 EXTRN GetCurrentProcessId:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_15_getpid:PROC
 
-main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Call GetCurrentProcessId
-    
-    ; TODO: Mask to low 7 bits, exit with result
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_15_getpid (student routine; defined in solutions/).
+    call    ex_15_getpid
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

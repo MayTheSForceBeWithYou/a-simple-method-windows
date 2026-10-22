@@ -16,28 +16,14 @@ filename DB "C:\no\such\file.txt", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_03_open_fail:PROC
 
-main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
-    .endprolog
-    
-    ; TODO: CreateFileA(filename, GENERIC_READ, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    
-    ; TODO: Check for INVALID_HANDLE_VALUE
-    
-    ; Success (unlikely)
-    mov     rcx, rax
-    call    CloseHandle
-    xor     ecx, ecx
-    jmp     done
-    
-error:
-    mov     ecx, 1
-    
-done:
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_03_open_fail (student routine; defined in solutions/).
+    call    ex_03_open_fail
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

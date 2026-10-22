@@ -17,19 +17,13 @@ bytesRead DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN ReadFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_02_read_stdin_one:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdin handle
-    
-    ; TODO: ReadFile(stdin, &buffer, 1, &bytesRead, NULL)
-    
-    ; TODO: Check if bytesRead == 0 (EOF), exit 0; else exit with buffer byte
-    
-    mov     ecx, 1
+    ; TODO: implement ex_02_read_stdin_one (student routine; defined in solutions/).
+    call    ex_02_read_stdin_one
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

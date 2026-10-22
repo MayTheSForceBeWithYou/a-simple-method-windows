@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement check_alignment that returns RSP&15
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     call check_alignment
     ; RAX should be 8 (aligned after CALL pushed return addr)
     mov rcx, rax

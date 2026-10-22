@@ -2,12 +2,16 @@
 ; Single file, define helper returning 9, exit 9.
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Define helper returning 9
+EXTRN ExitProcess:PROC
+EXTRN ex_19_extern_declare:PROC
 
 main PROC
-    ; TODO: call helper; mov ecx, eax; mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_19_extern_declare (student routine; defined in solutions/).
+    call    ex_19_extern_declare
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

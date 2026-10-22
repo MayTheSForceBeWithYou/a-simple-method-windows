@@ -11,10 +11,17 @@ EXTERN ExitProcess:PROC
 tick_id QWORD 0
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_23_stretch_multiplayer_stub PROC
+sub rsp, 40
     mov QWORD PTR [tick_id], 2
-    mov rcx, QWORD PTR [tick_id]
-    call ExitProcess
+    mov     eax, 2
+    ret
+ex_23_stretch_multiplayer_stub ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_multiplayer_stub
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -20,21 +20,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_09_write_stderr:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stderr handle (STD_ERROR_HANDLE = -12, not -11)
-    ; TODO: Write message to stderr
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_09_write_stderr (student routine; defined in solutions/).
+    call    ex_09_write_stderr
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

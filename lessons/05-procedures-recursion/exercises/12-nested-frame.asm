@@ -4,16 +4,16 @@
 ; Expected: see original exercise
 
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Port from NASM to MASM
+EXTRN ExitProcess:PROC
+EXTRN ex_12_nested_frame:PROC
 
 main PROC
-    sub rsp, 32
-    ; TODO: Implement
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_12_nested_frame (student routine; defined in solutions/).
+    call    ex_12_nested_frame
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

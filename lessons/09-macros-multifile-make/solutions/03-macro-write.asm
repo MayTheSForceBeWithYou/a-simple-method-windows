@@ -37,13 +37,20 @@ ENDM
 m BYTE "M", 10
 
 .code
-main PROC
-    sub rsp, 56
+
+ex_03_macro_write PROC
+sub rsp, 56
     
     write_stdout m, 2
     
     ; Exit 0
-    mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_03_macro_write ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_macro_write
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

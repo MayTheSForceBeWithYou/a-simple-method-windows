@@ -9,9 +9,13 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_04_include_guard_sim:PROC
 
 main PROC
     ; TODO: mov ecx, MYVAL; mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_04_include_guard_sim (student routine; defined in solutions/).
+    call    ex_04_include_guard_sim
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

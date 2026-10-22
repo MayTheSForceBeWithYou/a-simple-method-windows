@@ -8,8 +8,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_19_debug_map_bounds PROC
+sub rsp, 40
     mov rax, 99
     mov r8, 8
     cmp rax, r8
@@ -17,7 +18,13 @@ main PROC
     mov rax, r8
     dec rax
 bounds_ok:
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 7
+    ret
+ex_19_debug_map_bounds ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_map_bounds
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

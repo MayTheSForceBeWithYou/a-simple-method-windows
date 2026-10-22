@@ -15,19 +15,14 @@ path DB "C:\", 0
 EXTRN CreateFileA:PROC
 EXTRN GetLastError:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_18_error_eacces_sim:PROC
 
-main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
-    .endprolog
-    
-    ; TODO: Try CreateFileA("C:\", GENERIC_WRITE, ...)
-    
-    ; TODO: Check for failure, GetLastError, exit 1
-    
-    mov     ecx, 1
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_18_error_eacces_sim (student routine; defined in solutions/).
+    call    ex_18_error_eacces_sim
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

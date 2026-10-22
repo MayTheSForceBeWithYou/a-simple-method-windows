@@ -12,10 +12,18 @@ EXTERN ExitProcess:PROC
 count QWORD 41
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_01_data_dq PROC
+sub rsp, 40
     mov rcx, [count]
     add rcx, 1
-    call ExitProcess
+    mov     eax, 42
+    ret
+ex_01_data_dq ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_data_dq
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -10,13 +10,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_03_fixed_step PROC
+sub rsp, 40
     mov rax, 50
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 3
+    ret
+ex_03_fixed_step ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_fixed_step
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

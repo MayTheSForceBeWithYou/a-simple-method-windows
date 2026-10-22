@@ -5,12 +5,12 @@ len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_17_utf8_ascii_cursor:PROC
 main PROC
-    mov len, 5
-    mov cur, 2
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_17_utf8_ascii_cursor (student routine; defined in solutions/).
+    call    ex_17_utf8_ascii_cursor
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

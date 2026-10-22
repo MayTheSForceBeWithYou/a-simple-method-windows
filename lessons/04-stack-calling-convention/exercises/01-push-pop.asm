@@ -7,15 +7,14 @@
 ; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_01_push_pop:PROC
 
 main PROC
-    sub rsp, 32
-    
+    sub     rsp, 32
     ; TODO: PUSH 42, PUSH 99, POP to RBX, POP to RCX, exit with RCX
-    
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 0
-    call ExitProcess
+    ; TODO: implement ex_01_push_pop (student routine; defined in solutions/).
+    call    ex_01_push_pop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

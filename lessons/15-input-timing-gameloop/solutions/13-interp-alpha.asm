@@ -10,14 +10,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_13_interp_alpha PROC
+sub rsp, 40
     mov rax, 8
     imul rax, 100
     xor rdx, rdx
     mov rbx, 16
     div rbx
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 50
+    ret
+ex_13_interp_alpha ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_interp_alpha
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

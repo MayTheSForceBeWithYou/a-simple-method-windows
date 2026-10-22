@@ -4,18 +4,16 @@
 ; Expected: exit code 2
 
 .CODE
-EXTRN ExitProcess:PROC
 
-get_two PROC
-    push rax                   ; BUG: Pushed but never popped!
-    mov rax, 2
-    ret
-get_two ENDP
+EXTRN ExitProcess:PROC
+EXTRN ex_27_debug_stack_imbalance:PROC
 
 main PROC
-    sub rsp, 32
-    call get_two
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_27_debug_stack_imbalance (student routine; defined in solutions/).
+    call    ex_27_debug_stack_imbalance
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

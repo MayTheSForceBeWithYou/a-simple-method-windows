@@ -1,10 +1,11 @@
 ; 20-queue-ring
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_20_queue_ring:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_20_queue_ring (student routine; defined in solutions/).
+    call    ex_20_queue_ring
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

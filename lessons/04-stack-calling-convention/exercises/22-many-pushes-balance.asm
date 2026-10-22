@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement sum_top3 that sums values from stack
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     push 1
     push 2
     push 3

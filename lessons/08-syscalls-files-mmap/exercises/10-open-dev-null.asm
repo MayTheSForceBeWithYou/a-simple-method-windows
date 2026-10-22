@@ -15,19 +15,14 @@ filename DB "NUL", 0
 EXTRN CreateFileA:PROC
 EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_10_open_dev_null:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 48
-    .allocstack 48
-    .endprolog
-    
-    ; TODO: CreateFileA("NUL", GENERIC_WRITE, 0, NULL, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, NULL)
-    
-    ; TODO: Check and close
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_10_open_dev_null (student routine; defined in solutions/).
+    call    ex_10_open_dev_null
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

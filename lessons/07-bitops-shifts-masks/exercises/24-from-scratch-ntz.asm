@@ -11,19 +11,14 @@
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTRN ex_24_from_scratch_ntz:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     rbx, 168        ; 0b10101000 (3 trailing zeros)
-    xor     rax, rax        ; Counter
-    
-    ; TODO: Implement trailing zero count loop
-    
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_24_from_scratch_ntz (student routine; defined in solutions/).
+    call    ex_24_from_scratch_ntz
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

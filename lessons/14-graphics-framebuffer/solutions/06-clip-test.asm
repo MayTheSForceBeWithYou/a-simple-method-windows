@@ -10,8 +10,9 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_06_clip_test PROC
+sub rsp, 40
     mov rax, 5
     cmp rax, 4
     jl in_range
@@ -20,6 +21,13 @@ main PROC
 in_range:
     xor rcx, rcx
 exit_proc:
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_06_clip_test ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_clip_test
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,10 +1,11 @@
 ; 16-wrap-angle.asm: Wrap angle modulo 360, exit wrapped
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_16_wrap_angle:PROC
 main PROC
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_16_wrap_angle (student routine; defined in solutions/).
+    call    ex_16_wrap_angle
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

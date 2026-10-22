@@ -8,12 +8,20 @@ EXTERN ExitProcess:PROC
 ent QWORD 3,4
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_15_aos_scale PROC
+sub rsp, 40
     shl ent, 1
     shl ent[8], 1
     mov rcx, ent
     add rcx, ent[8]
-    call ExitProcess
+    mov     eax, 14
+    ret
+ex_15_aos_scale ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_aos_scale
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

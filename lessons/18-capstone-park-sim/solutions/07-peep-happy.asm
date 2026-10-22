@@ -10,14 +10,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_07_peep_happy PROC
+sub rsp, 40
     mov rax, 120
     cmp rax, 100
     jle clamp_ok
     mov rax, 100
 clamp_ok:
-    mov rcx, rax
-    call ExitProcess
+    mov     eax, 100
+    ret
+ex_07_peep_happy ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_07_peep_happy
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

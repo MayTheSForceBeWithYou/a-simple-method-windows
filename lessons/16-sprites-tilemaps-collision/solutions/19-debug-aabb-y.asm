@@ -10,10 +10,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_19_debug_aabb_y PROC
+sub rsp, 40
     ; a.y=0 a.h=2; b.y=1 b.h=2 overlap
-    mov rcx, 1
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_19_debug_aabb_y ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_aabb_y
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

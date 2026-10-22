@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement mul3 as leaf (no PROC FRAME needed)
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 14
     call mul3
     mov rcx, rax

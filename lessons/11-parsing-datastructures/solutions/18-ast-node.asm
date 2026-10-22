@@ -9,14 +9,22 @@ EXTERN ExitProcess:PROC
 node QWORD 3 DUP(?)
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_18_ast_node PROC
+sub rsp, 40
     mov QWORD PTR [node], 1
     mov QWORD PTR [node+8], 2
     mov QWORD PTR [node+16], 3
     mov rcx, QWORD PTR [node]
     add rcx, QWORD PTR [node+8]
     add rcx, QWORD PTR [node+16]
-    call ExitProcess
+    mov     eax, 6
+    ret
+ex_18_ast_node ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_ast_node
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

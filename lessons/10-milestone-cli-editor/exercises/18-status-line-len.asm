@@ -6,10 +6,12 @@ cur QWORD ?
 statusBuf DB 64 DUP(?)
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_18_status_line_len:PROC
 main PROC
-    mov len, 42
-    mov cur, 10
-    mov ecx, DWORD PTR len
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: implement ex_18_status_line_len (student routine; defined in solutions/).
+    call    ex_18_status_line_len
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

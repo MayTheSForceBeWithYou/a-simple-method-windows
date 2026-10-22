@@ -21,8 +21,9 @@ written DWORD ?
 newPos QWORD ?
 
 .code
-main PROC
-    sub rsp, 72
+
+ex_19_pwrite_emul PROC
+sub rsp, 72
     
     ; CreateFileA for NUL device
     lea rcx, path               ; lpFileName
@@ -69,6 +70,13 @@ L_e:
     mov rcx, 1
     
 L_o:
-    call ExitProcess
+    mov     eax, 0
+    ret
+ex_19_pwrite_emul ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_pwrite_emul
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

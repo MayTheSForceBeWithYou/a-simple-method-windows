@@ -14,18 +14,14 @@ filename DB "NUL", 0
 
 EXTRN CreateFileA:PROC
 EXTRN ExitProcess:PROC
+EXTRN ex_21_debug_fd_leak_pattern:PROC
 
-main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
-    .endprolog
-    
-    ; TODO: CreateFileA("NUL", GENERIC_READ, ...)
-    
-    ; BUG: Should call CloseHandle here, but intentionally skip it
-    ; TODO: Exit 0 without closing (leak demonstration)
-    mov ecx, 1
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    ; TODO: implement ex_21_debug_fd_leak_pattern (student routine; defined in solutions/).
+    call    ex_21_debug_fd_leak_pattern
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

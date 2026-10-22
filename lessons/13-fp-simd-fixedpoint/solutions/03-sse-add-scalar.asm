@@ -6,9 +6,16 @@
 EXTERN ExitProcess:PROC
 
 .code
+
+ex_03_sse_add_scalar PROC
+sub rsp, 40
+    mov     eax, 5
+    ret
+ex_03_sse_add_scalar ENDP
 main PROC
-    sub rsp, 40
-    mov rcx, 5
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_03_sse_add_scalar
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

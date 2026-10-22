@@ -13,10 +13,18 @@ EXTERN ExitProcess:PROC
 open BYTE ?
 
 .code
-main PROC
-    sub rsp, 40
+
+ex_06_ride_open PROC
+sub rsp, 40
     mov BYTE PTR [open], 1
     movzx rcx, BYTE PTR [open]
-    call ExitProcess
+    mov     eax, 1
+    ret
+ex_06_ride_open ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_ride_open
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

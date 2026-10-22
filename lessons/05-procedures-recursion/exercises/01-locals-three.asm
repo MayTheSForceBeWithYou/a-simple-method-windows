@@ -9,7 +9,7 @@ EXTRN ExitProcess:PROC
 ; TODO: Implement function with 3 local variables
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     mov rcx, 10
     call sum_locals
     mov rcx, rax

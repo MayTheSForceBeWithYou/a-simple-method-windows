@@ -5,15 +5,16 @@
 
 .CODE
 EXTRN ExitProcess:PROC
+EXTRN ex_19_compare_procs:PROC
 
 ; TODO: Port from NASM to MASM
 
 main PROC
-    sub rsp, 32
+    sub     rsp, 32
     ; TODO: Implement
-
-    ; TODO: complete exercise (scaffold uses wrong exit code)
-    mov ecx, 1
-    call ExitProcess
+    ; TODO: implement ex_19_compare_procs (student routine; defined in solutions/).
+    call    ex_19_compare_procs
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END
