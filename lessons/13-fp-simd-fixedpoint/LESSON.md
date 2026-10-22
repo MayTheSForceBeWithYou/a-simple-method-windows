@@ -42,6 +42,8 @@ Listing `01-q16-encode` loads 5, shifts left 16 (now `00050000h`), then `sar eax
 
 ```asm
 ; 01-q16-encode.asm: Encode integers in Q16.16 format
+; Expected exit: 5
+; Expected stdout: (none)
 ; 5 << 16 = 0x50000, then >> 16 = 5, exit 5
 .CODE
 EXTRN ExitProcess:PROC
@@ -66,6 +68,8 @@ Listing `02-q16-add` builds 1.5 and 2.5 at assemble time: `(1 SHL 16) + (1 SHL 1
 
 ```asm
 ; 02-q16-add.asm: Add two Q16.16 values (1.5 + 2.5 = 4.0)
+; Expected exit: 4
+; Expected stdout: (none)
 ; Exit 4
 .CODE
 EXTRN ExitProcess:PROC
@@ -91,6 +95,8 @@ Listing `03-q16-mul` encodes 2.0 and 3.0, sign-extends both to 64 bits (`movsxd`
 
 ```asm
 ; 03-q16-mul.asm: Multiply Q16.16 values (2.0 * 3.0 = 6.0)
+; Expected exit: 6
+; Expected stdout: (none)
 ; Exit 6
 .CODE
 EXTRN ExitProcess:PROC
@@ -123,6 +129,8 @@ The comment says "Clamp Q16.16 value to range [0, max]" and "Clamp 150 to [0, 10
 
 ```asm
 ; 04-q16-clamp.asm: Clamp Q16.16 value to range [0, max]
+; Expected exit: 100
+; Expected stdout: (none)
 ; Clamp 150 to [0, 100], exit 100
 .CODE
 EXTRN ExitProcess:PROC

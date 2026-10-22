@@ -187,7 +187,7 @@ Then `xor ecx, ecx` / `call ExitProcess` terminates with status 0.
 
 *"I already pushed RBX, so 32 bytes of shadow space is enough; `[rsp+32]` is past the shadow and free for `lpOverlapped`."*
 
-**Why it fails:** After `push rbx` then `sub rsp, 32`, the saved RBX lives at `[rsp+32]`. Storing 0 there overwrites the saved nonvolatile. Listing `02-hello-world` therefore allocates **48** bytes (`sub rsp, 48` / `.allocstack 48`). After that allocation, `[rsp+32]` is the fifth-argument slot inside the frame; the saved RBX is at `[rsp+48]`. Listing `07-stderr-output` uses the same 48-byte allocation after one push. Listing `06-write-two-messages` pushes RBX and RSI (16 bytes) then `sub rsp, 40`, so `[rsp+32]` is again the fifth-arg slot and not a saved register. `ExitProcess` is called with the frame still live — no teardown — because it never returns.
+**Why it fails:** After `push rbx` then `sub rsp, 32`, the saved RBX lives at `[rsp+32]`. Storing 0 there overwrites the saved nonvolatile. Listing `02-hello-world` therefore allocates **48** bytes (`sub rsp, 48` / `.allocstack 48`). After that allocation, `[rsp+32]` is the fifth-argument slot inside the frame; the saved RBX is at `[rsp+48]`. Listing `07-stderr-output` does not push a nonvolatile: it uses a plain `main PROC`, `sub rsp, 56`, and keeps the HANDLE in RAX until the `WriteFile` setup. Listing `06-write-two-messages` pushes RBX and RSI (16 bytes) then `sub rsp, 40`, so `[rsp+32]` is again the fifth-arg slot and not a saved register. `ExitProcess` is called with the frame still live — no teardown — because it never returns.
 
 A second wrong reading is putting the first argument in RDI because Linux does. `GetStdHandle` reads RCX. Garbage in RCX produces `INVALID_HANDLE_VALUE` or a crash. Map arguments by role: 1→RCX, 2→RDX, 3→R8, 4→R9, 5+→`[rsp+32]` onward.
 
@@ -369,24 +369,24 @@ main ENDP
 END
 ```
 
-Stderr is the same 48-byte frame as hello, with `STD_ERROR_HANDLE = -12`. The listing header labels the text `Expected stdout` even though `WriteFile` uses the stderr handle; redirect with `2>` to see it separately from stdout.
+Listing `07-stderr-output` writes `"Error message"` to stderr with **no** CR LF. `msg_len EQU $ - msg` is 13, not 15. The header is `Expected output: (to stderr) Error message`. `bytes_written` is a `DWORD`. `main` is a plain `PROC` (no `FRAME`): `sub rsp, 56` covers shadow space plus the fifth `WriteFile` slot with 16-byte alignment at the `call`. `GetStdHandle(-12)` leaves the HANDLE in RAX; the next `WriteFile` takes that HANDLE in RCX (no RBX save). Redirect with `2>` to see the text separately from stdout. Expected exit: **0**.
 
 ```asm
 ; Listing 07: Writing to stderr instead of stdout
 ;
 ; Purpose: Demonstrates using GetStdHandle with STD_ERROR_HANDLE.
 ; Expected exit: 0
-; Expected stdout: "Error message\n"
+; Expected output: (to stderr) Error message
 ;
 ; Build: ml64 /c /Fo07-stderr-output.obj 07-stderr-output.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:07-stderr-output.exe 07-stderr-output.obj kernel32.lib
 ; Run: 07-stderr-output.exe 2>&1
 
 .DATA
-msg DB "Error message", 13, 10
+msg DB "Error message"
 msg_len EQU $ - msg
 
 .DATA?
-bytes_written DQ ?
+bytes_written DWORD ?
 
 .CODE
 
@@ -394,28 +394,21 @@ EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 48
-    .allocstack 48
-    .endprolog
+main PROC
+    sub     rsp, 56
 
-    ; GetStdHandle(STD_ERROR_HANDLE = -12)
-    mov ecx, -12               ; STD_ERROR_HANDLE (not -11 for stdout)
-    call GetStdHandle
-    mov rbx, rax
+    mov     rcx, -12
+    call    GetStdHandle
 
-    ; WriteFile to stderr
-    mov rcx, rbx
-    lea rdx, msg
-    mov r8d, msg_len
-    lea r9, bytes_written
-    mov qword ptr [rsp+32], 0
-    call WriteFile
+    mov     rcx, rax
+    lea     rdx, msg
+    mov     r8d, msg_len
+    lea     r9, bytes_written
+    mov     QWORD PTR [rsp+32], 0
+    call    WriteFile
 
-    xor ecx, ecx
-    call ExitProcess
+    xor     ecx, ecx
+    call    ExitProcess
 main ENDP
 
 END

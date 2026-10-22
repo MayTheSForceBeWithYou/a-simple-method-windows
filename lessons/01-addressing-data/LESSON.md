@@ -265,7 +265,7 @@ main PROC
     
     ; Store different sizes
     mov BYTE PTR [rbx], 65     ; Store 1 byte: 'A'
-    mov WORD PTR [rbx+1], 0x4342  ; Store 2 bytes: 'BC'
+    mov WORD PTR [rbx+1], 4342h  ; Store 2 bytes: 'BC'
     mov DWORD PTR [rbx+3], 12345678 ; Store 4 bytes
     mov QWORD PTR [rbx+7], -1  ; Store 8 bytes
     
@@ -277,7 +277,7 @@ main ENDP
 END
 ```
 
-`mov [rbx], 65` is ambiguous; MASM errors. `mov BYTE PTR [rbx], 65` stores one byte. Little-endian: `WORD PTR [rbx+1], 0x4342` stores `42h` then `43h` (`'B'`, `'C'`). `movzx rcx, BYTE PTR [rbx]` zero-extends `'A'` (65) into RCX for `ExitProcess`.
+`mov [rbx], 65` is ambiguous; MASM errors. `mov BYTE PTR [rbx], 65` stores one byte. Little-endian: `WORD PTR [rbx+1], 4342h` stores `42h` then `43h` (`'B'`, `'C'`). `movzx rcx, BYTE PTR [rbx]` zero-extends `'A'` (65) into RCX for `ExitProcess`.
 
 ## `lea` vs `mov`
 

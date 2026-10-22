@@ -69,7 +69,7 @@ Most file functions return a BOOL (nonzero = TRUE = success, 0 = FALSE = failure
 | `VirtualFree`, `UnmapViewOfFile` | nonzero TRUE | 0 FALSE |
 | `QueryPerformanceCounter` / `QueryPerformanceFrequency` | nonzero TRUE | 0 FALSE |
 
-`CreateFileA` failure is −1, not 0. `test rax, rax` / `jz` misses it: −1 is nonzero. Listing `13-open-missing-get-last-error` compares `rax` to −1, then calls `GetLastError` and exits with that code (2 = `ERROR_FILE_NOT_FOUND` on a missing path). Listing `09-close-handle` shows the BOOL test: `test rax, rax` / `jz close_failed` after `CloseHandle`.
+`CreateFileA` failure is −1, not 0. `test rax, rax` / `jz` misses it: −1 is nonzero. Listing `13-open-missing-get-last-error` compares `rax` to −1, then calls `GetLastError` and exits with that code. The path is `C:\no\such\file.txt`, so the missing directory components produce **3** (`ERROR_PATH_NOT_FOUND`), not 2 (`ERROR_FILE_NOT_FOUND`). Listing `09-close-handle` shows the BOOL test: `test rax, rax` / `jz close_failed` after `CloseHandle`.
 
 | Code | Name | Meaning |
 |-----:|------|---------|
@@ -200,13 +200,13 @@ END
 
 Listing `02-open-read-file` opens the same `test.txt` with `GENERIC_READ` (`80000000h`), `FILE_SHARE_READ` (1) in R8D, and `OPEN_EXISTING` (3). `ReadFile` asks for 256 bytes into `buffer`. After `CloseHandle`, `movzx ecx, BYTE PTR buffer` exits with the first byte (or 0 if the read left the buffer empty). A missing file takes the `cmp rax, -1` branch and exits 1.
 
-`ReadFile` arguments: HANDLE in RCX, buffer in RDX, count in R8, address of a DWORD receive count in R9, overlapped = NULL at `[rsp+32]`. The frame is again 40 bytes. Expected exit: the first byte of `test.txt` (72 = `'H'` if listing `01-create-file-write` has just run), or **1** if the open fails.
+`ReadFile` arguments: HANDLE in RCX, buffer in RDX, count in R8, address of a DWORD receive count in R9, overlapped = NULL at `[rsp+32]`. The frame is again 40 bytes. Expected exit: **72** (`'H'`, the first byte listing `01-create-file-write` stores). Open failure is still 1; ml64 CI runs this after listing 01's `test.txt` exists.
 
 ```asm
 ; 02-open-read-file.asm
 ;
 ; Purpose: Open an existing file and read from it
-; Expected exit code: First byte of file (or 1 if file doesn't exist)
+; Expected exit code: 72
 ; Expected stdout: (none)
 ;
 ; Demonstrates:
@@ -723,13 +723,13 @@ Sequence:
 5. `UnmapViewOfFile(R13)`, `CloseHandle(R12)`, `CloseHandle(RBX)`.
 6. Exit with R14D, or 1 on any error.
 
-The prologue pushes R12 and R13, then `sub rsp, 40`. Expected exit: first byte of `test.txt` (72 after listing `01-create-file-write`), or **1** on failure.
+The prologue pushes R12 and R13, then `sub rsp, 40`. Expected exit: **72** (first byte of `test.txt` after listing `01-create-file-write`). Failure paths still exit **1**.
 
 ```asm
 ; 05-file-mapping.asm
 ;
 ; Purpose: Map a file into memory (file-backed mmap equivalent)
-; Expected exit code: First byte of mapped file
+; Expected exit code: 72
 ; Expected stdout: (none)
 ;
 ; Demonstrates:
@@ -839,13 +839,13 @@ END
 
 ## Process id and the performance counter
 
-Listing `06-get-process-id` calls `GetCurrentProcessId` (no arguments, DWORD in EAX), masks `and eax, 7Fh`, and exits that value. The status therefore varies by process and stays in 0–127. Frame: `sub rsp, 32`.
+Listing `06-get-process-id` calls `GetCurrentProcessId` (no arguments, DWORD in EAX), then `test eax, eax` / `seta cl` / `movzx ecx, cl`. That is 1 when the PID is above 0, else 0 — not a masked PID. Frame: `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40`. Expected exit: **1**.
 
 ```asm
 ; 06-get-process-id.asm
 ;
 ; Purpose: Get current process ID (equivalent to getpid)
-; Expected exit code: Low 7 bits of process ID (varies)
+; Expected exit code: 1
 ; Expected stdout: (none)
 ;
 ; Demonstrates:
@@ -864,10 +864,9 @@ main PROC FRAME
     ; GetCurrentProcessId returns DWORD in EAX
     call    GetCurrentProcessId
     
-    ; Mask to low 7 bits for predictable exit code
-    and     eax, 7Fh
-    
-    mov     ecx, eax
+    test    eax, eax
+    seta    cl
+    movzx   ecx, cl
     call    ExitProcess
 main ENDP
 
@@ -1191,7 +1190,7 @@ END
 ; Listing 13: Open missing file; exit with GetLastError code (LESSON.md)
 ;
 ; Purpose: CreateFileA failure returns INVALID_HANDLE_VALUE; error via GetLastError.
-; Expected exit: 2 (ERROR_FILE_NOT_FOUND)
+; Expected exit: 3 (ERROR_PATH_NOT_FOUND for missing path components)
 ; Expected stdout: (none)
 ;
 ; Build: ml64 /c /Fo13-open-missing-get-last-error.obj 13-open-missing-get-last-error.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:13-open-missing-get-last-error.exe 13-open-missing-get-last-error.obj kernel32.lib
@@ -1240,7 +1239,7 @@ main ENDP
 END
 ```
 
-Expected exit: **2** (`ERROR_FILE_NOT_FOUND`).
+Expected exit: **3** (`ERROR_PATH_NOT_FOUND`). The path is `C:\no\such\file.txt`: a missing directory component, not a missing file in an existing directory (`ERROR_FILE_NOT_FOUND` = 2).
 
 ### A plausible wrong reading (and why it fails)
 
@@ -1276,7 +1275,7 @@ Expected exit: **2** (`ERROR_FILE_NOT_FOUND`).
 ## Key takeaways
 
 - Win32 calls use RCX, RDX, R8, R9, then `[rsp+32]` onward; the return is RAX; the caller allocates 32 bytes of shadow space before every `call`.
-- `CreateFileA` failure is −1; `VirtualAlloc` / mapping failure is 0; BOOL APIs fail with 0. The numeric error is `GetLastError` (listing `13-open-missing-get-last-error` exits 2 on a missing path).
+- `CreateFileA` failure is −1; `VirtualAlloc` / mapping failure is 0; BOOL APIs fail with 0. The numeric error is `GetLastError` (listing `13-open-missing-get-last-error` exits **3** / `ERROR_PATH_NOT_FOUND` on `C:\no\such\file.txt`).
 - `ReadFile` / `WriteFile` take a HANDLE, buffer, count, DWORD pointer, and overlapped (NULL for synchronous I/O). Short transfers are not automatically errors.
 - `SetFilePointer` is the 32-bit-distance API; `SetFilePointerEx` is the 64-bit BOOL API. `FILE_BEGIN` = 0, `FILE_CURRENT` = 1, `FILE_END` = 2.
 - `VirtualAlloc` with `3000h` / `PAGE_READWRITE` returns zeroed pages; `VirtualFree` with size 0 and `8000h` releases them. Listings `04-virtual-alloc` and `10-virtual-alloc-free` exit 42 after storing that byte.

@@ -16,6 +16,8 @@ Listing `01-qpc-timing` is the call pair. `main PROC FRAME` records `sub rsp, 32
 
 ```asm
 ; QueryPerformanceCounter timing, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA?
 counter QWORD ?
 freq QWORD ?
@@ -35,7 +37,6 @@ main PROC FRAME
     call ExitProcess
 main ENDP
 END
-
 ```
 
 A later frame will keep the previous counter, call `QueryPerformanceCounter` again, subtract, and scale. This listing only proves the imports and the shadow space.
@@ -46,6 +47,8 @@ A later frame will keep the previous counter, call `QueryPerformanceCounter` aga
 
 ```asm
 ; Calculate delta time, exit with dt
+; Expected exit: 42
+; Expected stdout: (none)
 .DATA?
 prev_time QWORD ?
 curr_time QWORD ?
@@ -61,7 +64,6 @@ main PROC
     call ExitProcess
 main ENDP
 END
-
 ```
 
 The listing has no `PROC FRAME` and no `sub rsp, 32`. The Microsoft x64 ABI still requires 32 bytes of home space before `call ExitProcess`; this file omits it. The subtraction itself is the lesson: dt is `curr - prev`, here 42, in whatever unit you assigned to those stamps.

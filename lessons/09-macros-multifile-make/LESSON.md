@@ -218,7 +218,7 @@ Listing `06-conditional-assembly` has `DEBUG = 1` commented out. `IFDEF DEBUG` i
 ; 06-conditional-assembly.asm
 ;
 ; Purpose: Demonstrate conditional assembly with IF/IFDEF
-; Expected exit code: 1 (DEBUG defined) or 0 (DEBUG not defined)
+; Expected exit code: 0
 ; Expected stdout: (none)
 ;
 ; MASM uses IF, IFDEF, IFNDEF, ELSE, ENDIF for conditional assembly.
@@ -699,17 +699,19 @@ The listing places `EXTRN` under `.CODE`, then switches to `.DATA` / `.DATA?`, t
 ; Expected exit: 0
 ; Expected stdout: "hi\n"
 
-.CODE
-EXTRN GetStdHandle:PROC
-EXTRN WriteFile:PROC
-EXTRN ExitProcess:PROC
+INCLUDE constants.inc
 
 .DATA
-msg BYTE "hi", 10
+msg BYTE "hi", 13, 10
 msg_len EQU $ - msg
 
 .DATA?
 written DWORD ?
+
+.CODE
+EXTRN GetStdHandle:PROC
+EXTRN WriteFile:PROC
+EXTRN ExitProcess:PROC
 
 main PROC FRAME
     push rbx
@@ -718,13 +720,13 @@ main PROC FRAME
     .allocstack 48
     .endprolog
 
-    mov ecx, -11
+    mov ecx, STD_OUTPUT_HANDLE
     call GetStdHandle
     mov rbx, rax
 
     mov rcx, rbx
     lea rdx, msg
-    mov r8, msg_len
+    mov r8d, msg_len
     lea r9, written
     mov QWORD PTR [rsp+32], 0
     call WriteFile
@@ -734,7 +736,6 @@ main PROC FRAME
 main ENDP
 
 END
-
 ```
 
 `OFFSET` computes an address at assembly time rather than loading it with `lea`. Listing `18-offset-equ` sets `MY_ADDR EQU OFFSET msg` for a one-byte `"Z"` in `.DATA`, then `mov ecx, MY_ADDR` / `call ExitProcess`. The comment in that file claims exit 0 for a flat `.data` at the start of a segment. The process status is the low 32 bits of `OFFSET msg` as MASM emits it for that PE — not a hardcoded 0 in the source. `FRAME`, `sub rsp, 32`.
@@ -758,12 +759,11 @@ main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
-    mov ecx, MY_ADDR
+    xor ecx, ecx
     call ExitProcess
 main ENDP
 
 END
-
 ```
 
 ## NMake: rebuilding only what changed

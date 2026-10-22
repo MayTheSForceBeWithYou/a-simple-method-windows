@@ -6,7 +6,7 @@ Windows file I/O is the lesson 08 contract: arguments in RCX / RDX / R8 / R9 and
 
 ## What this lesson asks of you
 
-You spawn by incrementing a visitor counter. You treat an empty A* listing as status 0, not as a search. You validate an 8-byte header against a DWORD magic and a DWORD version, and you can decode what `"PK01"` actually is in little-endian. You reserve an 8×8 map in `.DATA?` and you clamp an x of 99 into `[0, width)` two ways (signed then unsigned), both of which exit 7. You walk `parent[pos]` one hop. You subtract upkeep from cash only after an unsigned compare, and you can show why an unguarded `sub` is not that compare. You write `park.sav` with `CreateFileA` / `WriteFile` / `CloseHandle` and you load a header with a missing-file harness that still exits 1.
+You spawn by incrementing a visitor counter. You treat an empty A* listing as status 0, not as a search. You validate an 8-byte header against a DWORD magic and a DWORD version, and you can decode what `"PK01"` actually is in little-endian. You reserve an 8×8 `tilemap` in `.DATA?` (`grid_w` / `grid_h` = 8) and you clamp an x of 99 into `[0, grid_w)` two ways (signed then unsigned), both of which exit 7. You walk `parent[pos]` one hop. You subtract upkeep from cash only after an unsigned compare, and you can show why an unguarded `sub` is not that compare. You write `park.sav` with `CreateFileA` / `WriteFile` / `CloseHandle` and you load a header with a missing-file harness that still exits 1.
 
 ## Acceptance criteria (what “done” means)
 
@@ -142,7 +142,8 @@ main PROC FRAME
     call    WriteFile
     test    rax, rax
     jz      fail_close
-    add     totalWritten, bytesWritten
+    mov     eax, bytesWritten
+    add     totalWritten, eax
 
     mov     rcx, rbx
     lea     rdx, map_cells
@@ -152,7 +153,8 @@ main PROC FRAME
     call    WriteFile
     test    rax, rax
     jz      fail_close
-    add     totalWritten, bytesWritten
+    mov     eax, bytesWritten
+    add     totalWritten, eax
 
     mov     rcx, rbx
     call    CloseHandle
@@ -177,6 +179,8 @@ Listing `01-visitor-spawn` zeros `visitor_count`, increments it, and exits the n
 
 ```asm
 ; Spawn visitor entity, exit visitor count
+; Expected exit: 1
+; Expected stdout: (none)
 .DATA?
 visitor_count QWORD ?
 .CODE
@@ -190,7 +194,6 @@ main PROC
     call ExitProcess
 main ENDP
 END
-
 ```
 
 A real spawn also writes the new id into a SoA slot (lesson 17) and sets `alive`. This listing is the counter.
@@ -201,6 +204,8 @@ Listing `02-pathfind-step` reserves `open_list` and `closed_list` (16 QWORDs eac
 
 ```asm
 ; One A* pathfinding step, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA?
 open_list QWORD 16 DUP(?)
 closed_list QWORD 16 DUP(?)
@@ -212,25 +217,24 @@ main PROC
     call ExitProcess
 main ENDP
 END
-
 ```
 
 The walk you actually run each tick is listing `07-agent-parent-step` below. A*’s open/closed sets are not implemented here.
 
 ## Map grid in BSS
 
-Listing `04-map-grid-bss` defines `width EQU 8`, `height EQU 8`, and `map DB 64 DUP(?)` in `.DATA?` (zeroed at load). The body does not write a cell. It zeros ECX and exits. Expected exit: **0**. Index of `(x, y)` is still `y * width + x` (lesson 16).
+Listing `04-map-grid-bss` defines `grid_w EQU 8`, `grid_h EQU 8`, and `tilemap DB 64 DUP(?)` in `.DATA?` (zeroed at load). The body does not write a cell. It zeros ECX and exits. Expected exit: **0**. Index of `(x, y)` is still `y * grid_w + x` (lesson 16).
 
 ```asm
 ; Listing 04: Tile map grid in BSS (LESSON.md block 4)
 ; Expected exit: 0
 ; Expected stdout: (none)
 
-width EQU 8
-height EQU 8
+grid_w EQU 8
+grid_h EQU 8
 
 .DATA?
-map DB 64 DUP(?)
+tilemap DB 64 DUP(?)
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -241,21 +245,20 @@ main PROC
     call    ExitProcess
 main ENDP
 END
-
 ```
 
 ## Clamp x before it is an address
 
-An x of 99 on a width-8 map is not a cell. Clamp **before** `map[y * width + x]`.
+An x of 99 on a width-8 map is not a cell. Clamp **before** `tilemap[y * grid_w + x]`.
 
-Listing `05-clamp-x-signed` uses a signed pair of tests. `rax = 99`. `cmp rax, 0` / `jge x_not_negative` keeps 99 (it is not negative). `cmp rax, width` / `jl x_ok` fails (99 < 8 is false), so `rax = width` then `dec rax` → 7. Expected exit: **7**.
+Listing `05-clamp-x-signed` uses a signed pair of tests. `rax = 99`. `cmp rax, 0` / `jge x_not_negative` keeps 99 (it is not negative). `cmp rax, grid_w` / `jl x_ok` fails (99 < 8 is false), so `rax = grid_w` then `dec rax` → 7. Expected exit: **7**.
 
 ```asm
 ; Listing 05: Signed clamp x to [0, width) (LESSON.md block 5)
 ; Expected exit: 7
 ; Expected stdout: (none)
 
-width EQU 8
+grid_w EQU 8
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -267,28 +270,27 @@ main PROC
     jge     x_not_negative
     xor     rax, rax
 x_not_negative:
-    cmp     rax, width
+    cmp     rax, grid_w
     jl      x_ok
-    mov     rax, width
+    mov     rax, grid_w
     dec     rax
 x_ok:
     mov     ecx, eax
     call    ExitProcess
 main ENDP
 END
-
 ```
 
 A negative x takes `xor rax, rax` and becomes 0. That is the signed lower bound.
 
-Listing `06-clamp-x-unsigned` uses one unsigned compare. `cmp rax, width` / `jb ok` — 99 is not below 8, so `rax = 7` again. Expected exit: **7**.
+Listing `06-clamp-x-unsigned` uses one unsigned compare. `cmp rax, grid_w` / `jb ok` — 99 is not below 8, so `rax = 7` again. Expected exit: **7**.
 
 ```asm
 ; Listing 06: Unsigned clamp x to [0, width) (LESSON.md block 6)
 ; Expected exit: 7
 ; Expected stdout: (none)
 
-width EQU 8
+grid_w EQU 8
 
 .CODE
 EXTRN ExitProcess:PROC
@@ -296,16 +298,15 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
     mov     rax, 99
-    cmp     rax, width
+    cmp     rax, grid_w
     jb      ok
-    mov     rax, width
+    mov     rax, grid_w
     dec     rax
 ok:
     mov     ecx, eax
     call    ExitProcess
 main ENDP
 END
-
 ```
 
 `jb` treats RAX as unsigned. A bit-pattern of −1 is `0xFFFFFFFFFFFFFFFF`, which is **not** below 8, so the unsigned clamp would snap it to 7, not to 0. That is why listing 05 exists: signed x needs the `cmp rax, 0` / `jge` path. Do not use listing 06 on a value that can be negative.
@@ -330,16 +331,16 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, parent
     mov     agent_pos, 5
-    mov     parent[5*8], 2
+    mov     QWORD PTR [r10+5*8], 2
     mov     rax, agent_pos
-    mov     rbx, parent[rax*8]
+    mov     rbx, QWORD PTR [r10+rax*8]
     mov     agent_pos, rbx
     mov     ecx, ebx
     call    ExitProcess
 main ENDP
 END
-
 ```
 
 `5*8` and `rax*8` are byte offsets of QWORD elements. A path of length n is n such hops. When `pos == goal`, the walk is done.

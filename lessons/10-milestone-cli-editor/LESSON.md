@@ -30,13 +30,15 @@ The milestone is a capstone binary. The listings are testbenches for one primiti
 
 ## Buffer, cursor, length
 
-Editor state is three values: the bytes, how many are live, and where the cursor sits. Listings `01`–`04` name them `buffer`, `length`, and `cursor`. Listings `05`–`08` and `20` name them `buf`, `len`, and `cur`. Same roles.
+Editor state is three values: the bytes, how many are live, and where the cursor sits. Listings `01`–`04` name them `buffer`, `buf_len`, and `cursor`. Listings `05`–`08` and `20` name them `buf`, `len`, and `cur`. Same roles.
 
-An empty buffer has length 0 and cursor 0. Appending writes at `buffer[length]` and increments length. The cursor may be any index in `[0, length]`, including `length` (past the last live byte). Insert at the end is an append. Insert in the middle shifts the tail.
+An empty buffer has length 0 and cursor 0. Appending writes at the live end and increments `buf_len` (or `len`). The cursor may be any index in `[0, buf_len]`, including `buf_len` (past the last live byte). Insert at the end is an append. Insert in the middle shifts the tail.
+
+Indexed stores do not use `buffer[rax]` / `buf[rcx]` as a memory operand. Each of those listings does `lea r10, buffer` (or `lea r10, buf`) once, then addresses `[r10+rax]`, `[r10+rcx]`, and so on. That is RIP-relative: `lea` materializes the buffer address, then the index is a register offset.
 
 ### Append
 
-Listing `01-buffer-append` starts empty, appends `'A'`, `'B'`, then `'C'`, and exits with the length. Each append is `mov rax, length` / `mov BYTE PTR buffer[rax], …` / `inc length`. The cursor is initialized to 0 and never moved. `mov ecx, DWORD PTR length` takes the low 32 bits for `ExitProcess`. Expected exit: **3**.
+Listing `01-buffer-append` starts empty, appends `'A'`, `'B'`, then `'C'`, and exits with the length. After `lea r10, buffer`, each append is `mov rax, buf_len` / `mov BYTE PTR [r10+rax], …` / `inc buf_len`. The cursor is initialized to 0 and never moved. `mov ecx, DWORD PTR buf_len` takes the low 32 bits for `ExitProcess`. Expected exit: **3**.
 
 ```asm
 ; 01-buffer-append.asm
@@ -49,7 +51,7 @@ Listing `01-buffer-append` starts empty, appends `'A'`, `'B'`, then `'C'`, and e
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
@@ -57,27 +59,28 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buffer
     ; Initialize empty buffer
-    mov     length, 0
+    mov     buf_len, 0
     mov     cursor, 0
     
     ; Append 'A'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'A'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'A'
+    inc     buf_len
     
     ; Append 'B'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'B'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     buf_len
     
     ; Append 'C'
-    mov     rax, length
-    mov     BYTE PTR buffer[rax], 'C'
-    inc     length
+    mov     rax, buf_len
+    mov     BYTE PTR [r10+rax], 'C'
+    inc     buf_len
     
-    ; Exit with length (3)
-    mov     ecx, DWORD PTR length
+    ; Exit with buf_len (3)
+    mov     ecx, DWORD PTR buf_len
     call    ExitProcess
 main ENDP
 
@@ -105,10 +108,11 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buf
     mov     len, 0
     mov     cur, 0
     mov     rax, len
-    mov     BYTE PTR buf[rax], 'A'
+    mov     BYTE PTR [r10+rax], 'A'
     inc     len
     inc     cur
     mov     ecx, DWORD PTR len
@@ -116,29 +120,28 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### Cursor clamp
 
 Moving right increments the cursor only when it is less than length. Moving left decrements only when it is greater than 0. A cursor past length or wrapped below 0 is memory corruption. Use unsigned compares (`jae`, `jbe`) on indices.
 
-Listing `04-cursor-clamp` sets `length` to 3 and `cursor` to 9, then `cmp rax, length` / `jbe cursor_ok`. 9 is above 3, so it stores 3 back into `cursor`. Expected exit: **3**.
+Listing `04-cursor-clamp` sets `buf_len` to 3 and `cursor` to 9, then `cmp rax, buf_len` / `jbe cursor_ok`. 9 is above 3, so it stores 3 back into `cursor`. Expected exit: **3**.
 
 A corrupted cursor of `0FFFFFFFFFFFFFFFFh` (all bits 1) is **greater** than 3 as unsigned, so `jbe` fails and the clamp still stores 3. A signed `jle` would treat that value as −1, which is less than 3, and would skip the clamp.
 
 ```asm
 ; 04-cursor-clamp.asm
 ;
-; Purpose: Demonstrate cursor clamping to valid range [0, length]
+; Purpose: Demonstrate cursor clamping to valid range [0, buf_len]
 ; Expected exit code: 3
 ; Expected stdout: (none)
 ;
-; Clamps out-of-range cursor to [0, length]
+; Clamps out-of-range cursor to [0, buf_len]
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
@@ -146,17 +149,17 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    ; Setup: buffer with length 3
-    mov     length, 3
+    ; Setup: buffer with buf_len 3
+    mov     buf_len, 3
     
     ; Simulate corrupted cursor (cursor = 9, out of range)
     mov     cursor, 9
     
-    ; Clamp cursor to [0, length]
+    ; Clamp cursor to [0, buf_len]
     mov     rax, cursor
-    cmp     rax, length
+    cmp     rax, buf_len
     jbe     cursor_ok
-    mov     rax, length
+    mov     rax, buf_len
     mov     cursor, rax
     
 cursor_ok:
@@ -190,7 +193,8 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'X'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'X'
     mov     len, 1
     mov     cur, 1
     cmp     cur, 0
@@ -206,7 +210,6 @@ done:
 main ENDP
 
 END
-
 ```
 
 ## Inserting and deleting in the middle: tail shifts
@@ -224,7 +227,7 @@ To insert `'B'` at index 1 in `"AC"` (length 2), producing `"ABC"`:
 
 The shift walks `rcx` from `len` downward. Copy `buf[rcx-1]` to `buf[rcx]`. Stop before you copy the byte at the cursor (that slot is about to become the new character).
 
-Listing `02-insert-middle` uses `jle shift_done` — the loop continues while `rcx > cursor`. From `rcx = 2` and `cursor = 1` that is one copy: `buffer[2] = buffer[1]` (`'C'`). Then it stores `'B'` at `buffer[cursor]`, increments `length` and `cursor`, and exits with the immediate 66 (`'B'`). Final buffer `"ABC"`. Expected exit: **66**.
+Listing `02-insert-middle` uses `jle shift_done` — the loop continues while `rcx > cursor`. After `lea r10, buffer`, from `rcx = 2` and `cursor = 1` that is one copy: `[r10+2] = [r10+1]` (`'C'`). Then it stores `'B'` at `[r10+cursor]`, increments `buf_len` and `cursor`, and exits with the immediate 66 (`'B'`). Final buffer `"ABC"`. Expected exit: **66**.
 
 ```asm
 ; 02-insert-middle.asm
@@ -237,7 +240,7 @@ Listing `02-insert-middle` uses `jle shift_done` — the loop continues while `r
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
@@ -245,28 +248,29 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buffer
     ; Setup: "AC" with cursor at 1
-    mov     BYTE PTR buffer[0], 'A'
-    mov     BYTE PTR buffer[1], 'C'
-    mov     length, 2
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
+    mov     buf_len, 2
     mov     cursor, 1
     
     ; Insert 'B' at cursor (index 1)
     ; Shift tail rightward
-    mov     rcx, length
+    mov     rcx, buf_len
 shift_loop:
     cmp     rcx, cursor
     jle     shift_done
-    mov     al, buffer[rcx-1]
-    mov     buffer[rcx], al
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
     dec     rcx
     jmp     shift_loop
     
 shift_done:
     ; Store new byte at cursor
     mov     rax, cursor
-    mov     BYTE PTR buffer[rax], 'B'
-    inc     length
+    mov     BYTE PTR [r10+rax], 'B'
+    inc     buf_len
     inc     cursor
     
     ; Buffer now contains "ABC"
@@ -297,21 +301,22 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'A'
-    mov     BYTE PTR buf[1], 'C'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
     mov     len, 2
     mov     cur, 1
     mov     rcx, len
 shift:
     cmp     rcx, cur
     jle     done_shift
-    mov     al, BYTE PTR buf[rcx-1]
-    mov     BYTE PTR buf[rcx], al
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
     dec     rcx
     jmp     shift
 done_shift:
     mov     rax, cur
-    mov     BYTE PTR buf[rax], 'B'
+    mov     BYTE PTR [r10+rax], 'B'
     inc     len
     inc     cur
     mov     ecx, 66
@@ -319,7 +324,6 @@ done_shift:
 main ENDP
 
 END
-
 ```
 
 `jle` is signed. Indices in these listings stay small and non-negative, so it matches `jbe`. Listing `20-insert-shift-jl` uses `jl` instead; that extra iteration is the worked example.
@@ -328,7 +332,7 @@ END
 
 Delete-forward removes the byte at the cursor and slides `buf[cur+1..len)` left onto `buf[cur..len-1)`.
 
-Listing `03-delete-forward` starts with `"ABC"` (length 3), cursor at 1 (the `'B'`). The loop increments RCX from the cursor, copies `buffer[rcx]` to `buffer[rcx-1]`, and stops when `rcx >= length`. Then `dec length`. The buffer is `"AC"`, length 2. Expected exit: **2**.
+Listing `03-delete-forward` starts with `"ABC"` (`buf_len` 3), cursor at 1 (the `'B'`). After `lea r10, buffer`, the loop increments RCX from the cursor, copies `[r10+rcx]` to `[r10+rcx-1]`, and stops when `rcx >= buf_len`. Then `dec buf_len`. The buffer is `"AC"`, length 2. Expected exit: **2**.
 
 That is not `"ABCD"` and not exit 3. Three live bytes, one deletion, status 2.
 
@@ -343,7 +347,7 @@ That is not `"ABCD"` and not exit 3. Three live bytes, one deletion, status 2.
 
 .DATA?
 buffer DB 256 DUP(?)
-length QWORD ?
+buf_len QWORD ?
 cursor QWORD ?
 
 .CODE
@@ -351,11 +355,12 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buffer
     ; Setup: "ABC" with cursor at 1
-    mov     BYTE PTR buffer[0], 'A'
-    mov     BYTE PTR buffer[1], 'B'
-    mov     BYTE PTR buffer[2], 'C'
-    mov     length, 3
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
+    mov     buf_len, 3
     mov     cursor, 1
     
     ; Delete byte at cursor (delete 'B')
@@ -363,18 +368,18 @@ main PROC
     mov     rcx, cursor
 shift_loop:
     inc     rcx
-    cmp     rcx, length
+    cmp     rcx, buf_len
     jge     shift_done
-    mov     al, buffer[rcx]
-    mov     buffer[rcx-1], al
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
     jmp     shift_loop
     
 shift_done:
-    dec     length
-    ; Buffer now contains "AC" (length 2)
+    dec     buf_len
+    ; Buffer now contains "AC" (buf_len 2)
     
-    ; Exit with length (2)
-    mov     ecx, DWORD PTR length
+    ; Exit with buf_len (2)
+    mov     ecx, DWORD PTR buf_len
     call    ExitProcess
 main ENDP
 
@@ -386,7 +391,7 @@ Listing `08-delete-forward-shift` repeats the same `"ABC"` / cursor 1 / `jge don
 ```asm
 ; Listing 08: Delete-forward tail shift (LESSON.md block 8)
 ;
-; Purpose: Shift buf[cur+1..len) left and decrement len.
+; Purpose: Shift [r10+cur+1..len) left and decrement len.
 ; Expected exit code: 2
 ; Expected stdout: (none)
 
@@ -400,9 +405,10 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'A'
-    mov     BYTE PTR buf[1], 'B'
-    mov     BYTE PTR buf[2], 'C'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'B'
+    mov     BYTE PTR [r10+2], 'C'
     mov     len, 3
     mov     cur, 1
     mov     rcx, cur
@@ -410,8 +416,8 @@ shift:
     inc     rcx
     cmp     rcx, len
     jge     done_shift
-    mov     al, BYTE PTR buf[rcx]
-    mov     BYTE PTR buf[rcx-1], al
+    mov     al, BYTE PTR [r10+rcx]
+    mov     BYTE PTR [r10+rcx-1], al
     jmp     shift
 done_shift:
     dec     len
@@ -420,7 +426,6 @@ done_shift:
 main ENDP
 
 END
-
 ```
 
 ## The gap buffer: amortizing tail shifts
@@ -510,10 +515,11 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buf
     mov     gap_start, 2
     mov     gap_end, 6
     mov     rax, gap_start
-    mov     BYTE PTR buf[rax], 'X'
+    mov     BYTE PTR [r10+rax], 'X'
     inc     gap_start
     mov     rax, gap_end
     sub     rax, gap_start
@@ -522,7 +528,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 ### Moving the gap left
@@ -532,11 +537,11 @@ Cursor left means the gap slides left one byte: copy `buf[gap_start-1]` to `buf[
 Listing `12-gap-move-left` plants `'Q'` at `buf[2]`, sets `gap_start = 3` and `gap_end = 5`, then:
 
 1. `mov rax, gap_start` / `dec rax` — RAX is the source index 2.
-2. `mov r8, rax` keeps that index. `movzx edx, BYTE PTR buf[r8]` loads `'Q'` without clobbering the index.
-3. `mov rcx, gap_end` / `dec rcx` — RCX is 4. `mov BYTE PTR buf[rcx], dl` writes `'Q'` to `buf[4]`.
+2. `mov r8, rax` keeps that index. After `lea r10, buf`, `movzx edx, BYTE PTR [r10+r8]` loads `'Q'` without clobbering the index.
+3. `mov rcx, gap_end` / `dec rcx` — RCX is 4. `mov BYTE PTR [r10+rcx], dl` writes `'Q'` to `buf[4]`.
 4. `mov gap_start, r8` stores 2. `mov gap_end, rcx` stores 4. `mov ecx, 2` is the process status.
 
-Expected exit: **2**. A `mov al, BYTE PTR buf[rax]` here would have overwritten the index with `'Q'` (81). The listing uses `r8` / `movzx edx` so that does not happen.
+Expected exit: **2**. A `mov al, BYTE PTR [r10+rax]` here would have overwritten the index with `'Q'` (81). The listing uses `r8` / `movzx edx` so that does not happen.
 
 ```asm
 ; Listing 12: Move gap left one byte (LESSON.md block 12)
@@ -555,16 +560,17 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[2], 'Q'
+    lea     r10, buf
+    mov     BYTE PTR [r10+2], 'Q'
     mov     gap_start, 3
     mov     gap_end, 5
     mov     rax, gap_start
     dec     rax
     mov     r8, rax                 ; index 2 (do not clobber with AL load)
-    movzx   edx, BYTE PTR buf[r8]
+    movzx   edx, BYTE PTR [r10+r8]
     mov     rcx, gap_end
     dec     rcx
-    mov     BYTE PTR buf[rcx], dl
+    mov     BYTE PTR [r10+rcx], dl
     mov     gap_start, r8
     mov     gap_end, rcx
     mov     ecx, 2                  ; gap_start after move
@@ -572,10 +578,9 @@ main PROC
 main ENDP
 
 END
-
 ```
 
-To keep the index, copy the byte into a register that is not holding the index (`movzx edx, BYTE PTR buf[rax]` after `dec rax`, or save the decremented index in another register before loading AL).
+To keep the index, copy the byte into a register that is not holding the index (`movzx edx, BYTE PTR [r10+rax]` after `dec rax`, or save the decremented index in another register before loading AL).
 
 ### Moving the gap right
 
@@ -598,13 +603,14 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[5], 'Z'
+    lea     r10, buf
+    mov     BYTE PTR [r10+5], 'Z'
     mov     gap_start, 2
     mov     gap_end, 5
     mov     rax, gap_end
-    mov     al, BYTE PTR buf[rax]
+    mov     al, BYTE PTR [r10+rax]
     mov     rcx, gap_start
-    mov     BYTE PTR buf[rcx], al
+    mov     BYTE PTR [r10+rcx], al
     inc     gap_start
     inc     gap_end
     mov     rax, gap_end
@@ -614,7 +620,6 @@ main PROC
 main ENDP
 
 END
-
 ```
 
 Typing at a fixed gap is O(1) until the gap is empty. Moving the cursor is one byte copy per position.
@@ -640,13 +645,14 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, buf
     mov     rsi, 4
     mov     rcx, rsi
 scan:
     test    rcx, rcx
     jz      done
     dec     rcx
-    cmp     BYTE PTR buf[rcx], 10
+    cmp     BYTE PTR [r10+rcx], 10
     jne     scan
     inc     rcx
 done:
@@ -655,7 +661,6 @@ done:
 main ENDP
 
 END
-
 ```
 
 **Kill-line** deletes from the cursor through the last character before the newline and **leaves the newline**.
@@ -727,7 +732,7 @@ There is no `syscall` and no `nasm` `section .bss` in this listing. Console outp
 ;
 ; Purpose: Write live buffer bytes with WriteFile to stdout.
 ; Expected exit code: 0
-; Expected stdout: "ed" + CRLF
+; Expected stdout: "ed\r\n"
 
 .DATA
 buf BYTE "ed", 13, 10
@@ -760,7 +765,6 @@ main PROC FRAME
 main ENDP
 
 END
-
 ```
 
 A full-screen editor writes a viewport — a window of lines around the cursor — not necessarily the whole buffer. The listing is the write primitive, not the viewport math.
@@ -987,7 +991,7 @@ main PROC FRAME
     lea     rdx, original_mode
     call    GetConsoleMode
     test    rax, rax
-    jz      error_exit
+    jz      no_console
 
     mov     eax, original_mode
     and     eax, NOT 6
@@ -1006,13 +1010,16 @@ main PROC FRAME
     xor     ecx, ecx
     call    ExitProcess
 
+no_console:
+    xor     ecx, ecx
+    call    ExitProcess
+
 error_exit:
     mov     ecx, 1
     call    ExitProcess
 main ENDP
 
 END
-
 ```
 
 ## Worked example: how far does the tail shift under `jl`?
@@ -1055,27 +1062,27 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     BYTE PTR buf[0], 'A'
-    mov     BYTE PTR buf[1], 'C'
+    lea     r10, buf
+    mov     BYTE PTR [r10+0], 'A'
+    mov     BYTE PTR [r10+1], 'C'
     mov     len, 2
     mov     cur, 1
     mov     rcx, len
 shift:
     cmp     rcx, cur
     jl      put_byte
-    mov     al, BYTE PTR buf[rcx-1]
-    mov     BYTE PTR buf[rcx], al
+    mov     al, BYTE PTR [r10+rcx-1]
+    mov     BYTE PTR [r10+rcx], al
     dec     rcx
     jmp     shift
 put_byte:
-    mov     BYTE PTR buf[1], 'B'
+    mov     BYTE PTR [r10+1], 'B'
     inc     len
     mov     ecx, DWORD PTR len
     call    ExitProcess
 main ENDP
 
 END
-
 ```
 
 ### A plausible wrong reading (and why it fails)
@@ -1088,8 +1095,8 @@ The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It st
 
 | Confusion | Reality |
 |-----------|---------|
-| `len` is the capacity | `len` / `length` is live bytes. Capacity is the `DUP` size (256 in listings `01`–`04`, 4096 in the `buf` listings) |
-| The cursor is a pointer | It is an index. Addressing is `BYTE PTR buf[rax]`, not a raw pointer in a register |
+| `len` is the capacity | `len` / `buf_len` is live bytes. Capacity is the `DUP` size (256 in listings `01`–`04`, 4096 in the `buf` listings) |
+| The cursor is a pointer | It is an index. Address the buffer with `lea r10, buf` then `[r10+rax]`, not `buf[rax]` and not a raw pointer in a register |
 | Insert moves the tail by itself | You shift `buf[cur..len)` right, then store. Listings `02`, `07`, and `20` |
 | Delete-forward on `"ABCD"` exits 3 | Listings `03` and `08` start with `"ABC"`, delete `'B'`, and exit **2** |
 | Gap buffer removes every copy | Inserts **at the gap** are a store. Cursor motion still copies (listings `12`, `13`) |
@@ -1103,9 +1110,9 @@ The exit test is `jl` (jump if less), so the body runs while `rcx >= cur`. It st
 
 ## Check yourself
 
-1. Listing `03-delete-forward` starts with `"ABC"`, cursor 1. After the shift and `dec length`, what three bytes sit in `buffer[0..2]`, and what is the process status?
+1. Listing `03-delete-forward` starts with `"ABC"`, cursor 1. After the shift and `dec buf_len`, what three bytes sit in `buffer[0..2]`, and what is the process status?
 2. Listing `20-insert-shift-jl` uses `jl`; listings `02` and `07` use `jle`. Starting at `"AC"` / cursor 1, how many byte copies does each loop perform before the store of `'B'`?
-3. Listing `04-cursor-clamp` uses `jbe`. If a bug set `cursor` to `0FFFFFFFFFFFFFFFFh` with `length = 3`, would the clamp write 3? Would a signed `jle` write 3?
+3. Listing `04-cursor-clamp` uses `jbe`. If a bug set `cursor` to `0FFFFFFFFFFFFFFFFh` with `buf_len = 3`, would the clamp write 3? Would a signed `jle` write 3?
 4. Listing `11-gap-insert-byte` starts at `gap_start = 2`, `gap_end = 6`. After the store and increment, what is `gap_start`, what is the remaining free space, and what byte is in `buf[2]`?
 5. Listing `19-raw-console-mode` does `and eax, NOT 6`. If `original_mode` were `0000001Fh`, what 32-bit value is written to `mode`? Why does the listing call `SetConsoleMode` a second time with `original_mode`?
 

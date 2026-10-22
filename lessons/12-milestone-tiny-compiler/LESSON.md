@@ -148,6 +148,8 @@ That order is the parentheses. `1+2*3` without parens is `1+(2*3) = 7` because `
 
 ```asm
 ; 03-const-fold.asm: Fold constant expression (1+2)*3, exit 9
+; Expected exit: 9
+; Expected stdout: (none)
 ; Demonstrates precedence: * before +
 .CODE
 EXTRN ExitProcess:PROC
@@ -260,6 +262,8 @@ Listing `04-bytecode-interp` interprets the byte stream `1, 10, 1, 20, 2, 3` wit
 
 ```asm
 ; 04-bytecode-interp.asm: Simple bytecode interpreter
+; Expected exit: 30
+; Expected stdout: (none)
 ; Opcodes: 1=LOAD_IMM, 2=ADD, 3=HALT
 ; Program: LOAD 10, LOAD 20, ADD, HALT → exit 30
 .DATA
@@ -321,11 +325,11 @@ Listing `05-bytecode-stack` is a different opcode table and a different machine:
 
 The stream is `1, 4, 1, 5, 2, 0`. That is push 4, push 5, add, halt.
 
-The add handler decrements `sp_`, loads that slot into RAX (5), decrements again, adds the lower slot (4), writes 9 back, and increments so one value remains. Halt pops that 9. The arithmetic result is **9**.
+The add handler decrements `stack_sp`, loads that slot into RAX (5), decrements again, adds the lower slot (4), writes 9 back, and increments so one value remains. Halt pops that 9. The arithmetic result is **9**.
 
 The header is `Expected exit: 9`. That is 4 + 5. 5 is only the second push, consumed by the add.
 
-The array is named `st`. MASM also uses `st` for x87 `ST(0)`. That name is a collision risk, same family of problem as `sp` in lesson 11 listing 13.
+The array is named `stack_mem` and the index is `stack_sp`. Those names avoid the x87 `st` / CPU `sp` collisions that an earlier draft used. After `lea rsi, bytecode` and `lea rdi, stack_mem`, slots are `[rdi+rcx*8]`.
 
 ```asm
 ; Listing 05: Stack bytecode interpreter (LESSON.md block 5)
@@ -333,19 +337,20 @@ The array is named `st`. MASM also uses `st` for x87 `ST(0)`. That name is a col
 ; Expected stdout: (none)
 
 .DATA
-code DB 1, 4, 1, 5, 2, 0
+bytecode DB 1, 4, 1, 5, 2, 0
 
 .DATA?
-st DQ 16 DUP(?)
-sp_ QWORD ?
+stack_mem DQ 16 DUP(?)
+stack_sp QWORD ?
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     sp_, 0
-    lea     rsi, code
+    mov     stack_sp, 0
+    lea     rsi, bytecode
+    lea     rdi, stack_mem
 fetch:
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
@@ -360,38 +365,38 @@ fetch:
 push_op:
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
-    mov     rcx, sp_
-    mov     st[rcx*8], rax
-    inc     sp_
+    mov     rcx, stack_sp
+    mov     QWORD PTR [rdi+rcx*8], rax
+    inc     stack_sp
     jmp     fetch
 add_op:
-    dec     sp_
-    mov     rcx, sp_
-    mov     rax, st[rcx*8]
-    dec     sp_
-    mov     rcx, sp_
-    add     rax, st[rcx*8]
-    mov     rcx, sp_
-    mov     st[rcx*8], rax
-    inc     sp_
+    dec     stack_sp
+    mov     rcx, stack_sp
+    mov     rax, QWORD PTR [rdi+rcx*8]
+    dec     stack_sp
+    mov     rcx, stack_sp
+    add     rax, QWORD PTR [rdi+rcx*8]
+    mov     rcx, stack_sp
+    mov     QWORD PTR [rdi+rcx*8], rax
+    inc     stack_sp
     jmp     fetch
 halt:
-    dec     sp_
-    mov     rcx, sp_
-    mov     rax, st[rcx*8]
+    dec     stack_sp
+    mov     rcx, stack_sp
+    mov     rax, QWORD PTR [rdi+rcx*8]
     mov     ecx, eax
     call    ExitProcess
 main ENDP
 END
 ```
 
-Halt and add both use the index `sp_`, not the CPU `rsp`. Opcode 0 here is halt; opcode 3 in listing 04 was halt. Do not mix the tables.
+Halt and add both use the index `stack_sp`, not the CPU `rsp`. Opcode 0 here is halt; opcode 3 in listing 04 was halt. Do not mix the tables.
 
 ## Relative jump as pointer arithmetic
 
-Listing `06-bytecode-jmp` stores `code DB 3, 2, 0` and then does **not** run a fetch-decode loop. It:
+Listing `06-bytecode-jmp` stores `bytecode DB 3, 2, 0` and then does **not** run a fetch-decode loop. It:
 
-1. Points RSI at `code`.
+1. Points RSI at `bytecode`.
 2. Zero-extends the first byte into RAX: RAX = 3 (the 3 sits where a jump opcode would sit in a fuller machine).
 3. Increments RSI so it points at the 2.
 4. `add rsi, rax` — adds **3**, not the 2. RSI now points 3 bytes past the 2, which is off the end of this three-byte array.
@@ -403,14 +408,14 @@ Listing `06-bytecode-jmp` stores `code DB 3, 2, 0` and then does **not** run a f
 ; Expected stdout: (none)
 
 .DATA
-code DB 3, 2, 0
+bytecode DB 3, 2, 0
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    lea     rsi, code
+    lea     rsi, bytecode
     movzx   rax, BYTE PTR [rsi]
     inc     rsi
     add     rsi, rax
@@ -451,14 +456,14 @@ A real relative jump consumes the opcode, then the displacement, then adds the d
 | Halt is always opcode 0 | Listing 04 uses 3. Listing 05 uses 0. Read the table in front of you. |
 | Listing 05 exits 5 | The comment says 5. The stream is push 4, push 5, add → 9. |
 | Listing 06 adds the displacement 2 | It `movzx`s the first byte (3) and adds that to RSI after a single increment. Status 0 because ECX is zeroed. |
-| Bytecode stack is `rsp` | Listing 05 uses `st` and `sp_`. |
+| Bytecode stack is `rsp` | Listing 05 uses `stack_mem` and `stack_sp`. |
 | Jump displacement is from the opcode | In a real handler it is added after opcode and operand are consumed. Listing 06 does not implement that handler. |
 
 ## Check yourself
 
 1. Trace listing `01-scan-number` on `"42"`. What is RDI after the first digit, and after the second?
 2. Listing `04-bytecode-interp`: if you changed the stream to `1, 7, 1, 20, 2, 3`, what would `acc` be at halt, and why is it not 27?
-3. Listing `05-bytecode-stack`: after `add_op` returns to `fetch` and before `halt` decrements `sp_`, how many values are on `st` and what is the top value?
+3. Listing `05-bytecode-stack`: after `add_op` returns to `fetch` and before `halt` decrements `stack_sp`, how many values are on `stack_mem` and what is the top value?
 4. You want a jump from offset 10 to offset 20. The encoding is one opcode byte plus one `rel8`. What operand byte do you store if the displacement is added *after* both bytes are consumed?
 5. Listing `02-scan-ident` on `"foo2"`: where does the loop stop, and what would ECX be?
 

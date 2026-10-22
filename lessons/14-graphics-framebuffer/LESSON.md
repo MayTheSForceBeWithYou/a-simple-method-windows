@@ -87,6 +87,8 @@ Listing `01-pixel-plot` does **not** compute that offset. It `lea rax, fb` and w
 
 ```asm
 ; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
+; Expected exit: 0
+; Expected stdout: (none)
 ; Plot pixel at (x,y) in framebuffer, exit 0
 .DATA?
 fb DB 640*480*4 DUP(?)
@@ -110,6 +112,8 @@ Listing `02-fill-rect` is named as a rectangle. The body is a 1-D loop: RDI star
 
 ```asm
 ; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
+; Expected exit: 0
+; Expected stdout: (none)
 ; Fill rectangle with color, exit 0
 .DATA?
 fb DB 640*480*4 DUP(?)
@@ -141,6 +145,8 @@ RSI and RDI are nonvolatile. Again, this entry point does not return.
 
 ```asm
 ; Listing rule: code using rep movs* must run cld before the string op and before ret
+; Expected exit: 0
+; Expected stdout: (none)
 ; (MS x64 ABI guarantees DF clear on function entry and return; do not assume DF=0 across calls).
 ;
 ; Copy sprite to framebuffer, exit 0
@@ -164,7 +170,7 @@ END
 
 ## Color-key blit: skip zeros, then sum
 
-A **color-key blit** skips source pixels that match a transparent key (here, 0). Listing `04-blit-key-copy` walks four bytes of `src DB 0, 5, 0, 5, 0` (the fifth 0 is unused). On a zero it jumps past the store. `dst` is `.DATA?`, so skipped slots stay 0. After the copy, `dst` is `0, 5, 0, 5`. The sum loop adds those four bytes: 10. Status **10**.
+A **color-key blit** skips source pixels that match a transparent key (here, 0). Listing `04-blit-key-copy` walks four bytes of `src DB 0, 5, 0, 5, 0` (the fifth 0 is unused). After `lea r10, src` and `lea r11, dst`, each load/store is `[r10+rcx]` / `[r11+rcx]`. On a zero it jumps past the store. `dst` is `.DATA?`, so skipped slots stay 0. After the copy, `dst` is `0, 5, 0, 5`. The sum loop adds those four bytes: 10. Status **10**.
 
 ```asm
 ; Listing rule: any rep movs* user must run cld before the op and before ret (DF clear at ABI entry/return only).
@@ -183,14 +189,16 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, src
+    lea     r11, dst
     xor     rcx, rcx
 copy_loop:
     cmp     rcx, 4
     jge     done
-    mov     al, BYTE PTR src[rcx]
+    mov     al, BYTE PTR [r10+rcx]
     test    al, al
     jz      skip
-    mov     BYTE PTR dst[rcx], al
+    mov     BYTE PTR [r11+rcx], al
 skip:
     inc     rcx
     jmp     copy_loop
@@ -200,7 +208,7 @@ done:
 sum_loop:
     dec     rcx
     js      exit_sum
-    movzx   rdx, BYTE PTR dst[rcx]
+    movzx   rdx, BYTE PTR [r11+rcx]
     add     rax, rdx
     jmp     sum_loop
 exit_sum:
@@ -223,7 +231,7 @@ Listing `05-write-ppm-p6` builds that file as `out.ppm`.
 
 `hdr DB "P6", 10, "4 2", 10, "255", 10` is 11 bytes. `HLEN EQU $ - hdr` is that 11. `$` is the assembler's current address; `$ - path` would be the distance from the path label, which is the wrong length.
 
-The paint loop writes 255 at offsets 0, 3, 6, …, 21 — the red byte of each of eight pixels (4 × 2). Green and blue stay 0 because `px` is `.DATA?`. The image is solid red.
+After `lea r10, px`, the paint loop writes 255 at `[r10+rcx]` for RCX = 0, 3, 6, …, 21 — the red byte of each of eight pixels (4 × 2). Green and blue stay 0 because `px` is `.DATA?`. The image is solid red.
 
 Then the Win32 sequence (lesson 08):
 
@@ -268,11 +276,12 @@ main PROC FRAME
     .allocstack 64
     .endprolog
 
+    lea     r10, px
     xor     rcx, rcx
 paint:
     cmp     rcx, 24
     jge     write_file
-    mov     BYTE PTR px[rcx], 255
+    mov     BYTE PTR [r10+rcx], 255
     add     rcx, 3
     jmp     paint
 
@@ -318,7 +327,7 @@ END
 
 Write R, G, B as three bytes. Do not `WriteFile` the packed dword `00RRGGBBh` — little-endian would emit B, G, R, 0.
 
-### Clip, QPC pacing, and Bresenham
+### Clip, Sleep pacing, and Bresenham
 
 Clipping uses half-open tests: a coordinate is inside when `x >= lo && x < hi` (and the same for y). Width is the first outside column. A blit that ignores that writes off the end of `fb`. There is still no listing for double-buffer flip, alpha, or damage rects.
 
@@ -347,77 +356,53 @@ main ENDP
 END
 ```
 
-Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `push rbx` / `.pushreg rbx` / `sub rsp, 32` / `.allocstack 32`. It seeds `frame_target = start + 1`, then a loop that **waits first** (`QueryPerformanceCounter` until `qpc_now >= frame_target`), then increments EBX, and only then checks `ebx >= 3`. After a completed wait it bumps the target by 1 tick and loops. EBX is 1, 2, then 3 — **three waits**. Expected exit: **3**. This is QPC tick pacing, not a vertical-blank interrupt or `DwmFlush`.
+Listing `09-vsync-ready-flag` is **not** a display vsync. The prologue is `main PROC FRAME` with `sub rsp, 40` / `.allocstack 40` (no `push rbx`). The loop does `mov ecx, 1` / `call Sleep` / `inc ebx` / `cmp ebx, 3` / `jl frame_wait_loop`. Three completed `Sleep(1)` calls leave EBX = 3. Expected exit: **3**. That is three millisecond sleeps for CI, not a QPC spin, not a vertical-blank interrupt, and not `DwmFlush`.
 
 ```asm
-; Listing 09: Frame pacing with QueryPerformanceCounter (spin until tick delta)
+; Listing 09: Frame pacing with Sleep (three 1ms waits)
 ; Expected exit: 3
 ; Expected stdout: (none)
 ;
-; Completes three QPC wait loops; exit code equals the number of waits.
-
-.DATA?
-qpc_start QWORD ?
-qpc_now QWORD ?
-frame_target QWORD ?
+; Completes three frame waits; exit code equals the wait count.
 
 .CODE
-EXTRN QueryPerformanceCounter:PROC
+EXTRN Sleep:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    sub     rsp, 32
-    .allocstack 32
+    sub     rsp, 40
+    .allocstack 40
     .endprolog
-
-    lea     rcx, qpc_start
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_start
-    add     rax, 1
-    mov     frame_target, rax
 
     xor     ebx, ebx
 
 frame_wait_loop:
-    lea     rcx, qpc_now
-wait_spin:
-    call    QueryPerformanceCounter
-    mov     rax, QWORD PTR qpc_now
-    cmp     rax, QWORD PTR frame_target
-    jl      wait_spin
-
+    mov     ecx, 1
+    call    Sleep
     inc     ebx
     cmp     ebx, 3
-    jge     frames_done
+    jl      frame_wait_loop
 
-    mov     rax, QWORD PTR qpc_now
-    add     rax, 1
-    mov     frame_target, rax
-    jmp     frame_wait_loop
-
-frames_done:
     mov     ecx, ebx
     call    ExitProcess
 main ENDP
 END
 ```
 
-Listing `10-bresenham-pixel-count` walks from (0, 0) to (3, 2). `dx = 3`, `dy = 2`, `err = 2*dy - dx = 1`. Each loop iteration increments `count`, then stops when `x == dx`. That plots x in `x >= 0 && x <= 3` — four columns. The y-step happens when `err > 0` (`test` / `jle no_y_step`). Expected exit: **4**. RBX is saved: `push rbx` / `sub rsp, 32`.
+Listing `10-bresenham-pixel-count` walks from (0, 0) to (3, 2). `delta_x = 3`, `delta_y = 2`, `err = 2*delta_y - delta_x = 1`. Each loop iteration increments `count`, then stops when `x == delta_x`. That plots x in `x >= 0 && x <= 3` — four columns. The y-step happens when `err > 0` (`test` / `jle no_y_step`). Expected exit: **4**. RBX is saved: `push rbx` / `sub rsp, 40`.
 
 ```asm
 ; Listing 10: Bresenham line from (0,0) to (3,2); count plotted points
 ; Expected exit: 4
 ; Expected stdout: (none)
 ;
-; dx=3 dy=2; err starts at 2*dy-dx=1; plot each x in [0..3] (four columns).
+; delta_x=3 delta_y=2; err starts at 2*delta_y-delta_x=1; plot each x in [0..3] (four columns).
 
 .DATA?
 x QWORD ?
 y QWORD ?
-dx QWORD ?
-dy QWORD ?
+delta_x QWORD ?
+delta_y QWORD ?
 err QWORD ?
 count QWORD ?
 
@@ -426,30 +411,31 @@ EXTRN ExitProcess:PROC
 
 main PROC
     push    rbx
-    sub     rsp, 32
+    sub     rsp, 40
     mov     x, 0
     mov     y, 0
-    mov     dx, 3
-    mov     dy, 2
-    mov     rax, dy
+    mov     delta_x, 3
+    mov     delta_y, 2
+    mov     rax, delta_y
     shl     rax, 1
-    sub     rax, dx
+    sub     rax, delta_x
     mov     err, rax
     mov     count, 0
 
 bres_loop:
     inc     count
-    cmp     x, dx
+    mov     rax, x
+    cmp     rax, delta_x
     je      bres_done
     mov     rax, err
-    mov     rbx, dy
+    mov     rbx, delta_y
     shl     rbx, 1
     add     rax, rbx
     mov     err, rax
     test    rax, rax
     jle     no_y_step
     inc     y
-    mov     rbx, dx
+    mov     rbx, delta_x
     shl     rbx, 1
     sub     rax, rbx
     mov     err, rax
@@ -458,7 +444,11 @@ no_y_step:
     jmp     bres_loop
 
 bres_done:
-    mov     ecx, DWORD PTR count
+    add     rsp, 40
+    pop     rbx
+    sub     rsp, 40
+    mov     rcx, count
+    mov     ecx, ecx
     call    ExitProcess
 main ENDP
 END
@@ -506,7 +496,7 @@ END
 - P6 is an 11-byte header plus 3-byte RGB. Listing 05 uses Win32 file calls and exits 0 on success, 1 if `CreateFileA` returns −1.
 - Little-endian dword stores are not P6 channel order.
 - Half-open clip is `x >= lo && x < hi`. Listing `08-clip-half-open` tests only `x < 4` for x=5 and exits **1** (outside).
-- Listing `09-vsync-ready-flag` exits **3** after three QPC wait loops — not a display vsync.
+- Listing `09-vsync-ready-flag` exits **3** after three `Sleep(1)` calls — not a display vsync and not a QPC spin.
 - Listing `10-bresenham-pixel-count` plots four columns from (0,0) to (3,2) and exits **4**.
 
 ## Lookup

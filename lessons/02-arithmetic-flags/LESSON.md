@@ -293,7 +293,7 @@ EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
     
-    mov rax, 0b0101            ; Binary: 0101 (bits 0 and 2 set)
+    mov rax, 101b              ; Binary: 0101 (bits 0 and 2 set)
     test rax, 4                ; Test bit 2 (4 = 0b0100)
                                ; Computes RAX & 4, sets flags
                                ; ZF = 0 (result nonzero, bit is set)
@@ -309,7 +309,7 @@ END
 
 `test rax, rax` is the idiomatic zero check (`cmp rax, 0` but shorter). `test` also clears CF and OF.
 
-MASM accepts `0b0101` as a binary immediate in this listing. If an older ml64 rejects it, that is a listings/toolchain issue — flagged, not edited.
+The listing uses the MASM binary suffix: `101b` (bits 0 and 2 set). That is the form ml64 CI assembled; write `101b`, not `0b0101`.
 
 ## `setcc`
 

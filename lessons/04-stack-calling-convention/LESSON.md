@@ -330,15 +330,15 @@ EXTRN ExitProcess:PROC
 compute_setframe PROC FRAME
     push rbp
     .pushreg rbp
-    sub rsp, 40
-    lea rbp, [rsp+40]          ; N = 40 (multiple of 16, <= 240)
-    .setframe rbp, 40
-    .allocstack 40
+    sub rsp, 48
+    lea rbp, [rsp+48]          ; N = 48 (multiple of 16, <= 240)
+    .setframe rbp, 48
+    .allocstack 48
     .endprolog
 
     mov rax, 42
 
-    add rsp, 40
+    add rsp, 48
     pop rbp
     ret
 compute_setframe ENDP
@@ -347,14 +347,14 @@ compute_setframe ENDP
 compute_rbp_saved PROC FRAME
     push rbp
     .pushreg rbp
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
 
     mov rbp, 42                ; use RBP as a general preserved slot
     mov rax, rbp
 
-    add rsp, 32
+    add rsp, 40
     pop rbp
     ret
 compute_rbp_saved ENDP
@@ -369,7 +369,7 @@ main ENDP
 END
 ```
 
-Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 40`, `lea rbp, [rsp+40]`, `.setframe rbp, 40`, `.allocstack 40`. The `.SETFRAME` offset must equal that allocation. `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 32`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program.
+Listing `07-frame-pointer` is two procedures in one file. Form 1 (`compute_setframe`) is a real frame pointer: `push rbp`, `sub rsp, 48`, `lea rbp, [rsp+48]`, `.setframe rbp, 48`, `.allocstack 48`. The `.SETFRAME` offset must equal that allocation (a multiple of 16, at most 240). `main` calls form 1 and exits **42**. Form 2 (`compute_rbp_saved`) is in the same file: RBP is only a saved nonvolatile (`push rbp` / `.pushreg rbp` / `sub rsp, 40`, no `.setframe`). Listing `08-rbp-pushreg-only` is that second form as its own program (`sub rsp, 32` in that file).
 
 ```asm
 ; Listing 08: RBP saved as nonvolatile only (no .SETFRAME)

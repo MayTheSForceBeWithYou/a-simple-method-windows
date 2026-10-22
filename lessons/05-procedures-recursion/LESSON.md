@@ -185,8 +185,8 @@ EXTRN ExitProcess:PROC
 sum_to PROC FRAME
     push rcx                   ; Save n on stack across recursive call (rcx is volatile)
     .pushreg rcx
-    sub rsp, 48
-    .allocstack 48
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     cmp rcx, 0
@@ -197,11 +197,11 @@ sum_to PROC FRAME
 recursive:
     dec rcx
     call sum_to
-    add rax, [rsp+32]          ; Add saved n (still on stack below shadow)
+    add rax, [rsp+40]          ; Add saved n (still on stack below shadow)
     jmp done
     
 done:
-    add rsp, 32
+    add rsp, 40
     pop rcx
     ret
 sum_to ENDP
@@ -219,7 +219,7 @@ END
 
 The push comment is explicit: RCX is **volatile**. Saving `n` on the stack is not ABI preservation of a callee-saved register; it is how this listing keeps the argument across the recursive `call`. `.pushreg rcx` still describes that push to the unwinder.
 
-Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 32` / `pop rcx` / `ret`. After `push rcx` then `sub rsp, 32`, the saved `n` lives at `[rsp+32]`, so the recursive path adds it with `add rax, [rsp+32]` *before* tearing the frame down. That is the same shared-epilogue shape as listing `01-factorial`.
+Both the base path and the recursive path `jmp done`. The shared epilogue is `add rsp, 40` / `pop rcx` / `ret`. After `push rcx` then `sub rsp, 40`, the saved `n` lives at `[rsp+40]`, so the recursive path adds it with `add rax, [rsp+40]` *before* tearing the frame down. That is the same shared-epilogue shape as listing `01-factorial`.
 
 ## Tail recursion (concept)
 
@@ -231,7 +231,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 |-----------|---------|
 | RCX survives `call` | It does not. Stash in RBX/R12 or a local. |
 | Pushing RCX = ABI preserve | RCX is volatile; the push is your private save. |
-| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `done` always `add rsp, 32` / `pop` / `ret`. |
+| Shared epilogue vs split `ret` | Both `factorial` and `sum_to` `jmp done`. `sum_to`'s `done` is `add rsp, 40` / `pop` / `ret`. |
 | `leave` | `mov rsp, rbp` / `pop rbp`. |
 | Linux RDI argument | Windows RCX. |
 
@@ -240,7 +240,7 @@ If nothing remains after the recursive call except `ret`, you can `jmp` to the t
 1. In listing `01-factorial`, why `mov rbx, rcx` before `dec rcx`?
 2. `sum_locals(10)`: what is at `[rbp-16]` after the three stores?
 3. After `call wipe` in listing 03, what is in R12?
-4. In listing 04, where is saved `n` after `sub rsp, 32`, and which instruction adds it on the recursive path?
+4. In listing 04, where is saved `n` after `sub rsp, 40`, and which instruction adds it on the recursive path?
 5. Is `factorial` tail recursive?
 
 ## Key takeaways

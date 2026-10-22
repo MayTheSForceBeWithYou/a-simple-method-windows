@@ -15,9 +15,9 @@ You must be able to mask with `and`, set bits with `or`, toggle with `xor`, and 
 
 ## A survey of the operators
 
-Listing `01-bit-operations` runs one example of `and`, `or`, `xor`, `not`, `shl`, and `shr`, then exits with the OR result. `sub rsp, 32` is the Microsoft x64 shadow space before `call ExitProcess`. The OR path loads `0x08` into RBX and ORs `0x04`, so RBX is 12. `mov rcx, rbx` makes that 12 the `ExitProcess` status. Expected exit: **12**.
+Listing `01-bit-operations` runs one example of `and`, `or`, `xor`, `not`, `shl`, and `shr`, then exits with the OR result. `sub rsp, 40` is the Microsoft x64 shadow-plus-alignment frame before `call ExitProcess`. The OR path loads `8` into RBX and ORs `4`, so RBX is 12. `mov rcx, rbx` makes that 12 the `ExitProcess` status. Expected exit: **12**.
 
-The other demos in this listing are not the exit code. `and` leaves 15 in RAX. `xor rcx, 0xFF` after `mov rcx, 0xFF` leaves RCX = 0, then `mov rcx, rbx` overwrites it. `not rdx` on 0 leaves RDX = −1. `shl r8, 2` on 3 leaves R8 = 12. `shr r9, 2` on 48 leaves R9 = 12.
+The other demos in this listing are not the exit code. `and` of `0FFh` with `0Fh` leaves 15 in RAX. `xor rcx, 0FFh` after `mov rcx, 0FFh` leaves RCX = 0, then `mov rcx, rbx` overwrites it. `not rdx` on 0 leaves RDX = −1. `shl r8, 2` on 3 leaves R8 = 12. `shr r9, 2` on 48 leaves R9 = 12. The hex literals are MASM `0FFh` / `0Fh`, not `0xFF`.
 
 ```asm
 ; Listing 01: Bitwise operations
@@ -36,16 +36,16 @@ main PROC
     sub rsp, 40
     
     ; AND: clear bits
-    mov rax, 0xFF              ; 11111111
-    and rax, 0x0F              ; 00001111 -> RAX = 15
+    mov rax, 0FFh              ; 11111111
+    and rax, 0Fh               ; 00001111 -> RAX = 15
     
     ; OR: set bits
-    mov rbx, 0x08              ; 00001000
-    or rbx, 0x04               ; 00000100 -> RBX = 12
+    mov rbx, 8                 ; 00001000
+    or rbx, 4                  ; 00000100 -> RBX = 12
     
     ; XOR: toggle bits
-    mov rcx, 0xFF
-    xor rcx, 0xFF              ; RCX = 0
+    mov rcx, 0FFh
+    xor rcx, 0FFh              ; RCX = 0
     
     ; NOT: invert all bits
     mov rdx, 0

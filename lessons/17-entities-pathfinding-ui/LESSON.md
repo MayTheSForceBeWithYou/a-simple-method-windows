@@ -12,6 +12,8 @@ An **entity** is an integer id. Its position and velocity are QWORDs you update 
 
 ```asm
 ; Update entity position, exit new x
+; Expected exit: 105
+; Expected stdout: (none)
 .DATA?
 entity_x QWORD ?
 entity_vx QWORD ?
@@ -28,7 +30,6 @@ main PROC
     call ExitProcess
 main ENDP
 END
-
 ```
 
 There is no `y`, no alive flag, and no loop. The next listings add those.
@@ -99,25 +100,27 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, xs
+    lea     r11, vxs
+    lea     r12, alive
     xor     rcx, rcx
 loop_start:
     cmp     rcx, 3
     jge     done
-    cmp     BYTE PTR alive[rcx], 0
+    cmp     BYTE PTR [r12+rcx], 0
     je      next
-    mov     rax, vxs[rcx*8]
-    add     xs[rcx*8], rax
+    mov     rax, QWORD PTR [r11+rcx*8]
+    add     QWORD PTR [r10+rcx*8], rax
 next:
     inc     rcx
     jmp     loop_start
 done:
-    mov     rax, xs
-    add     rax, xs[16]
+    mov     rax, QWORD PTR [r10]
+    add     rax, QWORD PTR [r10+16]
     mov     ecx, eax
     call    ExitProcess
 main ENDP
 END
-
 ```
 
 The scale factor follows the element size. `alive[rcx]` is one byte per entity; `xs[rcx*8]` is eight. Mixing those scales reads the wrong slot.
@@ -158,6 +161,8 @@ Listing `02-manhattan-dist` computes **one** absolute difference: `rax = 10`, `r
 
 ```asm
 ; Manhattan distance for A*, exit dist
+; Expected exit: 5
+; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
@@ -173,7 +178,6 @@ pos1:
     call ExitProcess
 main ENDP
 END
-
 ```
 
 The sign test is the same rule as lesson 15’s mouse delta. Reverse the operands (`5 - 10`) and `neg` runs. A full `h` still needs `|x2 - x1| + |y2 - y1|`.
@@ -256,7 +260,7 @@ abs_rax ENDP
 END
 ```
 
-Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0, marks `visited[0]`, and starts `rbx = 1`. Each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store. RDI and RBX are saved: `push rdi` / `push rbx` / `sub rsp, 40`.
+Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n < 5`). It zeros `visited`, enqueues 0 into `bfs_queue`, marks `visited[0]`, and starts `rbx = 1`. After `lea r10, bfs_queue` (and a RIP-relative `lea` for `visited`), each dequeue tries `n-1` then `n+1`; an unvisited neighbor is marked, counted, and enqueued. From 0 the wave is 1, 2, 3, 4. When `head == tail` the count is 5. Expected exit: **5**. There is no `parent[]` store. RDI and RBX are saved: `push rdi` / `push rbx` / `sub rsp, 40`.
 
 ```asm
 ; Listing 08: BFS on a 5-node line; visit count
@@ -266,7 +270,7 @@ Listing `08-bfs-visit-count` walks a 5-node line (nodes `n` where `n >= 0 && n <
 NODE_COUNT EQU 5
 
 .DATA?
-queue QWORD 16 DUP(?)
+bfs_queue QWORD 16 DUP(?)
 head QWORD ?
 tail QWORD ?
 visited BYTE NODE_COUNT DUP(?)
@@ -278,9 +282,11 @@ main PROC
     push    rdi
     push    rbx
     sub     rsp, 40
+    lea     r10, bfs_queue
     mov     head, 0
     mov     tail, 0
     lea     rdi, visited
+    lea     r11, visited
     mov     ecx, NODE_COUNT
     xor     eax, eax
     cld
@@ -288,17 +294,18 @@ main PROC
 
     mov     rax, 0
     mov     rcx, tail
-    mov     QWORD PTR queue[rcx*8], rax
+    mov     QWORD PTR [r10+rcx*8], rax
     inc     tail
-    mov     BYTE PTR visited[0], 1
+    mov     BYTE PTR [r11], 1
 
     mov     rbx, 1
 
 bfs_loop:
-    cmp     head, tail
+    mov     rax, QWORD PTR head
+    cmp     rax, QWORD PTR tail
     jge     bfs_done
     mov     rcx, head
-    mov     rax, QWORD PTR queue[rcx*8]
+    mov     rax, QWORD PTR [r10+rcx*8]
     inc     head
 
     mov     rcx, rax
@@ -306,28 +313,31 @@ bfs_loop:
     jns     try_left
     jmp     try_right
 try_left:
-    cmp     BYTE PTR visited[rcx], 0
+    cmp     BYTE PTR [r11+rcx], 0
     jne     try_right
-    mov     BYTE PTR visited[rcx], 1
+    mov     BYTE PTR [r11+rcx], 1
     inc     rbx
     mov     rdx, tail
-    mov     QWORD PTR queue[rdx*8], rcx
+    mov     QWORD PTR [r10+rdx*8], rcx
     inc     tail
 try_right:
     mov     rcx, rax
     inc     rcx
     cmp     rcx, NODE_COUNT
     jge     bfs_loop
-    cmp     BYTE PTR visited[rcx], 0
+    cmp     BYTE PTR [r11+rcx], 0
     jne     bfs_loop
-    mov     BYTE PTR visited[rcx], 1
+    mov     BYTE PTR [r11+rcx], 1
     inc     rbx
     mov     rdx, tail
-    mov     QWORD PTR queue[rdx*8], rcx
+    mov     QWORD PTR [r10+rdx*8], rcx
     inc     tail
     jmp     bfs_loop
 
 bfs_done:
+    add     rsp, 40
+    pop     rbx
+    pop     rdi
     mov     ecx, ebx
     call    ExitProcess
 main ENDP

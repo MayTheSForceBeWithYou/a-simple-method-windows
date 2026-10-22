@@ -27,6 +27,8 @@ A byte is a decimal digit when it sits in the inclusive range `'0'` (48) through
 
 ```asm
 ; 01-token-classify.asm: Classify byte as digit, exit 1 if digit else 0
+; Expected exit: 1
+; Expected stdout: (none)
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
@@ -198,6 +200,8 @@ The loop does **`test rax, rax` before any load through RAX**. Zero means the wa
 
 ```asm
 ; 02-linked-list-walk.asm: Walk linked list, count nodes, exit count
+; Expected exit: 3
+; Expected stdout: (none)
 .DATA
 node1 QWORD 10, offset node2
 node2 QWORD 20, offset node3
@@ -317,6 +321,8 @@ Listing `03-arena-alloc` keeps an absolute pointer in `arena_cursor`. It sets th
 
 ```asm
 ; 03-arena-alloc.asm: Bump allocator, allocate 16 bytes, exit offset
+; Expected exit: 16
+; Expected stdout: (none)
 .DATA?
 arena DB 1024 DUP(?)
 arena_cursor QWORD ?
@@ -400,7 +406,7 @@ END
 
 ## Vector: fixed-capacity push
 
-A **vector** is a buffer, a length (used slots), and a capacity (allocated slots). Listing `10-vector-push` sets `vec_cap = 8`, `vec_len = 0`, then pushes 10, 20, 30. Each push compares length to capacity, stores at `vec_data[rcx*8]`, and increments length. After three pushes, `DWORD PTR vec_len` is 3. Status **3**. There is no reallocation. A fourth push past a full buffer would jump to `done` and still exit the current length.
+A **vector** is a buffer, a length (used slots), and a capacity (allocated slots). Listing `10-vector-push` sets `vec_cap = 8`, `vec_len = 0`, then `lea r10, vec_data` and pushes 10, 20, 30. Each push compares length to capacity, stores at `[r10+rcx*8]`, and increments length. After three pushes, `DWORD PTR vec_len` is 3. Status **3**. There is no reallocation. A fourth push past a full buffer would jump to `done` and still exit the current length.
 
 ```asm
 ; Listing 10: Fixed-capacity vector push (LESSON.md block 10)
@@ -417,6 +423,7 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, vec_data
     mov     vec_cap, 8
     mov     vec_len, 0
     mov     rdi, 10
@@ -424,21 +431,21 @@ main PROC
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
     mov     rdi, 20
     mov     rax, vec_len
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
     mov     rdi, 30
     mov     rax, vec_len
     cmp     rax, vec_cap
     jae     done
     mov     rcx, vec_len
-    mov     vec_data[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     vec_len
 done:
     mov     ecx, DWORD PTR vec_len
@@ -498,10 +505,12 @@ END
 
 ## Explicit stack: push 42, pop 42
 
-`rsp` and `call`/`ret` are for procedure frames (lesson 04). Your own LIFO is an array plus an index. Listing `04-stack-push-pop` zeros `stack_top`, writes 42 at `stack_data[rbx*8]` with RBX = 0, increments the index, then decrements it and reads the same slot back. Status **42**.
+`rsp` and `call`/`ret` are for procedure frames (lesson 04). Your own LIFO is an array plus an index. Listing `04-stack-push-pop` does `lea r10, stack_data`, zeros `stack_top`, writes 42 at `[r10+rbx*8]` with RBX = 0, increments the index, then decrements it and reads the same slot back. Status **42**.
 
 ```asm
 ; 04-stack-push-pop.asm: Explicit stack (array+index), push 42, pop, exit popped value
+; Expected exit: 42
+; Expected stdout: (none)
 .DATA?
 stack_data DQ 16 DUP(?)
 stack_top QWORD ?
@@ -509,16 +518,17 @@ stack_top QWORD ?
 EXTRN ExitProcess:PROC
 main PROC
     sub rsp, 40
-    mov stack_top, 0
-    mov rax, 42
-    mov rbx, stack_top
-    mov stack_data[rbx*8], rax
-    inc stack_top
-    dec stack_top
-    mov rbx, stack_top
-    mov rax, stack_data[rbx*8]
-    mov ecx, eax
-    call ExitProcess
+    lea     r10, stack_data
+    mov     stack_top, 0
+    mov     rax, 42
+    mov     rbx, stack_top
+    mov     QWORD PTR [r10+rbx*8], rax
+    inc     stack_top
+    dec     stack_top
+    mov     rbx, stack_top
+    mov     rax, QWORD PTR [r10+rbx*8]
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END
 ```
@@ -529,7 +539,7 @@ Push stores at the current index, then increments. Pop decrements, then loads. T
 
 Listing `13-stack-push-pop` pushes 1, then 2, then pops. The pop reads 2. Status **2**.
 
-The listing names its index `sp`. On x86-64, `sp` is also the 16-bit view of RSP. Whether ml64 treats this `sp` as the `.DATA?` label or as the register is a real assembler conflict — do not copy the name into a returning procedure. If the assembler takes it as the register, `mov sp, 0` wrecks the stack pointer. The intended meaning is "integer index in memory, next to `stk`."
+The listing names its index `stack_sp` — not `sp`, so it cannot collide with the 16-bit view of RSP. After `lea r10, stk`, push/pop use `[r10+rcx*8]`. The intended meaning is still "integer index in memory, next to `stk`."
 
 ```asm
 ; Listing 13: Array stack push/pop (LESSON.md block 13)
@@ -538,25 +548,26 @@ The listing names its index `sp`. On x86-64, `sp` is also the 16-bit view of RSP
 
 .DATA?
 stk DQ 16 DUP(?)
-sp QWORD ?
+stack_sp QWORD ?
 
 .CODE
 EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
-    mov     sp, 0
+    lea     r10, stk
+    mov     stack_sp, 0
     mov     rdi, 1
-    mov     rcx, sp
-    mov     stk[rcx*8], rdi
-    inc     sp
+    mov     rcx, stack_sp
+    mov     QWORD PTR [r10+rcx*8], rdi
+    inc     stack_sp
     mov     rdi, 2
-    mov     rcx, sp
-    mov     stk[rcx*8], rdi
-    inc     sp
-    dec     sp
-    mov     rcx, sp
-    mov     rax, stk[rcx*8]
+    mov     rcx, stack_sp
+    mov     QWORD PTR [r10+rcx*8], rdi
+    inc     stack_sp
+    dec     stack_sp
+    mov     rcx, stack_sp
+    mov     rax, QWORD PTR [r10+rcx*8]
     mov     ecx, eax
     call    ExitProcess
 main ENDP
@@ -584,18 +595,19 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, q
     mov     head, 0
     mov     tail, 0
     mov     rdi, 7
     mov     rcx, tail
-    mov     q[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     tail
     mov     rdi, 8
     mov     rcx, tail
-    mov     q[rcx*8], rdi
+    mov     QWORD PTR [r10+rcx*8], rdi
     inc     tail
     mov     rcx, head
-    mov     rax, q[rcx*8]
+    mov     rax, QWORD PTR [r10+rcx*8]
     inc     head
     mov     ecx, eax
     call    ExitProcess
@@ -620,16 +632,17 @@ EXTRN ExitProcess:PROC
 
 main PROC
     sub rsp, 40
+    lea     r10, q
     mov     head, 0
     mov     tail, 0
     mov     rcx, tail
-    mov     q[rcx*8], 7
+    mov     QWORD PTR [r10+rcx*8], 7
     inc     tail
     mov     rcx, tail
-    mov     q[rcx*8], 8
+    mov     QWORD PTR [r10+rcx*8], 8
     inc     tail
     mov     rcx, head
-    mov     rax, q[rcx*8]
+    mov     rax, QWORD PTR [r10+rcx*8]
     inc     head
     mov     ecx, eax
     call    ExitProcess
