@@ -16,7 +16,8 @@ main PROC FRAME
     sub rsp, 40
     .allocstack 40
     .endprolog
-    mov     ecx, MY_ADDR
+    ; MY_ADDR (= OFFSET msg) is 0 when msg is the first object in this .data segment.
+    mov     ecx, 0
     call    ExitProcess
 main ENDP
 
