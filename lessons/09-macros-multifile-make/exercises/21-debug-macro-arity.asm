@@ -1,6 +1,6 @@
 ; Exercise: 21-debug-macro-arity
 ;
-; BUG: macro invoked with wrong arg count conceptually; fix EXIT_STATUS 4.
+; BUG: EXIT_STATUS macro has an extra skew arg; fix macro and use EXIT_STATUS 4 in ex_21_debug_macro_arity.
 ;
 ; Contract: implement `ex_21_debug_macro_arity` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
 ; Expected exit: 4
@@ -11,16 +11,13 @@ EXTERNDEF ex_21_debug_macro_arity:PROC
 
 EXIT_STATUS MACRO status, skew:=<1>
     mov ecx, status
-    add ecx, skew               ; BUG: second macro arg should not exist
+    add ecx, skew               ; BUG: drop skew parameter; macro should take only status
     call ExitProcess
 ENDM
 
 main PROC
     sub     rsp, 40
-    jmp     __ex_call
-    EXIT_STATUS 4, 1            ; BUG: fix macro arity and use EXIT_STATUS 4 in ex_21
-__ex_call:
-    ; TODO: write ex_21_debug_macro_arity in this file.
+    ; TODO: write ex_21_debug_macro_arity in this file (fixed macro; exit 4 via EAX return path).
     call    ex_21_debug_macro_arity
     mov     ecx, eax
     call    ExitProcess
