@@ -1,8 +1,19 @@
-; 21-formation-slot: formation slot
+; Exercise: 21-formation-slot
+;
+; Slot index 2 offset; exit 2.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_21_formation_slot` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement formation slot>
+EXTERNDEF ex_21_formation_slot:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_21_formation_slot in this file.
+    call    ex_21_formation_slot
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

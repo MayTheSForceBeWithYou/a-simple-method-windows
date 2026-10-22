@@ -9,11 +9,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_06_extern_sim_onefile PROC
+    sub rsp, 40
     call helper
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_06_extern_sim_onefile ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_06_extern_sim_onefile
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 helper PROC

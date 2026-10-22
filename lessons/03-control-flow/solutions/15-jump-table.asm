@@ -8,23 +8,30 @@
 
 EXTERN ExitProcess:PROC
 
-.const
-jt QWORD case0, case1, case2
-
 .code
-main PROC
-    sub rsp, 32
+ex_15_jump_table PROC
+    sub rsp, 40
     mov rax, 1
-    jmp QWORD PTR [jt+rax*8]
-case0:
+    lea rdx, [jt]
+    jmp QWORD PTR [rdx+rax*8]
+case0::
     mov rcx, 10
     jmp done
-case1:
+case1::
     mov rcx, 20
     jmp done
-case2:
+case2::
     mov rcx, 30
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+jt QWORD case0, case1, case2
+ex_15_jump_table ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_15_jump_table
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

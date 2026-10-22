@@ -1,0 +1,55 @@
+; Exercise 13: munmap
+;
+; VirtualAlloc then VirtualFree; exit 0 if VirtualFree succeeds.
+;
+; Build: ml64 /c 13-virtualfree.asm && link /OUT:13-virtualfree.exe /ENTRY:main /SUBSYSTEM:CONSOLE 13-virtualfree.obj kernel32.lib
+;
+; Expected exit: 0
+
+EXTERN VirtualAlloc:PROC
+EXTERN VirtualFree:PROC
+EXTERN ExitProcess:PROC
+
+.code
+ex_13_virtualfree PROC
+    sub rsp, 40
+    
+    ; VirtualAlloc(NULL, 4096, MEM_COMMIT | MEM_RESERVE, PAGE_READWRITE)
+    mov rcx, 0          ; lpAddress = NULL
+    mov rdx, 4096       ; dwSize
+    mov r8d, 3000h      ; flAllocationType = MEM_COMMIT | MEM_RESERVE
+    mov r9d, 4          ; flProtect = PAGE_READWRITE
+    call VirtualAlloc
+    
+    ; Check for NULL (failure)
+    test rax, rax
+    jz L_f
+    
+    ; VirtualFree(address, 0, MEM_RELEASE)
+    mov rcx, rax        ; lpAddress
+    mov rdx, 0          ; dwSize = 0 for MEM_RELEASE
+    mov r8d, 8000h      ; dwFreeType = MEM_RELEASE
+    call VirtualFree
+    
+    ; VirtualFree returns nonzero on success, 0 on failure
+    test eax, eax
+    jz L_f
+    
+    ; Success - exit 0
+    mov rcx, 0
+    mov     eax, 0
+    add     rsp, 40
+    ret
+L_f:
+    ; Failure - exit 1
+    mov rcx, 1
+    mov     eax, 1
+    ret
+ex_13_virtualfree ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_virtualfree
+    mov     rcx, rax
+    call    ExitProcess
+main ENDP
+END

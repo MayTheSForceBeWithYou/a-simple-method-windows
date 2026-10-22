@@ -6,10 +6,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_11_parse_binop PROC
+    sub rsp, 40
     mov rcx, 2
     add rcx, 3
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_11_parse_binop ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_parse_binop
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

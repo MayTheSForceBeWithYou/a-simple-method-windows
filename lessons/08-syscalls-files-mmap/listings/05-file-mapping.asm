@@ -1,7 +1,7 @@
 ; 05-file-mapping.asm
 ;
 ; Purpose: Map a file into memory (file-backed mmap equivalent)
-; Expected exit code: First byte of mapped file
+; Expected exit code: 72
 ; Expected stdout: (none)
 ;
 ; Demonstrates:
@@ -26,8 +26,8 @@ main PROC FRAME
     .pushreg r12
     push    r13
     .pushreg r13
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; Open file for reading
@@ -103,9 +103,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 40
-    pop     r13
-    pop     r12
     call    ExitProcess
 main ENDP
 

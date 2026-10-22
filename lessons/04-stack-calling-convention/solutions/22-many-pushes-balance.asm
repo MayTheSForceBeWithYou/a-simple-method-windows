@@ -1,24 +1,33 @@
 ; Exercise 22: many pushes balance
 ;
-; Push 1,2,3; call sum_top3 that reads [rsp+8],[rsp+16],[rsp+24] after call (retaddr at [rsp]). Exit 6.
+; Push 1,2,3; call sum_top3 that reads [rsp+8],[rsp+16],[rsp+24] after call. Exit 6.
 ;
-; Build: nasm -f elf64 22-many-pushes-balance.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
-;
-; --- your code below ---
-section .text
-    global _start
-_start:
+; Expected exit: 6
+; Expected stdout: (none)
+
+EXTERN ExitProcess:PROC
+
+.code
+ex_22_many_pushes_balance PROC
     push 1
     push 2
     push 3
     call sum_top3
     add rsp, 24
-    mov rdi, rax
-    mov rax, 60
-    syscall
-
-sum_top3:
-    mov rax, [rsp+8]
-    add rax, [rsp+16]
-    add rax, [rsp+24]
+    mov     eax, eax
     ret
+ex_22_many_pushes_balance ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_many_pushes_balance
+    mov     rcx, rax
+    call    ExitProcess
+main ENDP
+
+sum_top3 PROC
+    mov rax, QWORD PTR [rsp+8]
+    add rax, QWORD PTR [rsp+16]
+    add rax, QWORD PTR [rsp+24]
+    ret
+sum_top3 ENDP
+END

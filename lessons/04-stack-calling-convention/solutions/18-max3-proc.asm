@@ -5,14 +5,22 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_max3_proc PROC
+    sub rsp, 40
     mov rcx, 3
     mov rdx, 9
     mov r8, 7
     call max3
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_18_max3_proc ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_max3_proc
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 max3 PROC

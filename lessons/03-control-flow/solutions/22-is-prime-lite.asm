@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_22_is_prime_lite PROC
+    sub rsp, 40
     mov r8, 11
     mov r9, 2
 loop_start:
@@ -25,10 +25,18 @@ loop_start:
     jmp loop_start
 composite:
     xor rcx, rcx
-    jmp out
+    jmp L_done
 prime:
     mov rcx, 1
-out:
-    call ExitProcess
+L_done:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_22_is_prime_lite ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_is_prime_lite
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

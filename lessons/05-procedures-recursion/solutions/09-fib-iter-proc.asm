@@ -5,12 +5,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_09_fib_iter_proc PROC
+    sub rsp, 40
     mov rcx, 10
     call fib
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_09_fib_iter_proc ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_fib_iter_proc
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 fib PROC

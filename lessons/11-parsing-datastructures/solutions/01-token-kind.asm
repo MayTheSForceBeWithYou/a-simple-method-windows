@@ -9,9 +9,17 @@ TK_EOF EQU 0
 TK_NUM EQU 1
 
 .code
-main PROC
-    sub rsp, 32
+ex_01_token_kind PROC
+    sub rsp, 40
     mov rcx, TK_NUM
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_01_token_kind ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_01_token_kind
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

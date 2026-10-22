@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 arr BYTE 7, 8, 9
 
 .code
-main PROC
-    sub rsp, 32
+ex_21_index_loop_prep PROC
+    sub rsp, 40
     xor rcx, rcx
     movzx rax, BYTE PTR [arr]
     add rcx, rax
@@ -21,6 +21,14 @@ main PROC
     add rcx, rax
     movzx rax, BYTE PTR [arr+2]
     add rcx, rax
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_21_index_loop_prep ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_index_loop_prep
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,11 +1,21 @@
-; Exercise 22: stretch memcpy4
+; Exercise: 22-stretch-memcpy4
 ;
-; STRETCH: src db 1,2,3,4. dst resb 4. Copy 4 bytes via register loads/stores. Sum dst into rdi (10).
+; STRETCH: src BYTE 1,2,3,4. dst BYTE 4 DUP(?). Copy 4 bytes via register loads/stores. Sum dst into rcx (10).
 ;
-; Build: nasm -f elf64 22-stretch-memcpy4.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_22_stretch_memcpy4` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 10
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_22_stretch_memcpy4:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_22_stretch_memcpy4 in this file.
+    call    ex_22_stretch_memcpy4
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

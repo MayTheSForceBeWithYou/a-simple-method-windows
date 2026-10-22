@@ -1,8 +1,19 @@
-; 16-econ-upkeep: econ upkeep
+; Exercise: 16-econ-upkeep
+;
+; cash -= 3; from 10 exit 7.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_16_econ_upkeep` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 7
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement econ upkeep>
+EXTERNDEF ex_16_econ_upkeep:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_16_econ_upkeep in this file.
+    call    ex_16_econ_upkeep
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

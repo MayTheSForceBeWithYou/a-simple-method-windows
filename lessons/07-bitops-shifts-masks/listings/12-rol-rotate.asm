@@ -12,6 +12,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     mov     al, 80h         ; al = 10000000 binary
     rol     al, 1           ; Rotate left by 1
     

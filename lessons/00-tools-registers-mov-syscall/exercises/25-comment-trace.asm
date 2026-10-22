@@ -1,11 +1,21 @@
-; Exercise 25: comment trace
+; Exercise: 25-comment-trace
 ;
 ; Exit 9. Every instruction needs an end-of-line comment.
 ;
-; Build: nasm -f elf64 25-comment-trace.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_25_comment_trace` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_25_comment_trace:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_25_comment_trace in this file.
+    call    ex_25_comment_trace
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

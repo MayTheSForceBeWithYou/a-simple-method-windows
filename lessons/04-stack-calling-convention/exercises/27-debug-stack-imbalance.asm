@@ -1,22 +1,28 @@
-; Exercise 27: debug stack imbalance (Win32 port)
+; Exercise: 27-debug-stack-imbalance
+;
 ; BUG: extra push without pop before ret corrupts return. Fix; exit 2.
-; Build: ml64 /c /Fo27-debug-stack-imbalance.obj 27-debug-stack-imbalance.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:27-debug-stack-imbalance.exe 27-debug-stack-imbalance.obj kernel32.lib
-; Expected: exit code 2
-
+; Expected stdout: (none)
+;
+; Contract: implement `ex_27_debug_stack_imbalance` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-get_two PROC
-    push rax                   ; BUG: Pushed but never popped!
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_27_debug_stack_imbalance:PROC
+
+two PROC
     mov rax, 2
+    push rax                ; BUG: extra push before RET
     ret
-    .ERR <BUG: Add POP RAX before RET to balance stack>
-get_two ENDP
+two ENDP
 
 main PROC
-    sub rsp, 32
-    call get_two
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_27_debug_stack_imbalance in this file (balance stack around two).
+    call    ex_27_debug_stack_imbalance
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

@@ -1,11 +1,21 @@
-; Exercise 15: rip relative
+; Exercise: 15-rip-relative
 ;
-; Use lea rsi,[rel msg] to write msg 'rip\n'. Exit 0. (Works with default nasm rel if default ABS — use [rel] explicitly.)
+; Use lea rdx,[msg] (RIP-relative by default in MASM x64) to write msg 'rip\n'. Exit 0.
 ;
-; Build: nasm -f elf64 15-rip-relative.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_15_rip_relative` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_15_rip_relative:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_15_rip_relative in this file.
+    call    ex_15_rip_relative
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

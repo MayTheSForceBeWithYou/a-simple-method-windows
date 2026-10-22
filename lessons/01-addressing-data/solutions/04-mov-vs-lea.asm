@@ -12,10 +12,18 @@ EXTERN ExitProcess:PROC
 x QWORD 99
 
 .code
-main PROC
-    sub rsp, 32
+ex_04_mov_vs_lea PROC
+    sub rsp, 40
     lea rbx, [x]        ; rbx = address of x
     mov rcx, [rbx]      ; rcx = contents at address in rbx (99)
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_04_mov_vs_lea ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_mov_vs_lea
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

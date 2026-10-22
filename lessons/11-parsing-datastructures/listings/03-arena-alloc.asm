@@ -1,10 +1,13 @@
 ; 03-arena-alloc.asm: Bump allocator, allocate 16 bytes, exit offset
+; Expected exit: 16
+; Expected stdout: (none)
 .DATA?
 arena DB 1024 DUP(?)
 arena_cursor QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
 main PROC
+    sub rsp, 40
     lea rax, arena
     mov arena_cursor, rax
     mov rbx, arena_cursor

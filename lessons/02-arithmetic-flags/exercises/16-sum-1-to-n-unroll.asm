@@ -1,11 +1,21 @@
-; Exercise 16: sum 1 to n unroll
+; Exercise: 16-sum-1-to-n-unroll
 ;
-; Without jumps: sum 1+2+...+8 into rdi (36) using add chain; exit.
+; Without jumps: sum 1+2+...+8 into rcx (36) using add chain; exit.
 ;
-; Build: nasm -f elf64 16-sum-1-to-n-unroll.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_16_sum_1_to_n_unroll` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 36
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_sum_1_to_n_unroll:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_16_sum_1_to_n_unroll in this file.
+    call    ex_16_sum_1_to_n_unroll
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

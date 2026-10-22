@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; Pack a=5, b=2, c=1 into bits 0-2, 3-5, 6-8
     mov rax, 5

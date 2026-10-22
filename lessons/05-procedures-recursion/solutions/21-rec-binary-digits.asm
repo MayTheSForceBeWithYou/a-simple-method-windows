@@ -5,24 +5,32 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
-    mov rcx, 0b1101
+ex_21_rec_binary_digits PROC
+    sub rsp, 40
+    mov rcx, 1101b
     call poprec
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_21_rec_binary_digits ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_rec_binary_digits
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 poprec PROC
     test rcx, rcx
     jz zero_pop
     push rcx
-    sub rsp, 32
+    sub rsp, 40
     mov rax, rcx
     dec rax
     and rcx, rax
     call poprec
-    add rsp, 32
+    add rsp, 40
     pop rcx
     inc rax
     ret

@@ -18,7 +18,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_24_overwrite_data PROC
     sub rsp, 56
     
     ; Overwrite first byte
@@ -39,6 +39,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_24_overwrite_data ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_overwrite_data
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

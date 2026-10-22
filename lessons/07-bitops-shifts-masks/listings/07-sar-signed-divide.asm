@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, -8
     sar rax, 1                 ; RAX = -8 / 2 = -4 (correct signed)

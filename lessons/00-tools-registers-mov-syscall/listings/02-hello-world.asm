@@ -1,8 +1,8 @@
 ; Listing 02: Hello, World
 ;
 ; Purpose: Complete program that writes "Hello, asm\n" to stdout and exits cleanly.
-; Expected exit code: 0
-; Expected output: Hello, asm\n
+; Expected exit: 0
+; Expected stdout: "Hello, asm\n"
 ;
 ; Build: ml64 /c /Fo02-hello-world.obj 02-hello-world.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:02-hello-world.exe 02-hello-world.obj kernel32.lib
 
@@ -22,8 +22,8 @@ EXTRN ExitProcess:PROC
 main PROC FRAME
     push rbx                   ; Save nonvolatile register
     .pushreg rbx
-    sub rsp, 32                ; Shadow space for calls
-    .allocstack 32
+    sub rsp, 48                ; Shadow space + 5th arg slot + alignment
+    .allocstack 48
     .endprolog
 
     ; GetStdHandle(STD_OUTPUT_HANDLE = -11)
@@ -40,7 +40,6 @@ main PROC FRAME
     mov qword ptr [rsp+32], 0  ; arg5 (on stack): overlapped = NULL
     call WriteFile
 
-    ; ExitProcess(0)
     xor ecx, ecx               ; Exit status 0
     call ExitProcess
 main ENDP

@@ -1,11 +1,21 @@
-; Exercise 22: euler multiples unroll
+; Exercise: 22-euler-multiples-unroll
 ;
 ; Project-Euler-lite: sum of multiples of 3 or 5 below 20 (unrolled/constant). Answer 78. Exit 78.
 ;
-; Build: nasm -f elf64 22-euler-multiples-unroll.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_22_euler_multiples_unroll` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 78
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_22_euler_multiples_unroll:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_22_euler_multiples_unroll in this file.
+    call    ex_22_euler_multiples_unroll
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

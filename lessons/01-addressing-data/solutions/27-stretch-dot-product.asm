@@ -13,8 +13,8 @@ u QWORD 2, 3, 4
 v QWORD 5, 6, 7
 
 .code
-main PROC
-    sub rsp, 32
+ex_27_stretch_dot_product PROC
+    sub rsp, 40
     mov rax, [u]
     imul rax, [v]
     mov rcx, rax
@@ -24,6 +24,14 @@ main PROC
     mov rax, [u+16]
     imul rax, [v+16]
     add rcx, rax
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_27_stretch_dot_product ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_27_stretch_dot_product
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

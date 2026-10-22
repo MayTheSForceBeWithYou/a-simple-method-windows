@@ -11,11 +11,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-    
-main PROC
-    sub rsp, 32
+ex_19_debug_parent_index PROC
+    sub rsp, 40
     mov rcx, 2
-    call ExitProcess
-
+    mov     eax, 2
+    add     rsp, 40
+    ret
+ex_19_debug_parent_index ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_debug_parent_index
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

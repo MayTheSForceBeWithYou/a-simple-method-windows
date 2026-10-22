@@ -6,8 +6,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_04_clamp_fixed PROC
+    sub rsp, 40
     mov eax, 10 SHL 16
     mov ebx, 8 SHL 16
     cmp eax, ebx
@@ -16,6 +16,14 @@ main PROC
 clamp_ok:
     shr eax, 16
     mov ecx, eax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_04_clamp_fixed ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_clamp_fixed
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

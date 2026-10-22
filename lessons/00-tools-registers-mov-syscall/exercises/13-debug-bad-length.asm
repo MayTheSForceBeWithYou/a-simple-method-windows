@@ -1,21 +1,30 @@
-; Exercise 13: debug bad length
+; Exercise: 13-debug-bad-length
 ;
-; BUG HUNT: Writes "Hi\n" but rdx length too short. Fix via equ.
+; BUG HUNT: Writes "Hi\n" but length parameter too short. Fix via EQU.
 ;
-; Build: nasm -f elf64 13-debug-bad-length.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_13_debug_bad_length` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .data
-    msg db "Hi", 10
+.DATA
+msg BYTE "Hi", 13, 10
+msg_len EQU $ - msg
 
-section .text
-    global _start
-_start:
-    mov rax, 1
-    mov rdi, 1
-    mov rsi, msg
-    mov rdx, 2
-    syscall
-    mov rax, 60
-    xor rdi, rdi
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_13_debug_bad_length:PROC
+
+main PROC
+    sub     rsp, 40
+    jmp     __ex_call
+    mov rcx, 1
+    lea rdx, msg
+    mov r8d, 2                  ; BUG: length too small — fix in ex_13_debug_bad_length
+__ex_call:
+    ; TODO: write ex_13_debug_bad_length in this file.
+    call    ex_13_debug_bad_length
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

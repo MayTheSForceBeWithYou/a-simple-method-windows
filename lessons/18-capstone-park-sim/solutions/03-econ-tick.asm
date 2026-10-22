@@ -13,10 +13,18 @@ EXTERN ExitProcess:PROC
 cash QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_03_econ_tick PROC
+    sub rsp, 40
     add QWORD PTR [cash], 5
     mov rcx, [cash]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_03_econ_tick ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_03_econ_tick
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

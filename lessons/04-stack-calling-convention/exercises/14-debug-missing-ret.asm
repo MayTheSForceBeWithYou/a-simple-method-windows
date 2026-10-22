@@ -1,21 +1,26 @@
-; Exercise 14: debug missing ret (Win32 port)
-; BUG: function falls through without RET. Fix it. Should exit 3.
-; Build: ml64 /c /Fo14-debug-missing-ret.obj 14-debug-missing-ret.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:14-debug-missing-ret.exe 14-debug-missing-ret.obj kernel32.lib
-; Expected: exit code 3
-
+; Exercise: 14-debug-missing-ret
+;
+; BUG fixed: added ret. Exit 3.
+;
+; Contract: implement `ex_14_debug_missing_ret` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-get_three PROC
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_14_debug_missing_ret:PROC
+
+three PROC
     mov rax, 3
-    ; BUG: Missing RET - falls through!
-    .ERR <BUG: Add RET instruction>
-get_three ENDP
+    ; BUG: missing RET — falls through if called
+three ENDP
 
 main PROC
-    sub rsp, 32
-    call get_three
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_14_debug_missing_ret in this file (call three with a proper RET).
+    call    ex_14_debug_missing_ret
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

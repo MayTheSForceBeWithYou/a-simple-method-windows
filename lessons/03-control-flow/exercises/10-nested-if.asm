@@ -1,11 +1,21 @@
-; Exercise 10: nested if
+; Exercise: 10-nested-if
 ;
 ; rax=7. If rax>0 and rax<10 exit 1 else 0.
 ;
-; Build: nasm -f elf64 10-nested-if.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_10_nested_if` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_10_nested_if:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_10_nested_if in this file.
+    call    ex_10_nested_if
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

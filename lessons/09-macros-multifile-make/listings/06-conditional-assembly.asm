@@ -1,7 +1,7 @@
 ; 06-conditional-assembly.asm
 ;
 ; Purpose: Demonstrate conditional assembly with IF/IFDEF
-; Expected exit code: 1 (DEBUG defined) or 0 (DEBUG not defined)
+; Expected exit code: 0
 ; Expected stdout: (none)
 ;
 ; MASM uses IF, IFDEF, IFNDEF, ELSE, ENDIF for conditional assembly.
@@ -15,6 +15,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
+    sub rsp, 40
     IFDEF DEBUG
         mov     ecx, 1      ; Debug exit code
     ELSE

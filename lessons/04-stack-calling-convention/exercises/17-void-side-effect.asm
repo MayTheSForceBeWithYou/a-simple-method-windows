@@ -1,27 +1,23 @@
-; Exercise 17: void side effect (Win32 port)
-; Procedure writes '!\n' to buffer via WriteFile. Exit 0.
-; Build: ml64 /c /Fo17-void-side-effect.obj 17-void-side-effect.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:17-void-side-effect.exe 17-void-side-effect.obj kernel32.lib
-; Expected: exit code 0
-
-.DATA
-buf DB "!", 13, 10
-buf_len EQU $ - buf
-
-.DATA?
-bytes_written DQ ?
-
+; Exercise: 17-void-side-effect
+;
+; Write '!' and newline. MS x64 ABI.
+; Expected stdout: "!\n"
+;
+; Contract: implement `ex_17_void_side_effect` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .CODE
-EXTRN GetStdHandle:PROC
-EXTRN WriteFile:PROC
-EXTRN ExitProcess:PROC
 
-; TODO: Implement void write_buf() that calls WriteFile
-.ERR <TODO: Implement write_buf procedure>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_17_void_side_effect:PROC
+
+; TODO: write ex_17_void_side_effect in this file.
 
 main PROC
-    sub rsp, 32
-    call write_buf
-    xor ecx, ecx
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_17_void_side_effect
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

@@ -2,19 +2,27 @@
 ;
 ; Has POS|VEL = 3; exit 3.
 ;
-; Build: ml64 /c 11-component-mask.asm && link /OUT:11-component-mask.exe /ENTRY:main /SUBSYSTEM:CONSOLE 11-component-mask.obj kernel32.lib
-;
+; Expected exit: 3
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov rdi,POS
-    or rdi,VEL
-    mov rax,60
-    syscall
+POS EQU 1
+VEL EQU 2
 
+.code
+ex_11_component_mask PROC
+    sub rsp, 40
+    mov rcx, POS
+    or rcx, VEL
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_11_component_mask ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_component_mask
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

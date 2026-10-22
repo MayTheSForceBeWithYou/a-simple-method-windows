@@ -1,11 +1,21 @@
-; Exercise 18: struct offsets
+; Exercise: 18-struct-offsets
 ;
-; Simulate struct {dq a; dq b; db c;}: set a=1,b=2,c=3. Exit a+b+c=6 using explicit offsets 0,8,16.
+; Simulate struct {QWORD a; QWORD b; BYTE c;}: set a=1,b=2,c=3. Exit a+b+c=6 using explicit offsets 0,8,16.
 ;
-; Build: nasm -f elf64 18-struct-offsets.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_18_struct_offsets` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 6
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_18_struct_offsets:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_18_struct_offsets in this file.
+    call    ex_18_struct_offsets
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

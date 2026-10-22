@@ -11,19 +11,19 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     ; AND: clear bits
-    mov rax, 0xFF              ; 11111111
-    and rax, 0x0F              ; 00001111 -> RAX = 15
+    mov rax, 0FFh              ; 11111111
+    and rax, 0Fh               ; 00001111 -> RAX = 15
     
     ; OR: set bits
-    mov rbx, 0x08              ; 00001000
-    or rbx, 0x04               ; 00000100 -> RBX = 12
+    mov rbx, 8                 ; 00001000
+    or rbx, 4                  ; 00000100 -> RBX = 12
     
     ; XOR: toggle bits
-    mov rcx, 0xFF
-    xor rcx, 0xFF              ; RCX = 0
+    mov rcx, 0FFh
+    xor rcx, 0FFh              ; RCX = 0
     
     ; NOT: invert all bits
     mov rdx, 0

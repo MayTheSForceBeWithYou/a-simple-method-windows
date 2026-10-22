@@ -14,7 +14,7 @@ EXTERN ExitProcess:PROC
 path BYTE "NUL", 0
 
 .code
-main PROC
+ex_08_from_scratch_close PROC
     sub rsp, 72
     
     ; CreateFileA for NUL device
@@ -29,7 +29,7 @@ main PROC
     
     ; Check for failure
     cmp rax, -1
-    je .e
+    je L_e
     
     ; Close handle
     mov rcx, rax
@@ -37,13 +37,21 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.e:
+L_e:
     ; Exit 1 on error
     mov rcx, 1
     
-.o:
-    call ExitProcess
+L_o:
+    mov     eax, ecx
+    add     rsp, 72
+    ret
+ex_08_from_scratch_close ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_08_from_scratch_close
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

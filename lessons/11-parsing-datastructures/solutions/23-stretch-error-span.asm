@@ -9,10 +9,18 @@ EXTERN ExitProcess:PROC
 err_off QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_stretch_error_span PROC
+    sub rsp, 40
     mov QWORD PTR [err_off], 4
     mov rcx, QWORD PTR [err_off]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_23_stretch_error_span ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_error_span
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

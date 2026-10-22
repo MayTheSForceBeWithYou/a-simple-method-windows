@@ -1,11 +1,21 @@
-; Exercise 14: two arrays sum
+; Exercise: 14-two-arrays-sum
 ;
-; a dq 3,4  b dq 5,6. rdi = a[0]+a[1]+b[0]+b[1] (18), exit.
+; a QWORD 3,4  b QWORD 5,6. rcx = a[0]+a[1]+b[0]+b[1] (18), exit.
 ;
-; Build: nasm -f elf64 14-two-arrays-sum.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_14_two_arrays_sum` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 18
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_14_two_arrays_sum:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_14_two_arrays_sum in this file.
+    call    ex_14_two_arrays_sum
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -1,17 +1,21 @@
-; 12-strstr-macro-label.asm
-; TWICE macro with two INC, no label collision, exit 2.
-
+; Exercise: 12-strstr-macro-label
+;
+; MACRO TWICE with inc instructions; exit 2.
+;
+; Contract: implement `ex_12_strstr_macro_label` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_12_strstr_macro_label:PROC
 
 ; TODO: TWICE MACRO; inc rax; inc rax; ENDM (no labels needed)
-.ERR <TODO: Define TWICE macro>
 
 main PROC
-    xor eax, eax
-    ; TODO: TWICE
-    .ERR <TODO: Invoke TWICE>
-    mov ecx, eax
-    call ExitProcess
+    sub     rsp, 40
+    ; TODO: write ex_12_strstr_macro_label in this file.
+    call    ex_12_strstr_macro_label
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

@@ -10,11 +10,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_stretch_chunk_coords PROC
+    sub rsp, 40
     mov rax, 40
     shr rax, 4
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_23_stretch_chunk_coords ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_chunk_coords
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

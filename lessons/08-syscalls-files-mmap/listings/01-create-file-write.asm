@@ -26,8 +26,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; CreateFileA(filename, GENERIC_WRITE, 0, NULL, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL)
@@ -65,7 +65,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 40
     call    ExitProcess
 main ENDP
 

@@ -13,8 +13,8 @@ a BYTE "ab", 0
 b BYTE "ab", 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_19_strcmp_lite PROC
+    sub rsp, 40
     lea rsi, [a]
     lea rdi, [b]
 loop_start:
@@ -33,6 +33,14 @@ equal:
 not_equal:
     mov rcx, 1
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_19_strcmp_lite ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_19_strcmp_lite
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -8,8 +8,8 @@ EXTERN ExitProcess:PROC
 arr QWORD 1,2,3,4
 
 .code
-main PROC
-    sub rsp, 32
+ex_11_map_array_proc PROC
+    sub rsp, 40
     lea rcx, arr
     mov rdx, 4
     call map_inc
@@ -17,7 +17,15 @@ main PROC
     add rcx, arr[8]
     add rcx, arr[16]
     add rcx, arr[24]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_11_map_array_proc ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_11_map_array_proc
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 map_inc PROC

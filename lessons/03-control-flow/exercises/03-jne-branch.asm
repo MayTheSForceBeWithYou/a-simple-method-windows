@@ -1,11 +1,21 @@
-; Exercise 03: jne branch
+; Exercise: 03-jne-branch
 ;
 ; rax=1,rbx=2. jne -> exit 5; if equal would exit 0.
 ;
-; Build: nasm -f elf64 03-jne-branch.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_03_jne_branch` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 5
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_03_jne_branch:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_03_jne_branch in this file.
+    call    ex_03_jne_branch
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

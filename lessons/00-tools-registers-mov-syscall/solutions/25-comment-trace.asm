@@ -9,9 +9,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32         ; allocate shadow space for call
+ex_25_comment_trace PROC
+    sub rsp, 40 ; allocate shadow space for call
     mov rcx, 9          ; set exit code parameter
-    call ExitProcess    ; exit process with status
+    mov     eax, 9
+    add     rsp, 40
+    ret
+ex_25_comment_trace ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_25_comment_trace
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

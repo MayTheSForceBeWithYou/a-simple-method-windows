@@ -1,32 +1,21 @@
-; 20-count-leading-zeros-loop.asm
+; Exercise: 20-count-leading-zeros-loop
 ;
-; Count leading zeros in a 16-bit value using a loop.
+; Count leading zeros in 000F0h (16-bit) -> 8.
 ;
-; Task: Count leading zeros in 0x0030 (binary 0000000000110000).
-;       There are 10 leading zeros. Exit with the count.
+; Contract: implement `ex_20_count_leading_zeros_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 8
 ;
-; Hint: Loop up to 16 times, checking bit 15 each iteration.
-;       If bit 15 is 0, increment counter and shift left.
-;       If bit 15 is 1, stop.
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_20_count_leading_zeros_loop:PROC
 
-main PROC FRAME
-    push    rbx
-    .pushreg rbx
-    .endprolog
-    
-    mov     ax, 30h         ; Value = 0x0030 (10 leading zeros)
-    xor     rbx, rbx        ; Counter
-    
-    ; TODO: Implement leading zero count loop
-    .ERR <TODO: Create loop that tests bit 15, increments counter, shifts left>
-    
-    mov     ecx, ebx
-    pop     rbx
-    call    ExitProcess     ; Should exit with 10
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_20_count_leading_zeros_loop in this file.
+    call    ex_20_count_leading_zeros_loop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -1,11 +1,21 @@
-; Exercise 27: stretch dot product
+; Exercise: 27-stretch-dot-product
 ;
-; STRETCH: u dq 2,3,4  v dq 5,6,7. rdi=2*5+3*6+4*7 (56). imul allowed.
+; STRETCH: u QWORD 2,3,4  v QWORD 5,6,7. rcx=2*5+3*6+4*7 (56). imul allowed.
 ;
-; Build: nasm -f elf64 27-stretch-dot-product.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_27_stretch_dot_product` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 56
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_27_stretch_dot_product:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_27_stretch_dot_product in this file.
+    call    ex_27_stretch_dot_product
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

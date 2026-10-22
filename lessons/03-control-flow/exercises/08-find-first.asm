@@ -1,11 +1,21 @@
-; Exercise 08: find first
+; Exercise: 08-find-first
 ;
-; arr db 3,1,4,1,5. Find first index of 4 (2). Exit index.
+; arr BYTE 3,1,4,1,5. Find first index of 4 (2). Exit index.
 ;
-; Build: nasm -f elf64 08-find-first.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_08_find_first` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_08_find_first:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_08_find_first in this file.
+    call    ex_08_find_first
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

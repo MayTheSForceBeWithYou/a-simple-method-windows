@@ -53,7 +53,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 40
     call    ExitProcess
 main ENDP
 

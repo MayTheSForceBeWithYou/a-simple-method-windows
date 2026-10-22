@@ -2,18 +2,27 @@
 ;
 ; STRETCH: modal stack depth 1; exit 1.
 ;
-; Build: ml64 /c 23-stretch-ui-modal.asm && link /OUT:23-stretch-ui-modal.exe /ENTRY:main /SUBSYSTEM:CONSOLE 23-stretch-ui-modal.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    inc qword [modal_depth]
-    mov rcx, [modal_depth]
-    call ExitProcess
+.data
+modal_depth QWORD 0
 
+.code
+ex_23_stretch_ui_modal PROC
+    sub rsp, 40
+    inc QWORD PTR [modal_depth]
+    mov rcx, QWORD PTR [modal_depth]
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_23_stretch_ui_modal ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_ui_modal
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

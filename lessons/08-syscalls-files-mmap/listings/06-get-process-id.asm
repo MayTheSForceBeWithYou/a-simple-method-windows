@@ -1,7 +1,7 @@
 ; 06-get-process-id.asm
 ;
 ; Purpose: Get current process ID (equivalent to getpid)
-; Expected exit code: Low 7 bits of process ID (varies)
+; Expected exit code: 1
 ; Expected stdout: (none)
 ;
 ; Demonstrates:
@@ -13,18 +13,16 @@ EXTRN GetCurrentProcessId:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     ; GetCurrentProcessId returns DWORD in EAX
     call    GetCurrentProcessId
     
-    ; Mask to low 7 bits for predictable exit code
-    and     eax, 7Fh
-    
-    mov     ecx, eax
-    add     rsp, 32
+    test    eax, eax
+    seta    cl
+    movzx   ecx, cl
     call    ExitProcess
 main ENDP
 

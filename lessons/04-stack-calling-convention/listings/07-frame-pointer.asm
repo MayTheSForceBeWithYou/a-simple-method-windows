@@ -1,6 +1,6 @@
-; Listing 07: Prologue/epilogue with RBP frame pointer
+; Listing 07: RBP frame forms (LESSON.md)
 ;
-; Purpose: Demonstrate frame pointer usage (lines 122-134 of LESSON.md).
+; Purpose: Two Win64 unwind patterns — .SETFRAME vs .PUSHREG-only RBP.
 ; Expected exit code: 42
 ; Expected output: (none)
 ;
@@ -10,25 +10,43 @@
 
 EXTRN ExitProcess:PROC
 
-compute PROC FRAME
-    push rbp                   ; Save old frame pointer
+; Form 1: RBP is a real frame pointer for unwind (locals below [rbp-8]…).
+; .SETFRAME offset N is a multiple of 16 and at most 240; N matches lea rbp,[rsp+N].
+compute_setframe PROC FRAME
+    push rbp
     .pushreg rbp
-    mov rbp, rsp               ; Set up new frame pointer
-    sub rsp, 32                ; Allocate locals
-    .allocstack 32
+    sub rsp, 48
+    .allocstack 48
+    lea rbp, [rsp+48]
+    .setframe rbp, 48
     .endprolog
-    
-    ; Function body - access locals via [RBP-N]
+
     mov rax, 42
-    
-    mov rsp, rbp               ; Deallocate locals
-    pop rbp                    ; Restore frame pointer
+
+    add rsp, 48
+    pop rbp
     ret
-compute ENDP
+compute_setframe ENDP
+
+; Form 2: RBP is just another saved nonvolatile (no .SETFRAME).
+compute_rbp_saved PROC FRAME
+    push rbp
+    .pushreg rbp
+    sub rsp, 40
+    .allocstack 40
+    .endprolog
+
+    mov rbp, 42                ; use RBP as a general preserved slot
+    mov rax, rbp
+
+    add rsp, 40
+    pop rbp
+    ret
+compute_rbp_saved ENDP
 
 main PROC
-    sub rsp, 32
-    call compute
+    sub rsp, 40
+    call compute_setframe
     mov rcx, rax
     call ExitProcess
 main ENDP

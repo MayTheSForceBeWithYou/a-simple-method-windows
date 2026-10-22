@@ -1,4 +1,6 @@
 ; QueryPerformanceCounter timing, exit 0
+; Expected exit: 0
+; Expected stdout: (none)
 .DATA?
 counter QWORD ?
 freq QWORD ?
@@ -7,15 +9,14 @@ EXTRN QueryPerformanceCounter:PROC
 EXTRN QueryPerformanceFrequency:PROC
 EXTRN ExitProcess:PROC
 main PROC FRAME
-    sub rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     lea rcx, freq
     call QueryPerformanceFrequency
     lea rcx, counter
     call QueryPerformanceCounter
     xor ecx, ecx
-    add rsp, 32
     call ExitProcess
 main ENDP
 END

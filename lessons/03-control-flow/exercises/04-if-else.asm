@@ -1,11 +1,21 @@
-; Exercise 04: if else
+; Exercise: 04-if-else
 ;
 ; If rax>10 exit 1 else exit 2. Set rax=11.
 ;
-; Build: nasm -f elf64 04-if-else.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_04_if_else` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_04_if_else:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_04_if_else in this file.
+    call    ex_04_if_else
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

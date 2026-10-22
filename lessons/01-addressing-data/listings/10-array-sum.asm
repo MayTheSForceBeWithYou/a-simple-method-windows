@@ -1,0 +1,37 @@
+; Listing 10: Complete array summing example (LESSON.md block 10)
+;
+; Purpose: Iterate over array, sum all elements.
+; Expected exit code: 100 (10+20+30+40)
+; Expected output: (none)
+;
+; Build: ml64 /c /Fo10-array-sum.obj 10-array-sum.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:10-array-sum.exe 10-array-sum.obj kernel32.lib
+
+.DATA
+arr DQ 10, 20, 30, 40
+arr_len EQU ($ - arr) / 8
+
+.CODE
+
+EXTRN ExitProcess:PROC
+
+main PROC
+    sub rsp, 40
+    
+    xor rax, rax               ; Sum = 0
+    xor rcx, rcx               ; Index = 0
+    lea rbx, arr               ; Base address
+    
+loop_start:
+    cmp rcx, arr_len
+    jge loop_done
+    
+    add rax, [rbx+rcx*8]       ; sum += arr[index]
+    inc rcx
+    jmp loop_start
+    
+loop_done:
+    mov rcx, rax               ; Exit with sum (100)
+    call ExitProcess
+main ENDP
+
+END

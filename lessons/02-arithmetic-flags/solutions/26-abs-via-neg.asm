@@ -9,11 +9,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_26_abs_via_neg PROC
+    sub rsp, 40
     mov rax, -42
     mov rcx, rax
     neg rcx
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_26_abs_via_neg ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_26_abs_via_neg
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

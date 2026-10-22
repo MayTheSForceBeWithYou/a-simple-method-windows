@@ -1,25 +1,21 @@
-; Exercise 03: sum loop (Win32 port)
+; Exercise: 03-sum-loop
 ;
-; Sum numbers 1 to 10 with a while loop. Exit with sum (55).
+; Implement `ex_03_sum_loop` in this file.
 ;
-; Build: ml64 /c /Fo03-sum-loop.obj 03-sum-loop.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:03-sum-loop.exe 03-sum-loop.obj kernel32.lib
-; Run: 03-sum-loop.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_03_sum_loop` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 55
 ;
-; Expected: exit code 55
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_03_sum_loop:PROC
 
 main PROC
-    sub rsp, 32
-    
-    xor rax, rax               ; Sum
-    mov rcx, 10                ; Counter
-    
-    ; TODO: While loop: add rcx to rax, dec rcx, repeat until rcx is 0
-    .ERR <TODO: Implement sum loop>
-    
+    sub     rsp, 40
+    ; TODO: write ex_03_sum_loop in this file.
+    call    ex_03_sum_loop
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

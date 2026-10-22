@@ -1,11 +1,21 @@
-; Exercise 24: nested loops
+; Exercise: 24-nested-loops
 ;
 ; Count pairs (i,j) with 0<=i<3, 0<=j<4 (12). Exit 12.
 ;
-; Build: nasm -f elf64 24-nested-loops.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_24_nested_loops` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_24_nested_loops:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_24_nested_loops in this file.
+    call    ex_24_nested_loops
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

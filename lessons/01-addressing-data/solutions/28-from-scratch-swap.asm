@@ -13,13 +13,21 @@ a QWORD 1
 b QWORD 2
 
 .code
-main PROC
-    sub rsp, 32
+ex_28_from_scratch_swap PROC
+    sub rsp, 40
     mov rax, [a]
     mov rdx, [b]
     mov [a], rdx
     mov [b], rax
     mov rcx, [a]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_28_from_scratch_swap ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_28_from_scratch_swap
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

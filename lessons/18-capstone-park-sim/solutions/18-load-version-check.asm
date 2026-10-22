@@ -2,24 +2,32 @@
 ;
 ; version==1 ok exit 1.
 ;
-; Build: ml64 /c 18-load-version-check.asm && link /OUT:18-load-version-check.exe /ENTRY:main /SUBSYSTEM:CONSOLE 18-load-version-check.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    cmp qword [ver],1
-    jne .n
-    mov rdi,1
-    jmp .o
-.n:
-    xor rdi,rdi
-.o:
-    mov rax,60
-    syscall
+.data
+ver QWORD 1
 
+.code
+ex_18_load_version_check PROC
+    sub rsp, 40
+    cmp QWORD PTR [ver], 1
+    jne ver_bad
+    mov rcx, 1
+    jmp ver_done
+ver_bad:
+    xor ecx, ecx
+ver_done:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_18_load_version_check ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_load_version_check
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,6 +1,6 @@
 ; Exercise 23: stretch symbol resolve
 ;
-; STRETCH: symbol table maps name hash to addr 0x20; exit 0x20=32.
+; STRETCH: symbol table maps name hash to addr 020h; exit 020h=32.
 ; Expected exit: 32
 
 EXTERN ExitProcess:PROC
@@ -9,10 +9,18 @@ EXTERN ExitProcess:PROC
 sym QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_stretch_symbol_resolve PROC
+    sub rsp, 40
     mov QWORD PTR [sym], 32
     mov rcx, QWORD PTR [sym]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_23_stretch_symbol_resolve ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_symbol_resolve
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

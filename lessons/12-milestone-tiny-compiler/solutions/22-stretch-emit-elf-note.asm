@@ -6,9 +6,17 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_22_stretch_emit_elf_note PROC
+    sub rsp, 40
     mov rcx, 64
-    call ExitProcess
+    mov     eax, 64
+    add     rsp, 40
+    ret
+ex_22_stretch_emit_elf_note ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_emit_elf_note
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

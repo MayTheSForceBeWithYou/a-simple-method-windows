@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 100               ; Dividend in RAX
     xor rdx, rdx               ; Clear high half (RDX = 0)

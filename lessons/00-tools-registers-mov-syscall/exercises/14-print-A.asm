@@ -1,11 +1,21 @@
-; Exercise 14: print A
+; Exercise: 14-print-A
 ;
 ; Write "A\n". Exit 0.
 ;
-; Build: nasm -f elf64 14-print-A.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p
+; Contract: implement `ex_14_print_A` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_14_print_A:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_14_print_A in this file.
+    call    ex_14_print_A
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

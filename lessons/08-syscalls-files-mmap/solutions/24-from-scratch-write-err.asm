@@ -16,7 +16,7 @@ msg BYTE "x"
 written DWORD ?
 
 .code
-main PROC
+ex_24_from_scratch_write_err PROC
     sub rsp, 56
     
     ; WriteFile with invalid handle (-1)
@@ -28,18 +28,26 @@ main PROC
     call WriteFile
     
     ; WriteFile returns 0 on failure
-    test rax, rax
-    jz .ok
+    test eax, eax
+    jz L_ok
     
     ; Unexpected success - exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.ok:
+L_ok:
     ; Expected failure - exit 1
     mov rcx, 1
     
-.o:
-    call ExitProcess
+L_o:
+    mov     eax, ecx
+    add     rsp, 56
+    ret
+ex_24_from_scratch_write_err ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_24_from_scratch_write_err
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

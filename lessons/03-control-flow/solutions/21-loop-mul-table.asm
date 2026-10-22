@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_21_loop_mul_table PROC
+    sub rsp, 40
     xor rcx, rcx
     mov r8, 8
 loop_start:
@@ -20,6 +20,14 @@ loop_start:
     dec r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_21_loop_mul_table ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_21_loop_mul_table
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -13,9 +13,17 @@ EXTERN ExitProcess:PROC
 h BYTE "P6",10
 
 .code
-main PROC
-    sub rsp, 32
+ex_23_stretch_ppm_header_len PROC
+    sub rsp, 40
     mov rcx, 3
-    call ExitProcess
+    mov     eax, 3
+    add     rsp, 40
+    ret
+ex_23_stretch_ppm_header_len ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_23_stretch_ppm_header_len
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

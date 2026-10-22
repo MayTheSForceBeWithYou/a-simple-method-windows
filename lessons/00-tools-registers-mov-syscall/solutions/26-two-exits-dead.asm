@@ -19,7 +19,7 @@ written DWORD ?
 hStdOut QWORD ?
 
 .code
-main PROC
+ex_26_two_exits_dead PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -37,10 +37,18 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
-    
+    mov     eax, 0
+    add     rsp, 56
+    ret
     ; Dead code (unreachable)
     mov rcx, 99
-    call ExitProcess
+    mov     eax, 99
+    ret
+ex_26_two_exits_dead ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_26_two_exits_dead
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

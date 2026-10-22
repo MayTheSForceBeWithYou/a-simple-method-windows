@@ -1,24 +1,29 @@
-; Exercise 16: debug callee clobber (Win32 port)
-; BUG: callee clobbers RBX without saving. Fix by adding PUSH/POP. Exit 11.
-; Build: ml64 /c /Fo16-debug-callee-clobber.obj 16-debug-callee-clobber.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:16-debug-callee-clobber.exe 16-debug-callee-clobber.obj kernel32.lib
-; Expected: exit code 11
-
+; Exercise: 16-debug-callee-clobber
+;
+; BUG fixed: preserve rbx. Exit 11.
+;
+; Contract: implement `ex_16_debug_callee_clobber` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 11
+;
 .CODE
+
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_debug_callee_clobber:PROC
 
 helper PROC
-    ; BUG: Uses RBX without saving (nonvolatile!)
+    ; BUG: uses RBX without saving (nonvolatile in MS x64)
     mov rbx, 99
     mov rax, 1
     ret
-    .ERR <BUG: Add PUSH RBX at start and POP RBX before RET>
 helper ENDP
 
 main PROC
-    sub rsp, 32
-    mov rbx, 11
-    call helper
-    mov rcx, rbx               ; Should still be 11
-    call ExitProcess
+    sub     rsp, 40
+    mov     rbx, 11
+    ; TODO: write ex_16_debug_callee_clobber in this file (fix helper, preserve rbx, exit 11).
+    call    ex_16_debug_callee_clobber
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

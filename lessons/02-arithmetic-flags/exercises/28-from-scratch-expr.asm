@@ -1,11 +1,21 @@
-; Exercise 28: from scratch expr
+; Exercise: 28-from-scratch-expr
 ;
 ; FROM SCRATCH: exit status = (12*12 - 100) / 4 + 1 = 12. Show work with idiv.
 ;
-; Build: nasm -f elf64 28-from-scratch-expr.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_28_from_scratch_expr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_28_from_scratch_expr:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_28_from_scratch_expr in this file.
+    call    ex_28_from_scratch_expr
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

@@ -18,7 +18,7 @@ msg BYTE "Q", 10
 written DWORD ?
 
 .code
-main PROC
+ex_17_macro_stringize PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -35,6 +35,14 @@ main PROC
     
     ; Exit 0
     mov rcx, 0
-    call ExitProcess
+    mov     eax, 0
+    add     rsp, 56
+    ret
+ex_17_macro_stringize ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_macro_stringize
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,29 +1,21 @@
-; 21-gray-code.asm
+; Exercise: 21-gray-code
 ;
-; Convert binary to Gray code using XOR and shift.
+; Implement `ex_21_gray_code` in this file.
 ;
-; Task: Convert binary value 12 (0b1100) to Gray code.
-;       Gray code formula: gray = binary ^ (binary >> 1).
-;       Exit with Gray code result (should be 10 = 0b1010).
+; Contract: implement `ex_21_gray_code` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
 ;
-; Hint: Copy value to another register, shift right by 1, XOR with original.
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_gray_code:PROC
 
 main PROC
-    mov     rax, 12         ; Binary value = 12
-    mov     rbx, rax
-    
-    ; TODO: Shift rbx right by 1
-    .ERR <TODO: Insert SHR rbx, 1>
-    
-    ; TODO: XOR rax with rbx to get Gray code
-    .ERR <TODO: Insert XOR rax, rbx>
-    
+    sub     rsp, 40
+    ; TODO: write ex_21_gray_code in this file.
+    call    ex_21_gray_code
     mov     ecx, eax
-    call    ExitProcess     ; Should exit with 10
+    call    ExitProcess
 main ENDP
 
 END

@@ -11,15 +11,23 @@ src BYTE "yo", 0
 dst BYTE 8 DUP(?)
 
 .code
-main PROC
-    sub rsp, 32
+ex_02_strcpy PROC
+    sub rsp, 40
     lea rcx, dst
     lea rdx, src
     call strcpy_fn
     lea rcx, dst
     call strlen_fn
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_02_strcpy ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_02_strcpy
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 strcpy_fn PROC

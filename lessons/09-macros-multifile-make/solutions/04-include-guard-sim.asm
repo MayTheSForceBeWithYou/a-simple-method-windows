@@ -14,9 +14,17 @@ ANSWER EQU 42
 ENDIF
 
 .code
-main PROC
-    sub rsp, 32
+ex_04_include_guard_sim PROC
+    sub rsp, 40
     mov rcx, ANSWER
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_04_include_guard_sim ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_include_guard_sim
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

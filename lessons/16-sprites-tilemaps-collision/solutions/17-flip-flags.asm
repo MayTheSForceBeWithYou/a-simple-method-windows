@@ -13,10 +13,18 @@ HFLIP EQU 1
 VFLIP EQU 2
 
 .code
-main PROC
-    sub rsp, 32
+ex_17_flip_flags PROC
+    sub rsp, 40
     mov rcx, HFLIP
     or rcx, VFLIP
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_17_flip_flags ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_flip_flags
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

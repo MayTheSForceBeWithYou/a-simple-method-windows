@@ -9,13 +9,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_20_max_via_flags PROC
+    sub rsp, 40
     mov rax, 17
     mov rbx, 23
     mov rcx, rax
     cmp rbx, rcx
     cmovg rcx, rbx
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_20_max_via_flags ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_20_max_via_flags
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

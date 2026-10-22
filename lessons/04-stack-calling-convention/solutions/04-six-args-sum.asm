@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 48        ; 32 shadow + 16 for args 5-6
+ex_04_six_args_sum PROC
+    sub rsp, 56 ; 32 shadow + 16 for args 5-6
     mov rcx, 1
     mov rdx, 2
     mov r8, 3
@@ -18,10 +18,15 @@ main PROC
     mov QWORD PTR [rsp+32], 5
     mov QWORD PTR [rsp+40], 6
     call sum6
-    add rsp, 48
-    mov rcx, rax
-    sub rsp, 32
-    call ExitProcess
+    add rsp, 56
+    mov     eax, eax
+    ret
+ex_04_six_args_sum ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_04_six_args_sum
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 sum6 PROC

@@ -10,12 +10,20 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_17_clock_diff PROC
+    sub rsp, 40
     mov rax, 100
     mov rbx, 60
     sub rax, rbx
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_17_clock_diff ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_17_clock_diff
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

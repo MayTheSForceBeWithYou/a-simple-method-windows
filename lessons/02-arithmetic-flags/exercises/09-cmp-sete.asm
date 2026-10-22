@@ -1,25 +1,21 @@
-; Exercise 09: cmp sete (Win32 port)
+; Exercise: 09-cmp-sete
 ;
-; RAX=42, RBX=42. CMP and SETE. Exit with 1 (true).
+; rax=5, rbx=5. cmp; sete al; movzx rcx,al; exit 1.
 ;
-; Build: ml64 /c /Fo09-cmp-sete.obj 09-cmp-sete.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-cmp-sete.exe 09-cmp-sete.obj kernel32.lib
-; Run: 09-cmp-sete.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_09_cmp_sete` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; Expected: exit code 1
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_cmp_sete:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 42
-    mov rbx, 42
-    
-    ; TODO: CMP RAX, RBX; SETE CL; MOVZX RCX, CL; exit
-    .ERR <TODO: Use CMP and SETE>
-    
+    sub     rsp, 40
+    ; TODO: write ex_09_cmp_sete in this file.
+    call    ex_09_cmp_sete
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

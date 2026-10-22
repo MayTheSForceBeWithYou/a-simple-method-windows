@@ -1,7 +1,11 @@
-; 03-macro-write.asm
-; Macro writes "M\n", exit 0.
-; Task: Define macro that gets stdout and writes message.
-
+; Exercise: 03-macro-write
+;
+; Macro write_stdout msg,len; print 'M\n'.
+; Expected stdout: "M\n"
+;
+; Contract: implement `ex_03_macro_write` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .DATA
 msg DB "M", 13, 10
 msgLen EQU $ - msg
@@ -11,15 +15,15 @@ written DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_03_macro_write:PROC
 
 ; TODO: Define WriteMsgMacro
-.ERR <TODO: Macro to GetStdHandle, WriteFile>
 
-main PROC FRAME
-    sub rsp, 40
-    .allocstack 40
-    .endprolog
-    ; TODO: Invoke macro, exit 0
-    .ERR <TODO: Call macro, exit 0>
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_03_macro_write in this file.
+    call    ex_03_macro_write
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

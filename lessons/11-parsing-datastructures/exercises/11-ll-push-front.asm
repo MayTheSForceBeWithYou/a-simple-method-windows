@@ -1,8 +1,18 @@
-; 11-ll-push-front
+; Exercise: 11-ll-push-front
+;
+; Push two nodes; head val=2; exit 2.
+;
+; Contract: implement `ex_11_ll_push_front` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Implement 11-ll-push-front>
+EXTERNDEF ex_11_ll_push_front:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_11_ll_push_front in this file.
+    call    ex_11_ll_push_front
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

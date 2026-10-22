@@ -1,11 +1,21 @@
-; Exercise 18: mod via div
+; Exercise: 18-mod-via-div
 ;
 ; Compute 42 % 5 using div; exit remainder 2.
 ;
-; Build: nasm -f elf64 18-mod-via-div.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_18_mod_via_div` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_18_mod_via_div:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_18_mod_via_div in this file.
+    call    ex_18_mod_via_div
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

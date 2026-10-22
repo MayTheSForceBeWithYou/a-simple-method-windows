@@ -1,12 +1,10 @@
-; 21-debug-fd-leak-pattern.asm
+; Exercise: 21-debug-fd-leak-pattern
 ;
-; Fix bug: Open file, forget to close it (intentional leak pattern for debugging).
+; BUG: wrong handle for close. Fix open NUL and close; exit 0.
 ;
-; Task: CreateFileA("NUL", GENERIC_READ, ...), intentionally do NOT close, exit 0.
-;       Demonstrates resource leak (in real code, CloseHandle is required).
+; Contract: implement `ex_21_debug_fd_leak_pattern` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Hint: Bug demonstration - normally you'd CloseHandle, but here we leak it.
-
 .DATA
 filename DB "NUL", 0
 
@@ -14,21 +12,29 @@ filename DB "NUL", 0
 
 EXTRN CreateFileA:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_debug_fd_leak_pattern:PROC
 
-main PROC FRAME
-    sub     rsp, 56
-    .allocstack 56
-    .endprolog
-    
-    ; TODO: CreateFileA("NUL", GENERIC_READ, ...)
-    .ERR <TODO: Open NUL>
-    
-    ; BUG: Should call CloseHandle here, but intentionally skip it
-    ; TODO: Exit 0 without closing (leak demonstration)
-    .ERR <TODO: Exit 0 without CloseHandle>
-    
-    xor     ecx, ecx
-    add     rsp, 56
+open_no_close PROC
+    sub rsp, 72
+    lea rcx, filename
+    mov rdx, 80000000h
+    mov r8d, 1
+    mov r9, 0
+    mov QWORD PTR [rsp+32], 3
+    mov QWORD PTR [rsp+40], 80h
+    mov QWORD PTR [rsp+48], 0
+    call CreateFileA
+    ; BUG: missing CloseHandle — handle leaked
+    xor eax, eax
+    add rsp, 72
+    ret
+open_no_close ENDP
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_21_debug_fd_leak_pattern in this file (open NUL and close).
+    call    ex_21_debug_fd_leak_pattern
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

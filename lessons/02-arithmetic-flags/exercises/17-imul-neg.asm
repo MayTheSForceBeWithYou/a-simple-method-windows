@@ -1,11 +1,21 @@
-; Exercise 17: imul neg
+; Exercise: 17-imul-neg
 ;
-; rax=-3; imul rax, -4; mov rdi,rax; exit 12.
+; rax=-3; imul rax, -4; mov rcx,rax; exit 12.
 ;
-; Build: nasm -f elf64 17-imul-neg.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_17_imul_neg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_17_imul_neg:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_17_imul_neg in this file.
+    call    ex_17_imul_neg
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

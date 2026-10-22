@@ -20,7 +20,7 @@ sum3 PROC
 sum3 ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rcx, 10
     mov rdx, 20

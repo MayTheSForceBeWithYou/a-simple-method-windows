@@ -9,18 +9,26 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_10_nested_if PROC
+    sub rsp, 40
     mov rax, 7
     cmp rax, 0
     jle no
     cmp rax, 10
     jge no
     mov rcx, 1
-    jmp out
+    jmp L_done
 no:
     xor rcx, rcx
-out:
-    call ExitProcess
+L_done:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_10_nested_if ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_nested_if
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

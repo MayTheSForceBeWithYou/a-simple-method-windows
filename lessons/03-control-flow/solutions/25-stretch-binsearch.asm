@@ -13,8 +13,8 @@ arr QWORD 1, 3, 5, 7, 9
 n EQU 5
 
 .code
-main PROC
-    sub rsp, 32
+ex_25_stretch_binsearch PROC
+    sub rsp, 40
     xor r8, r8
     mov r9, n
     dec r9
@@ -26,7 +26,8 @@ loop_start:
     add rax, r9
     shr rax, 1
     mov rcx, rax
-    mov rdx, QWORD PTR [arr+rcx*8]
+    lea r11, [arr]
+    mov rdx, QWORD PTR [r11+rcx*8]
     cmp rdx, r10
     je found
     jl go_right
@@ -39,10 +40,18 @@ go_right:
     jmp loop_start
 found:
     mov rcx, r8
-    jmp out
+    jmp L_done
 miss:
     mov rcx, 255
-out:
-    call ExitProcess
+L_done:
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_25_stretch_binsearch ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_25_stretch_binsearch
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

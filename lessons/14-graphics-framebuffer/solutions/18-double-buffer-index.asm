@@ -13,12 +13,20 @@ EXTERN ExitProcess:PROC
 idx QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_double_buffer_index PROC
+    sub rsp, 40
     mov QWORD PTR [idx], 0
     xor QWORD PTR [idx], 1
     xor QWORD PTR [idx], 1
     mov rcx, [idx]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_18_double_buffer_index ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_double_buffer_index
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

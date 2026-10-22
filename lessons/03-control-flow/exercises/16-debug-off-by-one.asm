@@ -1,21 +1,21 @@
-; Exercise 16: debug off by one
+; Exercise: 16-debug-off-by-one
 ;
-; BUG: loop runs 0..n inclusive summing 1..5 as 0..5. Fix to sum 1..5 = 15.
+; BUG: loop sums 0..5 inclusive instead of 1..5. Fix in `ex_16_debug_off_by_one`; expected sum 15.
 ;
-; Build: nasm -f elf64 16-debug-off-by-one.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_16_debug_off_by_one` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    xor rdi, rdi
-    mov rcx, 0
-.loop:
-    cmp rcx, 5
-    jg .done
-    add rdi, rcx
-    inc rcx
-    jmp .loop
-.done:
-    mov rax, 60
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_16_debug_off_by_one:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_16_debug_off_by_one in this file.
+    call    ex_16_debug_off_by_one
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

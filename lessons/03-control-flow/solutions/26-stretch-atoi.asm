@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 s BYTE "42", 0
 
 .code
-main PROC
-    sub rsp, 32
+ex_26_stretch_atoi PROC
+    sub rsp, 40
     lea rsi, [s]
     xor rcx, rcx
 loop_start:
@@ -26,6 +26,14 @@ loop_start:
     inc rsi
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_26_stretch_atoi ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_26_stretch_atoi
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

@@ -1,17 +1,28 @@
-; 21-debug-macro-arity.asm
-; Fix: EXIT_STATUS 4 (supply missing argument).
-
+; Exercise: 21-debug-macro-arity
+;
+; BUG: macro invoked with wrong arg count conceptually; fix EXIT_STATUS 4.
+;
+; Contract: implement `ex_21_debug_macro_arity` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 4
+;
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_debug_macro_arity:PROC
 
-; Macro expecting one argument
-ExitStatus MACRO status
+EXIT_STATUS MACRO status, skew:=<1>
     mov ecx, status
+    add ecx, skew               ; BUG: second macro arg should not exist
     call ExitProcess
 ENDM
 
 main PROC
-    ; TODO: Fix invocation: ExitStatus 4
-    .ERR <TODO: Supply argument to ExitStatus>
+    sub     rsp, 40
+    jmp     __ex_call
+    EXIT_STATUS 4, 1            ; BUG: fix macro arity and use EXIT_STATUS 4 in ex_21
+__ex_call:
+    ; TODO: write ex_21_debug_macro_arity in this file.
+    call    ex_21_debug_macro_arity
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

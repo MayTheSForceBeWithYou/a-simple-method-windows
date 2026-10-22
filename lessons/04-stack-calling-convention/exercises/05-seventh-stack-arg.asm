@@ -1,30 +1,24 @@
-; Exercise 05: seventh stack arg (Win32 port)
+; Exercise: 05-seventh-stack-arg
 ;
-; sum7 uses 7 args: RCX, RDX, R8, R9, [RSP+32], [RSP+40], [RSP+48]. Pass 1..7; exit 28.
+; sum7 uses 7th arg on stack. Pass 1..7; exit 28.
 ;
-; Build: ml64 /c /Fo05-seventh-stack-arg.obj 05-seventh-stack-arg.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-seventh-stack-arg.exe 05-seventh-stack-arg.obj kernel32.lib
-; Expected: exit code 28
-
+; Contract: implement `ex_05_seventh_stack_arg` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 28
+;
+; Implement `sum7(a..g)`: RCX,RDX,R8,R9 plus stack args at caller [rsp+32],[rsp+40],[rsp+48] (callee sees them at [rsp+40],[rsp+48],[rsp+56] after the call). In `ex_05_seventh_stack_arg`, pass 1..7 and exit 28. Main uses `sub rsp,40`; student setup may use `sub rsp,56` before `call sum7`.
+;
 .CODE
+
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_05_seventh_stack_arg:PROC
 
-; TODO: Implement sum7(a,b,c,d,e,f,g) summing all 7 args
-.ERR <TODO: Implement sum7 PROC with 7 arguments>
+; TODO: write ex_05_seventh_stack_arg in this file.
 
-main PROC FRAME
-    sub rsp, 64                ; Shadow (32) + 3 stack args (24) + alignment (8)
-    .allocstack 64
-    .endprolog
-    
-    mov QWORD PTR [rsp+32], 5
-    mov QWORD PTR [rsp+40], 6
-    mov QWORD PTR [rsp+48], 7
-    mov rcx, 1
-    mov rdx, 2
-    mov r8, 3
-    mov r9, 4
-    call sum7
-    mov rcx, rax
-    call ExitProcess
+main PROC
+    sub     rsp, 40
+    call    ex_05_seventh_stack_arg
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

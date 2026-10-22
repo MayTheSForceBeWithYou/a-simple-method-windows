@@ -11,7 +11,7 @@
 EXTRN ExitProcess:PROC
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     
     mov rax, 5                 ; Binary 101
     xor rax, 1                 ; Flip bit 0 → binary 100

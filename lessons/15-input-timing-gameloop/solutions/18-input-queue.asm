@@ -15,14 +15,24 @@ h QWORD ?
 t QWORD ?
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_input_queue PROC
+    sub rsp, 40
     mov rcx, [t]
-    mov QWORD PTR [q+rcx*8], 9
+    lea r11, [q]
+    mov QWORD PTR [r11+rcx*8], 9
     inc QWORD PTR [t]
     mov rcx, [h]
-    mov rcx, [q+rcx*8]
+    lea r11, [q]
+    mov rcx, [r11+rcx*8]
     inc QWORD PTR [h]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_18_input_queue ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_input_queue
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

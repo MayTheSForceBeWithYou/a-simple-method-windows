@@ -1,11 +1,22 @@
-; 01-buffer-init.asm: Initialize buffer (len=0, cur=0), exit 0
+; Exercise: 01-buffer-init
+;
+; Allocate 64 byte buffer; store length 0 in len; exit len.
+;
+; Contract: implement `ex_01_buffer_init` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
+;
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?
 cur QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_01_buffer_init:PROC
 main PROC
-    .ERR <TODO: mov len, 0; mov cur, 0; xor ecx, ecx; call ExitProcess>
+    sub     rsp, 40
+    ; TODO: write ex_01_buffer_init in this file.
+    call    ex_01_buffer_init
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

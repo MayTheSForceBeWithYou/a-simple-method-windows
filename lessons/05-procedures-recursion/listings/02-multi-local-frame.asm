@@ -33,7 +33,7 @@ sum_locals PROC FRAME
 sum_locals ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     mov rcx, 10
     call sum_locals
     mov rcx, rax

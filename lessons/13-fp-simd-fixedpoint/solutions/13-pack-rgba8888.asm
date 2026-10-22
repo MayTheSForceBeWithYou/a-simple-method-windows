@@ -6,10 +6,18 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_13_pack_rgba8888 PROC
+    sub rsp, 40
     mov eax, 255
     mov ecx, eax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_13_pack_rgba8888 ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_pack_rgba8888
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

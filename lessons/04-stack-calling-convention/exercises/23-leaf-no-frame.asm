@@ -1,19 +1,23 @@
-; Exercise 23: leaf no frame (Win32 port)
-; Leaf mul3(RCX)=RCX*3 without prologue. Exit 42 for input 14.
-; Build: ml64 /c /Fo23-leaf-no-frame.obj 23-leaf-no-frame.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:23-leaf-no-frame.exe 23-leaf-no-frame.obj kernel32.lib
-; Expected: exit code 42
-
+; Exercise: 23-leaf-no-frame
+;
+; Leaf mul3(rcx)=rcx*3 without prologue. Exit 42 for input 14.
+; Expected stdout: (none)
+;
+; Contract: implement `ex_23_leaf_no_frame` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement mul3 as leaf (no PROC FRAME needed)
-.ERR <TODO: Implement leaf function mul3>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_23_leaf_no_frame:PROC
+
+; TODO: write ex_23_leaf_no_frame in this file.
 
 main PROC
-    sub rsp, 32
-    mov rcx, 14
-    call mul3
-    mov rcx, rax
-    call ExitProcess
+    sub     rsp, 40
+    call    ex_23_leaf_no_frame
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

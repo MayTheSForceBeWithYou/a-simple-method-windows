@@ -29,7 +29,7 @@ copy_loop:
 my_strcpy ENDP
 
 main PROC
-    sub rsp, 32
+    sub rsp, 40
     lea rcx, dst
     lea rdx, src
     call my_strcpy

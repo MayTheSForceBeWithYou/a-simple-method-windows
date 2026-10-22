@@ -9,8 +9,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_13_fizz_count PROC
+    sub rsp, 40
     xor rcx, rcx
     mov r8, 1
 loop_start:
@@ -27,6 +27,14 @@ next:
     inc r8
     jmp loop_start
 done:
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_13_fizz_count ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_13_fizz_count
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

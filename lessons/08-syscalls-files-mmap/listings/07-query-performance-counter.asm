@@ -20,8 +20,8 @@ EXTRN QueryPerformanceFrequency:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
+    sub rsp, 40
+    .allocstack 40
     .endprolog
     
     ; QueryPerformanceFrequency(&frequency)
@@ -43,7 +43,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 32
     call    ExitProcess
 main ENDP
 

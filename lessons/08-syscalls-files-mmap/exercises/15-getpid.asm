@@ -1,28 +1,21 @@
-; 15-getpid.asm
+; Exercise: 15-getpid
 ;
-; Get current process ID, exit with low 7 bits.
+; GetCurrentProcessId; exit 0 if the pid is nonzero, else 1.
 ;
-; Task: Call GetCurrentProcessId, AND with 0x7F, exit with result.
+; Contract: implement `ex_15_getpid` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Hint: GetCurrentProcessId returns DWORD in EAX.
-
 .CODE
 
 EXTRN GetCurrentProcessId:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_15_getpid:PROC
 
-main PROC FRAME
-    sub     rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Call GetCurrentProcessId
-    .ERR <TODO: call GetCurrentProcessId>
-    
-    ; TODO: Mask to low 7 bits, exit with result
-    .ERR <TODO: and eax, 7Fh; mov ecx, eax>
-    
-    add     rsp, 32
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_15_getpid in this file.
+    call    ex_15_getpid
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

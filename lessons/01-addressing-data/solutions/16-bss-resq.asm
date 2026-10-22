@@ -12,8 +12,8 @@ EXTERN ExitProcess:PROC
 arr QWORD 4 DUP(?)
 
 .code
-main PROC
-    sub rsp, 32
+ex_16_bss_resq PROC
+    sub rsp, 40
     mov QWORD PTR [arr], 1
     mov QWORD PTR [arr+8], 2
     mov QWORD PTR [arr+16], 3
@@ -22,6 +22,14 @@ main PROC
     add rcx, [arr+8]
     add rcx, [arr+16]
     add rcx, [arr+24]
-    call ExitProcess
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_16_bss_resq ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_16_bss_resq
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

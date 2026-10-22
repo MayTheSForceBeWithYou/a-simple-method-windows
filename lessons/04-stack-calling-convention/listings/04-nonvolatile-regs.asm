@@ -30,15 +30,22 @@ compute PROC FRAME
     ret
 compute ENDP
 
-main PROC
+main PROC FRAME
+    push rbx
+    .pushreg rbx
     sub rsp, 32
-    
-    mov rbx, 99                ; Main's RBX value
+    .allocstack 32
+    .endprolog
+    mov rbx, 99
     mov rcx, 32
-    call compute               ; RAX = 42, RBX still 99
-    
-    ; RBX should still be 99 (preserved by callee)
+    call compute
+    cmp rbx, 99
+    jne rbx_clobbered
     mov rcx, rax
+    jmp exit_main
+rbx_clobbered:
+    mov rcx, 1
+exit_main:
     call ExitProcess
 main ENDP
 

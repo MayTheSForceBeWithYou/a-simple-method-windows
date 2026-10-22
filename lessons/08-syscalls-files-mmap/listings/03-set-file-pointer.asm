@@ -19,8 +19,8 @@ EXTRN CloseHandle:PROC
 EXTRN ExitProcess:PROC
 
 main PROC FRAME
-    sub     rsp, 40
-    .allocstack 40
+    sub rsp, 56
+    .allocstack 56
     .endprolog
     
     ; Open file for reading
@@ -65,7 +65,6 @@ error:
     mov     ecx, 1
     
 done:
-    add     rsp, 40
     call    ExitProcess
 main ENDP
 

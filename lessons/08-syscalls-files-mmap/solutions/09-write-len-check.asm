@@ -18,7 +18,7 @@ msg BYTE "Z", 10
 written DWORD ?
 
 .code
-main PROC
+ex_09_write_len_check PROC
     sub rsp, 56
     
     ; Get stdout handle
@@ -35,17 +35,25 @@ main PROC
     
     ; Check if 2 bytes were written
     cmp written, 2
-    jne .bad
+    jne L_bad
     
     ; Success - exit 0
     mov rcx, 0
-    jmp .o
+    jmp L_o
     
-.bad:
+L_bad:
     ; Failure - exit 1
     mov rcx, 1
     
-.o:
-    call ExitProcess
+L_o:
+    mov     eax, ecx
+    add     rsp, 56
+    ret
+ex_09_write_len_check ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_write_len_check
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

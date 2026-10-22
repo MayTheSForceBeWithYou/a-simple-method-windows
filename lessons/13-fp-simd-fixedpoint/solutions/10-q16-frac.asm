@@ -6,13 +6,21 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_10_q16_frac PROC
+    sub rsp, 40
     mov eax, 1
     shl eax, 15
     add eax, eax
     shr eax, 16
     mov ecx, eax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_10_q16_frac ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_10_q16_frac
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

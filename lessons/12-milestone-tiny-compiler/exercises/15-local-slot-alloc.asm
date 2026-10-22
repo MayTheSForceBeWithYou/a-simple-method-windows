@@ -1,8 +1,18 @@
-; 15-local-slot-alloc.asm: Allocate 3 local slots, exit count (3)
+; Exercise: 15-local-slot-alloc
+;
+; Allocate 3 locals; next_slot=3; exit 3.
+;
+; Contract: implement `ex_15_local_slot_alloc` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 3
+;
 .CODE
 EXTRN ExitProcess:PROC
-.ERR <TODO: Allocate 3 local slots, exit count (3)>
+EXTERNDEF ex_15_local_slot_alloc:PROC
 main PROC
-.ERR <TODO>
+    sub     rsp, 40
+    ; TODO: write ex_15_local_slot_alloc in this file.
+    call    ex_15_local_slot_alloc
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

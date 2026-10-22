@@ -3,8 +3,8 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_22_stretch_swar_avg PROC
+    sub rsp, 40
     mov eax, 200
     mov ebx, 100
     mov ecx, eax
@@ -12,8 +12,15 @@ main PROC
     xor eax, ebx
     shr eax, 1
     add eax, ecx
-    mov edi, eax
-    mov rax,60
-    call ExitProcess
+    movzx rcx, ax
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_22_stretch_swar_avg ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_22_stretch_swar_avg
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

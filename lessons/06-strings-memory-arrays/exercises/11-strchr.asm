@@ -1,16 +1,22 @@
-; Exercise 11: 11-strchr (Win32 port)
-; Find index of "l" in "hello" -> 2.
-; Build: ml64 /c /Fo11-strchr.obj 11-strchr.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:11-strchr.exe 11-strchr.obj kernel32.lib
-
+; Exercise: 11-strchr
+;
+; Find 'l' in 'hello' -> index 2.
+;
+; Contract: implement `ex_11_strchr` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 2
+;
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_11_strchr:PROC
 
-; TODO: Port from NASM to MASM (MS x64 ABI)
-.ERR <TODO: Implement 11-strchr>
+
 
 main PROC
-    sub rsp, 32
-    ; TODO: Implement
-    .ERR <TODO: Complete implementation>
+    sub     rsp, 40
+
+    ; TODO: write ex_11_strchr in this file.
+    call    ex_11_strchr
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

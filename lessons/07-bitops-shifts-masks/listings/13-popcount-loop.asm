@@ -34,7 +34,6 @@ skip_inc:
 done:
     ; rax = count of 1 bits = 3
     mov     ecx, eax
-    pop     rbx
     call    ExitProcess     ; Exit with 3
 main ENDP
 

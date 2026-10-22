@@ -1,11 +1,21 @@
-; Exercise 21: index loop prep
+; Exercise: 21-index-loop-prep
 ;
-; arr db 7,8,9. Without loops yet: sum using three scaled/byte loads into rdi (24).
+; arr BYTE 7,8,9. Without loops yet: sum using three scaled/byte loads into rcx (24).
 ;
-; Build: nasm -f elf64 21-index-loop-prep.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_21_index_loop_prep` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 24
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_21_index_loop_prep:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_21_index_loop_prep in this file.
+    call    ex_21_index_loop_prep
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

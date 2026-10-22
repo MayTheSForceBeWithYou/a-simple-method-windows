@@ -6,11 +6,19 @@
 EXTERN ExitProcess:PROC
 
 .code
-main PROC
-    sub rsp, 32
+ex_18_call_codegen PROC
+    sub rsp, 40
     call f
     mov rcx, rax
-    call ExitProcess
+    mov     eax, eax
+    add     rsp, 40
+    ret
+ex_18_call_codegen ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_18_call_codegen
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 
 f PROC

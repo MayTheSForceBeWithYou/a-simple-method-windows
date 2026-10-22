@@ -1,13 +1,11 @@
-; 01-write-only.asm
+; Exercise: 01-write-only
 ;
-; Write two messages to stdout and exit 0.
+; Review write; print 'io\n'; exit 0.
+; Expected stdout: "io\n"
 ;
-; Task: Use WriteFile twice to write "Hello\n" and "World\n" to stdout (STD_OUTPUT_HANDLE).
-;       Exit with code 0.
+; Contract: implement `ex_01_write_only` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Hint: Get stdout handle with GetStdHandle(-11).
-;       WriteFile needs: handle, buffer, count, &bytesWritten, NULL.
-
 .DATA
 msg1 DB "Hello", 13, 10
 msg1_len EQU $ - msg1
@@ -20,23 +18,13 @@ bytesWritten DWORD ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_01_write_only:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: Get stdout handle
-    .ERR <TODO: Call GetStdHandle with STD_OUTPUT_HANDLE (-11)>
-    
-    ; TODO: WriteFile msg1
-    .ERR <TODO: WriteFile(stdout, msg1, msg1_len, &bytesWritten, NULL)>
-    
-    ; TODO: WriteFile msg2
-    .ERR <TODO: WriteFile(stdout, msg2, msg2_len, &bytesWritten, NULL)>
-    
-    xor     ecx, ecx
-    add     rsp, 40
+    ; TODO: write ex_01_write_only in this file.
+    call    ex_01_write_only
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 

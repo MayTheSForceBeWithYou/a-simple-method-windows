@@ -1,16 +1,25 @@
-; Exercise 26: debug bss read
+; Exercise: 26-debug-bss-read
 ;
-; BUG: reads .bss before store (0). Store 12 first; exit 12.
+; BUG: reads .data? before store (0). Store 12 first; exit 12.
 ;
-; Build: nasm -f elf64 26-debug-bss-read.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_26_debug_bss_read` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 12
 ;
-; --- your code below ---
-section .bss
-    v resq 1
+.DATA?
+v QWORD ?
 
-section .text
-    global _start
-_start:
-    mov rdi, [v]
-    mov rax, 60
-    syscall
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_26_debug_bss_read:PROC
+
+main PROC
+    sub     rsp, 40
+    ; BUG: see exercise description; implement fix in student routine.
+    ; TODO: write ex_26_debug_bss_read in this file.
+    call    ex_26_debug_bss_read
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

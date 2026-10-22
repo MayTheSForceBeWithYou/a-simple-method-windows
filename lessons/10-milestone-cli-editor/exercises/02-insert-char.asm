@@ -1,11 +1,21 @@
-; 02-insert-char.asm: Append 'A', exit with length (1)
+; Exercise: 02-insert-char
+;
+; Insert 'A' at end; len=1; exit 1.
+;
+; Contract: implement `ex_02_insert_char` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
+;
 .DATA?
 buf DB 256 DUP(?)
 len QWORD ?
 .CODE
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_02_insert_char:PROC
 main PROC
-    mov len, 0
-    .ERR <TODO: mov rax, len; mov buf[rax], 'A'; inc len; mov ecx, DWORD PTR len; exit>
+    sub     rsp, 40
+    ; TODO: write ex_02_insert_char in this file.
+    call    ex_02_insert_char
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 END

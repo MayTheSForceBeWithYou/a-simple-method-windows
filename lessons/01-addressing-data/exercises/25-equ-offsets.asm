@@ -1,11 +1,21 @@
-; Exercise 25: equ offsets
+; Exercise: 25-equ-offsets
 ;
-; Use equ for OFF_B equ 8. vals dq 3,9. Load [vals+OFF_B] exit 9.
+; Use EQU for OFF_B EQU 8. vals QWORD 3,9. Load [vals+OFF_B] exit 9.
 ;
-; Build: nasm -f elf64 25-equ-offsets.asm -o /tmp/o.o && ld /tmp/o.o -o /tmp/p && /tmp/p; echo $?
+; Contract: implement `ex_25_equ_offsets` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 9
 ;
-; --- your code below ---
-section .text
-    global _start
-_start:
-    ; TODO: write your code here
+.CODE
+
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_25_equ_offsets:PROC
+
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_25_equ_offsets in this file.
+    call    ex_25_equ_offsets
+    mov     ecx, eax
+    call    ExitProcess
+main ENDP
+
+END

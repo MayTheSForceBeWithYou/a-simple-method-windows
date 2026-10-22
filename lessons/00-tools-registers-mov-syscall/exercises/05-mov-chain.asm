@@ -1,23 +1,21 @@
-; Exercise 05: mov chain (Win32 port)
+; Exercise: 05-mov-chain
 ;
-; Move 13 through RAX -> RBX -> RCX, then exit with RCX.
+; Set al=3, bl=5, cl=7. Sum into dil, movzx to RCX, exit (expect 15).
 ;
-; Build: ml64 /c /Fo05-mov-chain.obj 05-mov-chain.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:05-mov-chain.exe 05-mov-chain.obj kernel32.lib
-; Run: 05-mov-chain.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_05_mov_chain` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 15
 ;
-; Expected: exit code 13
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_05_mov_chain:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 13
-    
-    ; TODO: Move RAX to RBX, then RBX to RCX, then call ExitProcess
-    .ERR <TODO: Complete the mov chain>
+    sub     rsp, 40
+    ; TODO: write ex_05_mov_chain in this file.
+    call    ex_05_mov_chain
+    mov     ecx, eax
+    call    ExitProcess
     
 main ENDP
 

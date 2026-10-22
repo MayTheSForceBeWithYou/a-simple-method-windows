@@ -1,13 +1,10 @@
-; Exercise 08: two writes (Win32 port)
+; Exercise: 08-two-writes
 ;
-; Write two separate strings to stdout.
+; Write "alpha\n" then "beta\n" with two WriteFile calls. Exit 0.
 ;
-; Build: ml64 /c /Fo08-two-writes.obj 08-two-writes.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:08-two-writes.exe 08-two-writes.obj kernel32.lib
-; Run: 08-two-writes.exe
+; Contract: implement `ex_08_two_writes` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 0
 ;
-; Expected output: Line one\nLine two\n
-; Expected exit code: 0
-
 .DATA
 msg1 DB "Line one", 13, 10
 msg1_len EQU $ - msg1
@@ -22,17 +19,14 @@ bytes_written DQ ?
 EXTRN GetStdHandle:PROC
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_08_two_writes:PROC
 
-main PROC FRAME
-    push rbx
-    .pushreg rbx
-    sub rsp, 32
-    .allocstack 32
-    .endprolog
-    
-    ; TODO: Get stdout, write both messages, exit 0
-    .ERR <TODO: Implement two WriteFile calls>
-    
+main PROC
+    sub     rsp, 40
+    ; TODO: write ex_08_two_writes in this file.
+    call    ex_08_two_writes
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

@@ -1,25 +1,21 @@
-; Exercise 01: cmp je (Win32 port)
+; Exercise: 01-cmp-je
 ;
-; RAX=10, RBX=10. CMP and JE. If equal, exit 1; else exit 0.
+; Implement `ex_01_cmp_je` in this file.
 ;
-; Build: ml64 /c /Fo01-cmp-je.obj 01-cmp-je.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:01-cmp-je.exe 01-cmp-je.obj kernel32.lib
-; Run: 01-cmp-je.exe & echo %ERRORLEVEL%
+; Contract: implement `ex_01_cmp_je` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; Expected: exit code 1
-
 .CODE
 
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_01_cmp_je:PROC
 
 main PROC
-    sub rsp, 32
-    
-    mov rax, 10
-    mov rbx, 10
-    
-    ; TODO: CMP RAX, RBX; JE to set RCX=1; else RCX=0; exit
-    .ERR <TODO: Implement CMP and JE>
-    
+    sub     rsp, 40
+    ; TODO: write ex_01_cmp_je in this file.
+    call    ex_01_cmp_je
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
 
 END

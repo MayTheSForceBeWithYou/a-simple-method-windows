@@ -2,22 +2,34 @@
 ;
 ; Place PATH=1 at (2,3) on w=8; index=3*8+2=26; store; exit cell.
 ;
-; Build: ml64 /c 09-map-place-path.asm && link /OUT:09-map-place-path.exe /ENTRY:main /SUBSYSTEM:CONSOLE 09-map-place-path.obj kernel32.lib
-;
+; Expected exit: 1
+; Expected stdout: (none)
 
 EXTERN ExitProcess:PROC
 
-.code
-    
-main PROC
-    sub rsp, 32
-    mov rax,3
-    imul rax,8
-    add rax,2
-    mov byte [map+rax],PATH
-    movzx rdi,byte [map+rax]
-    mov rax,60
-    syscall
+PATH EQU 1
 
+.data?
+map BYTE 256 DUP(0)
+
+.code
+ex_09_map_place_path PROC
+    sub rsp, 40
+    mov rax, 3
+    imul rax, 8
+    add rax, 2
+    lea r11, [map]
+    mov BYTE PTR [r11+rax], PATH
+    lea r11, [map]
+    movzx rcx, BYTE PTR [r11+rax]
+    mov     eax, ecx
+    add     rsp, 40
+    ret
+ex_09_map_place_path ENDP
+main PROC
+    sub     rsp, 40
+    call    ex_09_map_place_path
+    mov     rcx, rax
+    call    ExitProcess
 main ENDP
 END

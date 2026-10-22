@@ -1,22 +1,21 @@
-; Exercise 09: nested calls (Win32 port)
+; Exercise: 09-nested-calls
 ;
-; double(x)=x*2; add(a,b)=a+b. Compute add(double(10),double(11))=42.
+; double(x)=x*2; add(a,b)=a+b. Compute add(double(10),double(11))=42. MS x64 ABI.
 ;
-; Build: ml64 /c /Fo09-nested-calls.obj 09-nested-calls.asm && link /ENTRY:main /SUBSYSTEM:CONSOLE /OUT:09-nested-calls.exe 09-nested-calls.obj kernel32.lib
-; Expected: exit code 42
-
+; Contract: implement `ex_09_nested_calls` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 42
+;
 .CODE
-EXTRN ExitProcess:PROC
 
-; TODO: Implement double(RCX) -> RAX = RCX*2
-.ERR <TODO: Implement double and add procedures>
+EXTRN ExitProcess:PROC
+EXTERNDEF ex_09_nested_calls:PROC
 
 main PROC
-    sub rsp, 32
-    
-    ; TODO: Call double(10), save result, call double(11), call add
-    ; Remember: must preserve values across calls
-    .ERR <TODO: Implement nested function calls>
-    
+    sub     rsp, 40
+    ; TODO: write ex_09_nested_calls in this file.
+    call    ex_09_nested_calls
+    mov     ecx, eax
+    call    ExitProcess
 main ENDP
+
 END

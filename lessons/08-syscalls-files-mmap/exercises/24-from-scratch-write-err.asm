@@ -1,12 +1,10 @@
-; 24-from-scratch-write-err.asm (from scratch)
+; Exercise: 24-from-scratch-write-err
 ;
-; Try to write to an invalid handle, detect error, exit 1.
+; FROM SCRATCH: write to invalid handle=-1; expect error; exit 1.
 ;
-; Task: Call WriteFile with handle = INVALID_HANDLE_VALUE (-1),
-;       check return value (should be 0 = failure), exit 1.
+; Contract: implement `ex_24_from_scratch_write_err` (MS x64). Return exit code in EAX; main passes it to ExitProcess.
+; Expected exit: 1
 ;
-; Hint: WriteFile returns 0 on error. Check return value in EAX.
-
 .DATA
 message DB "Test"
 message_len EQU $ - message
@@ -16,20 +14,13 @@ bytesWritten DWORD ?
 
 EXTRN WriteFile:PROC
 EXTRN ExitProcess:PROC
+EXTERNDEF ex_24_from_scratch_write_err:PROC
 
-main PROC FRAME
+main PROC
     sub     rsp, 40
-    .allocstack 40
-    .endprolog
-    
-    ; TODO: WriteFile(INVALID_HANDLE_VALUE, message, message_len, &bytesWritten, NULL)
-    .ERR <TODO: Call WriteFile with handle = -1>
-    
-    ; TODO: Check for error (return 0), exit 1
-    .ERR <TODO: test eax, eax; jz error; exit 1>
-    
-    mov     ecx, 1
-    add     rsp, 40
+    ; TODO: write ex_24_from_scratch_write_err in this file.
+    call    ex_24_from_scratch_write_err
+    mov     ecx, eax
     call    ExitProcess
 main ENDP
 
